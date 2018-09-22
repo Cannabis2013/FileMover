@@ -1,0 +1,96 @@
+﻿QList<rule> rules = settingsWindow->ruleList();
+for(rule r : rules)
+{
+    QStringList kWords = r.keyWords;
+    QStringList destinations = r.destPath;
+    QDir::Filters filters = QDir::NoDotAndDotDot | QDir::Hidden;
+    switch(r.fileActions)
+        {
+           case fileWorker::Delete:
+           {
+               switch(r.fileMode)
+               {
+                   case fileWorker::Suffix:
+                    {
+                        fWorker->clearSufFiles(paths,kWords,filters);
+                        break;
+                    }
+                   case fileWorker::matchWords:
+                    {
+                        fWorker->clearFilesByWords(paths,kWords,r.matchWholeWords,filters);
+                        break;
+                    }
+                    case fileWorker::sizeMode:
+                    {
+                        double limit = kWords.at(0).toDouble();
+                        fWorker->clearFilesBySize(paths,limit,r.sizeMode,filters);
+                        break;
+                    }
+                    case fileWorker::dateMode:
+                    {
+                        fWorker->clearFilesByDate(paths,r.date,r.dateCondition);
+                        break;
+                    }
+                    case fileWorker::typeMode:
+                    {
+                        fWorker->clearFolders(paths,QDir::NoDotAndDotDot,r.typeMode);
+                        break;
+                    }
+               }
+           }
+           case fileWorker::Move :
+           {
+               switch(r.fileMode)
+               {
+                   case fileWorker::Suffix:
+                    {
+                        fWorker->moveMatchingSuffixes(paths,destinations,kWords);
+                        break;
+                    }
+                   case fileWorker::matchWords:
+                    {
+                        fWorker->moveMatchingFiles(paths,destinations,kWords,r.matchWholeWords);
+                        break;
+                    }
+                   case fileWorker::sizeMode:
+                    {
+                        double limit = kWords.at(0).toDouble();
+                        fWorker->moveFilesBySize(paths,destinations,limit,r.sizeMode);
+                        break;
+                    }
+                   case fileWorker::dateMode:
+                    {
+                        fWorker->moveFilesByDate(paths,destinations,r.date,r.dateCondition);
+                        break;
+                    }
+               }
+           }
+           case fileWorker::Copy:
+           {
+               switch(r.fileMode)
+               {
+               case fileWorker::Suffix:
+                {
+                    fWorker->moveMatchingSuffixes(paths,destinations,kWords,fileWorker::copy);
+                    break;
+                }
+               case fileWorker::matchWords:
+                {
+                    fWorker->moveMatchingFiles(paths,destinations,kWords,r.matchWholeWords,fileWorker::copy);
+                    break;
+                }
+               case fileWorker::sizeMode:
+                {
+                    double limit = kWords.at(0).toDouble();
+                    fWorker->moveFilesBySize(paths,destinations,limit,r.sizeMode,fileWorker::copy);
+                    break;
+                }
+               case fileWorker::dateMode:
+                {
+                    fWorker->moveFilesByDate(paths,destinations,r.date,r.dateCondition,fileWorker::copy);
+                    break;
+                }
+               }
+           }
+       }
+}

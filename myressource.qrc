@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/My Images">
+        <file>Ressources/File.png</file>
+        <file>Ressources/Folder.png</file>
+        <file>Ressources/Hdd-icon.png</file>
+        <file>Ressources/cplusplus.jpg</file>
+        <file>Ressources/solid background black.jpg</file>
+        <file>Ressources/Stock Index Down.png</file>
+    </qresource>
+</RCC>

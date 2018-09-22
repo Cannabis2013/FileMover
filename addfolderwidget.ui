@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>addFolderWidget</class>
+ <widget class="QWidget" name="addFolderWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>514</width>
+    <height>399</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#addFolderWidget
+{
+	background-color:rgb(81,81,81);
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="pathLine" name="widget_2" native="true"/>
+   </item>
+   <item>
+    <widget class="addFileDialog" name="widget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>addFileDialog</class>
+   <extends>QWidget</extends>
+   <header>addfiledialog.h</header>
+   <container>1</container>
+   <slots>
+    <signal>quitSignal()</signal>
+    <signal>shrinkWindow(QSizePolicy::Policy,int)</signal>
+    <signal>addButtonClicked()</signal>
+    <slot>hideExplorer()</slot>
+    <slot>setCurrentIndex(QString)</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>pathLine</class>
+   <extends>QWidget</extends>
+   <header>pathline.h</header>
+   <container>1</container>
+   <slots>
+    <signal>showFileExplorer()</signal>
+    <signal>sendCurrentFilePath(QString)</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>widget</sender>
+   <signal>quitSignal()</signal>
+   <receiver>addFolderWidget</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>152</x>
+     <y>202</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>154</x>
+     <y>68</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget</sender>
+   <signal>shrinkWindow(QSizePolicy::Policy,int)</signal>
+   <receiver>addFolderWidget</receiver>
+   <slot>sizeAdjust(QSizePolicy::Policy,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>201</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>298</x>
+     <y>63</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget</sender>
+   <signal>addButtonClicked()</signal>
+   <receiver>addFolderWidget</receiver>
+   <slot>on_Add_Button_Clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>106</x>
+     <y>205</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>61</x>
+     <y>306</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget_2</sender>
+   <signal>showFileExplorer()</signal>
+   <receiver>widget</receiver>
+   <slot>hideExplorer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>239</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>208</x>
+     <y>198</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget</sender>
+   <signal>sendCurrentFilePath(QString)</signal>
+   <receiver>widget_2</receiver>
+   <slot>setCurrentFilePath(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>244</x>
+     <y>202</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>241</x>
+     <y>16</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget_2</sender>
+   <signal>sendCurrentFilePath(QString)</signal>
+   <receiver>widget</receiver>
+   <slot>setCurrentIndex(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>46</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>56</x>
+     <y>203</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>sizeAdjust(QSizePolicy::Policy,int)</slot>
+  <slot>on_Add_Button_Clicked()</slot>
+ </slots>
+</ui>

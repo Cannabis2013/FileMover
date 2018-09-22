@@ -408,21 +408,15 @@ QFrame
       <item alignment="Qt::AlignHCenter">
        <widget class="QGroupBox" name="conditionContainer">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>
-          <width>375</width>
+          <width>384</width>
           <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>375</width>
-          <height>16777215</height>
          </size>
         </property>
         <property name="font">
@@ -434,8 +428,7 @@ QFrame
          <string notr="true">QGroupBox
 {	
 	background-color: rgb(149, 149, 149);
-	border-radius:5px;
-	margin-top:0px;
+	border:0px solid;
 }
 QGroupBox::title
 {

@@ -63,7 +63,6 @@ background-color:red;
 QPushButton:hover
 {
 	background-color:lightgray;
-	border:5px solid qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.757, fx:0.5, fy:0.5, stop:0 rgba(13, 212, 61, 228), stop:1 rgba(255, 255, 255, 255));
 	padding:0px;
 }
 QPushButton#viewBut

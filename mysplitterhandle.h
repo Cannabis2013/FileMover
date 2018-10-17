@@ -17,7 +17,7 @@ using namespace std;
 class mySplitterHandle : public QSplitterHandle
 {
 public:
-    mySplitterHandle(Qt::Orientation direction, QSplitter *parent = 0, QString label = QString());
+    mySplitterHandle(Qt::Orientation direction, QSplitter *parent = nullptr, QString label = QString());
 
 protected:
     void paintEvent(QPaintEvent *event);

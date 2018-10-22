@@ -54,39 +54,37 @@ void fileWorker::countSize(QStringList l)
 
 bool fileWorker::removeFileItems(const QFileInfoList filePaths)
 {
-    int errors = 0, taeller = 0;
     if(filePaths.isEmpty())
         return false;
+
+    QStringList errs;
+
     for(QFileInfo fItem: filePaths)
     {
-        taeller++;
-        if(fItem.permissions() == QFile::WriteUser)
+        QString absoluteFilePath = fItem.absoluteFilePath();
+        if(fItem.isFile())
         {
-            if(fItem.isFile())
-                QFile::remove(fItem.absoluteFilePath())  ? NULL : errors++;
-            else if(fItem.isDir())
+            QFile fileItem(fItem.absoluteFilePath());
+            if(!fileItem.remove())
             {
-                QDir dir(fItem.absoluteFilePath());
-                if(!dir.removeRecursively())
-                {
-                    QString aFP = fItem.absoluteFilePath();
-                    emit infoReport(QString("Something went wrong with: %1").arg(aFP));
-                    errors++;
-                }
+                errs << "Operation on: " + fItem.fileName() + " in: " +
+                    fItem.absolutePath() + " returned: " + fileItem.errorString();
             }
         }
-        else
+        else if(fItem.isDir())
         {
-            emit infoReport(QString("Du har ikke rettigheder til denne %1").arg(fItem.filePath()));
-            errors++;
+            removeDir(absoluteFilePath,errs);
         }
     }
-    if(taeller == errors)
+
+    if(!errs.isEmpty())
+    {
+        for (QString err : errs) {
+            cout << err.toStdString() << endl;
+        }
         return false;
-    else if(errors > taeller/2)
-        return false;
-    else
-        return true;
+    }
+    return true;
 }
 
 qint64 fileWorker::byteConvert(int unit, QString fromUnit)
@@ -133,6 +131,36 @@ bool fileWorker::copyEntities(const QFileInfoList files, const QStringList desti
         }
     }
     return result;
+}
+
+void fileWorker::removeDir(QString &dirName, QStringList &errs)
+{
+    QDir dir(dirName);
+
+    QDirIterator it(dirName,QDir::NoDotAndDotDot |
+                    QDir::System |
+                    QDir::Hidden |
+                    QDir::AllEntries,
+                    QDirIterator::Subdirectories);
+    while(it.hasNext())
+    {
+        QFileInfo fileObject = it.next();
+        if(fileObject.isFile())
+        {
+            QFile file(fileObject.absoluteFilePath());
+            if(!file.remove())
+            {
+                errs << "Operation on: " + file.fileName() + " in: " +
+                    fileObject.absolutePath() + " returned: " + file.errorString();
+            }
+        }
+        else if(fileObject.isDir())
+        {
+            QString filePath = fileObject.absoluteFilePath();
+            removeDir(filePath,errs);
+        }
+    }
+    dir.rmdir(dirName);
 }
 
 void fileWorker::beginProcess()

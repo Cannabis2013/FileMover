@@ -135,7 +135,11 @@ private:
 
     // Methods..
 
-    // Remove recursively..
+    // recursive file operations
+
+    void removeDir(QString &dirName, QStringList &errs);
+
+
 
     // Process..
     void beginProcess();

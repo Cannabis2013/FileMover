@@ -20,6 +20,7 @@ QT       += webenginewidgets
 win32
 {
 QMAKE_CXXFLAGS += -std=c++17
+
 }
 macx
 {

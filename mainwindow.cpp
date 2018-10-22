@@ -856,7 +856,6 @@ void mainWindow::clearAccordingToRules(QStringList paths)
                  " Size: " << fileSize.toStdString() << endl;
         }
     };
-    Q_UNUSED(outputFiles);
     QList<rule>rules = rController.ruleslist();
     for(rule r : rules)
     {

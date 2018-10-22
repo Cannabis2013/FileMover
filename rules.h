@@ -58,78 +58,109 @@ struct subRule
     }
     QFileInfoList processList(QFileInfoList fileList)
     {
+        bool condition = false;
+
         QFileInfoList filesToProcess;
         for(QFileInfo file : fileList)
         {
-            if(fieldCondition == rD::filepathMode &&
-                    fileCompareMode == rD::contains)
+
+            // Evaluating filename patterns
+            if(fieldCondition == rD::filepathMode)
             {
-                bool contains = false;
-                for(QString kWord : keyWords)
+                if(fileCompareMode == rD::contains)
                 {
-                    if(file.fileName().contains(kWord))
-                        contains = true;
+                    for(QString kWord : keyWords)
+                        if(file.fileName().contains(kWord))
+                            condition = true;
+                    if(condition)
+                        filesToProcess << file;
                 }
-                if(contains)
-                    filesToProcess << file;
-            }
-            else if(fieldCondition == rD::filepathMode &&
-                    fileCompareMode == rD::dontContain)
-            {
-                bool dontContain = false;
-                for(QString kWord : keyWords)
+                else if(fileCompareMode == rD::dontContain)
                 {
-                    if(!file.fileName().contains(kWord))
-                        dontContain = true;
+                    for(QString kWord : keyWords)
+                        if(file.fileName().contains(kWord))
+                            condition = true;
+                    if(!condition)
+                        filesToProcess << file;
                 }
-                if(dontContain)
-                    filesToProcess << file;
-            }
-            else if(fieldCondition == rD::filepathMode &&
-                    fileCompareMode == rD::match)
-            {
-                bool match = false;
-                for(QString kWord : keyWords)
+                else if(fileCompareMode == rD::match)
                 {
-                    if(file.fileName() == kWord)
-                        match = true;
+                    for(QString kWord : keyWords)
+                        if(file.fileName() == kWord)
+                            condition = true;
+                    if(condition)
+                        filesToProcess << file;
                 }
-                if(match)
-                    filesToProcess << file;
-            }
-            else if(fieldCondition == rD::filepathMode &&
-                    fileCompareMode == rD::dontMatch)
-            {
-                bool dontMatch = false;
-                for(QString kWord : keyWords)
+                else if(fileCompareMode == rD::dontMatch)
                 {
-                    if(file.fileName() != kWord)
-                        dontMatch = true;
+                    for(QString kWord : keyWords)
+                        if(file.fileName() == kWord)
+                            condition = true;
+                    if(!condition)
+                        filesToProcess << file;
                 }
-                if(dontMatch)
-                    filesToProcess << file;
             }
-            else if(fieldCondition == rD::sizeMode && fileCompareMode != rD::interval)
+
+            // Evaluating file extension related patterns
+            else if(fieldCondition == rD::extensionMode)
             {
-                if(fileCompareMode == rD::lesser && file.size() < fW::byteConvert(sizeLimit.first,sizeLimit.second))
+                if(fileCompareMode == rD::contains)
                 {
-                    filesToProcess << file;
+                    for(QString kWord : keyWords)
+                        if(file.suffix().contains(kWord))
+                            condition = true;
+                    if(condition)
+                        filesToProcess << file;
                 }
-                else if(fileCompareMode == rD::lesserOrEqual && file.size() <= fW::byteConvert(sizeLimit.first,sizeLimit.second))
-                    filesToProcess << file;
-                else if(fileCompareMode == rD::equal && file.size() == fW::byteConvert(sizeLimit.first,sizeLimit.second))
-                    filesToProcess << file;
-                else if(fileCompareMode == rD::biggerOrEqual && file.size() >= fW::byteConvert(sizeLimit.first,sizeLimit.second))
-                    filesToProcess << file;
-                else if(fileCompareMode == rD::bigger && file.size() > fW::byteConvert(sizeLimit.first,sizeLimit.second))
-                    filesToProcess << file;
+                else if(fileCompareMode == rD::dontContain)
+                {
+                    for(QString kWord : keyWords)
+                        if(file.suffix().contains(kWord))
+                            condition = true;
+                    if(!condition)
+                        filesToProcess << file;
+                }
+                else if(fileCompareMode == rD::match)
+                {
+                    for(QString kWord : keyWords)
+                        if(file.suffix() == kWord)
+                            condition = true;
+                    if(condition)
+                        filesToProcess << file;
+                }
+                else if(fileCompareMode == rD::dontMatch)
+                {
+                    for(QString kWord : keyWords)
+                        if(file.suffix() == kWord)
+                            condition = true;
+                    if(!condition)
+                        filesToProcess << file;
+                }
             }
-            else if(fieldCondition == rD::sizeMode &&
-                    fileCompareMode == rD::interval &&
-                    file.size() >= fW::byteConvert(sizeIntervalLimits.first.first,sizeIntervalLimits.first.second) &&
-                    file.size() <= fW::byteConvert(sizeIntervalLimits.second.first,sizeIntervalLimits.second.second))
+            else if(fieldCondition == rD::sizeMode)
             {
-                filesToProcess << file;
+                if(fileCompareMode != rD::interval)
+                {
+                    if(fileCompareMode == rD::lesser && file.size() < fW::byteConvert(sizeLimit.first,sizeLimit.second))
+                        filesToProcess << file;
+                    else if(fileCompareMode == rD::lesserOrEqual &&
+                            file.size() <= fW::byteConvert(sizeLimit.first,sizeLimit.second))
+                        filesToProcess << file;
+                    else if(fileCompareMode == rD::equal &&
+                            file.size() == fW::byteConvert(sizeLimit.first,sizeLimit.second))
+                        filesToProcess << file;
+                    else if(fileCompareMode == rD::biggerOrEqual &&
+                            file.size() >= fW::byteConvert(sizeLimit.first,sizeLimit.second))
+                        filesToProcess << file;
+                    else if(fileCompareMode == rD::bigger &&
+                            file.size() > fW::byteConvert(sizeLimit.first,sizeLimit.second))
+                        filesToProcess << file;
+                }
+                else if(fileCompareMode == rD::interval &&
+                        file.size() >= fW::byteConvert(sizeIntervalLimits.first.first,sizeIntervalLimits.first.second) &&
+                        file.size() <= fW::byteConvert(sizeIntervalLimits.second.first,sizeIntervalLimits.second.second))
+                    filesToProcess << file;
+
             }
             else if(fieldCondition == rD::dateCreatedMode && fileCompareMode != rD::interval)
             {

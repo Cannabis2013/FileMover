@@ -102,7 +102,7 @@ struct subRule
             }
 
             // Evaluating file extension related patterns
-            else if(fieldCondition == rD::extensionMode)
+            else if(fieldCondition == rD::extensionMode && file.isFile())
             {
                 if(fileCompareMode == rD::contains)
                 {
@@ -162,33 +162,41 @@ struct subRule
                     filesToProcess << file;
 
             }
-            else if(fieldCondition == rD::dateCreatedMode && fileCompareMode != rD::interval)
+            else if(fieldCondition == rD::dateCreatedMode)
             {
-                if(fileCompareMode == rD::youngerThan && fixedDate.second > file.created())
-                    filesToProcess << file;
-                else if(fileCompareMode == rD::exactDate && fixedDate.second== file.created())
-                    filesToProcess << file;
-                else if(fileCompareMode == rD::olderThan && fixedDate.second < file.created())
-                    filesToProcess << file;
+                if(fileCompareMode == rD::interval)
+                {
+                    if(intervalDate.first > file.created() && intervalDate.second < file.created())
+                        filesToProcess << file;
+                }
+                else if(fileCompareMode != rD::interval)
+                {
+                    if(fileCompareMode == rD::youngerThan && fixedDate.second > file.created())
+                        filesToProcess << file;
+                    else if(fileCompareMode == rD::exactDate && fixedDate.second== file.created())
+                        filesToProcess << file;
+                    else if(fileCompareMode == rD::olderThan && fixedDate.second < file.created())
+                        filesToProcess << file;
+                }
+
             }
-            else if(fieldCondition == rD::dateCreatedMode && fileCompareMode == rD::interval)
+            else if(fieldCondition == rD::dateModifiedMode)
             {
-                if(intervalDate.first > file.created() && intervalDate.second < file.created())
-                    filesToProcess << file;
-            }
-            else if(fieldCondition == rD::dateModifiedMode && fileCompareMode != rD::interval)
-            {
-                if(fileCompareMode == rD::youngerThan && fixedDate.second > file.lastModified())
-                    filesToProcess << file;
-                else if(fileCompareMode == rD::exactDate && fixedDate.second == file.lastModified())
-                    filesToProcess << file;
-                else if(fileCompareMode == rD::olderThan && fixedDate.second < file.lastModified())
-                    filesToProcess << file;
-            }
-            else if(fieldCondition == rD::dateModifiedMode && fileCompareMode == rD::interval)
-            {
-                if(intervalDate.first > file.lastModified() && intervalDate.second < file.lastModified())
-                    filesToProcess << file;
+                if(fileCompareMode == rD::interval)
+                {
+                    if(intervalDate.first > file.lastModified() && intervalDate.second < file.lastModified())
+                        filesToProcess << file;
+                }
+                else if(fileCompareMode != rD::interval)
+                {
+                    if(fileCompareMode == rD::youngerThan && fixedDate.second > file.lastModified())
+                        filesToProcess << file;
+                    else if(fileCompareMode == rD::exactDate && fixedDate.second == file.lastModified())
+                        filesToProcess << file;
+                    else if(fileCompareMode == rD::olderThan && fixedDate.second < file.lastModified())
+                        filesToProcess << file;
+                }
+
             }
             else if(fieldCondition == rD::typeMode)
             {

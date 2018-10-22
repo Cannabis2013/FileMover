@@ -863,7 +863,7 @@ void mainWindow::clearAccordingToRules(QStringList paths)
         for(subRule sR : r.subRules)
             allFiles = sR.processList(allFiles);
 
-        outputFiles(allFiles);
+        //outputFiles(allFiles);
 
         // Implementer fileworker operation..
 
@@ -872,7 +872,6 @@ void mainWindow::clearAccordingToRules(QStringList paths)
         it.list = allFiles;
         it.ruleMode = r.actionRule;
         pController->addToQueue(it);
-
     }
 }
 void mainWindow::writeSettings()

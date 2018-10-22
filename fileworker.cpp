@@ -63,9 +63,7 @@ bool fileWorker::removeFileItems(const QFileInfoList filePaths)
         if(fItem.permissions() == QFile::WriteUser)
         {
             if(fItem.isFile())
-            {
                 QFile::remove(fItem.absoluteFilePath())  ? NULL : errors++;
-            }
             else if(fItem.isDir())
             {
                 QDir dir(fItem.absoluteFilePath());
@@ -79,10 +77,16 @@ bool fileWorker::removeFileItems(const QFileInfoList filePaths)
         }
         else
         {
-            emit infoReport(QString("Du har ikke rettigheder til denne %1"));
+            emit infoReport(QString("Du har ikke rettigheder til denne %1").arg(fItem.filePath()));
             errors++;
         }
     }
+    if(taeller == errors)
+        return false;
+    else if(errors > taeller/2)
+        return false;
+    else
+        return true;
 }
 
 qint64 fileWorker::byteConvert(int unit, QString fromUnit)

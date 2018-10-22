@@ -196,8 +196,8 @@ struct subRule
                     else if(fileCompareMode == rD::olderThan && fixedDate.second < file.lastModified())
                         filesToProcess << file;
                 }
-
             }
+            //
             else if(fieldCondition == rD::typeMode)
             {
                 if(typeMode == fW::folderOnly && file.isDir())

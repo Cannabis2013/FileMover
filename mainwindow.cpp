@@ -827,14 +827,18 @@ void mainWindow::clearAccordingToRules(QStringList paths)
             for(QString path : rPaths)
             {
                 QDir dirContent(path);
-                allFiles += dirContent.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+                allFiles += dirContent.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System);
             }
         }
+
+        // Add files to a QFileInfoList in a recursive manner, but excludes directories
         else
         {
             for(QString path : paths)
             {
-                QDirIterator it(path,QDir::AllEntries | QDir::NoDotAndDotDot);
+                QDirIterator it(path,
+                                QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System,
+                                QDirIterator::Subdirectories);
                 while(it.hasNext())
                 {
                     QFileInfo fileItem = it.next();
@@ -862,8 +866,6 @@ void mainWindow::clearAccordingToRules(QStringList paths)
         QFileInfoList allFiles = freshList(r.appliesToPath,r.deepScanMode);
         for(subRule sR : r.subRules)
             allFiles = sR.processList(allFiles);
-
-        //outputFiles(allFiles);
 
         // Implementer fileworker operation..
 

@@ -13,6 +13,9 @@ class processController;
 class fileWorker;
 }
 
+/*
+ * This section handles the queues.
+*/
 struct fileObject
 {
     long long sz;
@@ -56,6 +59,10 @@ private:
     QList<processItems>processQeue;
     friend class fileWorker;
 };
+
+/*
+ * This handles the file operations. It runs in its own thread to ensure multi-tasking capabilities.
+*/
 
 class fileWorker : public baseWorker
 {
@@ -139,9 +146,7 @@ private:
 
     void removeDir(QString &dirName, QStringList &errs);
 
-
-
-    // Process..
+    // Start pending process in queue..
     void beginProcess();
 
     //Member variables..

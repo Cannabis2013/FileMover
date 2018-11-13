@@ -577,9 +577,12 @@ QWidget#conditionWidget
        </sizepolicy>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">QCheckBox
+{
+	spacing: 5px;
+}</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,0,0,0,0">
+      <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,0,0">
        <property name="spacing">
         <number>0</number>
        </property>
@@ -596,46 +599,6 @@ QWidget#conditionWidget
         <number>0</number>
        </property>
        <item>
-        <widget class="QLabel" name="label_3">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>16</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Type</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="Line" name="line">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>15</width>
-           <height>77</height>
-          </size>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QCheckBox" name="folderSelector">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -645,13 +608,27 @@ QWidget#conditionWidget
          </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>16</pointsize>
            <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
          <property name="text">
-          <string>Mappe</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normalon>:/My Images/Ressources/Folder.png</normalon>
+          </iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -665,13 +642,24 @@ QWidget#conditionWidget
          </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>16</pointsize>
            <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
          <property name="text">
-          <string>Fil</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normalon>:/My Images/Ressources/File.png</normalon>
+          </iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
          </property>
         </widget>
        </item>

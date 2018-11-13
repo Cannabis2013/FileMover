@@ -51,6 +51,7 @@ QList<QTreeWidgetItem *> ruleController::rulesTreeItems() const
             pItem->addChild(cItem);
         }
         resultingList << pItem;
+
     }
     return resultingList;
 }

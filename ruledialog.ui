@@ -226,7 +226,7 @@ QFrame
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="frame_9">
+       <widget class="QFrame" name="applyFrame">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -427,7 +427,6 @@ QFrame
         <property name="styleSheet">
          <string notr="true">QGroupBox
 {	
-	background-color: rgb(149, 149, 149);
 	border:0px solid;
 }
 QGroupBox::title
@@ -466,7 +465,7 @@ QPushButton
           <number>9</number>
          </property>
          <property name="topMargin">
-          <number>27</number>
+          <number>9</number>
          </property>
          <property name="rightMargin">
           <number>9</number>

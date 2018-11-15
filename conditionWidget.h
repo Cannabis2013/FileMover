@@ -44,10 +44,18 @@ private:
     void setIntervalDate(QPair<myDateTime,myDateTime> iDate);
     void setTypeValues(bW::iteratorMode tMode);
 
-    // General view related..
+    /*
+     * General view related..
+     * The following methods is called when selecting conditions and view needs to be updated
+     * When that situation occurs, setMode() is called which calls setCurrentView(QString).
+     * Setmode initializes the combobox with the necessary content based on the selected condition.
+     * setCurrentView(QString) changes the index of the QStackedWidget and may hides widgets unsuited for the current view.
+    */
+
     void setMode(QString condition);
     void setCurrentView(QString txt);
     void setCurrentView(int index);
+
     void setCompareView(rD::compareMode compare);
 
     // General values and other..

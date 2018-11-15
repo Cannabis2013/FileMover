@@ -21,16 +21,16 @@
 
 
 namespace Ui {
-class ruleDialog;
+class abstractRuleDialog;
 }
 
-class ruleDialog : public QWidget
+class abstractRuleDialog : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ruleDialog(QStringList folderPaths,QWidget *parent = nullptr);
-    ruleDialog(rule r, QStringList folderPaths);
-    ~ruleDialog();
+    explicit abstractRuleDialog(QStringList folderPaths,QWidget *parent = nullptr);
+    abstractRuleDialog(rule r, QStringList folderPaths);
+    ~abstractRuleDialog();
 
 signals:
     void sendRule(rule R);
@@ -86,7 +86,7 @@ protected:
     void updateConditionView(subRule &sR);
 
 private:
-    Ui::ruleDialog *ui;
+    Ui::abstractRuleDialog *ui;
 
     friend class settingsWindow;
 };

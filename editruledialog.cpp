@@ -1,7 +1,7 @@
 #include "editruledialog.h"
 
 editRuleDialog::editRuleDialog(rule editRule, int index, QStringList folderPaths):
-    ruleDialog(editRule,folderPaths), replaceIndex(index)
+    abstractRuleDialog(editRule,folderPaths), replaceIndex(index)
 {
     addBut->setText(tr("Færdig"));
     updateView();

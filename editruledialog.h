@@ -4,7 +4,7 @@
 #include "addruledialog.h"
 
 
-class editRuleDialog : public ruleDialog
+class editRuleDialog : public abstractRuleDialog
 {
 public:
     editRuleDialog(rule editRule, int index, QStringList folderPaths);

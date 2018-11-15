@@ -1,9 +1,9 @@
 #include "ruledialog.h"
 #include "ui_ruledialog.h"
 
-ruleDialog::ruleDialog(QStringList folderPaths, QWidget *parent) :
+abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ruleDialog)
+    ui(new Ui::abstractRuleDialog)
 {
     ui->setupUi(this);
 
@@ -35,8 +35,8 @@ ruleDialog::ruleDialog(QStringList folderPaths, QWidget *parent) :
 
 }
 
-ruleDialog::ruleDialog(rule r,QStringList folderPaths):
-    ui(new Ui::ruleDialog)
+abstractRuleDialog::abstractRuleDialog(rule r,QStringList folderPaths):
+    ui(new Ui::abstractRuleDialog)
 {
     ui->setupUi(this);
 
@@ -76,13 +76,13 @@ ruleDialog::ruleDialog(rule r,QStringList folderPaths):
     subRules = tempRule.subRules;
 }
 
-ruleDialog::~ruleDialog()
+abstractRuleDialog::~abstractRuleDialog()
 {
     delete ui;
     delete this;
 }
 
-void ruleDialog::resetSubForm()
+void abstractRuleDialog::resetSubForm()
 {
     actionBox->setCurrentIndex(0);
     conditionBox->setCurrentIndex(0);
@@ -91,7 +91,7 @@ void ruleDialog::resetSubForm()
     pathSelector->clear();
 }
 
-void ruleDialog::resetAllForm()
+void abstractRuleDialog::resetAllForm()
 {
     titleSelector->clear();
     actionBox->setCurrentIndex(0);
@@ -103,7 +103,7 @@ void ruleDialog::resetAllForm()
     subRuleView->clear();
 }
 
-void ruleDialog::updateConditionView(subRule &sR)
+void abstractRuleDialog::updateConditionView(subRule &sR)
 {
     rD::fileFieldCondition cond = sR.fieldCondition;
     rD::compareMode comp = sR.fileCompareMode;
@@ -136,12 +136,12 @@ void ruleDialog::updateConditionView(subRule &sR)
     }
 }
 
-void ruleDialog::on_conditionComboBox_currentIndexChanged(const QString &arg1)
+void abstractRuleDialog::on_conditionComboBox_currentIndexChanged(const QString &arg1)
 {
     condWidget->setMode(arg1);
 }
 
-void ruleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
+void abstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     int rowIndex = index.row();
 
@@ -152,7 +152,7 @@ void ruleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
     updateConditionView(clickedSubRule);
 }
 
-void ruleDialog::updateView()
+void abstractRuleDialog::updateView()
 {
     subRuleView->clear();
     int total = subRules.count();
@@ -198,7 +198,7 @@ void ruleDialog::updateView()
     }
 }
 
-void ruleDialog::on_actionComboBox_currentIndexChanged(const QString &arg1)
+void abstractRuleDialog::on_actionComboBox_currentIndexChanged(const QString &arg1)
 {
     (rD::actionFromString(arg1) == rD::Delete) ?
                 destinationFrame->hide() :

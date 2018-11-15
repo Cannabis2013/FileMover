@@ -1,7 +1,7 @@
 #include "addruledialog.h"
 
 addRuleDialog::addRuleDialog(QStringList folderPaths, QWidget *parent):
-    ruleDialog(folderPaths,parent)
+    abstractRuleDialog(folderPaths,parent)
 {}
 /*
 void addRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)

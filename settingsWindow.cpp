@@ -5,6 +5,7 @@ settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon, Q
     QWidget(parent),ui(new Ui::settingsWindow)
 {
     ui->setupUi(this);
+
     view = ui->listWidget_2;
     closeOnBox = ui->closeOnExitBox_2;
     countTimerEnableBox = ui->countTimerActivateBox_2;

@@ -41,7 +41,7 @@ public:
         box.exec();
 
 
-        if(box.clickedButton() == b1)
+        if(reinterpret_cast<QPushButton*>(box.clickedButton()) == b1)
         {
             if(rol1 == QMessageBox::AcceptRole)
                 return true;
@@ -51,7 +51,7 @@ public:
                 return true;
 
         }
-        else if(box.clickedButton() == b2)
+        else if(reinterpret_cast<QPushButton*>(box.clickedButton()) == b2)
         {
             if(rol2 == QMessageBox::AcceptRole)
                 return true;

@@ -33,7 +33,7 @@ class settingsWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit settingsWindow(settingsController*sCon,ruleController *rCon,QWidget *parent = nullptr);
+    explicit settingsWindow(sC*sCon,ruleController *rCon,QWidget *parent = nullptr);
     ~settingsWindow();
 
     enum ruleMode{ruleOut,parallelMode};

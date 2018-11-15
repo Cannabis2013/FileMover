@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ruleDialog</class>
- <widget class="QWidget" name="ruleDialog">
+ <class>abstractRuleDialog</class>
+ <widget class="QWidget" name="abstractRuleDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -1084,7 +1084,7 @@ QPushButton
   <connection>
    <sender>pushButton_2</sender>
    <signal>clicked()</signal>
-   <receiver>ruleDialog</receiver>
+   <receiver>abstractRuleDialog</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">

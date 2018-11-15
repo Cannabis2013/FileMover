@@ -54,6 +54,8 @@ private:
 
     void setMode(QString condition);
     void setCurrentView(QString txt);
+
+    // Set the index of QStackWidget prior to the argument.
     void setCurrentView(int index);
 
     void setCompareView(rD::compareMode compare);
@@ -98,7 +100,7 @@ private:
     rD::fileFieldCondition currentFileModeRule;
     Ui::conditionWidget *ui;
 
-    friend class ruleDialog;
+    friend class abstractRuleDialog;
     friend class editRuleDialog;
     friend class addRuleDialog;
 };

@@ -37,19 +37,7 @@
 	background-color: rgb(93, 56, 49);
 }
 
-QPushButton#exitButton
-{
-	background-color:red;
-	color:white;
-	border:1px solid black;
-	border-radius:5px;
-	padding:4px;
-}
-QPushButton#exitButton:hover
-{
-	background-color: rgb(214, 161, 162);
-	border:2px solid black;
-}
+
 
 QListWidget_2
 {
@@ -231,6 +219,21 @@ border-radius:5px;
           <weight>50</weight>
           <bold>false</bold>
          </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#exitButton
+{
+	background-color:red;
+	color:white;
+	border:1px solid black;
+	border-radius:5px;
+	padding:4px;
+}
+QPushButton#exitButton:hover
+{
+	background-color: rgb(214, 161, 162);
+	border:2px solid black;
+}</string>
         </property>
         <property name="text">
          <string>X</string>

@@ -4,7 +4,7 @@
 #include "ruledialog.h"
 
 
-class addRuleDialog : public ruleDialog
+class addRuleDialog : public abstractRuleDialog
 {
 public:
     explicit addRuleDialog(QStringList folderPaths,QWidget *parent = nullptr);

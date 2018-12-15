@@ -1,9 +1,9 @@
-﻿#include "pathchooserdialog.h"
-#include "ui_pathchooserdialog.h"
+﻿#include "filepathselectordialog.h"
+#include "ui_filepathselectordialog.h"
 
-pathChooserDialog::pathChooserDialog(QWidget *parent) :
+filepathSelectorDialog::filepathSelectorDialog(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::pathChooserDialog)
+    ui(new Ui::filepathSelectorDialog)
 {
     ui->setupUi(this);
     fileView = ui->treeView;
@@ -19,25 +19,25 @@ pathChooserDialog::pathChooserDialog(QWidget *parent) :
     }
 }
 
-pathChooserDialog::~pathChooserDialog()
+filepathSelectorDialog::~filepathSelectorDialog()
 {
     delete ui;
 }
 
-QTreeView *pathChooserDialog::fView()
+QTreeView *filepathSelectorDialog::fView()
 {
     return fileView;
 }
 
-void pathChooserDialog::on_cancelButton_clicked()
+void filepathSelectorDialog::on_cancelButton_clicked()
 {
     close();
 }
 
-void pathChooserDialog::on_insertPathButton_clicked()
+void filepathSelectorDialog::on_insertPathButton_clicked()
 {
     QModelIndex currentIndex = fileView->currentIndex();
     QString filePath = model->filePath(currentIndex);
     emit chosenPath(filePath);
-    this->close();
+    close();
 }

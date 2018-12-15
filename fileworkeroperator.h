@@ -10,6 +10,9 @@ class fileWorkerOperator : public Worker
 public:
     fileWorkerOperator(QObject * parent = nullptr);
 
+    // Public methods
+    QStringList static createHeader(QFileInfo fi = QFileInfo());
+
 protected slots:
 
     // Fileoperation from QFileinfoList..
@@ -30,6 +33,21 @@ protected:
 
     QList<fileObject> sizeOfFolderContentItems(QStringList l);
 
+    // Methods to count files and number of contents in folders
+    int folderCount(QString p);
+    int fileCount(QString p);
+
+    // Methods of calculating size of files and content of folders
+
+    long long folderSize(QString pf);
+
+    // Create a list of suffixes and their occurencies..
+    QList<QPair<QString,int> > getListOfSuffixOccuriencies(QString p);
+
+    // Create a list of treeWidgetItem
+
+    QTreeWidgetItem *scanDir(QString p);
+
     // Protected member variables;
     bool isBusy;
 
@@ -39,6 +57,10 @@ private:
      * Private recursive methods dealing with fileoperations from filepaths
      */
     void removeDir(QString &dirName, QStringList &errs);
+    bool moveRecursively(QString path,
+                         QString destination);
+    bool copyRecursively(QString path,
+                         QString destination);
 };
 
 #endif // FILEWORKEROPERATOR_H

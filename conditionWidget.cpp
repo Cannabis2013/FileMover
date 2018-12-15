@@ -125,7 +125,7 @@ void conditionWidget::setTypeValues(Worker::iteratorMode tMode)
 
 void conditionWidget::setCurrentView(QString txt)
 {
-    currentFileModeRule = rD::conditionalFromString(txt);
+    currentFileModeRule = rD::subConditionalFromString(txt);
     mainModeSelector->show();
 
     if(txt == "Filnavn" || txt == "Filendelse")
@@ -212,7 +212,7 @@ void conditionWidget::resetValues()
 void conditionWidget::setMode(QString condition)
 {
     mainModeSelector->clear();
-    currentFileModeRule = rD::conditionalFromString(condition);
+    currentFileModeRule = rD::subConditionalFromString(condition);
 
     setCurrentView(condition);
 

@@ -20,7 +20,7 @@ abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *parent)
     rD ruleDefs;
 
     QStringList actionList = ruleDefs.actionList,
-            conditionList = ruleDefs.conditionalList,
+            conditionList = ruleDefs.fieldConditionalList,
             unitList = ruleDefs.sizeUnits();
 
     actionBox->addItems(actionList);
@@ -54,7 +54,7 @@ abstractRuleDialog::abstractRuleDialog(rule r,QStringList folderPaths):
     rD ruleDefs;
 
     QStringList actionList = ruleDefs.actionList,
-            conditionList = ruleDefs.conditionalList,
+            conditionList = ruleDefs.fieldConditionalList,
             unitList = ruleDefs.sizeUnits();
 
     actionBox->addItems(actionList);

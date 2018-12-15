@@ -32,14 +32,6 @@ public:
     // Basic string operations..
     void checkAndCorrectForBackslash(QString *path);
     QString checkAndCorrectForBackslash(QString path);
-
-protected:
-
-    // Move and copy..
-    bool moveRecursively(QString path,
-                         QString destination);
-    bool copyRecursively(QString path,
-                         QString destination);
     };
 typedef Worker bW;
 

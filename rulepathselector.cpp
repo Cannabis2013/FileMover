@@ -3,10 +3,10 @@
 rulePathSelector::rulePathSelector(QWidget *parent):
     textPathEdit(parent)
 {
-    pDialog = new rulePathDialogSelector(this);
+    pDialog = new rulePathSelectorDialog(this);
 
     layout()->addWidget(pDialog);
-    connect(pDialog,&rulePathDialogSelector::chosenPath,this,&rulePathSelector::insertChosenPath);
+    connect(pDialog,&rulePathSelectorDialog::chosenPath,this,&rulePathSelector::insertChosenPath);
     pDialog->hide();
 }
 

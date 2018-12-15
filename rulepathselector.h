@@ -18,7 +18,7 @@ public:
 protected slots:
     void on_toolButton_clicked() override;
 private:
-    rulePathDialogSelector*pDialog;
+    rulePathSelectorDialog*pDialog;
 
 
 };

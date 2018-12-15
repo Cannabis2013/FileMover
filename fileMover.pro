@@ -42,7 +42,6 @@ SOURCES += main.cpp\
     fileinformation.cpp \
     mydatetime.cpp \
     textpathedit.cpp \
-    pathchooserdialog.cpp \
     addfolderwidget.cpp \
     addfiledialog.cpp \
     pathline.cpp \
@@ -58,7 +57,8 @@ SOURCES += main.cpp\
     editruledialog.cpp \
     conditionWidget.cpp \
     worker.cpp \
-    fileworkeroperator.cpp
+    fileworkeroperator.cpp \
+    filepathselectordialog.cpp
 
 HEADERS  += mainwindow.h \
     messageBox.h \
@@ -71,7 +71,6 @@ HEADERS  += mainwindow.h \
     mydatetime.h \
     mycombobox.h \
     textpathedit.h \
-    pathchooserdialog.h \
     fileinformationview.h \
     addfolderwidget.h \
     addfiledialog.h \
@@ -93,16 +92,17 @@ HEADERS  += mainwindow.h \
     rules.h \
     processcontroller.h \
     worker.h \
-    fileworkeroperator.h
+    fileworkeroperator.h \
+    filepathselectordialog.h
 
 FORMS    += mainwindow.ui \
     logger.ui \
     settingsWindow.ui \
     textpathedit.ui \
-    pathchooserdialog.ui \
     addfolderwidget.ui \
     abstractRuledialog.ui \
-    conditionWidget.ui
+    conditionWidget.ui \
+    filepathselectordialog.ui
 
 DISTFILES += \
     tempBuffer

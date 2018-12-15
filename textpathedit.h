@@ -9,7 +9,7 @@
 #include <QVBoxLayout>
 
 
-#include "pathchooserdialog.h"
+#include "filepathselectordialog.h"
 #include <qtoolbutton.h>
 
 namespace Ui {

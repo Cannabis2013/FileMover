@@ -60,7 +60,7 @@ private:
 class fileInformationView : public QWidget
 {
 public:
-    fileInformationView(QWidget *parent = 0):
+    fileInformationView(QWidget *parent = nullptr):
         QWidget(parent)
     {
         view = new QTextBrowser(this);

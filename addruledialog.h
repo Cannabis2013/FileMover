@@ -3,7 +3,6 @@
 
 #include "abstractRuledialog.h"
 
-
 class addRuleDialog : public abstractRuleDialog
 {
 public:

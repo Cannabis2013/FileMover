@@ -1,7 +1,7 @@
 #include "rulepathdialogselector.h"
 
-rulePathDialogSelector::rulePathDialogSelector(QWidget *parent):
-    pathChooserDialog(parent)
+rulePathSelectorDialog::rulePathSelectorDialog(QWidget *parent):
+    filepathSelectorDialog(parent)
 {
     this->setStyleSheet("background-color:white;");
 }

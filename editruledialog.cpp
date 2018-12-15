@@ -24,7 +24,7 @@ void editRuleDialog::on_addButton_clicked()
 void editRuleDialog::on_addSubRule_clicked()
 {
     subRule sR;
-    sR.fieldCondition = rD::conditionalFromString(conditionBox->currentText());
+    sR.fieldCondition = rD::subConditionalFromString(conditionBox->currentText());
     sR.fileCompareMode = condWidget->currentCompareMode();
 
     if(conditionBox->currentText() == "Filnavn" ||

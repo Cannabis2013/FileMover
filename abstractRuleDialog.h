@@ -1,5 +1,5 @@
 #ifndef abstractRuleDialog_H
-#define abstractRuleDiag_H
+#define abstractRuleDialog_H
 
 #include <QWidget>
 #include <QStringList>

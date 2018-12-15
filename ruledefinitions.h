@@ -5,7 +5,7 @@
 #include "worker.h"
 
 /*
- * Modes using 'keywords':
+ *  Modes using 'keywords':
  *      containSuffix
  *      dontContainSuffix
  *      matchSuffix
@@ -14,15 +14,26 @@
  *      dontContainWords
  *      matchWords
  *      dontMatchWords
- * Modes using 'custom widgets'
+ *  Modes using 'widgets'
  *      dateCreatedMode
  *      dateModifiedMode
  *      sizeMode
  *      typeMode
-*/
+ */
 
 /*
- * Comparemodes:
+ *  Fieldconditions
+ *      notDefined
+ *      filepatMode
+ *      extensionMode
+ *      sizeMode
+ *      dateCreatedMode
+ *      typeMode
+ *      nonConditionalMode
+ */
+
+/*
+ *  Comparemodes:
  *      Size:
  *          lesser
  *          lesserOrequal
@@ -36,7 +47,7 @@
  *          exactDate
  *          olderThan
  *          interval
-*/
+ */
 struct ruleDefinitions
 {
     // Enumerated variables..
@@ -77,7 +88,7 @@ struct ruleDefinitions
                                    "slette filer",
                                    "kopiere filer"};
 
-    const QStringList conditionalList {"Filnavn",
+    const QStringList fieldConditionalList {"Filnavn",
                                        "Filendelse",
                                         "Størrelse",
                                         "Dato oprettet",
@@ -141,7 +152,7 @@ struct ruleDefinitions
         else
             return "Ikke defineret";
     }
-    static fileFieldCondition conditionalFromString(const QString str)
+    static fileFieldCondition subConditionalFromString(const QString str)
     {
         if(str == "Filnavn")
         {

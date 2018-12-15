@@ -1,5 +1,5 @@
-﻿#ifndef PATHCHOOSERDIALOG_H
-#define PATHCHOOSERDIALOG_H
+﻿#ifndef FILEPATHSELECTORDIALOG_H
+#define FILEPATHSELECTORDIALOG_H
 
 #include <QWidget>
 #include <QFileSystemModel>
@@ -8,17 +8,17 @@
 #include <QTranslator>
 
 namespace Ui {
-class pathChooserDialog;
+class filepathSelectorDialog;
 }
 
-class pathChooserDialog : public QWidget
+class filepathSelectorDialog : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit pathChooserDialog(QWidget *parent = nullptr);
+    explicit filepathSelectorDialog(QWidget *parent = nullptr);
 
-    ~pathChooserDialog();
+    ~filepathSelectorDialog();
     QTreeView *fView();
 
 
@@ -35,6 +35,6 @@ private:
 
     QTreeView *fileView;
     QFileSystemModel *model;
-    Ui::pathChooserDialog *ui;
+    Ui::filepathSelectorDialog *ui;
 };
-#endif // PATHCHOOSERDIALOG_H
+#endif // FILEPATHSELECTORDIALOG_H

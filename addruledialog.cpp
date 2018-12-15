@@ -17,37 +17,39 @@ void addRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 void addRuleDialog::on_addSubRule_clicked()
 {
     subRule sRule;
-    sRule.fieldCondition = rD::conditionalFromString(conditionBox->currentText());
+    QString cText = conditionBox->currentText();
+    rD::compareMode currentCompareMode = condWidget->currentCompareMode();
+    sRule.fieldCondition = rD::subConditionalFromString(cText);
     sRule.fileCompareMode = condWidget->currentCompareMode();
-    if(conditionBox->currentText() == "Filnavn" ||
-            conditionBox->currentText() == "Filendelse")
+    if(cText == "Filnavn" ||
+            cText == "Filendelse")
     {
         sRule.keyWords = fW::splitString(condWidget->keyWordValues());
 
     }
-    else if(conditionBox->currentText() == "Størrelse" &&
-            condWidget->currentCompareMode() != rD::interval)
+    else if(cText == "Størrelse" &&
+            currentCompareMode != rD::interval)
     {
         sRule.sizeLimit = condWidget->fixedSizeValues();
     }
-    else if(conditionBox->currentText() == "Størrelse" &&
-            condWidget->currentCompareMode() == rD::interval)
+    else if(cText == "Størrelse" &&
+            currentCompareMode == rD::interval)
     {
         sRule.sizeIntervalLimits = condWidget->intervalSizeValues();
     }
-    else if((conditionBox->currentText() == "Dato oprettet" ||
-             conditionBox->currentText() == "Dato redigeret") &&
-            condWidget->currentCompareMode() != rD::interval)
+    else if((cText == "Dato oprettet" ||
+             cText == "Dato redigeret") &&
+            currentCompareMode != rD::interval)
     {
         sRule.fixedDate = condWidget->fixedConditionalDate();
     }
-    else if((conditionBox->currentText() == "Dato oprettet" ||
-             conditionBox->currentText() == "Dato redigeret") &&
-            condWidget->currentCompareMode() == rD::interval)
+    else if((cText == "Dato oprettet" ||
+             cText == "Dato redigeret") &&
+            currentCompareMode == rD::interval)
     {
         sRule.intervalDate = condWidget->intervalDates();
     }
-    else if(conditionBox->currentText() == "Type")
+    else if(cText == "Type")
     {
         sRule.typeMode = condWidget->typeMode();
     }

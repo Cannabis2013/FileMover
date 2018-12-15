@@ -1,12 +1,12 @@
 #ifndef RULEPATHDIALOGSELECTOR_H
 #define RULEPATHDIALOGSELECTOR_H
 
-#include "pathchooserdialog.h"
+#include "filepathselectordialog.h"
 
-class rulePathDialogSelector : public pathChooserDialog
+class rulePathSelectorDialog : public filepathSelectorDialog
 {
 public:
-    rulePathDialogSelector(QWidget *parent= nullptr);
+    rulePathSelectorDialog(QWidget *parent= nullptr);
 };
 
 #endif // RULEPATHDIALOGSELECTOR_H

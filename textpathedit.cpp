@@ -63,8 +63,8 @@ void textPathEdit::insertChosenPath(QString p)
 
 void textPathEdit::on_toolButton_clicked()
 {
-    pathChooserDialog *chooseFilePathDialog = new pathChooserDialog();
-    connect(chooseFilePathDialog,&pathChooserDialog::chosenPath,this,&textPathEdit::insertChosenPath);
+    filepathSelectorDialog *chooseFilePathDialog = new filepathSelectorDialog();
+    connect(chooseFilePathDialog,&filepathSelectorDialog::chosenPath,this,&textPathEdit::insertChosenPath);
     chooseFilePathDialog->show();
 }
 

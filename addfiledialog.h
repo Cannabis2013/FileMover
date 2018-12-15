@@ -1,11 +1,11 @@
 ﻿#ifndef ADDFILEDIALOG_H
 #define ADDFILEDIALOG_H
 
-#include "pathchooserdialog.h"
+#include "filepathselectordialog.h"
 #include <qsizepolicy.h>
 #include <QModelIndex>
 
-class addFileDialog : public pathChooserDialog
+class addFileDialog : public filepathSelectorDialog
 {
     Q_OBJECT
 public:

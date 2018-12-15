@@ -43,11 +43,11 @@ protected slots:
     void on_conditionComboBox_currentIndexChanged(const QString &arg1);
 
     // Add rule..
-    virtual void on_addButton_clicked(){}
+    virtual void on_addButton_clicked()=0;
     // Add subrule..
-    virtual void on_addSubRule_clicked(){}
+    virtual void on_addSubRule_clicked()=0;
     // Remove subrule..
-    virtual void on_removeSubRule_clicked(){}
+    virtual void on_removeSubRule_clicked()=0;
 
     // Subruleview related..
     void on_treeWidget_doubleClicked(const QModelIndex &index);

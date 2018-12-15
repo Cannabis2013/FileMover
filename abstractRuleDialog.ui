@@ -63,6 +63,10 @@ QPushButton::hover
 {
 	background-color:white;
 }
+QPushbButton:pressed
+{	
+	background-color: rgb(85, 170, 0);
+}
 QSpinBox
 {
 	background-color:white;
@@ -818,14 +822,11 @@ QGroupBox::title
             </sizepolicy>
            </property>
            <property name="styleSheet">
-            <string notr="true">QPushButton
-{
-	padding: 10 px;
-}
-QPushButton#addSubRue
+            <string notr="true">QPushButton#addSubRue
 {
 	border-left:1px dotted black;
-}</string>
+}
+</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::StyledPanel</enum>

@@ -1,9 +1,8 @@
 ﻿#include "fileworker.h"
 
 fileWorker::fileWorker(processController *pRef, QObject *parent) :
-    Worker(parent),pControllerReference(pRef)
+    fileWorkerOperator(parent),pControllerReference(pRef)
 {
-    isBusy = false;
     busyMessage = "Luke Fileworker har travlt. Vent et øjeblik.";
     qt_ntfs_permission_lookup++;
 }
@@ -13,152 +12,16 @@ fileWorker::~fileWorker()
     delete this;
 }
 
-void fileWorker::countSize(QStringList l)
+void fileWorker::calcSizeOfIndividualFolderItems(QStringList l)
 {
     if(isBusy)
     {
         emit itemText("Fileworker har travlt");
         return;
     }
+    QList<fileObject> resultingList = sizeOfFolderContentItems(l);
+    emit sendFolderContentItems(resultingList);
 
-    QList<fileObject>resultingList;
-    long long sZ = 0;
-    isBusy = true;
-
-    foreach (QFileInfo path,l)
-    {
-        QString p = path.absoluteFilePath();
-        QDirIterator iT(p,
-                        QDir::NoDotAndDotDot |
-                        QDir::Files | QDir::System |
-                        QDir::Hidden,
-                        QDirIterator::Subdirectories);
-         while(iT.hasNext())
-         {
-            QFile f(iT.next());
-            sZ += f.size();
-
-            emit itemText(f.fileName());
-         }
-         fileObject fObject;
-         fObject.path = path.filePath();
-         fObject.sz = sZ;
-         resultingList << fObject;
-         sZ = 0;
-    }
-    emit sendSize(resultingList);
-    isBusy = false;
-}
-
-bool fileWorker::removeFileItems(const QFileInfoList filePaths)
-{
-    if(filePaths.isEmpty())
-        return false;
-
-    QStringList errs;
-
-    for(QFileInfo fItem: filePaths)
-    {
-        QString absoluteFilePath = fItem.absoluteFilePath();
-        if(fItem.isFile())
-        {
-            QFile fileItem(fItem.absoluteFilePath());
-            if(!fileItem.remove())
-            {
-                errs << "Operation on: " + fItem.fileName() + " in: " +
-                    fItem.absolutePath() + " returned: " + fileItem.errorString();
-            }
-        }
-        else if(fItem.isDir())
-        {
-            removeDir(absoluteFilePath,errs);
-        }
-    }
-
-    if(!errs.isEmpty())
-    {
-        for (QString err : errs) {
-            cout << err.toStdString() << endl;
-        }
-        return false;
-    }
-    return true;
-}
-
-qint64 fileWorker::byteConvert(int unit, QString fromUnit)
-{
-    if(fromUnit == "b")
-        return unit;
-    else if(fromUnit == "kb")
-        return unit*1024;
-    else if(fromUnit == "mb")
-        return unit*1024*1024;
-    else if(fromUnit == "gb")
-        return unit*1024*1024*1024;
-    else
-        return unit;
-}
-
-bool fileWorker::moveEntities(const QFileInfoList files, const QStringList destinations)
-{
-    bool result = true;
-    for(QString destPath : destinations)
-    {
-        for(QFileInfo file : files)
-        {
-            if(!moveRecursively(file.filePath(),destPath))
-                result = false;
-            else
-                result = false;
-        }
-    }
-    return result;
-}
-
-bool fileWorker::copyEntities(const QFileInfoList files, const QStringList destinations)
-{
-    bool result = true;
-    for(QString destPath : destinations)
-    {
-        for(QFileInfo file : files)
-        {
-            if(!copyRecursively(file.filePath(),destPath))
-                result = false;
-            else
-                result = false;
-        }
-    }
-    return result;
-}
-
-void fileWorker::removeDir(QString &dirName, QStringList &errs)
-{
-    QDir dir(dirName);
-
-    QDirIterator it(dirName,QDir::NoDotAndDotDot |
-                    QDir::System |
-                    QDir::Hidden |
-                    QDir::AllEntries,
-                    QDirIterator::Subdirectories);
-    while(it.hasNext())
-    {
-        QFileInfo fileObject = it.next();
-        if(fileObject.isFile())
-        {
-            QFile file(fileObject.absoluteFilePath());
-            if(!file.remove())
-            {
-                errs << "Operation on: " + file.fileName() + " in: " +
-                    fileObject.absolutePath() + " returned: " + file.errorString();
-            }
-        }
-        else if(fileObject.isDir())
-        {
-            QString filePath = fileObject.absoluteFilePath();
-            removeDir(filePath,errs);
-        }
-    }
-    dir.rmdir(dirName);
 }
 
 void fileWorker::beginProcess()
@@ -429,7 +292,7 @@ QStringList fileWorker::createHeader(QFileInfo fi)
     return headers;
 }
 
-void fileWorker::countFolder(QString path,
+void fileWorker::countNumberOfFolderItems(QString path,
                          QDir::Filters f,
                          QDirIterator::IteratorFlags i)
 {

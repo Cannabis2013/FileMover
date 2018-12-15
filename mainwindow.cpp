@@ -220,9 +220,9 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *parent) :
     // fWorker Queued Connections..
     connect(fWorker,SIGNAL(itemText(QString)),this,SLOT(setStatusText(QString)));
     connect(this,SIGNAL(StartCount(QStringList)),
-            fWorker,SLOT(countSize(QStringList)));
-    connect(fWorker,SIGNAL(sendSize(QList<fileObject>)),
-            this,SLOT(sizeRecieved(QList<fileObject>)));
+            fWorker,SLOT(calcSizeOfIndividualFolderItems(QStringList)));
+    connect(fWorker,SIGNAL(sendFolderContentItems(QList<fileObject>)),
+            this,SLOT(folderContentRecieved(QList<fileObject>)));
     connect(fWorker,SIGNAL(clearFinished(bool)),
             this,SLOT(clearCompleted(bool)));
     connect(fWorker,SIGNAL(infoReport(QString)),
@@ -457,7 +457,7 @@ void mainWindow::explorerFolder(bool ok)
 #endif
 }
 
-void mainWindow::sizeRecieved(QList<fileObject> sz)
+void mainWindow::folderContentRecieved(QList<fileObject> sz)
 {
     QString mes, sizeString;
     foreach (fileObject fObject, sz)

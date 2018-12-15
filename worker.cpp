@@ -161,3 +161,17 @@ QStringList Worker::splitString(const QString split)
     }
     return splittetList;
 }
+
+qint64 Worker::byteConvert(int unit, QString fromUnit)
+{
+    if(fromUnit == "b")
+        return unit;
+    else if(fromUnit == "kb")
+        return unit*1024;
+    else if(fromUnit == "mb")
+        return unit*1024*1024;
+    else if(fromUnit == "gb")
+        return unit*1024*1024*1024;
+    else
+        return unit;
+}

@@ -21,6 +21,8 @@ public:
 
     // Convert size units related..
     static double convertSizeToAppropriateUnits(long long numb, QString &denote, int dec = 2);
+    static qint64 byteConvert(int unit, QString fromUnit);
+
 
     // Basic stringlist operations..
     static QString mergeStringList(const QStringList strings);

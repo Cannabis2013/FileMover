@@ -104,7 +104,7 @@ private slots:
 
     // Fileworker Related..
     void clearCompleted(bool a);
-    void sizeRecieved(QList<fileObject> sz);
+    void folderContentRecieved(QList<fileObject> sz);
     void actionCountFolder(bool f);
 
     // mainFolderView Related..

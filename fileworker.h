@@ -1,7 +1,7 @@
 ﻿#ifndef FILEWORKER_H
 #define FILEWORKER_H
 
-#include "processcontroller.h"
+#include "fileworkeroperator.h"
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
@@ -14,15 +14,13 @@ class fileWorker;
  * This handles the file operations. It runs in its own thread to ensure multi-tasking capabilities.
 */
 
-class fileWorker : public Worker
+class fileWorker : public fileWorkerOperator
 {
     Q_OBJECT
 public:
     explicit fileWorker(processController *pRef = nullptr,QObject *parent = nullptr);
     virtual ~fileWorker();
 
-
-    static qint64 byteConvert(int unit, QString fromUnit);
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
     // Clear related..
@@ -39,8 +37,8 @@ public slots:
 
     // Count files & size related..
 
-    void countSize(QStringList l);
-    void countFolder(QString path,
+    void calcSizeOfIndividualFolderItems(QStringList l);
+    void countNumberOfFolderItems(QString path,
                     QDir::Filters f = QDir::NoFilter,
                     QDirIterator::IteratorFlags i = QDirIterator::NoIteratorFlags);
     void countFolders(QStringList Path,
@@ -64,9 +62,6 @@ public slots:
 
     // Update directories..
 signals:
-    void itemText(QString iT);
-    void antalFiler(long antal);
-    void sendSize(QList<fileObject> s);
     void clearFinished(bool a);
 
     // Queue related..
@@ -75,28 +70,13 @@ signals:
     void multipleProcessFinished(QList<directoryItem>items);
     void jobDone(bool status);
 
-private slots:
-
-    // Process request..
-
-    // Fileoperation from QFileinfoList..
-    bool removeFileItems(const QFileInfoList filePaths);
-    bool moveEntities(const QFileInfoList files, const QStringList destinations);
-    bool copyEntities(const QFileInfoList files, const QStringList destinations);
-
 private:
 
     // Methods..
-
-    // recursive file operations
-
-    void removeDir(QString &dirName, QStringList &errs);
-
     // Start pending process in queue..
     void beginProcess();
 
     //Member variables..
-    bool isBusy;
     QString busyMessage;
     processController *pControllerReference;
 };

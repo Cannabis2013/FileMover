@@ -57,7 +57,8 @@ SOURCES += main.cpp\
     addruledialog.cpp \
     editruledialog.cpp \
     conditionWidget.cpp \
-    worker.cpp
+    worker.cpp \
+    fileworkeroperator.cpp
 
 HEADERS  += mainwindow.h \
     messageBox.h \
@@ -91,7 +92,8 @@ HEADERS  += mainwindow.h \
     ruledefinitions.h \
     rules.h \
     processcontroller.h \
-    worker.h
+    worker.h \
+    fileworkeroperator.h
 
 FORMS    += mainwindow.ui \
     logger.ui \

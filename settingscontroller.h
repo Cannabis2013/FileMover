@@ -64,7 +64,6 @@ private:
 
     QStringList allPaths() const{return pControl->getAllPaths();}
 
-
     pathController *pControl;
     settingsContainer settings;
 

@@ -1,5 +1,5 @@
-#ifndef ruleDialog_H
-#define ruleDialog_H
+#ifndef abstractRuleDialog_H
+#define abstractRuleDiag_H
 
 #include <QWidget>
 #include <QStringList>
@@ -91,4 +91,4 @@ private:
     friend class settingsWindow;
 };
 
-#endif // ruleDialog_H
+#endif // abstractRuleDialog_H

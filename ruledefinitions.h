@@ -2,7 +2,7 @@
 #define RULEDEFINITIONS_H
 
 #include <qobject.h>
-#include "baseworker.h"
+#include "worker.h"
 
 /*
  * Modes using 'keywords':
@@ -274,14 +274,14 @@ struct ruleDefinitions
         return compareMode::noDateSet;
     }
 
-    static baseWorker::iteratorMode typeModeFromString(const QString str)
+    static Worker::iteratorMode typeModeFromString(const QString str)
     {
         if(str == "Mapper")
-            return baseWorker::folderOnly;
+            return Worker::folderOnly;
         else if(str == "Filer")
-            return baseWorker::filesOnly;
+            return Worker::filesOnly;
         else
-            return baseWorker::allEntries;
+            return Worker::allEntries;
     }
 };
 typedef ruleDefinitions rD;

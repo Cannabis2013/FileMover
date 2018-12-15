@@ -1,7 +1,7 @@
 ﻿#include "fileworker.h"
 
 fileWorker::fileWorker(processController *pRef, QObject *parent) :
-    baseWorker(parent),pControllerReference(pRef)
+    Worker(parent),pControllerReference(pRef)
 {
     isBusy = false;
     busyMessage = "Luke Fileworker har travlt. Vent et øjeblik.";
@@ -377,37 +377,7 @@ foreach (QString suf, allSufs)
 return resultingList;
 }
 
-QString fileWorker::mergeStringList(const QStringList strings)
-{
-    if(strings.empty())
-        return QString();
-    else if(strings.count() == 1)
-        return strings.first();
 
-    QString result;
-    for(QString string : strings)
-        result += string + ";";
-    return result;
-}
-
-QStringList fileWorker::splitString(const QString split)
-{
-    QString tempString;
-    QStringList splittetList;
-    int lastLetter = split.count() -1;
-    for(int i = 0;i<split.count();i++)
-    {
-        QChar w = split.at(i);
-        if(w != ';' && lastLetter != i)
-            tempString.append(w);
-        else
-        {
-            splittetList << tempString + w;
-            tempString.clear();
-        }
-    }
-    return splittetList;
-}
 
 QStringList fileWorker::createHeader(QFileInfo fi)
 {

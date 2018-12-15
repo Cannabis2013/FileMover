@@ -1,5 +1,5 @@
-#ifndef BASEWORKER_H
-#define BASEWORKER_H
+#ifndef WORKER_H
+#define WORKER_H
 
 #include <QFileInfoList>
 #include <QDir>
@@ -8,21 +8,25 @@
 #include <qdatetime.h>
 #include <qpair.h>
 
-class baseWorker : public QObject
+class Worker : public QObject
 {
 public:
-    baseWorker(QObject *parent = nullptr);
+    Worker(QObject *parent = nullptr);
 
-    virtual ~baseWorker();
+    virtual ~Worker();
 
     // Rules related..
     enum copyMode{move,copy,noMode};
     enum iteratorMode{filesOnly = 0,folderOnly = 1,allEntries = 2, noTypeSet = 3};
 
+    // Convert size units related..
     static double convertSizeToAppropriateUnits(long long numb, QString &denote, int dec = 2);
 
-protected:
+    // Basic stringlist operations..
+    static QString mergeStringList(const QStringList strings);
+    static QStringList splitString(const QString split);
 
+protected:
 
     // Move and copy..
     bool moveRecursively(QString path,
@@ -35,6 +39,6 @@ protected:
     QString checkAndCorrectForBackslash(QString path);
 
 };
-typedef baseWorker bW;
+typedef Worker bW;
 
-#endif // BASEWORKER_H
+#endif // WORKER_H

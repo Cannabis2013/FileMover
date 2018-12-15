@@ -1,6 +1,6 @@
-#include "baseworker.h"
+#include "Worker.h"
 
-bool baseWorker::moveRecursively(QString path, QString destination)
+bool Worker::moveRecursively(QString path, QString destination)
 {
     bool result = true;
     QDirIterator iT(path,QDir::NoDotAndDotDot | QDir::AllEntries);
@@ -36,7 +36,7 @@ bool baseWorker::moveRecursively(QString path, QString destination)
     return result;
 }
 
-bool baseWorker::copyRecursively(QString path, QString destination)
+bool Worker::copyRecursively(QString path, QString destination)
 {
     bool result = true;
     QDirIterator iT(path,QDir::NoDotAndDotDot | QDir::AllEntries);
@@ -65,13 +65,13 @@ bool baseWorker::copyRecursively(QString path, QString destination)
     return result;
 }
 
-void baseWorker::checkAndCorrectForBackslash(QString *path)
+void Worker::checkAndCorrectForBackslash(QString *path)
 {
     if(!path->endsWith("\\"))
         path->append("\\");
 }
 
-QString baseWorker::checkAndCorrectForBackslash(QString path)
+QString Worker::checkAndCorrectForBackslash(QString path)
 {
     if(!path.endsWith("\\"))
         return path + "\\";
@@ -79,13 +79,13 @@ QString baseWorker::checkAndCorrectForBackslash(QString path)
         return path;
 }
 
-baseWorker::baseWorker(QObject *parent):
+Worker::Worker(QObject *parent):
     QObject(parent)
 {
 
 }
 
-double baseWorker::convertSizeToAppropriateUnits(long long numb, QString &denote, int dec)
+double Worker::convertSizeToAppropriateUnits(long long numb, QString &denote, int dec)
 {
     long long d = 1,
         dc = 10,
@@ -125,7 +125,39 @@ double baseWorker::convertSizeToAppropriateUnits(long long numb, QString &denote
     return result = round(byteX *d) / d;
 }
 
-baseWorker::~baseWorker()
+Worker::~Worker()
 {
     delete this;
+}
+
+QString Worker::mergeStringList(const QStringList strings)
+{
+    if(strings.empty())
+        return QString();
+    else if(strings.count() == 1)
+        return strings.first();
+
+    QString result;
+    for(QString string : strings)
+        result += string + ";";
+    return result;
+}
+
+QStringList Worker::splitString(const QString split)
+{
+    QString tempString;
+    QStringList splittetList;
+    int lastLetter = split.count() -1;
+    for(int i = 0;i<split.count();i++)
+    {
+        QChar w = split.at(i);
+        if(w != ';' && lastLetter != i)
+            tempString.append(w);
+        else
+        {
+            splittetList << tempString + w;
+            tempString.clear();
+        }
+    }
+    return splittetList;
 }

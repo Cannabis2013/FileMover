@@ -104,7 +104,7 @@ void conditionWidget::setIntervalDate(QPair<myDateTime, myDateTime> iDate)
     ui->dateMaxSelector->setDate(iDate.second.date());
 }
 
-void conditionWidget::setTypeValues(baseWorker::iteratorMode tMode)
+void conditionWidget::setTypeValues(Worker::iteratorMode tMode)
 {
     if(tMode == fW::folderOnly)
     {
@@ -323,7 +323,7 @@ QPair<myDateTime, myDateTime> conditionWidget::intervalDates() const
     return result;
 }
 
-baseWorker::iteratorMode conditionWidget::typeMode() const
+Worker::iteratorMode conditionWidget::typeMode() const
 {
     if(folderCheckBox->isChecked())
         return fW::folderOnly;

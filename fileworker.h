@@ -3,7 +3,6 @@
 
 #include "processcontroller.h"
 
-
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
 namespace fileOperations {
@@ -15,7 +14,7 @@ class fileWorker;
  * This handles the file operations. It runs in its own thread to ensure multi-tasking capabilities.
 */
 
-class fileWorker : public baseWorker
+class fileWorker : public Worker
 {
     Q_OBJECT
 public:
@@ -36,12 +35,6 @@ public:
     int fileCount(QString p);
     QList<QPair<QString,int> > countFileSuffixes(QString p);
 
-
-    // String operations..
-
-    static QString mergeStringList(const QStringList strings);
-    static QStringList splitString(const QString split);
-
 public slots:
 
     // Count files & size related..
@@ -60,7 +53,11 @@ public slots:
     // Scan directories..
     QTreeWidgetItem *scanDir(QString p);
 
-    // Add directories..
+    /*
+     * Queues related
+     * Add directories
+    */
+
     void processDirectoryInformation(directoryItem item);
     void processFileInformation(QString path);
     void processFileInformations(QStringList paths);

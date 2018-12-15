@@ -1,5 +1,5 @@
-#include "ruledialog.h"
-#include "ui_ruledialog.h"
+#include "abstractRuleDialog.h"
+#include "ui_abstractRuledialog.h"
 
 abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *parent) :
     QWidget(parent),

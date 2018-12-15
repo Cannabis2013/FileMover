@@ -1,7 +1,7 @@
 #ifndef ADDRULEDIALOG_H
 #define ADDRULEDIALOG_H
 
-#include "ruledialog.h"
+#include "abstractRuledialog.h"
 
 
 class addRuleDialog : public abstractRuleDialog

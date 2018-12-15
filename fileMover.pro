@@ -53,7 +53,7 @@ SOURCES += main.cpp\
     rulepathselector.cpp \
     settingscontroller.cpp \
     rulepathdialogselector.cpp \
-    ruledialog.cpp \
+    abstractRuledialog.cpp \
     addruledialog.cpp \
     editruledialog.cpp \
     conditionWidget.cpp \
@@ -82,7 +82,7 @@ HEADERS  += mainwindow.h \
     rulepathselector.h \
     settingscontroller.h \
     rulepathdialogselector.h \
-    ruledialog.h \
+    abstractRuleDialog.h \
     addruledialog.h \
     pathcontroller.h \
     editruledialog.h \
@@ -98,7 +98,7 @@ FORMS    += mainwindow.ui \
     textpathedit.ui \
     pathchooserdialog.ui \
     addfolderwidget.ui \
-    ruledialog.ui \
+    abstractRuledialog.ui \
     conditionWidget.ui
 
 DISTFILES += \

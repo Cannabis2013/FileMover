@@ -1,9 +1,7 @@
 ﻿#ifndef FILEWORKER_H
 #define FILEWORKER_H
 
-#include "mydatetime.h"
-#include "fileinformation.h"
-#include "ruledefinitions.h"
+#include "processcontroller.h"
 
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
@@ -12,53 +10,6 @@ namespace fileOperations {
 class processController;
 class fileWorker;
 }
-
-/*
- * This section handles the queues.
-*/
-struct fileObject
-{
-    long long sz;
-    QString path;
-};
-struct processItems
-{
-    QFileInfoList list;
-    rD::fileActionRule ruleMode = rD::none;
-    QStringList destinations;
-};
-
-class processController : public QObject
-{
-    Q_OBJECT
-public slots:
-    void addToQueue(processItems pI);
-
-signals:
-    void wakeUpProcess();
-    void processFinished();
-
-protected:
-    virtual ~processController();
-
-private:
-    void insertItem(processItems pI)
-    {
-        processQeue.append(pI);
-        emit wakeUpProcess();
-    }
-    processItems takeItem()
-    {
-        if(processQeue.isEmpty())
-            return processItems();
-        else
-            return processQeue.takeFirst();
-    }
-    bool queueIsEmpty(){return processQeue.isEmpty();}
-
-    QList<processItems>processQeue;
-    friend class fileWorker;
-};
 
 /*
  * This handles the file operations. It runs in its own thread to ensure multi-tasking capabilities.
@@ -133,10 +84,6 @@ private slots:
     bool removeFileItems(const QFileInfoList filePaths);
     bool moveEntities(const QFileInfoList files, const QStringList destinations);
     bool copyEntities(const QFileInfoList files, const QStringList destinations);
-
-protected:
-
-
 
 private:
 

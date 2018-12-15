@@ -90,7 +90,8 @@ HEADERS  += mainwindow.h \
     argumentvalues.h \
     ruledefinitions.h \
     baseworker.h \
-    rules.h
+    rules.h \
+    processcontroller.h
 
 FORMS    += mainwindow.ui \
     logger.ui \

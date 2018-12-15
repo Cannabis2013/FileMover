@@ -68,6 +68,8 @@ signals:
     void antalFiler(long antal);
     void sendSize(QList<fileObject> s);
     void clearFinished(bool a);
+
+    // Queue related..
     void infoReport(const QString &error);
     void processFinished(directoryItem item);
     void multipleProcessFinished(QList<directoryItem>items);

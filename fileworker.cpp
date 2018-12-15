@@ -6,8 +6,6 @@ fileWorker::fileWorker(processController *pRef, QObject *parent) :
     isBusy = false;
     busyMessage = "Luke Fileworker har travlt. Vent et øjeblik.";
     qt_ntfs_permission_lookup++;
-
-    // Connections..
 }
 
 fileWorker::~fileWorker()

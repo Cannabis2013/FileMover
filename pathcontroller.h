@@ -12,12 +12,12 @@ public:
     void insertPath(const QString path)
     {
         allPaths << path;
-        emit listUpdated(path);
+        emit updateList(path);
     }
     void insertPaths(QStringList paths)
     {
         allPaths<< paths;
-        emit updateList(paths);
+        emit updateLists(paths);
     }
     //Remove..
     void removePathAt(int i) {allPaths.removeAt(i);}
@@ -29,8 +29,8 @@ public:
     QStringList getAllPaths() const{return allPaths;}
 
 signals:
-    void listUpdated(QString p);
-    void updateList(QStringList p);
+    void updateList(QString p);
+    void updateLists(QStringList p);
 private:
     QStringList allPaths;
 

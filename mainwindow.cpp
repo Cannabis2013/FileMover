@@ -618,7 +618,7 @@ void mainWindow::insertTreeItem(QString path)
 {
     QStringList text {path};
     QTreeWidgetItem *treeItem = new QTreeWidgetItem(text);
-    treeItem->setIcon(0,QIcon(":/My Images/Ressources/File.png"));
+    treeItem->setIcon(0,QIcon(":/My Images/Ressources/Folder.png"));
     treeItem->font(0).setPointSize(16);
     //treeItem->setFont(0,QFont("",16));
     mainFolderView->addTopLevelItem(treeItem);

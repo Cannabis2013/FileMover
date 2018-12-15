@@ -26,6 +26,11 @@ public:
     static QString mergeStringList(const QStringList strings);
     static QStringList splitString(const QString split);
 
+
+    // Basic string operations..
+    void checkAndCorrectForBackslash(QString *path);
+    QString checkAndCorrectForBackslash(QString path);
+
 protected:
 
     // Move and copy..
@@ -33,12 +38,7 @@ protected:
                          QString destination);
     bool copyRecursively(QString path,
                          QString destination);
-
-    // Variable manipulation..
-    void checkAndCorrectForBackslash(QString *path);
-    QString checkAndCorrectForBackslash(QString path);
-
-};
+    };
 typedef Worker bW;
 
 #endif // WORKER_H

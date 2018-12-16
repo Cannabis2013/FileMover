@@ -37,15 +37,16 @@ QStringList ruleController::splitString(const QString split)
 
 QList<QTreeWidgetItem *> ruleController::rulesTreeItems() const
 {
+    rD rDefs;
     QList<QTreeWidgetItem*>resultingList;
     for(rule r : rules)
     {
-        QStringList headerData {r.title,rD::actionToString(r.actionRule),fW::mergeStringList(r.destinationPath)};
+        QStringList headerData {r.title,rDefs.actionToString(r.actionRule),fW::mergeStringList(r.destinationPath)};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         for(subRule sRule : r.subRules)
         {
             QStringList hData;
-            hData << rD::fieldConditionalToString(sRule.fieldCondition) << rD::compareModeToString(sRule.fileCompareMode) <<  sRule.Keyword();
+            hData << rDefs.fieldConditionToString(sRule.fieldCondition) << rDefs.compareToString(sRule.fileCompareMode) <<  sRule.Keyword();
 
             QTreeWidgetItem *cItem = new QTreeWidgetItem(hData);
             pItem->addChild(cItem);

@@ -17,39 +17,40 @@ void addRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 void addRuleDialog::on_addSubRule_clicked()
 {
     subRule sRule;
+    rD rDefs;
     QString cText = conditionBox->currentText();
+    rD::fileFieldCondition conMode = rDefs.fieldConditionFromString(cText);
     rD::compareMode currentCompareMode = condWidget->currentCompareMode();
-    sRule.fieldCondition = rD::subConditionalFromString(cText);
+    sRule.fieldCondition = rDefs.fieldConditionFromString(cText);
     sRule.fileCompareMode = condWidget->currentCompareMode();
-    if(cText == "Filnavn" ||
-            cText == "Filendelse")
+    if(conMode == rD::filepathMode|| conMode == rD::extensionMode)
     {
         sRule.keyWords = fW::splitString(condWidget->keyWordValues());
 
     }
-    else if(cText == "Størrelse" &&
+    else if(conMode == rD::sizeMode &&
             currentCompareMode != rD::interval)
     {
         sRule.sizeLimit = condWidget->fixedSizeValues();
     }
-    else if(cText == "Størrelse" &&
+    else if(conMode == rD::sizeMode &&
             currentCompareMode == rD::interval)
     {
         sRule.sizeIntervalLimits = condWidget->intervalSizeValues();
     }
-    else if((cText == "Dato oprettet" ||
-             cText == "Dato redigeret") &&
+    else if((conMode == rD::dateCreatedMode ||
+             conMode == rD::dateModifiedMode) &&
             currentCompareMode != rD::interval)
     {
         sRule.fixedDate = condWidget->fixedConditionalDate();
     }
-    else if((cText == "Dato oprettet" ||
-             cText == "Dato redigeret") &&
+    else if((conMode == rD::dateCreatedMode ||
+             conMode == rD::dateModifiedMode) &&
             currentCompareMode == rD::interval)
     {
         sRule.intervalDate = condWidget->intervalDates();
     }
-    else if(cText == "Type")
+    else if(conMode == rD::typeMode)
     {
         sRule.typeMode = condWidget->typeMode();
     }
@@ -66,10 +67,11 @@ void addRuleDialog::on_removeSubRule_clicked()
 
 void addRuleDialog::on_addButton_clicked()
 {
+    rD rDefs;
     rule r;
     r.title = titleSelector->text();
     r.appliesToPath = applySelector->currentText();
-    r.actionRule = rD::actionFromString(actionBox->currentText());
+    r.actionRule = rDefs.actionFromString(actionBox->currentText());
     r.destinationPath = fW::splitString(pathSelector->text());
     r.deepScanMode = deepScanRadio->isChecked();
 

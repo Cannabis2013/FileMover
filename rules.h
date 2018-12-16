@@ -218,17 +218,13 @@ struct subRule
 
 struct rule
 {
-    QString identification,title = "title",action = "none";
+    QString identification,title = "title";
     rD::fileActionRule actionRule;
     QStringList destinationPath;
     QString appliesToPath = "Alle";
     bool deepScanMode = false;
     QList<subRule> subRules;
-    rD::fileActionRule actionFromString()
-    {
-        return rD::actionFromString(action);
-    }
-
+    rD::fileActionRule actionFromString();
 };
 
 

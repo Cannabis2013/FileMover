@@ -52,7 +52,7 @@ void conditionWidget::setKeyWords(QString kW)
 void conditionWidget::setConditionalFixedSize(QPair<int, QString> fSize, ruleDefinitions::compareMode cMode)
 {
     rD rDefs;
-    ui->modeSelector->setCurrentText(rDefs.intervalConditionalList().at(0));
+    ui->modeSelector->setCurrentText(rDefs.intervalConditionalList.at(0));
 
     ui->fixedSizeSelector->setValue(fSize.first);
     ui->fixedSizeUnitSelector->setCurrentText(fSize.second);
@@ -71,7 +71,7 @@ void conditionWidget::setConditionalFixedSize(QPair<int, QString> fSize, ruleDef
 void conditionWidget::setConditionalIntervalSize(QPair<QPair<int, QString>, QPair<int, QString> > iSize)
 {
     rD rDefs;
-    ui->modeSelector->setCurrentText(rDefs.intervalConditionalList().at(1));
+    ui->modeSelector->setCurrentText(rDefs.intervalConditionalList.at(1));
 
     QPair<int,QString> minSize = iSize.first;
     QPair<int,QString> maxSize = iSize.second;
@@ -89,16 +89,16 @@ void conditionWidget::setFixedDate(QPair<ruleDefinitions::compareMode, myDateTim
     myDateTime dateTime = dt.second;
 
     rD rDefs;
-    ui->modeSelector->setCurrentText(rDefs.intervalConditionalList().at(0));
+    ui->modeSelector->setCurrentText(rDefs.intervalConditionalList.at(0));
 
     ui->dateFixedSelector->setDate(dateTime.date());
-    dateOperatorSelector->setCurrentText(rD::compareModeToString(cM));
+    dateOperatorSelector->setCurrentText(rDefs.compareToString(cM));
 }
 
 void conditionWidget::setIntervalDate(QPair<myDateTime, myDateTime> iDate)
 {
     rD rDefs;
-    ui->modeSelector->setCurrentText(rDefs.intervalConditionalList().at(1));
+    ui->modeSelector->setCurrentText(rDefs.intervalConditionalList.at(1));
 
     ui->dateMinSelector->setDate(iDate.first.date());
     ui->dateMaxSelector->setDate(iDate.second.date());
@@ -125,16 +125,19 @@ void conditionWidget::setTypeValues(Worker::iteratorMode tMode)
 
 void conditionWidget::setCurrentView(QString txt)
 {
-    currentFileModeRule = rD::subConditionalFromString(txt);
+    rD rDefs;
+    rD::fileFieldCondition conMode = rDefs.fieldConditionFromString(txt);
+    currentFileModeRule = conMode;
     mainModeSelector->show();
 
-    if(txt == "Filnavn" || txt == "Filendelse")
+    if(conMode == rD::filepathMode|| conMode == rD::extensionMode)
         mainModeView->setCurrentIndex(0);
-    else if(txt == "Størrelse")
+    else if(conMode == rD::sizeMode)
         mainModeView->setCurrentIndex(1);
-    else if(txt == "Dato oprettet" || txt == "Dato redigeret")
+    else if(conMode == rD::dateCreatedMode ||
+            conMode == rD::dateModifiedMode)
         mainModeView->setCurrentIndex(2);
-    else if(txt == "Type")
+    else if(conMode == rD::typeMode)
         mainModeView->setCurrentIndex(3);
     else
     {
@@ -150,19 +153,20 @@ void conditionWidget::setCurrentView(int index)
 
 void conditionWidget::setCompareView(ruleDefinitions::compareMode compare)
 {
+    rD rDefs;
     if(currentFileModeRule == rD::filepathMode || currentFileModeRule == rD::extensionMode)
     {
-        mainModeSelector->setCurrentText(rD::compareModeToString(compare));
+        mainModeSelector->setCurrentText(rDefs.compareToString(compare));
     }
     else if(currentFileModeRule == rD::sizeMode && currentCompareMode() != rD::interval)
     {
-        fixedSizeModeSelector->setCurrentText(rD::compareModeToString(compare));
+        fixedSizeModeSelector->setCurrentText(rDefs.compareToString(compare));
     }
     else if((currentFileModeRule == rD::dateCreatedMode ||
              currentFileModeRule == rD::dateModifiedMode) &&
             currentCompareMode() != rD::interval)
     {
-        dateOperatorSelector->setCurrentText(rD::compareModeToString(compare));
+        dateOperatorSelector->setCurrentText(rDefs.compareToString(compare));
     }
 }
 
@@ -173,8 +177,8 @@ void conditionWidget::initDefaultOperators()
 
     rD rDefs;
 
-    fixedSizeModeSelector->addItems(rDefs.sizeOperators);
-    dateOperatorSelector->addItems(rDefs.dateOperators);
+    fixedSizeModeSelector->addItems(rDefs.compareOperatorsToStringList(rD::sizeMode));
+    dateOperatorSelector->addItems(rDefs.compareOperatorsToStringList(rD::dateCreatedMode));
 }
 
 void conditionWidget::initDefaultUnits()
@@ -211,25 +215,28 @@ void conditionWidget::resetValues()
 
 void conditionWidget::setMode(QString condition)
 {
+    rD rDefs;
     mainModeSelector->clear();
-    currentFileModeRule = rD::subConditionalFromString(condition);
+    currentFileModeRule = rDefs.fieldConditionFromString(condition);
 
     setCurrentView(condition);
 
-    rD rDefs;
-    if(condition == "Filnavn" || condition == "Filendelse")
+    if(currentFileModeRule == rD::filepathMode || currentFileModeRule == rD::extensionMode)
     {
-        mainModeSelector->addItems(rDefs.fileNameCompareModeList);
+        mainModeSelector->addItems(rDefs.compareOperatorsToStringList(rD::filepathMode));
     }
-    else if(condition == "Størrelse")
+    else if(currentFileModeRule == rD::sizeMode)
     {
-        mainModeSelector->addItems(rDefs.intervalConditionalList());
-        ui->fixedSizeOperatorSelector->clear();
-        ui->fixedSizeOperatorSelector->addItems(rDefs.sizeOperators);
+        mainModeSelector->addItems(rDefs.intervalConditionalList);
+        //fixedSizeModeSelector->clear();
+        //fixedSizeModeSelector->addItems(rDefs.operatorsToStringList(rD::sizeMode));
     }
-    else if(condition == "Dato oprettet" || condition == "Dato redigeret")
-        mainModeSelector->addItems(rDefs.intervalConditionalList());
-    else if(condition == "Type")
+    else if(currentFileModeRule == rD::dateCreatedMode ||
+            currentFileModeRule == rD::dateModifiedMode)
+    {
+        mainModeSelector->addItems(rDefs.intervalConditionalList);
+    }
+    else if(currentFileModeRule == rD::typeMode)
         mainModeSelector->addItem(condition);
 }
 
@@ -239,18 +246,18 @@ ruleDefinitions::compareMode conditionWidget::currentCompareMode()
     QString modeText = mainModeSelector->currentText();
 
     if(currentFileModeRule == rD::filepathMode || currentFileModeRule == rD::extensionMode)
-        return rD::compareModeFromString(modeText);
-    else if(currentFileModeRule == rD::sizeMode && modeText == rDefs.intervalConditionalList().at(0))
-        return rD::compareModeFromString(ui->fixedSizeOperatorSelector->currentText());
-    else if(currentFileModeRule == rD::sizeMode && modeText == rDefs.intervalConditionalList().at(1))
+        return rDefs.compareFromString(modeText);
+    else if(currentFileModeRule == rD::sizeMode && modeText == rDefs.intervalConditionalList.at(0))
+        return rDefs.compareFromString(ui->fixedSizeOperatorSelector->currentText());
+    else if(currentFileModeRule == rD::sizeMode && modeText == rDefs.intervalConditionalList.at(1))
         return rD::interval;
     else if((currentFileModeRule == rD::dateCreatedMode ||
              currentFileModeRule == rD::dateModifiedMode) &&
-            modeText == rDefs.intervalConditionalList().at(0))
-        return rD::compareModeFromString(dateOperatorSelector->currentText());
+            modeText == rDefs.intervalConditionalList.at(0))
+        return rDefs.compareFromString(dateOperatorSelector->currentText());
     else if((currentFileModeRule == rD::dateCreatedMode ||
              currentFileModeRule == rD::dateModifiedMode) &&
-            modeText == rDefs.intervalConditionalList().at(1))
+            modeText == rDefs.intervalConditionalList.at(1))
         return rD::interval;
     else
         return rD::noCompareModeSet;
@@ -300,9 +307,10 @@ QPair<QPair<int, QString>, QPair<int, QString> > conditionWidget::intervalSizeVa
 
 QPair<ruleDefinitions::compareMode, myDateTime> conditionWidget::fixedConditionalDate() const
 {
+    rD rDefs;
     QPair<ruleDefinitions::compareMode, myDateTime> result;
     QString dateOperator = dateOperatorSelector->currentText();
-    rD::compareMode compareOperator =rD::compareModeFromString(dateOperator);
+    rD::compareMode compareOperator = rDefs.compareFromString(dateOperator);
 
     QDateTime dt = ui->dateFixedSelector->dateTime();
     myDateTime mDate(dt);

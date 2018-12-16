@@ -52,6 +52,7 @@
 struct ruleDefinitions
 {
     // Enumerated variables..
+    enum typeProperty {actionProperty,conditionProperty, compareProperty, everyProperty};
     enum copyMode{move,copy,noMode};
     enum fileActionRule{Move,Delete,Copy,none};
     enum fileFieldCondition{notDefined,
@@ -80,14 +81,16 @@ struct ruleDefinitions
                      noCompareModeSet};
 
     QString nonIntervalString = "Enkel grænse", intervalString = "Interval grænse";
-
+    QStringList intervalConditionalList {"Enkel grænse","Interval grænse"};
 
     // List variables..
     static QStringList sizeUnits(){return QStringList{"b","kb","mb","gb"};}
 
-    const QStringList actionList {"flytte filer",
-                                   "slette filer",
-                                   "kopiere filer"};
+    const QList<QPair<QString,fileActionRule> > actions {
+        QPair<QString,fileActionRule>("Flytte indhold",fileActionRule::Move),
+                QPair<QString,fileActionRule>("Slette indhold",fileActionRule::Delete),
+                QPair<QString,fileActionRule>("Kopiere indhold",fileActionRule::Copy),
+                QPair<QString,fileActionRule>("Gøre intet",fileActionRule::none)};
 
     const QList<QPair<QString,fileFieldCondition> > fields {
         QPair<QString,fileFieldCondition>("Filnavn",fileFieldCondition::filepathMode),
@@ -112,27 +115,35 @@ struct ruleDefinitions
                 QPair<QString,compareMode>("Præcis dato",compareMode::exactDate),
                 QPair<QString,compareMode>("Yngre end",compareMode::youngerThan)};
 
-    const QStringList fieldConditionalList {"Filnavn",
-                                       "Filendelse",
-                                        "Størrelse",
-                                        "Dato oprettet",
-                                        "Dato redigeret",
-                                        "Type",
-                                        "Ingen betingelser"};
-    const QStringList fileNameCompareModeList {"Indeholder følgende",
-                                              "Indeholder ikke følgende",
-                                              "Matcher følgende",
-                                              "Matcher ikke følgende"};
+    // Retrieve list methods
 
-    // To conditionWidget related..
-    const QStringList sizeOperators {"Større end","Større eller lig med","Lig med","Mindre end","Mindre eller lig med"};
-    const QStringList dateOperators {"Ældre end","Præcis dato","Yngre end"};
-
-
-    const QStringList compareModeOperators(fileFieldCondition condition)
+    const QStringList propertyListToStrings(typeProperty property = typeProperty::everyProperty)
     {
         QStringList resultingList;
-        if(condition == fileFieldCondition::filepathMode || condition == fileFieldCondition::extensionMode)
+        if(property == typeProperty::actionProperty || property == typeProperty::everyProperty)
+        {
+            for ( QPair<QString,fileActionRule> pair : actions)
+                resultingList << pair.first;
+        }
+        if(property == typeProperty::conditionProperty || property == typeProperty::everyProperty)
+        {
+            for ( QPair<QString,fileFieldCondition> pair : fields)
+                resultingList << pair.first;
+        }
+        if(property == typeProperty::compareProperty || property == typeProperty::everyProperty)
+        {
+            for ( QPair<QString,compareMode> pair : compares)
+                resultingList << pair.first;
+        }
+
+        return resultingList;
+    }
+
+    const QStringList compareOperatorsToStringList(fileFieldCondition condition)
+    {
+        QStringList resultingList;
+        if(condition == fileFieldCondition::filepathMode ||
+                condition == fileFieldCondition::extensionMode)
         {
             for(QPair<QString,compareMode> pair : compares) {
                 if(pair.second == compareMode::contains ||
@@ -171,41 +182,29 @@ struct ruleDefinitions
                 }
             }
         }
-        else if(condition == fileFieldCondition::typeMode)
-        {
-
-        }
 
         return resultingList;
     }
 
-    // Methods..
-    static fileActionRule actionFromString(const QString str)
-    {
-        if(str == "Move" || str == "flytte filer")
-            return fileActionRule::Move;
-        if(str == "Delete" || str == "slette filer")
-            return fileActionRule::Delete;
-        if(str == "Copy" || str == "kopiere filer")
-            return fileActionRule::Copy;
+    // From type1 to type2 methods
 
+    fileActionRule actionFromString(const QString mode)
+    {
+        for(QPair<QString,fileActionRule> pair : actions)
+        {
+            if(pair.first == mode)
+                return pair.second;
+        }
         return fileActionRule::none;
     }
-    static QString actionToString(const fileActionRule act)
+    QString actionToString(const fileActionRule mode)
     {
-        if(act == fileActionRule::Move)
-            return "flytte filer";
-        else if(act == fileActionRule::Delete)
-            return "slette filer";
-        else if(act == fileActionRule::Copy)
-            return "kopiere filer";
-        else
-            return QString();
-    }
-
-    const QStringList intervalConditionalList()
-    {
-        return {nonIntervalString,intervalString};
+        for(QPair<QString,fileActionRule> pair : actions)
+        {
+            if(pair.second == mode)
+                return pair.first;
+        }
+        return QString();
     }
 
     QString fieldConditionToString(const fileFieldCondition mode)
@@ -225,6 +224,7 @@ struct ruleDefinitions
             if(pair.first == string)
                 return pair.second;
         }
+        return fileFieldCondition::notDefined;
     }
 
     QString compareToString(const compareMode mode)
@@ -247,60 +247,6 @@ struct ruleDefinitions
         return compareMode::noCompareModeSet;
     }
 
-
-    static QString fieldConditionalToString(const fileFieldCondition mode)
-    {
-
-        if(mode == fileFieldCondition::filepathMode)
-            return "Filnavn";
-        else if(mode == fileFieldCondition::extensionMode)
-            return "Filendelse";
-        else if(mode == fileFieldCondition::sizeMode)
-            return "Størrelse";
-        else if(mode == fileFieldCondition::dateCreatedMode)
-            return "Dato oprettet";
-        else if(mode == fileFieldCondition::dateModifiedMode)
-            return "Dato redigeret";
-        else if(mode == fileFieldCondition::typeMode)
-            return "Type";
-        else if(mode == fileFieldCondition::nonConditionalMode)
-            return "Ingen betingelser";
-        else
-            return "Ikke defineret";
-    }
-    static fileFieldCondition subConditionalFromString(const QString str)
-    {
-        if(str == "Filnavn")
-        {
-            return fileFieldCondition::filepathMode;
-        }
-        else if(str == "Filendelse")
-        {
-            return fileFieldCondition::extensionMode;
-        }
-        else if(str == "Størrelse")
-        {
-            return fileFieldCondition::sizeMode;
-        }
-        else if(str == "Dato oprettet")
-        {
-            return fileFieldCondition::dateCreatedMode;
-        }
-        else if(str == "Dato redigeret")
-        {
-            return fileFieldCondition::dateModifiedMode;
-        }
-        else if(str == "Type")
-        {
-            return fileFieldCondition::typeMode;
-        }
-        else if(str == "Ingen betingelser")
-        {
-            return fileFieldCondition::nonConditionalMode;
-        }
-        else
-            return fileFieldCondition::notDefined;
-    }
 
     static QStringList typeList()
     {
@@ -325,70 +271,6 @@ struct ruleDefinitions
             return "error";
     }
 
-    static compareMode compareModeFromString(QString str)
-    {
-        if(str == "Indeholder følgende" || str == "Contains")
-            return compareMode::contains;
-        if(str == "Indeholder ikke følgende" || str == "Dont contains")
-            return compareMode::dontContain;
-        if(str == "Matcher følgende" || str == "Match")
-            return compareMode::match;
-        if(str == "Matcher ikke følgende" || str == "Dont match")
-            return compareMode::dontMatch;
-        if(str == "Større end" || str == "bigger")
-            return compareMode::bigger;
-        if(str == "Større eller lig med" || str == "BiggerOrEqual")
-            return compareMode::biggerOrEqual;
-        if(str == "Lig med" || str == "Equal")
-            return compareMode::equal;
-        if(str == "Mindre eller lig med" || str == "LesserOrEqual")
-            return compareMode::lesserOrEqual;
-        if(str == "Mindre end" || str == "Lesser")
-            return compareMode::lesser;
-        if(str == "Ældre end")
-            return compareMode::olderThan;
-        if(str == "Præcis dato")
-            return compareMode::exactDate;
-        if(str == "Yngre end")
-            return compareMode::youngerThan;
-
-        return compareMode::noCompareModeSet;
-    }
-    static QString compareModeToString(compareMode compMode)
-    {
-        if(compMode == compareMode::contains)
-            return "Indeholder følgende:";
-        else if(compMode == compareMode::dontContain)
-            return "Indeholder ikke følgende";
-        else if(compMode == compareMode::match)
-            return "Matcher følgende";
-        else if(compMode == compareMode::dontMatch)
-            return "Matcher ikke følgende";
-        else if(compMode == compareMode::lesser)
-            return "Mindre end";
-        else if(compMode == compareMode::lesserOrEqual)
-            return "Mindre eller lig med";
-        else if(compMode == compareMode::equal)
-            return "Lig med";
-        else if(compMode == compareMode::biggerOrEqual)
-            return "Større eller lig med";
-        else if(compMode == compareMode::bigger)
-            return "Større end";
-        else if(compMode == compareMode::interval)
-            return "I intervallet";
-        else if(compMode == compareMode::olderThan)
-            return "Ældre end";
-        else if(compMode == compareMode::exactDate)
-            return "Præcis dato";
-        else if(compMode == compareMode::youngerThan)
-            return "Yngre end";
-        else if(compMode == compareMode::noDateSet)
-            return "Ingen dato fastsat";
-        else if(compMode == noCompareModeSet)
-            return "Ingen betingelse";
-        else
-            return "Noget gik galt!";
-    }
     static compareMode dateModeFromString(const QString str)
     {
         if(str == "Ældre end")

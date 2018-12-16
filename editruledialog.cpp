@@ -9,9 +9,10 @@ editRuleDialog::editRuleDialog(rule editRule, int index, QStringList folderPaths
 
 void editRuleDialog::on_addButton_clicked()
 {
+    rD rDefs;
     tempRule.title = titleSelector->text();
     tempRule.appliesToPath = applySelector->currentText();
-    tempRule.actionRule = rD::actionFromString(actionBox->currentText());
+    tempRule.actionRule = rDefs.actionFromString(actionBox->currentText());
     tempRule.destinationPath = fW::splitString(pathSelector->text());
     tempRule.subRules = subRules;
     tempRule.deepScanMode = deepScanRadio->isChecked();
@@ -23,43 +24,45 @@ void editRuleDialog::on_addButton_clicked()
 
 void editRuleDialog::on_addSubRule_clicked()
 {
-    subRule sR;
-    sR.fieldCondition = rD::subConditionalFromString(conditionBox->currentText());
-    sR.fileCompareMode = condWidget->currentCompareMode();
+    rD rDefs;
+    subRule sRule;
+    QString currentCondition = conditionBox->currentText();
+    rD::fileFieldCondition conMode = rDefs.fieldConditionFromString(currentCondition);
+    sRule.fieldCondition = conMode;
+    rD::compareMode currentCompareMode = condWidget->currentCompareMode();
+    sRule.fileCompareMode = currentCompareMode;
+    if(conMode == rD::filepathMode|| conMode == rD::extensionMode)
+    {
+        sRule.keyWords = fW::splitString(condWidget->keyWordValues());
 
-    if(conditionBox->currentText() == "Filnavn" ||
-            conditionBox->currentText() == "Filendelse")
-    {
-        sR.keyWords = fW::splitString(condWidget->keyWordValues());
-
     }
-    else if(conditionBox->currentText() == "Størrelse" &&
-            condWidget->currentCompareMode() != rD::interval)
+    else if(conMode == rD::sizeMode &&
+            currentCompareMode != rD::interval)
     {
-        sR.sizeLimit = condWidget->fixedSizeValues();
+        sRule.sizeLimit = condWidget->fixedSizeValues();
     }
-    else if(conditionBox->currentText() == "Størrelse" &&
-            condWidget->currentCompareMode() == rD::interval)
+    else if(conMode == rD::sizeMode &&
+            currentCompareMode == rD::interval)
     {
-        sR.sizeIntervalLimits = condWidget->intervalSizeValues();
+        sRule.sizeIntervalLimits = condWidget->intervalSizeValues();
     }
-    else if((conditionBox->currentText() == "Dato oprettet" ||
-             conditionBox->currentText() == "Dato redigeret") &&
-            condWidget->currentCompareMode() != rD::interval)
+    else if((conMode == rD::dateCreatedMode ||
+             conMode == rD::dateModifiedMode) &&
+            currentCompareMode != rD::interval)
     {
-        sR.fixedDate = condWidget->fixedConditionalDate();
+        sRule.fixedDate = condWidget->fixedConditionalDate();
     }
-    else if((conditionBox->currentText() == "Dato oprettet" ||
-             conditionBox->currentText() == "Dato redigeret") &&
-            condWidget->currentCompareMode() == rD::interval)
+    else if((conMode == rD::dateCreatedMode ||
+             conMode == rD::dateModifiedMode) &&
+            currentCompareMode == rD::interval)
     {
-        sR.intervalDate = condWidget->intervalDates();
+        sRule.intervalDate = condWidget->intervalDates();
     }
-    else if(conditionBox->currentText() == "Type")
+    else if(conMode == rD::typeMode)
     {
-        sR.typeMode = condWidget->typeMode();
+        sRule.typeMode = condWidget->typeMode();
     }
-    subRules << sR;
+    subRules << sRule;
     updateView();
 }
 

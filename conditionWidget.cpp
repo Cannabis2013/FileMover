@@ -236,7 +236,7 @@ void conditionWidget::setMode(QString condition)
 ruleDefinitions::compareMode conditionWidget::currentCompareMode()
 {
     rD rDefs;
-    QString modeText = ui->modeSelector->currentText();
+    QString modeText = mainModeSelector->currentText();
 
     if(currentFileModeRule == rD::filepathMode || currentFileModeRule == rD::extensionMode)
         return rD::compareModeFromString(modeText);

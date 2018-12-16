@@ -154,6 +154,7 @@ void abstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 
 void abstractRuleDialog::updateView()
 {
+    rD rDef;
     subRuleView->clear();
     int total = subRules.count();
     for (int i = 0; i < total; ++i)

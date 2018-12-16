@@ -2,6 +2,7 @@
 #define RULEDEFINITIONS_H
 
 #include <qobject.h>
+
 #include "worker.h"
 
 /*
@@ -88,6 +89,29 @@ struct ruleDefinitions
                                    "slette filer",
                                    "kopiere filer"};
 
+    const QList<QPair<QString,fileFieldCondition> > fields {
+        QPair<QString,fileFieldCondition>("Filnavn",fileFieldCondition::filepathMode),
+                QPair<QString,fileFieldCondition>("Filendelse",fileFieldCondition::extensionMode),
+                QPair<QString,fileFieldCondition>("Størrelse",fileFieldCondition::sizeMode),
+                QPair<QString,fileFieldCondition>("Dato oprettet",fileFieldCondition::dateCreatedMode),
+                QPair<QString,fileFieldCondition>("Dato redigeret",fileFieldCondition::dateModifiedMode),
+                QPair<QString,fileFieldCondition>("Type",fileFieldCondition::typeMode),
+                QPair<QString,fileFieldCondition>("Ingen betingelser",fileFieldCondition::nonConditionalMode)};
+
+    const QList<QPair<QString,compareMode> > compares {
+        QPair<QString,compareMode>("Indeholder følgende",compareMode::contains),
+                QPair<QString,compareMode>("Indeholder ikke følgende",compareMode::dontMatch),
+                QPair<QString,compareMode>("Matcher følgende",compareMode::match),
+                QPair<QString,compareMode>("Mathcer ikke følgende",compareMode::dontMatch),
+                QPair<QString,compareMode>("Større end",compareMode::bigger),
+                QPair<QString,compareMode>("Større eller lig med",compareMode::biggerOrEqual),
+                QPair<QString,compareMode>("Lig med",compareMode::equal),
+                QPair<QString,compareMode>("Mindre eller lig med",compareMode::lesserOrEqual),
+                QPair<QString,compareMode>("Mindre Mindre end",compareMode::lesser),
+                QPair<QString,compareMode>("Ældre end",compareMode::olderThan),
+                QPair<QString,compareMode>("Præcis dato",compareMode::exactDate),
+                QPair<QString,compareMode>("Yngre end",compareMode::youngerThan)};
+
     const QStringList fieldConditionalList {"Filnavn",
                                        "Filendelse",
                                         "Størrelse",
@@ -103,6 +127,57 @@ struct ruleDefinitions
     // To conditionWidget related..
     const QStringList sizeOperators {"Større end","Større eller lig med","Lig med","Mindre end","Mindre eller lig med"};
     const QStringList dateOperators {"Ældre end","Præcis dato","Yngre end"};
+
+
+    const QStringList compareModeOperators(fileFieldCondition condition)
+    {
+        QStringList resultingList;
+        if(condition == fileFieldCondition::filepathMode || condition == fileFieldCondition::extensionMode)
+        {
+            for(QPair<QString,compareMode> pair : compares) {
+                if(pair.second == compareMode::contains ||
+                        pair.second == compareMode::dontMatch ||
+                        pair.second == compareMode::match ||
+                        pair.second == compareMode::dontMatch)
+                {
+                    resultingList << pair.first;
+                }
+            }
+        }
+        else if(condition == fileFieldCondition::sizeMode)
+        {
+            for(QPair<QString,compareMode> pair : compares)
+            {
+                if(pair.second == compareMode::bigger ||
+                        compareMode::biggerOrEqual ||
+                        compareMode::equal ||
+                        compareMode::lesserOrEqual ||
+                        compareMode::lesser)
+                {
+                    resultingList << pair.first;
+                }
+            }
+        }
+        else if(condition == fileFieldCondition::dateCreatedMode ||
+                condition == fileFieldCondition::dateModifiedMode)
+        {
+            for(QPair<QString,compareMode> pair : compares)
+            {
+                if(pair.second == compareMode::olderThan ||
+                        compareMode::exactDate ||
+                        compareMode::youngerThan)
+                {
+                    resultingList << pair.first;
+                }
+            }
+        }
+        else if(condition == fileFieldCondition::typeMode)
+        {
+
+        }
+
+        return resultingList;
+    }
 
     // Methods..
     static fileActionRule actionFromString(const QString str)
@@ -133,8 +208,49 @@ struct ruleDefinitions
         return {nonIntervalString,intervalString};
     }
 
+    QString fieldConditionToString(const fileFieldCondition mode)
+    {
+        for(QPair<QString,fileFieldCondition> pair : fields)
+        {
+            if(pair.second == mode)
+                return pair.first;
+        }
+        return QString();
+    }
+
+    fileFieldCondition fieldConditionFromString(const QString string)
+    {
+        for(QPair<QString,fileFieldCondition> pair : fields)
+        {
+            if(pair.first == string)
+                return pair.second;
+        }
+    }
+
+    QString compareToString(const compareMode mode)
+    {
+        for(QPair<QString,compareMode> pair : compares)
+        {
+            if(pair.second == mode)
+                return pair.first;
+        }
+        return QString();
+    }
+
+    compareMode compareFromString(const QString string)
+    {
+        for(QPair<QString,compareMode> pair : compares)
+        {
+            if(pair.first == string)
+                return pair.second;
+        }
+        return compareMode::noCompareModeSet;
+    }
+
+
     static QString fieldConditionalToString(const fileFieldCondition mode)
     {
+
         if(mode == fileFieldCondition::filepathMode)
             return "Filnavn";
         else if(mode == fileFieldCondition::extensionMode)

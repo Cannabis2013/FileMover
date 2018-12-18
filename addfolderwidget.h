@@ -1,7 +1,7 @@
 ﻿#ifndef ADDFOLDERWIDGET_H
 #define ADDFOLDERWIDGET_H
 
-#include <QWidget>
+#include <QDialog>
 #include <qdesktopwidget.h>
 #include "pathline.h"
 #include "addfiledialog.h"
@@ -14,12 +14,12 @@ namespace Ui {
 class addFolderWidget;
 }
 
-class addFolderWidget : public QWidget
+class addFolderWidget : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit addFolderWidget(QWidget *parent = nullptr);
+    explicit addFolderWidget();
     ~addFolderWidget();
 
 signals:
@@ -33,7 +33,8 @@ private:
     Ui::addFolderWidget *ui;
     addFileDialog *fileWidget;
     pathLine *pathWidget;
-
+    QVBoxLayout *vLayout;
+    int tempHeight;
 };
 
 #endif // ADDFOLDERWIDGET_H

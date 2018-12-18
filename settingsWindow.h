@@ -16,6 +16,7 @@
 #include <QDateEdit>
 #include <qpair.h>
 #include <QFocusEvent>
+#include <qdialog.h>
 
 #include "mycombobox.h"
 #include "addruledialog.h"
@@ -28,12 +29,12 @@ namespace Ui {
 class settingsWindow;
 }
 
-class settingsWindow : public QWidget
+class settingsWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit settingsWindow(sC*sCon,ruleController *rCon,QWidget *parent = nullptr);
+    explicit settingsWindow(sC*sCon,ruleController *rCon);
     ~settingsWindow();
 
     enum ruleMode{ruleOut,parallelMode};

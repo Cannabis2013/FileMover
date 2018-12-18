@@ -1,8 +1,7 @@
 #include "abstractRuleDialog.h"
 #include "ui_abstractRuledialog.h"
 
-abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *parent) :
-    QWidget(parent),
+abstractRuleDialog::abstractRuleDialog(QStringList folderPaths) :
     ui(new Ui::abstractRuleDialog)
 {
     ui->setupUi(this);
@@ -33,6 +32,7 @@ abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *parent)
     conditionBox->setCurrentText("Ingen betingelser");
     conditionBox->currentIndexChanged("Ingen betingelser");
 
+    setWindowModality(Qt::ApplicationModal);
 }
 
 abstractRuleDialog::abstractRuleDialog(rule r,QStringList folderPaths):
@@ -73,6 +73,8 @@ abstractRuleDialog::abstractRuleDialog(rule r,QStringList folderPaths):
     deepScanRadio->setChecked(tempRule.deepScanMode);
 
     subRules = tempRule.subRules;
+
+    setWindowModality(Qt::ApplicationModal);
 }
 
 abstractRuleDialog::~abstractRuleDialog()
@@ -150,6 +152,7 @@ void abstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 
     updateConditionView(clickedSubRule);
 }
+
 
 void abstractRuleDialog::updateView()
 {

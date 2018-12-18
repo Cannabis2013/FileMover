@@ -14,6 +14,8 @@
 #include <QCheckBox>
 #include <qradiobutton.h>
 #include <qpushbutton.h>
+#include <QFocusEvent>
+#include <qdialog.h>
 
 #include "textpathedit.h"
 #include "rulepathselector.h"
@@ -24,11 +26,11 @@ namespace Ui {
 class abstractRuleDialog;
 }
 
-class abstractRuleDialog : public QWidget
+class abstractRuleDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit abstractRuleDialog(QStringList folderPaths,QWidget *parent = nullptr);
+    explicit abstractRuleDialog(QStringList folderPaths);
     abstractRuleDialog(rule r, QStringList folderPaths);
     ~abstractRuleDialog();
 
@@ -53,6 +55,7 @@ protected slots:
     void on_treeWidget_doubleClicked(const QModelIndex &index);
 
 protected:
+
     // Protected methods
     enum buttonType {acceptButton,cancelButton};
     void setButtonText(QString txt,buttonType bType = buttonType::acceptButton);

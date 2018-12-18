@@ -1,13 +1,13 @@
 ﻿#include "addfolderwidget.h"
 #include "ui_addfolderwidget.h"
 
-addFolderWidget::addFolderWidget(QWidget *parent) :
-    QWidget(parent),
+addFolderWidget::addFolderWidget() :
     ui(new Ui::addFolderWidget)
 {
     ui->setupUi(this);
     fileWidget = ui->widget;
     pathWidget = ui->widget_2;
+    vLayout = ui->verticalLayout;
 
 }
 
@@ -22,10 +22,13 @@ void addFolderWidget::sizeAdjust(QSizePolicy::Policy p, int H)
     QRect maxHeight = QApplication::desktop()->screenGeometry(this);
     setSizePolicy(hPol,p);
     if(p == QSizePolicy::Fixed)
-        setFixedHeight(H);
+    {
+        tempHeight = height();
+        setFixedHeight(this->height() - H);
+    }
     else
     {
-        setFixedHeight(256);
+        setFixedHeight(tempHeight);
         setMaximumHeight(maxHeight.height());
     }
 }

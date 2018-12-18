@@ -73,6 +73,7 @@ protected:
     void mousePressEvent(QMouseEvent *mp);
     void mouseMoveEvent(QMouseEvent *e);
 
+
 private slots:
     // Addfolder related..
     void insertPath(QString p);

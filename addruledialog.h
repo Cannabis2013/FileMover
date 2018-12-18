@@ -6,7 +6,7 @@
 class addRuleDialog : public abstractRuleDialog
 {
 public:
-    explicit addRuleDialog(QStringList folderPaths,QWidget *parent = nullptr);
+    explicit addRuleDialog(QStringList folderPaths);
 
 public slots:
 signals:

@@ -3,17 +3,40 @@
 rulePathSelector::rulePathSelector(QWidget *parent):
     textPathEdit(parent)
 {
-    pDialog = new rulePathSelectorDialog(this);
+    pDialog = new rulePathSelectorDialog();
+    pDialog->setWindowFlag(Qt::FramelessWindowHint);
 
-    layout()->addWidget(pDialog);
     connect(pDialog,&rulePathSelectorDialog::chosenPath,this,&rulePathSelector::insertChosenPath);
     pDialog->hide();
+    setFocusPolicy(Qt::StrongFocus);
+    parentWidget()->installEventFilter(this);
+    setObjectName("rulePathSelector");
 }
+
 
 void rulePathSelector::on_toolButton_clicked()
 {
     if(pDialog->isHidden())
+    {
         pDialog->show();
+        pDialog->setFocus();
+    }
     else
         pDialog->hide();
+
+    QPoint parentGeometry = parentWidget()->geometry().topLeft();
+    QPoint newPos = mapToGlobal(parentGeometry);
+    QRect rect;
+    rect.setX(newPos.x());
+    rect.setY(newPos.y() - 2*height() - 5);
+    rect.setWidth(this->width());
+    rect.setHeight(pDialog->height());
+    pDialog->setGeometry(rect);
+
+
+}
+
+bool rulePathSelector::hasAllChildrenFocus()
+{
+
 }

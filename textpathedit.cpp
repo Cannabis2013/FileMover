@@ -2,12 +2,12 @@
 #include "ui_textpathedit.h"
 
 textPathEdit::textPathEdit(QWidget *parent, QString txt) :
-    QWidget(parent),
+    myWidget(parent),
     ui(new Ui::textPathEdit)
 {
     ui->setupUi(this);
-    line = ui->pathSelector;
 
+    line = ui->pathSelector;
     toolButton = ui->toolButton;
 
     if(txt != QString())
@@ -17,6 +17,7 @@ textPathEdit::textPathEdit(QWidget *parent, QString txt) :
     completer->setModel(new QDirModel(completer));
 
     line->setCompleter(completer);
+    installEventFilter(this);
 }
 
 textPathEdit::~textPathEdit()
@@ -48,7 +49,6 @@ QVBoxLayout *textPathEdit::verticalLayot()
 {
     return ui->verticalLayout;
 }
-
 
 void textPathEdit::insertChosenPath(QString p)
 {

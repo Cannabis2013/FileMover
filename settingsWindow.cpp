@@ -1,8 +1,8 @@
 ﻿#include "settingsWindow.h"
 #include "ui_settingsWindow.h"
 
-settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon, QWidget *parent):
-    QWidget(parent),ui(new Ui::settingsWindow)
+settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon):
+    ui(new Ui::settingsWindow)
 {
     ui->setupUi(this);
 
@@ -18,6 +18,9 @@ settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon, Q
     ruleParentHeaderData= QStringList{"Regel titel","Handling","Mappe sti"};
     ruleChildrenHeaderData = QStringList{"Betingelse","Betingelses metode","Værdi"};
     this->setWindowFlags(Qt::FramelessWindowHint);
+
+
+    setWindowModality(Qt::ApplicationModal);
 
     // setValues..
 

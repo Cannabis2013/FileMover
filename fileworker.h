@@ -3,7 +3,7 @@
 
 #include "fileworkeroperator.h"
 
-extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
+
 
 namespace fileOperations {
 class processController;

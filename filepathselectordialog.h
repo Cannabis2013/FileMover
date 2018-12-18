@@ -1,17 +1,18 @@
 ﻿#ifndef FILEPATHSELECTORDIALOG_H
 #define FILEPATHSELECTORDIALOG_H
 
-#include <QWidget>
 #include <QFileSystemModel>
 #include <qtreeview.h>
 #include <iostream>
-#include <QTranslator>
+
+#include "mywidget.h"
+
 
 namespace Ui {
 class filepathSelectorDialog;
 }
 
-class filepathSelectorDialog : public QWidget
+class filepathSelectorDialog : public myWidget
 {
     Q_OBJECT
 
@@ -31,7 +32,7 @@ protected slots:
     virtual void on_cancelButton_clicked();
     virtual void on_insertPathButton_clicked();
 
-private:
+protected:
 
     QTreeView *fileView;
     QFileSystemModel *model;

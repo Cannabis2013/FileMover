@@ -3,6 +3,8 @@
 
 #include "processcontroller.h"
 
+extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
+
 class fileWorkerOperator : public Worker
 {
     Q_OBJECT

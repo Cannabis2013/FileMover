@@ -101,22 +101,6 @@
   </connection>
   <connection>
    <sender>widget</sender>
-   <signal>shrinkWindow(QSizePolicy::Policy,int)</signal>
-   <receiver>addFolderWidget</receiver>
-   <slot>sizeAdjust(QSizePolicy::Policy,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>309</x>
-     <y>201</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>298</x>
-     <y>63</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>widget</sender>
    <signal>addButtonClicked()</signal>
    <receiver>addFolderWidget</receiver>
    <slot>on_Add_Button_Clicked()</slot>
@@ -143,7 +127,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>208</x>
-     <y>198</y>
+     <y>398</y>
     </hint>
    </hints>
   </connection>
@@ -176,6 +160,22 @@
     <hint type="destinationlabel">
      <x>56</x>
      <y>203</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget</sender>
+   <signal>shrinkWindow(QSizePolicy::Policy,int)</signal>
+   <receiver>addFolderWidget</receiver>
+   <slot>sizeAdjust(QSizePolicy::Policy,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>256</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>256</x>
+     <y>199</y>
     </hint>
    </hints>
   </connection>

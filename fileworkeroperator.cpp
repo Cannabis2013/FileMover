@@ -4,6 +4,7 @@ fileWorkerOperator::fileWorkerOperator(QObject *parent):
     Worker (parent)
 {
     isBusy = false;
+    qt_ntfs_permission_lookup++;
 }
 
 bool fileWorkerOperator::removeFileItems(const QFileInfoList filePaths)

@@ -58,7 +58,9 @@ SOURCES += main.cpp\
     conditionWidget.cpp \
     worker.cpp \
     fileworkeroperator.cpp \
-    filepathselectordialog.cpp
+    filepathselectordialog.cpp \
+    mywidget.cpp \
+    mytreeview.cpp
 
 HEADERS  += mainwindow.h \
     messageBox.h \
@@ -93,7 +95,9 @@ HEADERS  += mainwindow.h \
     processcontroller.h \
     worker.h \
     fileworkeroperator.h \
-    filepathselectordialog.h
+    filepathselectordialog.h \
+    mywidget.h \
+    mytreeview.h
 
 FORMS    += mainwindow.ui \
     logger.ui \

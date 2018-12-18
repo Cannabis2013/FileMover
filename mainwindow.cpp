@@ -860,6 +860,7 @@ void mainWindow::clearAccordingToRules(QStringList paths)
                  " Size: " << fileSize.toStdString() << endl;
         }
     };
+    Q_UNUSED(outputFiles);
     QList<rule>rules = rController.ruleslist();
     for(rule r : rules)
     {
@@ -1424,6 +1425,7 @@ void mainWindow::on_actionIndstillinger_triggered()
             this,SLOT(setTimerStatus(bool)));
 
     this->setFocusPolicy(Qt::NoFocus);
+
     settingsWindow->show();
 }
 

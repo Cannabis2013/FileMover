@@ -101,7 +101,7 @@ struct ruleDefinitions
                 QPair<QString,fileFieldCondition>("Type",fileFieldCondition::typeMode),
                 QPair<QString,fileFieldCondition>("Ingen betingelser",fileFieldCondition::nonConditionalMode)};
 
-    const QList<QPair<QString,compareMode> > compares {
+    const QList<QPair<QString,compareMode> > compareOperators {
         QPair<QString,compareMode>("Indeholder følgende",compareMode::contains),
                 QPair<QString,compareMode>("Indeholder ikke følgende",compareMode::dontMatch),
                 QPair<QString,compareMode>("Matcher følgende",compareMode::match),
@@ -132,7 +132,7 @@ struct ruleDefinitions
         }
         if(property == typeProperty::compareProperty || property == typeProperty::everyProperty)
         {
-            for ( QPair<QString,compareMode> pair : compares)
+            for ( QPair<QString,compareMode> pair : compareOperators)
                 resultingList << pair.first;
         }
 
@@ -145,7 +145,7 @@ struct ruleDefinitions
         if(condition == fileFieldCondition::filepathMode ||
                 condition == fileFieldCondition::extensionMode)
         {
-            for(QPair<QString,compareMode> pair : compares) {
+            for(QPair<QString,compareMode> pair : compareOperators) {
                 if(pair.second == compareMode::contains ||
                         pair.second == compareMode::dontMatch ||
                         pair.second == compareMode::match ||
@@ -157,13 +157,13 @@ struct ruleDefinitions
         }
         else if(condition == fileFieldCondition::sizeMode)
         {
-            for(QPair<QString,compareMode> pair : compares)
+            for(QPair<QString,compareMode> pair : compareOperators)
             {
                 if(pair.second == compareMode::bigger ||
-                        compareMode::biggerOrEqual ||
-                        compareMode::equal ||
-                        compareMode::lesserOrEqual ||
-                        compareMode::lesser)
+                        pair.second ==compareMode::biggerOrEqual ||
+                        pair.second ==compareMode::equal ||
+                        pair.second ==compareMode::lesserOrEqual ||
+                        pair.second == compareMode::lesser)
                 {
                     resultingList << pair.first;
                 }
@@ -172,11 +172,11 @@ struct ruleDefinitions
         else if(condition == fileFieldCondition::dateCreatedMode ||
                 condition == fileFieldCondition::dateModifiedMode)
         {
-            for(QPair<QString,compareMode> pair : compares)
+            for(QPair<QString,compareMode> pair : compareOperators)
             {
                 if(pair.second == compareMode::olderThan ||
-                        compareMode::exactDate ||
-                        compareMode::youngerThan)
+                        pair.second == compareMode::exactDate ||
+                        pair.second == compareMode::youngerThan)
                 {
                     resultingList << pair.first;
                 }
@@ -229,7 +229,7 @@ struct ruleDefinitions
 
     QString compareToString(const compareMode mode)
     {
-        for(QPair<QString,compareMode> pair : compares)
+        for(QPair<QString,compareMode> pair : compareOperators)
         {
             if(pair.second == mode)
                 return pair.first;
@@ -239,7 +239,7 @@ struct ruleDefinitions
 
     compareMode compareFromString(const QString string)
     {
-        for(QPair<QString,compareMode> pair : compares)
+        for(QPair<QString,compareMode> pair : compareOperators)
         {
             if(pair.first == string)
                 return pair.second;
@@ -263,9 +263,9 @@ struct ruleDefinitions
             return "Mapper";
         else if(tMode == bW::filesOnly)
             return "Filer";
-        else if(bW::allEntries)
+        else if(tMode == bW::allEntries)
             return "Begge";
-        else if(bW::noTypeSet)
+        else if(tMode == bW::noTypeSet)
             return "none";
         else
             return "error";

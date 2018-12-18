@@ -4,7 +4,7 @@ addFileDialog::addFileDialog(QWidget *parent):
     filepathSelectorDialog(parent)
 {
     view = fView();
-    fileModel = (QFileSystemModel*) view->model();
+    fileModel = static_cast<QFileSystemModel*>(view->model());
 
 
     view->setStyleSheet("QScrollBar::handle"
@@ -20,7 +20,8 @@ void addFileDialog::hideExplorer()
     if(!view->isHidden())
     {
         view->hide();
-        emit shrinkWindow(QSizePolicy::Fixed,72);
+        updateGeometry();
+        emit shrinkWindow(QSizePolicy::Fixed,view->height());
     }
     else
     {

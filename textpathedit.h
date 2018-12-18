@@ -7,6 +7,11 @@
 #include <qcompleter.h>
 #include <QDirModel>
 #include <QVBoxLayout>
+#include <iostream>
+
+#include "mywidget.h"
+
+using namespace std;
 
 
 #include "filepathselectordialog.h"
@@ -18,7 +23,7 @@ class textPathEdit;
 
 // Base class..
 
-class textPathEdit : public QWidget
+class textPathEdit : public myWidget
 {
     Q_OBJECT
 
@@ -33,19 +38,19 @@ public:
 signals:
 
 protected:
+
     void addWidgetToLayout(QWidget *w);
     QVBoxLayout *verticalLayot();
     QLineEdit *line;
     QToolButton *toolButton;
+    Ui::textPathEdit *ui;
 
 protected slots:
     void insertChosenPath(QString p);
     virtual void on_toolButton_clicked();
 
-
-
 private:
-    Ui::textPathEdit *ui;
+
 };
 
 #endif // TEXTPATHEDIT_H

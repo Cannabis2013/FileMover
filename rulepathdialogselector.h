@@ -10,10 +10,9 @@
 class rulePathSelectorDialog : public filepathSelectorDialog
 {
 public:
-    rulePathSelectorDialog(QWidget *parent= nullptr);
+    rulePathSelectorDialog();
 
 protected:
-    virtual bool eventFilter(QObject *watcher,QEvent *event) override;
 
 };
 

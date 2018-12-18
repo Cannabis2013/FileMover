@@ -9,7 +9,7 @@ class addFileDialog : public filepathSelectorDialog
 {
     Q_OBJECT
 public:
-    addFileDialog(QWidget *parent = nullptr);
+    addFileDialog(QWidget *parent);
 
 public slots:
     void hideExplorer();

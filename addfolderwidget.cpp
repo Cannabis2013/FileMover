@@ -9,6 +9,8 @@ addFolderWidget::addFolderWidget() :
     pathWidget = ui->widget_2;
     vLayout = ui->verticalLayout;
 
+    setWindowModality(Qt::ApplicationModal);
+
 }
 
 addFolderWidget::~addFolderWidget()

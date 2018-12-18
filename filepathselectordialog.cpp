@@ -1,8 +1,7 @@
 ﻿#include "filepathselectordialog.h"
 #include "ui_filepathselectordialog.h"
 
-filepathSelectorDialog::filepathSelectorDialog(QWidget *parent) :
-    myWidget(parent),
+filepathSelectorDialog::filepathSelectorDialog() :
     ui(new Ui::filepathSelectorDialog)
 {
     ui->setupUi(this);

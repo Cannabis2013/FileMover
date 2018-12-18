@@ -1,8 +1,9 @@
 ﻿#include "addfiledialog.h"
 
 addFileDialog::addFileDialog(QWidget *parent):
-    filepathSelectorDialog(parent)
+    filepathSelectorDialog()
 {
+    Q_UNUSED(parent);
     view = fView();
     fileModel = static_cast<QFileSystemModel*>(view->model());
 

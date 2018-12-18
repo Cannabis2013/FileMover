@@ -4,6 +4,7 @@
 #include <QFileSystemModel>
 #include <qtreeview.h>
 #include <iostream>
+#include <QDialog>
 
 #include "mywidget.h"
 
@@ -12,12 +13,12 @@ namespace Ui {
 class filepathSelectorDialog;
 }
 
-class filepathSelectorDialog : public myWidget
+class filepathSelectorDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit filepathSelectorDialog(QWidget *parent = nullptr);
+    explicit filepathSelectorDialog();
 
     ~filepathSelectorDialog();
     QTreeView *fView();

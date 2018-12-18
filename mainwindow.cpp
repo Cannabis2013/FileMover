@@ -1424,8 +1424,6 @@ void mainWindow::on_actionIndstillinger_triggered()
     connect(settingsWindow,SIGNAL(enableTimer(bool)),
             this,SLOT(setTimerStatus(bool)));
 
-    this->setFocusPolicy(Qt::NoFocus);
-
     settingsWindow->show();
 }
 

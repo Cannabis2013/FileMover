@@ -16,17 +16,16 @@ class rulePathSelector : public textPathEdit
 public:
     rulePathSelector(QWidget *parent = nullptr);
 
+public slots:
+
+
 protected:
 
 protected slots:
     void on_toolButton_clicked() override;
 
 private:
-    bool hasAllChildrenFocus();
-
     rulePathSelectorDialog*pDialog;
-
-
 };
 
 #endif // RULEPATHSELECTOR_H

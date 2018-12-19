@@ -12,8 +12,6 @@ rulePathSelector::rulePathSelector(QWidget *parent):
     parentWidget()->installEventFilter(this);
     setObjectName("rulePathSelector");
 }
-
-
 void rulePathSelector::on_toolButton_clicked()
 {
     if(pDialog->isHidden())
@@ -32,11 +30,4 @@ void rulePathSelector::on_toolButton_clicked()
     rect.setWidth(this->width());
     rect.setHeight(pDialog->height());
     pDialog->setGeometry(rect);
-
-
-}
-
-bool rulePathSelector::hasAllChildrenFocus()
-{
-
 }

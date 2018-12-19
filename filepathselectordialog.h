@@ -6,8 +6,7 @@
 #include <iostream>
 #include <QDialog>
 
-#include "mywidget.h"
-
+#include "mytreeview.h"
 
 namespace Ui {
 class filepathSelectorDialog;
@@ -26,6 +25,7 @@ public:
 
 
 signals:
+    void on_fileView_focusOut();
     void chosenPath(QString p);
 
 protected slots:

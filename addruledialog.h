@@ -1,7 +1,7 @@
 #ifndef ADDRULEDIALOG_H
 #define ADDRULEDIALOG_H
 
-#include "abstractRuledialog.h"
+#include "abstractRuleDialog.h"
 
 class addRuleDialog : public abstractRuleDialog
 {
@@ -18,6 +18,9 @@ private slots:
     void on_addSubRule_clicked();
     void on_removeSubRule_clicked();
 protected:
+
+private:
+
 
 };
 

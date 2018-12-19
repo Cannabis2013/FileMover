@@ -295,6 +295,4 @@ struct ruleDefinitions
 };
 typedef ruleDefinitions rD;
 
-
-
 #endif // RULEDEFINITIONS_H

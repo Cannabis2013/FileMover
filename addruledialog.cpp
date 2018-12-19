@@ -65,6 +65,7 @@ void addRuleDialog::on_removeSubRule_clicked()
     delete subRuleView->currentItem();
 }
 
+
 void addRuleDialog::on_addButton_clicked()
 {
     rD rDefs;

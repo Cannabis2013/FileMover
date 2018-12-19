@@ -13,9 +13,7 @@ filepathSelectorDialog::filepathSelectorDialog() :
     fileView->setModel(model);
     fileView->setColumnWidth(0,128);
     for (int i = 1; i < 4; ++i)
-    {
         fileView->setColumnHidden(i,true);
-    }
 }
 
 filepathSelectorDialog::~filepathSelectorDialog()

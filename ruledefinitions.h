@@ -247,7 +247,6 @@ struct ruleDefinitions
         return compareMode::noCompareModeSet;
     }
 
-
     static QStringList typeList()
     {
         return QStringList {"Mapper",
@@ -269,18 +268,6 @@ struct ruleDefinitions
             return "none";
         else
             return "error";
-    }
-
-    static compareMode dateModeFromString(const QString str)
-    {
-        if(str == "Ældre end")
-            return compareMode::olderThan;
-        else if(str == "Præcis dato")
-            return compareMode::exactDate;
-        else if(str == "Yngre end")
-            return compareMode::youngerThan;
-
-        return compareMode::noDateSet;
     }
 
     static Worker::iteratorMode typeModeFromString(const QString str)

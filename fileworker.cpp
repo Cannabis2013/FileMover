@@ -20,24 +20,24 @@ void fileWorker::calcSizeOfIndividualFolderItems(QStringList l)
     }
     QList<fileObject> resultingList = sizeOfFolderContentItems(l);
     emit sendFolderContentItems(resultingList);
-
 }
 
 void fileWorker::beginProcess()
 {
     isBusy = true;
+    bool isDone = true;
     while(!pControllerReference->queueIsEmpty())
     {
         processItems item = pControllerReference->takeItem();
         if(item.ruleMode == rD::Delete || item.ruleMode == rD::none)
-            removeFileItems(item.list);
+            isDone = removeFileItems(item.list) ? isDone : false;
         else if(item.ruleMode == rD::Move)
-            moveEntities(item.list,item.destinations);
+            isDone = moveEntities(item.list,item.destinations) ? isDone : false;
         else if(item.ruleMode == rD::Copy)
-            copyEntities(item.list,item.destinations);
+            isDone = copyEntities(item.list,item.destinations) ? isDone : false;
     }
     isBusy = false;
-    emit jobDone(true);
+    emit jobDone(isDone);
 }
 
 

@@ -823,6 +823,9 @@ void mainWindow::clearAccordingToRules(QStringList paths)
             rPaths = paths;
         QFileInfoList allFiles;
         if(!recursive)
+        /*Add items to a "QFileInfoList" in a non-recursive manner,
+         * which means that directories, excluding their content, will be added
+         */
         {
             for(QString path : rPaths)
             {
@@ -830,7 +833,6 @@ void mainWindow::clearAccordingToRules(QStringList paths)
                 allFiles += dirContent.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System);
             }
         }
-
         // Add files to a QFileInfoList in a recursive manner, but excludes directories
         else
         {
@@ -997,7 +999,7 @@ void mainWindow::readRulesFromReg()
 
             if(sRule.fieldCondition == rD::typeMode)
             {
-                sRule.typeMode = static_cast<bW::iteratorMode>(s.value("Iteratormode",0).toInt());
+                sRule.typeMode = static_cast<wrk::iteratorMode>(s.value("Iteratormode",0).toInt());
             }
 
             r.subRules.append(sRule);

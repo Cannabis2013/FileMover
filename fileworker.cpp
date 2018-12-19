@@ -147,13 +147,3 @@ void fileWorker::countFolders(QStringList Path)
     }
     emit antalFiler(taeller);
 }
-
-void processController::addToQueue(processItems pI)
-{
-    insertItem(pI);
-}
-
-processController::~processController()
-{
-    delete this;
-}

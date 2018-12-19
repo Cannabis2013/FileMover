@@ -33,6 +33,6 @@ public:
     void checkAndCorrectForBackslash(QString *path);
     QString checkAndCorrectForBackslash(QString path);
     };
-typedef Worker bW;
+    typedef Worker wrk;
 
 #endif // WORKER_H

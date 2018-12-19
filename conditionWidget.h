@@ -42,7 +42,7 @@ private:
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
     void setFixedDate(QPair<rD::compareMode,myDateTime> dt);
     void setIntervalDate(QPair<myDateTime,myDateTime> iDate);
-    void setTypeValues(bW::iteratorMode tMode);
+    void setTypeValues(wrk::iteratorMode tMode);
 
     /*
      * General view related..
@@ -83,7 +83,7 @@ private:
     QPair<rD::compareMode,myDateTime>fixedConditionalDate() const;
     QPair<myDateTime,myDateTime>intervalDates() const;
     // Get type values..
-    bW::iteratorMode typeMode() const;
+    wrk::iteratorMode typeMode() const;
 
     // Member variables...
     QCheckBox *folderCheckBox,*fileCheckBox;

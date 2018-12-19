@@ -83,10 +83,10 @@ private slots:
     void insertTreeItems(QStringList pathList);
 
     // Buttons..
-    void on_addBut_clicked();
-    void on_clearButt_clicked();
-    void on_countButt_clicked();
-    void on_delButt_clicked();
+    void on_addBut_clicked(); // Add path to "mainFolderView"
+    void on_clearButt_clicked(); // The button slot that starts the "clear process"
+    void on_countButt_clicked(); // Count number of items in the selected "path"
+    void on_delButt_clicked(); // Delete an item in "mainFolderView"
 
     // countTimer related..
     void timerCount();

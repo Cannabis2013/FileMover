@@ -6,7 +6,6 @@
 #include <iostream>
 #include <QDialog>
 
-#include "mytreeview.h"
 
 namespace Ui {
 class filepathSelectorDialog;

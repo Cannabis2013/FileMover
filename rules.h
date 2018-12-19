@@ -10,7 +10,7 @@ struct subRule
     // Enumerated values..
     rD::copyMode copymode = rD::noMode;
     rD::compareMode fileCompareMode = rD::noCompareModeSet;
-    bW::iteratorMode typeMode = fW::noTypeSet;
+    wrk::iteratorMode typeMode = fW::noTypeSet;
     rD::fileFieldCondition fieldCondition = rD::nonConditionalMode;
 
     QPair<int,QString>sizeLimit;

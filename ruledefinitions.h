@@ -257,15 +257,15 @@ struct ruleDefinitions
     {
         return typeList().at(index);
     }
-    static QString typeFromEnum(bW::iteratorMode tMode)
+    static QString typeFromEnum(wrk::iteratorMode tMode)
     {
-        if(tMode == bW::folderOnly)
+        if(tMode == wrk::folderOnly)
             return "Mapper";
-        else if(tMode == bW::filesOnly)
+        else if(tMode == wrk::filesOnly)
             return "Filer";
-        else if(tMode == bW::allEntries)
+        else if(tMode == wrk::allEntries)
             return "Begge";
-        else if(tMode == bW::noTypeSet)
+        else if(tMode == wrk::noTypeSet)
             return "none";
         else
             return "error";

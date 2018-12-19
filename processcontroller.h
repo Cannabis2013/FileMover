@@ -23,22 +23,25 @@ struct processItems
 class processController : public QObject
 {
     Q_OBJECT
-public slots:
-    void addToQueue(processItems pI);
+
+public:
+    ~processController()
+    {
+        delete this;
+    }
+
+    void addToQueue(processItems pI)
+    {
+        processQeue.append(pI);
+        emit wakeUpProcess();
+    }
 
 signals:
     void wakeUpProcess();
     void processFinished();
 
-protected:
-    virtual ~processController();
 
 private:
-    void insertItem(processItems pI)
-    {
-        processQeue.append(pI);
-        emit wakeUpProcess();
-    }
     processItems takeItem()
     {
         if(processQeue.isEmpty())

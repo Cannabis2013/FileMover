@@ -957,50 +957,28 @@ void mainWindow::readRulesFromReg()
             sRule.fieldCondition = static_cast<rD::fileFieldCondition>(s.value("Condition","").toInt());
             sRule.fileCompareMode = static_cast<rD::compareMode>(s.value("Comparemode",0).toInt());
 
-            if(sRule.fieldCondition == rD::filepathMode ||
-                    sRule.fieldCondition == rD::extensionMode)
-            {
-                sRule.matchWholeWords = s.value("Matchwholewords",false).toBool();
-                sRule.keyWords = splitString(s.value("Keywords","").toString());
-            }
-            if(sRule.fieldCondition == rD::sizeMode && sRule.fileCompareMode != rD::interval)
-            {
-                sRule.sizeLimit.first = s.value("Sizelimit",0).toInt();
-                sRule.sizeLimit.second = s.value("Sizelimitunit","kb").toString();
-            }
+            sRule.matchWholeWords = s.value("Matchwholewords",false).toBool();
+            sRule.keyWords = splitString(s.value("Keywords","").toString());
 
-            if(sRule.fieldCondition == rD::sizeMode && sRule.fileCompareMode == rD::interval)
-            {
-                s.beginGroup("Sizelimits");
-                sRule.sizeIntervalLimits.first.first = s.value("Minsizeinterval",0).toInt();
-                sRule.sizeIntervalLimits.first.second = s.value("Minsizeunitinterval","kb").toString();
-                sRule.sizeIntervalLimits.second.first = s.value("Maxsizeinterval",0).toInt();
-                sRule.sizeIntervalLimits.second.second = s.value("Maxsizeunitinterval","kb").toString();
-                s.endGroup();
-            }
+            sRule.sizeLimit.first = s.value("Sizelimit",0).toInt();
+            sRule.sizeLimit.second = s.value("Sizelimitunit","kb").toString();
 
-            if((sRule.fieldCondition == rD::dateCreatedMode ||
-                sRule.fieldCondition == rD::dateModifiedMode) &&
-                    sRule.fileCompareMode != rD::interval)
-            {
-                sRule.fixedDate.first = static_cast<rD::compareMode>(s.value("Comparemode",0).toInt());
-                sRule.fixedDate.second = QDateTime::fromString(s.value("Datetime","").toString(),"dd.MM.yyyy");
-            }
+            s.beginGroup("Sizelimits");
+            sRule.sizeIntervalLimits.first.first = s.value("Minsizeinterval",0).toInt();
+            sRule.sizeIntervalLimits.first.second = s.value("Minsizeunitinterval","kb").toString();
+            sRule.sizeIntervalLimits.second.first = s.value("Maxsizeinterval",0).toInt();
+            sRule.sizeIntervalLimits.second.second = s.value("Maxsizeunitinterval","kb").toString();
+            s.endGroup();
 
-            if((sRule.fieldCondition == rD::dateCreatedMode ||
-                sRule.fieldCondition == rD::dateModifiedMode) &&
-                    sRule.fileCompareMode == rD::interval)
-            {
-                s.beginGroup("Datelimits");
-                sRule.intervalDate.first = myDateTime::fromString(s.value("Startdate","01.01.2000").toString());
-                sRule.intervalDate.second = myDateTime::fromString(s.value("Enddate","01.01.2000").toString());
-                s.endGroup();
-            }
+            sRule.fixedDate.first = static_cast<rD::compareMode>(s.value("Comparemode",0).toInt());
+            sRule.fixedDate.second = QDateTime::fromString(s.value("Datetime","").toString(),"dd.MM.yyyy");
 
-            if(sRule.fieldCondition == rD::typeMode)
-            {
-                sRule.typeMode = static_cast<wrk::iteratorMode>(s.value("Iteratormode",0).toInt());
-            }
+            s.beginGroup("Datelimits");
+            sRule.intervalDate.first = myDateTime::fromString(s.value("Startdate","01.01.2000").toString());
+            sRule.intervalDate.second = myDateTime::fromString(s.value("Enddate","01.01.2000").toString());
+            s.endGroup();
+
+            sRule.typeMode = static_cast<wrk::iteratorMode>(s.value("Iteratormode",0).toInt());
 
             r.subRules.append(sRule);
         }
@@ -1040,48 +1018,27 @@ void mainWindow::writeRulesToReg()
             s.setValue("Condition",sRule.fieldCondition);
             s.setValue("Comparemode",sRule.fileCompareMode);
 
-            if(sRule.fieldCondition == rD::filepathMode ||
-                    sRule.fieldCondition == rD::extensionMode)
-            {
-                s.setValue("Matchwholewords",sRule.matchWholeWords);
-                s.setValue("Keywords",mergeStringList(sRule.keyWords));
-            }
+            s.setValue("Matchwholewords",sRule.matchWholeWords);
+            s.setValue("Keywords",mergeStringList(sRule.keyWords));
 
-            if(sRule.fieldCondition == rD::sizeMode && sRule.fileCompareMode != rD::interval)
-            {
-                s.setValue("Sizelimit",sRule.sizeLimit.first);
-                s.setValue("Sizelimitunit",sRule.sizeLimit.second);
-            }
-            if(sRule.fieldCondition == rD::sizeMode && sRule.fileCompareMode == rD::interval)
-            {
-                s.beginGroup("Sizelimits");
-                s.setValue("Minsizeinterval",sRule.sizeIntervalLimits.first.first);
-                s.setValue("Minsizeunitinterval",sRule.sizeIntervalLimits.first.second);
-                s.setValue("Maxsizeinterval",sRule.sizeIntervalLimits.second.first);
-                s.setValue("Maxsizeunitinterval",sRule.sizeIntervalLimits.second.second);
-                s.endGroup();
-            }
+            s.setValue("Sizelimit",sRule.sizeLimit.first);
+            s.setValue("Sizelimitunit",sRule.sizeLimit.second);
 
-            if((sRule.fieldCondition == rD::dateCreatedMode ||
-                sRule.fieldCondition == rD::dateModifiedMode) &&
-                    sRule.fileCompareMode != rD::interval)
-            {
-                s.setValue("Datetime",sRule.fixedDate.second.toString("dd.MM.yyyy"));
-            }
+            s.beginGroup("Sizelimits");
+            s.setValue("Minsizeinterval",sRule.sizeIntervalLimits.first.first);
+            s.setValue("Minsizeunitinterval",sRule.sizeIntervalLimits.first.second);
+            s.setValue("Maxsizeinterval",sRule.sizeIntervalLimits.second.first);
+            s.setValue("Maxsizeunitinterval",sRule.sizeIntervalLimits.second.second);
+            s.endGroup();
 
-            if((sRule.fieldCondition == rD::dateCreatedMode ||
-                sRule.fieldCondition == rD::dateModifiedMode) &&
-                    sRule.fileCompareMode == rD::interval)
-            {
-                s.beginGroup("Datelimits");
-                s.setValue("Startdate",sRule.intervalDate.first.toString("dd.MM.yyyy"));
-                s.setValue("Enddate",sRule.intervalDate.second.toString("dd.MM.yyyy"));
-                s.endGroup();
-            }
-            if(sRule.fieldCondition == rD::typeMode)
-            {
-                s.setValue("Iteratormode",sRule.typeMode);
-            }
+            s.setValue("Datetime",sRule.fixedDate.second.toString("dd.MM.yyyy"));
+
+            s.beginGroup("Datelimits");
+            s.setValue("Startdate",sRule.intervalDate.first.toString("dd.MM.yyyy"));
+            s.setValue("Enddate",sRule.intervalDate.second.toString("dd.MM.yyyy"));
+            s.endGroup();
+
+            s.setValue("Iteratormode",sRule.typeMode);
         }
         s.endArray();
     }

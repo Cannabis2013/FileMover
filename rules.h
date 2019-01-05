@@ -17,7 +17,7 @@ struct subRule
     QPair<QPair<int,QString>,QPair<int,QString>> sizeIntervalLimits;
     QPair<rD::compareMode,myDateTime>fixedDate;
     QPair<myDateTime,myDateTime>intervalDate;
-    bool matchWholeWords = false, extension = false;
+    bool matchWholeWords = false;
     QStringList keyWords;
 
     // Methods..

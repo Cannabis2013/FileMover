@@ -56,16 +56,7 @@ void conditionWidget::setConditionalFixedSize(QPair<int, QString> fSize, ruleDef
 
     ui->fixedSizeSelector->setValue(fSize.first);
     ui->fixedSizeUnitSelector->setCurrentText(fSize.second);
-    if(cMode == rD::bigger)
-        ui->fixedSizeOperatorSelector->setCurrentText("Større end");
-    else if(cMode == rD::biggerOrEqual)
-        ui->fixedSizeOperatorSelector->setCurrentText("Større eller lig med");
-    else if(cMode == rD::equal)
-        ui->fixedSizeOperatorSelector->setCurrentText("Lig med");
-    else if(cMode == rD::lesserOrEqual)
-        ui->fixedSizeOperatorSelector->setCurrentText("Mindre eller lig med");
-    else if(cMode == rD::lesser)
-        ui->fixedSizeOperatorSelector->setCurrentText("Mindre end");
+    ui->fixedSizeOperatorSelector->setCurrentText(rDefs.compareToString(cMode));
 }
 
 void conditionWidget::setConditionalIntervalSize(QPair<QPair<int, QString>, QPair<int, QString> > iSize)

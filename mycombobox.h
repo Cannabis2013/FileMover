@@ -18,9 +18,6 @@ public:
         rowIndex = parentRowIndex;
         connect(this,SIGNAL(currentIndexChanged(int)),this,SLOT(ListChanged(int)));
     }
-    myComboBox()
-    {
-    }
     QStringList items() const
     {
         QStringList allItems;

@@ -67,6 +67,11 @@ signals:
     void processDirectory(directoryItem item);
     void processDirectories(QStringList paths);
 
+    // DetailedFolderView related..
+
+    void processPath(QString path);
+    void processPaths(QStringList paths);
+
 protected:
     void closeEvent(QCloseEvent *cE);
     void keyPressEvent(QKeyEvent *kE);

@@ -191,8 +191,8 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *parent) :
     // Connections..
 
     // Add folder related..
-    connect(&sController,&settingsController::processPath,fWorker,&fileWorker::processFileInformation);
-    connect(&sController,&settingsController::processPaths,fWorker,&fileWorker::processFileInformations);
+    connect(this,&mainWindow::processPath,fWorker,&fileWorker::processFileInformation);
+    connect(this,&mainWindow::processPaths,fWorker,&fileWorker::processFileInformations);
 
     connect(fWorker,&fW::processFinished,this,&mainWindow::recieveDirectoryItem);
     connect(fWorker,&fW::multipleProcessFinished,this,&mainWindow::recieveDirectoryItems);
@@ -623,7 +623,8 @@ void mainWindow::insertTreeItem(QString path)
 
 void mainWindow::insertTreeItems(QStringList pathList)
 {
-    sController.insertPaths(directoriesToAppend);
+    sController.insertPaths(pathList);
+    emit processPaths(pathList);
     for(QString path : pathList)
     {
         QStringList text {path};

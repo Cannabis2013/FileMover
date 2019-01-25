@@ -142,8 +142,7 @@ void settingsWindow::recieveModifiedRule(rule r, int index)
 
 void settingsWindow::on_insertRule_2_clicked()
 {
-    QStringList folderPaths = sControl->Paths();
-    addRuleDialog *ruleDialog = new addRuleDialog(folderPaths);
+    addRuleDialog *ruleDialog = new addRuleDialog(sControl->Paths());
     connect(ruleDialog,&addRuleDialog::sendRule,this,&settingsWindow::recieveRule);
     ruleDialog->show();
 }

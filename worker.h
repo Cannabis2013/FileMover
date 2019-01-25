@@ -33,6 +33,11 @@ public:
     // Basic string operations..
     void checkAndCorrectForBackslash(QString *path);
     QString checkAndCorrectForBackslash(QString path);
+
+    // Filename operations
+
+    static bool containsTrailingBackslash(QString path);
+    static QString directoryName(QString path);
     };
     typedef Worker wrk;
 

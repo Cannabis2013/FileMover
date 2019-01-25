@@ -292,13 +292,12 @@ QTreeWidgetItem *fileWorkerOperator::scanDir(QString p)
     if(!info.isDir() && !info.isFile())
         return nullptr;
     QTreeWidgetItem *result = new QTreeWidgetItem(createHeader(p));
-    QDirIterator ite(p);
+    QDirIterator ite(p,QDir::NoDotAndDotDot | QDir::AllEntries);
     while(ite.hasNext())
     {
         QFileInfo fInfo = ite.next();
-        if(fInfo.fileName() == "." || fInfo.fileName() == "..")
-        {}
-        else if(fInfo.isDir())
+
+        if(fInfo.isDir())
         {
             QTreeWidgetItem *dirItem = scanDir(fInfo.absoluteFilePath());
             result->addChild(dirItem);
@@ -323,8 +322,8 @@ QStringList fileWorkerOperator::createHeader(QFileInfo fi)
         QDirIterator i(fi.filePath(),QDirIterator::Subdirectories);
         while(i.hasNext())
             sz += QFile(i.next()).size();
-        headers << fi.fileName();
-        headers << fi.absolutePath();
+        headers << directoryName(fi.absoluteFilePath());
+        headers << fi.absoluteFilePath();
         headers << "";
         headers << "Mappe";
         if(sz <=mp)

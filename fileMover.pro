@@ -85,7 +85,6 @@ HEADERS  += mainwindow.h \
     rulepathdialogselector.h \
     abstractRuleDialog.h \
     addruledialog.h \
-    pathcontroller.h \
     editruledialog.h \
     conditionWidget.h \
     argumentvalues.h \

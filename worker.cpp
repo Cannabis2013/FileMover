@@ -14,6 +14,33 @@ QString Worker::checkAndCorrectForBackslash(QString path)
         return path;
 }
 
+bool Worker::containsTrailingBackslash(QString path)
+{
+    int lastIndex = path.length() - 1;
+    if(path.at(lastIndex) == '/' || path.at(lastIndex) == '\\')
+        return true;
+    else
+        return false;
+}
+
+QString Worker::directoryName(QString path)
+{
+    QString result;
+
+    if(containsTrailingBackslash(path))
+        path.remove(path.length() -1,1);
+
+    for (int i = path.length()-1; i >= 0; --i) {
+        QChar c = path.at(i);
+        if(c == '/' || c == '\\')
+            i = -1;
+        else {
+            result.prepend(c);
+        }
+    }
+    return result;
+}
+
 Worker::Worker(QObject *parent):
     QObject(parent)
 {

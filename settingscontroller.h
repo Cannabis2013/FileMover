@@ -7,7 +7,6 @@
 #include "rulecontroller.h"
 #include "qlist.h"
 #include "myIcon.h"
-#include "pathcontroller.h"
 
 /*
  * Basic settings
@@ -26,8 +25,6 @@ class settingsController : public QObject
 {
     Q_OBJECT
 public:
-    settingsController();
-
     // void members..
     void setCloseOnExit(bool enable){settings.closeOnExit = enable;}
     void setRulesEnabled(bool enable){settings.rulesEnabled = enable;}
@@ -52,20 +49,14 @@ public:
     // Icons related..
     QList<myIcon>trayIcons() const {return settings.trayIconList;}
 
-signals:
-    void sendPathToMainWindow(QString path);
-    void sendPathsToMainWindow(QStringList paths);
-    void processPath(QString path);
-    void processPaths(QStringList paths);
-
 private:
 
     // Non-void Methods..
 
-    QStringList Paths() const{return pControl->Paths();}
+    QStringList Paths() const{return mainFolderPaths;}
 
-    pathController *pControl;
     settingsContainer settings;
+    QStringList mainFolderPaths;
 
     friend class settingsWindow;
 };

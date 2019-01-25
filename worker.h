@@ -7,6 +7,7 @@
 #include <QTreeWidgetItem>
 #include <qdatetime.h>
 #include <qpair.h>
+#include <math.h>
 
 class Worker : public QObject
 {

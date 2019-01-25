@@ -28,6 +28,7 @@
 #include <qtextstream.h>
 #include <qthreadpool.h>
 #include <qsharedpointer.h>
+#include <math.h>
 
 #include "messageBox.h"
 #include "settingsWindow.h"

@@ -6,9 +6,16 @@ settingsController::settingsController()
 
     // Connections
 
-    // pathController folderpaths related..
-    connect(pControl,&pathController::updateList,this,&settingsController::sendPathToMainWindow);
-    connect(pControl,&pathController::updateLists,this,&settingsController::sendPathsToMainWindow);
-    connect(pControl,&pathController::updateList,this,&settingsController::processPath);
-    connect(pControl,&pathController::updateLists,this,&settingsController::processPaths);
+}
+
+void settingsController::insertPath(QString path)
+{
+    emit processPath(path);
+    pControl->insertPath(path);
+}
+
+void settingsController::insertPaths(QStringList paths)
+{
+    emit processPaths(paths);
+    pControl->insertPaths(paths);
 }

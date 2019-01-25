@@ -193,8 +193,6 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *parent) :
     // Add folder related..
     connect(&sController,&settingsController::processPath,fWorker,&fileWorker::processFileInformation);
     connect(&sController,&settingsController::processPaths,fWorker,&fileWorker::processFileInformations);
-    connect(&sController,&settingsController::sendPathToMainWindow,this,&mainWindow::insertTreeItem);
-    connect(&sController,&settingsController::sendPathsToMainWindow,this,&mainWindow::insertTreeItems);
 
     connect(fWorker,&fW::processFinished,this,&mainWindow::recieveDirectoryItem);
     connect(fWorker,&fW::multipleProcessFinished,this,&mainWindow::recieveDirectoryItems);
@@ -253,7 +251,7 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *parent) :
 
     // Add folders to mainFolderView..
     wThread->start();
-    sController.insertPaths(directoriesToAppend);
+    insertTreeItems(directoriesToAppend);
 }
 
 
@@ -620,19 +618,18 @@ void mainWindow::insertTreeItem(QString path)
     QTreeWidgetItem *treeItem = new QTreeWidgetItem(text);
     treeItem->setIcon(0,QIcon(":/My Images/Ressources/Folder.png"));
     treeItem->font(0).setPointSize(16);
-    //treeItem->setFont(0,QFont("",16));
     mainFolderView->addTopLevelItem(treeItem);
 }
 
 void mainWindow::insertTreeItems(QStringList pathList)
 {
+    sController.insertPaths(directoriesToAppend);
     for(QString path : pathList)
     {
         QStringList text {path};
         QTreeWidgetItem *treeItem = new QTreeWidgetItem(text);
         treeItem->setIcon(0,QIcon(":/My Images/Ressources/File.png"));
         treeItem->font(0).setPointSize(16);
-        //treeItem->setFont(0,QFont("",16));
         mainFolderView->addTopLevelItem(treeItem);
     }
 }

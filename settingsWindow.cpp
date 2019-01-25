@@ -142,7 +142,7 @@ void settingsWindow::recieveModifiedRule(rule r, int index)
 
 void settingsWindow::on_insertRule_2_clicked()
 {
-    QStringList folderPaths = sControl->allPaths();
+    QStringList folderPaths = sControl->Paths();
     addRuleDialog *ruleDialog = new addRuleDialog(folderPaths);
     connect(ruleDialog,&addRuleDialog::sendRule,this,&settingsWindow::recieveRule);
     ruleDialog->show();
@@ -223,7 +223,7 @@ void settingsWindow::on_editRule_2_clicked()
     int cIndex = rulesView->currentIndex().row();
 
     rule r = rControl->rules.at(cIndex);
-    QStringList folderPaths = sControl->allPaths();
+    QStringList folderPaths = sControl->Paths();
 
     editRuleDialog *editDialog = new editRuleDialog(r,cIndex,folderPaths);
 

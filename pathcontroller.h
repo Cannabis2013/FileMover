@@ -9,30 +9,27 @@ class pathController : public QObject
 Q_OBJECT
 public:
     // Insert..
-    void insertPath(const QString path)
+
+    void insertPath(QString p)
     {
-        allPaths << path;
-        emit updateList(path);
+        paths << p;
     }
-    void insertPaths(QStringList paths)
+
+    void insertPaths(QStringList p)
     {
-        allPaths<< paths;
-        emit updateLists(paths);
+        paths << p;
     }
     //Remove..
-    void removePathAt(int i) {allPaths.removeAt(i);}
-    QString takePathAt(int i) {return allPaths.takeAt(i);}
+    void removePathAt(int i) {paths.removeAt(i);}
+    QString takePathAt(int i) {return paths.takeAt(i);}
 
     // Get..
 
-    QString getPath(int i) const {return allPaths.at(i);}
-    QStringList getAllPaths() const{return allPaths;}
+    QString Path(int i) const {return paths.at(i);}
+    QStringList Paths() const{return paths;}
 
-signals:
-    void updateList(QString p);
-    void updateLists(QStringList p);
 private:
-    QStringList allPaths;
+    QStringList paths;
 
     friend class settingsController;
 };

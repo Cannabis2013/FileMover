@@ -40,9 +40,6 @@ void fileWorker::beginProcess()
     emit jobDone(isDone);
 }
 
-
-
-
 void fileWorker::processFileInformation(QString path)
 {
     if(isBusy)
@@ -59,27 +56,6 @@ void fileWorker::processFileInformation(QString path)
     item.fileCount = fileCount(path);
     item.allFiles = scanDir(path);
     item.sufList = getListOfSuffixOccuriencies(path);
-
-    emit processFinished(item);
-}
-
-void fileWorker::processDirectoryInformation(directoryItem item)
-{
-    if(isBusy)
-    {
-        emit infoReport(busyMessage);
-        return;
-    }
-    emit infoReport("Programmet er gået i gang med at udregne diverse størrelser. /n Hav tålmodighed. :-D");
-    QString p = item.path,
-            denotation;
-    double directorySize = convertSizeToAppropriateUnits(folderSize(p),denotation);
-    item.dirSize = QString::number(directorySize) + " " + denotation;
-
-    item.dirCount = folderCount(p);
-    item.fileCount = fileCount(p);
-    item.allFiles = scanDir(p);
-    item.sufList = getListOfSuffixOccuriencies(p);
 
     emit processFinished(item);
 }

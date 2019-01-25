@@ -40,8 +40,8 @@ public:
 
     // Path Related..
 
-    void insertPath(QString path){pControl->insertPath(path);}
-    void insertPaths(QStringList paths){pControl->insertPaths(paths);}
+    void insertPath(QString path);
+    void insertPaths(QStringList paths);
 
     // non-void members..
     bool closeOnQuit() const {return settings.closeOnExit;}
@@ -62,7 +62,7 @@ private:
 
     // Non-void Methods..
 
-    QStringList allPaths() const{return pControl->getAllPaths();}
+    QStringList Paths() const{return pControl->Paths();}
 
     pathController *pControl;
     settingsContainer settings;

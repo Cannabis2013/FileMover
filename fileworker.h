@@ -37,7 +37,6 @@ public slots:
      * Add directories
     */
 
-    void processDirectoryInformation(directoryItem item);
     void processFileInformation(QString path);
     void processFileInformations(QStringList paths);
 signals:

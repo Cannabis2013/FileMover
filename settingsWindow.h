@@ -22,6 +22,7 @@
 #include "addruledialog.h"
 #include "editruledialog.h"
 #include "settingscontroller.h"
+#include "widgetform.h"
 
 using namespace std;
 
@@ -29,12 +30,12 @@ namespace Ui {
 class settingsWindow;
 }
 
-class settingsWindow : public QDialog
+class settingsWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit settingsWindow(sC*sCon,ruleController *rCon);
+    explicit settingsWindow(QWidget *parent,sC*sCon,ruleController *rCon);
     ~settingsWindow();
 
     enum ruleMode{ruleOut,parallelMode};
@@ -119,6 +120,9 @@ private:
     QStringList ruleParentHeaderData,ruleChildrenHeaderData;
     QTreeWidget *rulesView;
     QList<rule>rules;
+    QWidget *mView;
 };
+
+typedef settingsWindow sI;
 
 #endif // settingsWindow_H

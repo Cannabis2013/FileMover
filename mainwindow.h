@@ -41,9 +41,6 @@ namespace Ui {
 class mainWindow;
 }
 
-
-typedef settingsWindow sI;
-
 class mainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -67,7 +64,11 @@ signals:
     void processDirectory(directoryItem item);
     void processDirectories(QStringList paths);
 
-    // DetailedFolderView related..
+    /*
+     * DetailedFolderView related..
+     * Connected to "FileWorker::processFileInformation/FileWorker::processFileInformations"..
+     * Is then returned to "mainWindow::recieveDirectoryItem/mainWindow::recieveDirectoryItems"..
+     */
 
     void processPath(QString path);
     void processPaths(QStringList paths);

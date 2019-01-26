@@ -1,26 +1,24 @@
 ﻿#include "settingsWindow.h"
 #include "ui_settingsWindow.h"
 
-settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon):
+settingsWindow::settingsWindow(QWidget *parent,settingsController *sCon, ruleController *rCon):
+    QWidget(parent),
     ui(new Ui::settingsWindow)
 {
     ui->setupUi(this);
 
-    view = ui->listWidget_2;
     closeOnBox = ui->closeOnExitBox_2;
     countTimerEnableBox = ui->countTimerActivateBox_2;
     countTimerInterval = ui->countTImerIntervalEdit_2;
     enableRules = ui->enableRules_2;
+    mView = ui->mainWidget;
     rControl = rCon;
-    sControl = sCon;
-    vScroll = new QScrollBar(Qt::Vertical);
     rulesView = ui->ruleItemView_2;
     ruleParentHeaderData= QStringList{"Regel titel","Handling","Mappe sti"};
     ruleChildrenHeaderData = QStringList{"Betingelse","Betingelses metode","Værdi"};
-    this->setWindowFlags(Qt::FramelessWindowHint);
-
-
-    setWindowModality(Qt::ApplicationModal);
+    sControl = sCon;
+    view = ui->listWidget_2;
+    vScroll = new QScrollBar(Qt::Vertical);
 
     // setValues..
 
@@ -50,6 +48,10 @@ settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon):
 
     connect(view,SIGNAL(activated(QModelIndex)),
             this,SLOT(viewClicked(QModelIndex)));
+
+    WidgetForm *p = static_cast<WidgetForm*>(parent);
+    p->setWidget(this);
+
 }
 
 settingsWindow::~settingsWindow()
@@ -91,15 +93,17 @@ void settingsWindow::changeEvent(QEvent *event)
 
 void settingsWindow::mousePressEvent(QMouseEvent *event)
 {
-    mOffset = event->pos();
+    //mOffset = event->pos();
 }
 
 void settingsWindow::mouseMoveEvent(QMouseEvent *event)
 {
+    /*
     if(event->buttons() & Qt::LeftButton)
     {
         move(mapToParent(event->pos() - mOffset));
     }
+    */
 }
 
 void settingsWindow::closeEvent(QCloseEvent *event)
@@ -165,6 +169,7 @@ void settingsWindow::updateRulesView()
 
 void settingsWindow::on_fortrydKnap_2_clicked()
 {
+    emit close();
     close();
 }
 

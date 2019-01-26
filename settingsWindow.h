@@ -35,7 +35,7 @@ class settingsWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit settingsWindow(QWidget *parent,sC*sCon,ruleController *rCon);
+    explicit settingsWindow(QWidget *formFrame,sC*sCon,ruleController *rCon);
     ~settingsWindow();
 
     enum ruleMode{ruleOut,parallelMode};
@@ -64,8 +64,6 @@ signals:
 protected:
     void focusOutEvent(QFocusEvent *event);
     void changeEvent(QEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
     void closeEvent(QCloseEvent *event);
 private slots:
 

@@ -1,7 +1,7 @@
 #include "abstractRuleDialog.h"
 #include "ui_abstractRuledialog.h"
 
-abstractRuleDialog::abstractRuleDialog(QStringList folderPaths) :
+abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *frameForm) :
     ui(new Ui::abstractRuleDialog)
 {
     ui->setupUi(this);
@@ -18,6 +18,7 @@ abstractRuleDialog::abstractRuleDialog(QStringList folderPaths) :
     condWidget = ui->conditionView;
     rD ruleDefs;
 
+
     QStringList actionList = ruleDefs.propertyListToStrings(rD::actionProperty),
             conditionList = ruleDefs.propertyListToStrings(rD::conditionProperty),
             unitList = ruleDefs.sizeUnits();
@@ -32,10 +33,16 @@ abstractRuleDialog::abstractRuleDialog(QStringList folderPaths) :
     conditionBox->setCurrentText("Ingen betingelser");
     conditionBox->currentIndexChanged("Ingen betingelser");
 
-    setWindowModality(Qt::ApplicationModal);
+    if(frameForm != nullptr)
+    {
+        setWindowFlag(Qt::FramelessWindowHint);
+        setParent(frameForm);
+        WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
+        p->setWidget(this,"Regler");
+    }
 }
 
-abstractRuleDialog::abstractRuleDialog(rule r,QStringList folderPaths):
+abstractRuleDialog::abstractRuleDialog(rule r, QStringList folderPaths, QWidget *frameForm):
     ui(new Ui::abstractRuleDialog)
 {
     ui->setupUi(this);
@@ -151,6 +158,11 @@ void abstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
     conditionBox->currentIndexChanged(rDefs.fieldConditionToString( clickedSubRule.fieldCondition));
 
     updateConditionView(clickedSubRule);
+}
+
+void abstractRuleDialog::closeEvent(QCloseEvent *event)
+{
+    emit destroyed();
 }
 
 

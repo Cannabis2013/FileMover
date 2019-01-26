@@ -1,8 +1,8 @@
 ﻿#include "settingsWindow.h"
 #include "ui_settingsWindow.h"
 
-settingsWindow::settingsWindow(QWidget *parent,settingsController *sCon, ruleController *rCon):
-    QWidget(parent),
+settingsWindow::settingsWindow(QWidget *frameForm,settingsController *sCon, ruleController *rCon):
+    QWidget(frameForm),
     ui(new Ui::settingsWindow)
 {
     ui->setupUi(this);
@@ -49,9 +49,8 @@ settingsWindow::settingsWindow(QWidget *parent,settingsController *sCon, ruleCon
     connect(view,SIGNAL(activated(QModelIndex)),
             this,SLOT(viewClicked(QModelIndex)));
 
-    WidgetForm *p = static_cast<WidgetForm*>(parent);
-    p->setWidget(this);
-
+    WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
+    p->setWidget(this,"Generelle indstillinger");
 }
 
 settingsWindow::~settingsWindow()
@@ -91,26 +90,11 @@ void settingsWindow::changeEvent(QEvent *event)
     }
 }
 
-void settingsWindow::mousePressEvent(QMouseEvent *event)
-{
-    //mOffset = event->pos();
-}
-
-void settingsWindow::mouseMoveEvent(QMouseEvent *event)
-{
-    /*
-    if(event->buttons() & Qt::LeftButton)
-    {
-        move(mapToParent(event->pos() - mOffset));
-    }
-    */
-}
-
 void settingsWindow::closeEvent(QCloseEvent *event)
 {
     if(event->type() == QEvent::Close)
     {
-        emit widgetHasQuitted();
+        emit destroyed();
         event->accept();
     }
 }
@@ -146,7 +130,7 @@ void settingsWindow::recieveModifiedRule(rule r, int index)
 
 void settingsWindow::on_insertRule_2_clicked()
 {
-    addRuleDialog *ruleDialog = new addRuleDialog(sControl->Paths());
+    addRuleDialog *ruleDialog = new addRuleDialog(sControl->Paths(),new WidgetForm());
     connect(ruleDialog,&addRuleDialog::sendRule,this,&settingsWindow::recieveRule);
     ruleDialog->show();
 }

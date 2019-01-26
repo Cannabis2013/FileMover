@@ -1,18 +1,19 @@
 #include "addruledialog.h"
 
-addRuleDialog::addRuleDialog(QStringList folderPaths):
-    abstractRuleDialog(folderPaths)
+addRuleDialog::addRuleDialog(QStringList folderPaths, QWidget *customFrame):
+    abstractRuleDialog(folderPaths,customFrame)
 {}
-/*
+
+
 void addRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
+    rD rDefs;
     int row = index.row();
     subRule sRule = subRules.at(row);
-    QString condText = rD::conditionalToString(sRule.fieldCondition);
+    QString condText = rDefs.fieldConditionToString(sRule.fieldCondition);
     conditionBox->setCurrentText(condText);
     conditionBox->currentTextChanged(condText);
 }
-*/
 
 void addRuleDialog::on_addSubRule_clicked()
 {

@@ -7,7 +7,8 @@ WidgetForm::WidgetForm(QWidget *parent) :
     ui->setupUi(this);
 
     widgetFrame = ui->frame;
-    mainWidget = new QWidget(this);
+    mainWidget = nullptr;
+    topFrame = ui->TopFrame;
 
     setWindowFlag(Qt::FramelessWindowHint);
     setWindowModality(Qt::ApplicationModal);
@@ -15,6 +16,8 @@ WidgetForm::WidgetForm(QWidget *parent) :
     policy.setVerticalPolicy(QSizePolicy::Minimum);
     policy.setHorizontalPolicy(QSizePolicy::Minimum);
     setSizePolicy(policy);
+
+    connect(topFrame,&TopFrameForm::moveParent,this,&WidgetForm::moveGlobalEvent);
 }
 
 WidgetForm::~WidgetForm()
@@ -22,51 +25,44 @@ WidgetForm::~WidgetForm()
     delete ui;
 }
 
-void WidgetForm::setWidget(QWidget *w)
+void WidgetForm::setWidget(QWidget *w, QString title)
 {
     mainWidget = w;
 
-    QSizePolicy widgetSizePolicy =  mainWidget->sizePolicy();
+    adjustSizeAccordingToWidgetPolicy();
 
-    QGridLayout *grid = ui->widgetLayout;
+    QGridLayout *grid = ui->mainLayout;
     if(grid->itemAtPosition(0,0) != nullptr)
     {
         QLayoutItem * item = grid->itemAtPosition(0,0);
         grid->removeItem(item);
     }
-    connect(w,&QWidget::close,this,&WidgetForm::close);
+
+    connect(mainWidget,&QWidget::destroyed,this,&WidgetForm::close);
     grid->addWidget(w,0,0,Qt::AlignCenter);
+
+    setFrameTitle(title);
+
+    show();
 }
 
-void WidgetForm::mouseMoveEvent(QMouseEvent *event)
+void WidgetForm::setFrameTitle(QString title)
 {
-    if(event->buttons() & Qt::LeftButton)
-    {
-        move(mapToParent(event->pos() - mOffset));
-    }
+    topFrame->setFrameTitle(title);
 }
 
-void WidgetForm::mousePressEvent(QMouseEvent *event)
+QString WidgetForm::FrameTitle()
 {
-    mOffset = event->pos();
+    return topFrame->FrameTitle();
 }
 
-void WidgetForm::setSizeWidgetSizeAccordingToPolicy(QSizePolicy &policy, QWidget *w)
+void WidgetForm::adjustSizeAccordingToWidgetPolicy()
 {
-    if(policy)
-    {
-        QSize fixedSize = w->size();
-        setSizePolicy(policy);
-        widgetFrame->setFixedSize(fixedSize);
-    }
-    else if(policy == QSizePolicy::Maximum)
-    {
-
-    }
-    else if(policy == QSizePolicy::Minimum)
-    {
-
-    }
+    setSizePolicy(mainWidget->sizePolicy());
+    widgetFrame->setMinimumSize(mainWidget->minimumSize());
+    widgetFrame->setMaximumSize(mainWidget->maximumSize());
+    setMaximumWidth(mainWidget->width());
+    setMinimumWidth(mainWidget->width());
 }
 
 
@@ -75,7 +71,13 @@ void WidgetForm::on_exitButton_clicked()
     close();
 }
 
-void WidgetForm::closeEvent(QEvent *event)
+void WidgetForm::closeEvent(QCloseEvent *event)
 {
+    if(mainWidget != nullptr)
+        mainWidget->close();
+}
 
+void WidgetForm::moveGlobalEvent(QPoint pos)
+{
+    move(mapToParent(pos));
 }

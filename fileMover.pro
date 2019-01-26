@@ -60,7 +60,8 @@ SOURCES += main.cpp\
     fileworkeroperator.cpp \
     filepathselectordialog.cpp \
     mywidget.cpp \
-    widgetform.cpp
+    widgetform.cpp \
+    topframeform.cpp
 
 HEADERS  += mainwindow.h \
     messageBox.h \
@@ -96,7 +97,8 @@ HEADERS  += mainwindow.h \
     fileworkeroperator.h \
     filepathselectordialog.h \
     mywidget.h \
-    widgetform.h
+    widgetform.h \
+    topframeform.h
 
 FORMS    += mainwindow.ui \
     logger.ui \
@@ -106,7 +108,8 @@ FORMS    += mainwindow.ui \
     abstractRuledialog.ui \
     conditionWidget.ui \
     filepathselectordialog.ui \
-    widgetform.ui
+    widgetform.ui \
+    topframeform.ui
 
 DISTFILES += \
     tempBuffer

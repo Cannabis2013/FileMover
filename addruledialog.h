@@ -6,13 +6,12 @@
 class addRuleDialog : public abstractRuleDialog
 {
 public:
-    explicit addRuleDialog(QStringList folderPaths);
-
+    explicit addRuleDialog(QStringList folderPaths,QWidget *customFrame = nullptr);
 public slots:
 signals:
 
 protected slots:
-    //void on_treeWidget_doubleClicked(const QModelIndex &index);
+    void on_treeWidget_doubleClicked(const QModelIndex &index);
 private slots:
     void on_addButton_clicked();
     void on_addSubRule_clicked();

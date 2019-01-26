@@ -1367,8 +1367,7 @@ void mainWindow::clearStatusLine()
 
 void mainWindow::on_actionIndstillinger_triggered()
 {
-    WidgetForm *form = new WidgetForm();
-    sI *settingsWindow = new sI(form,&sController,&rController);
+    sI *settingsWindow = new sI(new WidgetForm(),&sController,&rController);
 
     connect(settingsWindow,SIGNAL(iconSelected(QIcon)),
             this,SLOT(iconSelected(QIcon)));
@@ -1381,7 +1380,6 @@ void mainWindow::on_actionIndstillinger_triggered()
     connect(settingsWindow,SIGNAL(enableTimer(bool)),
             this,SLOT(setTimerStatus(bool)));
 
-    form->show();
 }
 
 void mainWindow::on_actionQuit_triggered()

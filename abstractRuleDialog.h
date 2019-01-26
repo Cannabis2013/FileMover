@@ -20,6 +20,7 @@
 #include "textpathedit.h"
 #include "rulepathselector.h"
 #include "conditionWidget.h"
+#include "widgetform.h"
 
 
 namespace Ui {
@@ -30,8 +31,8 @@ class abstractRuleDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit abstractRuleDialog(QStringList folderPaths);
-    abstractRuleDialog(rule r, QStringList folderPaths);
+    explicit abstractRuleDialog(QStringList folderPaths, QWidget *frameForm = nullptr);
+    abstractRuleDialog(rule r, QStringList folderPaths, QWidget *frameForm = nullptr);
     ~abstractRuleDialog();
 
 signals:
@@ -55,6 +56,10 @@ protected slots:
     void on_treeWidget_doubleClicked(const QModelIndex &index);
 
 protected:
+
+    // Event handling
+
+    void closeEvent(QCloseEvent *event);
 
     // Protected methods
     enum buttonType {acceptButton,cancelButton};

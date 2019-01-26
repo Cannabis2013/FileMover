@@ -21,8 +21,6 @@ public:
     ~filepathSelectorDialog();
     QTreeView *fView();
 
-
-
 signals:
     void on_fileView_focusOut();
     void chosenPath(QString p);

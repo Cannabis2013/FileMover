@@ -5,6 +5,7 @@
 #include <qframe.h>
 #include <qgridlayout.h>
 #include <QMouseEvent>
+#include <QCloseEvent>
 #include <qpoint.h>
 #include <qsizepolicy.h>
 
@@ -22,16 +23,20 @@ class WidgetForm : public QWidget
 public:
     explicit WidgetForm(QWidget *parent = nullptr);
     ~WidgetForm();
-    void setWidget(QWidget *w);
+    void setWidget(QWidget *w, QString title = "Frametitle");
+
+    void setFrameTitle(QString title);
+    QString FrameTitle();
 
 private slots:
 
     void on_exitButton_clicked();
 
 protected:
-    void closeEvent(QEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
+    void closeEvent(QCloseEvent *event);
+
+private slots:
+    void moveGlobalEvent(QPoint pos);
 
 private:
 
@@ -39,16 +44,14 @@ private:
      * Private methods declarations
      */
 
-    void setSizeWidgetSizeAccordingToPolicy(QSizePolicy &policy, QWidget *w);
+    void adjustSizeAccordingToWidgetPolicy();
 
 
     Ui::WidgetForm *ui;
     QFrame *widgetFrame;
 
-    QPoint mOffset;
-
+    TopFrameForm *topFrame;
     QWidget *mainWidget;
-
 };
 
 #endif // WIDGETFORM_H

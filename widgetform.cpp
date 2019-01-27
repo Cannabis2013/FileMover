@@ -77,6 +77,11 @@ void WidgetForm::closeEvent(QCloseEvent *event)
         mainWidget->close();
 }
 
+void WidgetForm::mouseMoveEvent(QMouseEvent *event)
+{
+    cout << event->x() << " " << event->y() << endl;
+}
+
 void WidgetForm::moveGlobalEvent(QPoint pos)
 {
     move(mapToParent(pos));

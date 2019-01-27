@@ -1,8 +1,8 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-mainWindow::mainWindow(altArgsContainer args, QWidget *parent) :
-    QMainWindow(parent),
+mainWindow::mainWindow(altArgsContainer args, QWidget *frameForm) :
+    QMainWindow(frameForm),
     ui(new Ui::mainWindow)
 {
     ui->setupUi(this);
@@ -252,6 +252,12 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *parent) :
     // Add folders to mainFolderView..
     wThread->start();
     insertTreeItems(directoriesToAppend);
+
+    if(frameForm != nullptr)
+    {
+        WidgetForm *form = static_cast<WidgetForm*>(parentWidget());
+        form->setWidget(this);
+    }
 }
 
 

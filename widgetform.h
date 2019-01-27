@@ -8,9 +8,11 @@
 #include <QCloseEvent>
 #include <qpoint.h>
 #include <qsizepolicy.h>
+#include <iostream>
 
 #include "ui_widgetform.h"
 
+using namespace std;
 
 namespace Ui {
     class WidgetForm;
@@ -34,6 +36,7 @@ private slots:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
 private slots:
     void moveGlobalEvent(QPoint pos);

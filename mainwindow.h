@@ -46,7 +46,7 @@ class mainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit mainWindow(altArgsContainer args,QWidget *parent = nullptr);
+    explicit mainWindow(altArgsContainer args,QWidget *frameForm = nullptr);
     ~mainWindow();
 
     enum fontType{listFont,detailedList,labelFont,standardFont};

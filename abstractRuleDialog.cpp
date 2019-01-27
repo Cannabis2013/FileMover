@@ -2,7 +2,7 @@
 #include "ui_abstractRuledialog.h"
 
 abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *frameForm) :
-    ui(new Ui::abstractRuleDialog)
+    QDialog (frameForm),ui(new Ui::abstractRuleDialog)
 {
     ui->setupUi(this);
 
@@ -35,8 +35,6 @@ abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *frameFo
 
     if(frameForm != nullptr)
     {
-        setWindowFlag(Qt::FramelessWindowHint);
-        setParent(frameForm);
         WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
         p->setWidget(this,"Regler");
     }
@@ -85,8 +83,6 @@ abstractRuleDialog::abstractRuleDialog(rule r, QStringList folderPaths, QWidget 
 
     if(frameForm != nullptr)
     {
-        setWindowFlag(Qt::FramelessWindowHint);
-        setParent(frameForm);
         WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
         p->setWidget(this,"Regler");
     }

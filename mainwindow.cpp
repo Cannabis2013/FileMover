@@ -1367,7 +1367,7 @@ void mainWindow::clearStatusLine()
 
 void mainWindow::on_actionIndstillinger_triggered()
 {
-    sI *settingsWindow = new sI(new WidgetForm(),&sController,&rController);
+    sI *settingsWindow = new sI(&sController,&rController,new WidgetForm());
 
     connect(settingsWindow,SIGNAL(iconSelected(QIcon)),
             this,SLOT(iconSelected(QIcon)));

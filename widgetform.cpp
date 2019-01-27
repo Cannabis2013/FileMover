@@ -28,7 +28,7 @@ WidgetForm::~WidgetForm()
 void WidgetForm::setWidget(QWidget *w, QString title)
 {
     mainWidget = w;
-
+    mainWidget->setWindowFlag(Qt::FramelessWindowHint);
     adjustSizeAccordingToWidgetPolicy();
 
     QGridLayout *grid = ui->mainLayout;

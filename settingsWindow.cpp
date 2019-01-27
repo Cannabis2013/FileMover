@@ -1,7 +1,7 @@
 ﻿#include "settingsWindow.h"
 #include "ui_settingsWindow.h"
 
-settingsWindow::settingsWindow(QWidget *frameForm,settingsController *sCon, ruleController *rCon):
+settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon, QWidget *frameForm):
     QWidget(frameForm),
     ui(new Ui::settingsWindow)
 {
@@ -48,8 +48,11 @@ settingsWindow::settingsWindow(QWidget *frameForm,settingsController *sCon, rule
     connect(view,SIGNAL(activated(QModelIndex)),
             this,SLOT(viewClicked(QModelIndex)));
 
-    WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
-    p->setWidget(this,"Generelle indstillinger");
+    if(frameForm != nullptr)
+    {
+        WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
+        p->setWidget(this,"Generelle indstillinger");
+    }
 }
 
 settingsWindow::~settingsWindow()

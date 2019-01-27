@@ -40,6 +40,8 @@ abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *frameFo
         WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
         p->setWidget(this,"Regler");
     }
+    else
+        setWindowModality(Qt::ApplicationModal);
 }
 
 abstractRuleDialog::abstractRuleDialog(rule r, QStringList folderPaths, QWidget *frameForm):
@@ -81,7 +83,15 @@ abstractRuleDialog::abstractRuleDialog(rule r, QStringList folderPaths, QWidget 
 
     subRules = tempRule.subRules;
 
-    setWindowModality(Qt::ApplicationModal);
+    if(frameForm != nullptr)
+    {
+        setWindowFlag(Qt::FramelessWindowHint);
+        setParent(frameForm);
+        WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
+        p->setWidget(this,"Regler");
+    }
+    else
+        setWindowModality(Qt::ApplicationModal);
 }
 
 abstractRuleDialog::~abstractRuleDialog()

@@ -116,7 +116,7 @@ private slots:
     void actionCountFolder(bool f);
 
     // mainFolderView Related..
-    void on_MainWindow_DoubleClicked(QModelIndex index);
+    void on_MainWindow_DoubleClicked(const QModelIndex &index);
     void explorerFolder(bool ok);
     void contextMenuCalled(QPoint p);
 

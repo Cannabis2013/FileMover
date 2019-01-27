@@ -351,7 +351,7 @@ void mainWindow::setCloseonClose(bool c)
     closeOnBut = c;
 }
 
-void mainWindow::on_MainWindow_DoubleClicked(QModelIndex index)
+void mainWindow::on_MainWindow_DoubleClicked(const QModelIndex &index)
 {
     if(!index.isValid())
         return;

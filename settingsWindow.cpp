@@ -27,7 +27,6 @@ settingsWindow::settingsWindow(QWidget *frameForm,settingsController *sCon, rule
     enableRules->setChecked(sCon->isRulesEnabled());
     countTimerInterval->setText(sCon->countTimerInterval());
 
-
     // Setfocus..
     setFocusPolicy(Qt::StrongFocus);
     setFocus();
@@ -213,7 +212,7 @@ void settingsWindow::on_editRule_2_clicked()
     rule r = rControl->rules.at(cIndex);
     QStringList folderPaths = sControl->Paths();
 
-    editRuleDialog *editDialog = new editRuleDialog(r,cIndex,folderPaths);
+    editRuleDialog *editDialog = new editRuleDialog(r,cIndex,folderPaths,new WidgetForm());
 
     connect(editDialog,&editRuleDialog::sendModifiedRule,this,&settingsWindow::recieveModifiedRule);
 

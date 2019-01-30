@@ -5,7 +5,6 @@
 int main(int argc, char *argv[])
 {
     myApp a(argc, argv);
-
     QCoreApplication::setApplicationName("Filehandler");
     QCoreApplication::setOrganizationName("MH");
 

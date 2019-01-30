@@ -1,7 +1,7 @@
 #include "addruledialog.h"
 
-addRuleDialog::addRuleDialog(QStringList folderPaths, QWidget *customFrame):
-    abstractRuleDialog(folderPaths,customFrame)
+addRuleDialog::addRuleDialog(QStringList folderPaths):
+    abstractRuleDialog(folderPaths)
 {}
 
 

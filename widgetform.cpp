@@ -1,6 +1,6 @@
 #include "widgetform.h"
 
-WidgetForm::WidgetForm(QWidget *parent) :
+WidgetForm::WidgetForm(QWidget *W, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::WidgetForm)
 {
@@ -16,6 +16,10 @@ WidgetForm::WidgetForm(QWidget *parent) :
     policy.setVerticalPolicy(QSizePolicy::Minimum);
     policy.setHorizontalPolicy(QSizePolicy::Minimum);
     setSizePolicy(policy);
+
+    setMouseTracking(true);
+
+    setWidget(W);
 
     connect(topFrame,&TopFrameForm::moveParent,this,&WidgetForm::moveGlobalEvent);
 }

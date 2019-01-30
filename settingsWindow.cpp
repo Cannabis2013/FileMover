@@ -1,8 +1,8 @@
 ﻿#include "settingsWindow.h"
 #include "ui_settingsWindow.h"
 
-settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon, QWidget *frameForm):
-    QWidget(frameForm),
+settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon, QWidget *parent):
+    QWidget(parent),
     ui(new Ui::settingsWindow)
 {
     ui->setupUi(this);
@@ -47,12 +47,6 @@ settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon, Q
 
     connect(view,SIGNAL(activated(QModelIndex)),
             this,SLOT(viewClicked(QModelIndex)));
-
-    if(frameForm != nullptr)
-    {
-        WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
-        p->setWidget(this,"Generelle indstillinger");
-    }
 }
 
 settingsWindow::~settingsWindow()
@@ -132,9 +126,12 @@ void settingsWindow::recieveModifiedRule(rule r, int index)
 
 void settingsWindow::on_insertRule_2_clicked()
 {
-    addRuleDialog *ruleDialog = new addRuleDialog(sControl->Paths(),new WidgetForm());
+    addRuleDialog *ruleDialog = new addRuleDialog(sControl->Paths());
     connect(ruleDialog,&addRuleDialog::sendRule,this,&settingsWindow::recieveRule);
-    ruleDialog->show();
+
+    WidgetForm *wForm = new WidgetForm(ruleDialog);
+    wForm->show();
+
 }
 
 void settingsWindow::on_lukKnap_2_clicked()
@@ -215,11 +212,11 @@ void settingsWindow::on_editRule_2_clicked()
     rule r = rControl->rules.at(cIndex);
     QStringList folderPaths = sControl->Paths();
 
-    editRuleDialog *editDialog = new editRuleDialog(r,cIndex,folderPaths,new WidgetForm());
+    editRuleDialog *editDialog = new editRuleDialog(r,cIndex,folderPaths);
 
     connect(editDialog,&editRuleDialog::sendModifiedRule,this,&settingsWindow::recieveModifiedRule);
-
-    editDialog->show();
+    WidgetForm *wForm = new WidgetForm(editDialog);
+    wForm->show();
 }
 
 

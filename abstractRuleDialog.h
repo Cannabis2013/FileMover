@@ -31,8 +31,8 @@ class abstractRuleDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit abstractRuleDialog(QStringList folderPaths, QWidget *frameForm = nullptr);
-    abstractRuleDialog(rule r, QStringList folderPaths, QWidget *frameForm = nullptr);
+    explicit abstractRuleDialog(QStringList folderPaths);
+    abstractRuleDialog(rule r, QStringList folderPaths);
     ~abstractRuleDialog();
 
 signals:

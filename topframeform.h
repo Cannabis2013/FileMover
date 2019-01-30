@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <qlabel.h>
+#include <qcursor.h>
 
 namespace Ui {
     class TopFrameForm;
@@ -33,6 +34,7 @@ private:
 
     QPoint mOffset;
     QLabel *frameTitle;
+    QWidget *topWidget;
 };
 
 #endif // TOPFRAMEFORM_H

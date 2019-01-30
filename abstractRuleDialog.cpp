@@ -1,8 +1,8 @@
 #include "abstractRuleDialog.h"
 #include "ui_abstractRuledialog.h"
 
-abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *frameForm) :
-    QDialog (frameForm),ui(new Ui::abstractRuleDialog)
+abstractRuleDialog::abstractRuleDialog(QStringList folderPaths) :
+    ui(new Ui::abstractRuleDialog)
 {
     ui->setupUi(this);
 
@@ -32,17 +32,9 @@ abstractRuleDialog::abstractRuleDialog(QStringList folderPaths, QWidget *frameFo
 
     conditionBox->setCurrentText("Ingen betingelser");
     conditionBox->currentIndexChanged("Ingen betingelser");
-
-    if(frameForm != nullptr)
-    {
-        WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
-        p->setWidget(this,"Regler");
-    }
-    else
-        setWindowModality(Qt::ApplicationModal);
 }
 
-abstractRuleDialog::abstractRuleDialog(rule r, QStringList folderPaths, QWidget *frameForm):
+abstractRuleDialog::abstractRuleDialog(rule r, QStringList folderPaths):
     ui(new Ui::abstractRuleDialog)
 {
     ui->setupUi(this);
@@ -80,14 +72,6 @@ abstractRuleDialog::abstractRuleDialog(rule r, QStringList folderPaths, QWidget 
     deepScanRadio->setChecked(tempRule.deepScanMode);
 
     subRules = tempRule.subRules;
-
-    if(frameForm != nullptr)
-    {
-        WidgetForm *p = static_cast<WidgetForm*>(parentWidget());
-        p->setWidget(this,"Regler");
-    }
-    else
-        setWindowModality(Qt::ApplicationModal);
 }
 
 abstractRuleDialog::~abstractRuleDialog()

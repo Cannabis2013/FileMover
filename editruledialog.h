@@ -7,7 +7,7 @@
 class editRuleDialog : public abstractRuleDialog
 {
 public:
-    editRuleDialog(rule editRule, int index, QStringList folderPaths, QWidget *customFrame = nullptr);
+    editRuleDialog(rule editRule, int index, QStringList folderPaths);
 
 signals:
 

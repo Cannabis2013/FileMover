@@ -19,9 +19,9 @@ TopFrameForm::~TopFrameForm()
 
 void TopFrameForm::mouseMoveEvent(QMouseEvent *event)
 {
-    QCursor Cursor;
-    Cursor.setShape(Qt::SizeAllCursor);
-    setCursor(Cursor);
+    //QCursor Cursor;
+    //Cursor.setShape(Qt::SizeAllCursor);
+    //setCursor(Cursor);
     if(event->buttons() & Qt::LeftButton)
     {
         emit moveParent(event->pos() - mOffset);

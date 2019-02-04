@@ -7,8 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>858</width>
-    <height>300</height>
+    <height>500</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -35,7 +41,7 @@
    <item>
     <widget class="TopFrameForm" name="TopFrame" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -50,13 +56,25 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="sizeIncrement">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QGridLayout" name="widgetLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -72,13 +90,6 @@
       <property name="spacing">
        <number>0</number>
       </property>
-      <item row="0" column="0">
-       <layout class="QGridLayout" name="mainLayout">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-       </layout>
-      </item>
      </layout>
     </widget>
    </item>

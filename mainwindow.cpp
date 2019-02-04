@@ -1387,6 +1387,8 @@ void mainWindow::on_actionIndstillinger_triggered()
             this,SLOT(setTimerStatus(bool)));
 
     WidgetForm *wForm = new WidgetForm(settingsWindow);
+
+    wForm->setFrameTitle("Generelle indstillinger");
     wForm->show();
 
 }

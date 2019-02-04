@@ -30,6 +30,8 @@ public:
     void setFrameTitle(QString title);
     QString FrameTitle();
 
+    void Show();
+
 private slots:
 
     void on_exitButton_clicked();
@@ -37,7 +39,7 @@ private slots:
 protected:
     void closeEvent(QCloseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-
+    bool eventFilter(QObject *watched, QEvent *event);
 private slots:
     void moveGlobalEvent(QPoint pos);
 
@@ -55,6 +57,7 @@ private:
 
     TopFrameForm *topFrame;
     QWidget *mainWidget;
+    QGridLayout *grid;
 };
 
 #endif // WIDGETFORM_H

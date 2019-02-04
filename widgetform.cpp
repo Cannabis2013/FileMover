@@ -9,13 +9,16 @@ WidgetForm::WidgetForm(QWidget *W, QWidget *parent) :
     widgetFrame = ui->frame;
     mainWidget = nullptr;
     topFrame = ui->TopFrame;
+    grid = ui->widgetLayout;
+
+    QRect fRect = widgetFrame->geometry();
+    fRect.setWidth(width());
+
+    widgetFrame->setGeometry(fRect);
 
     setWindowFlag(Qt::FramelessWindowHint);
     setWindowModality(Qt::ApplicationModal);
-    QSizePolicy policy;
-    policy.setVerticalPolicy(QSizePolicy::Minimum);
-    policy.setHorizontalPolicy(QSizePolicy::Minimum);
-    setSizePolicy(policy);
+
 
     setMouseTracking(true);
 
@@ -32,10 +35,9 @@ WidgetForm::~WidgetForm()
 void WidgetForm::setWidget(QWidget *w, QString title)
 {
     mainWidget = w;
+    installEventFilter(mainWidget);
     mainWidget->setWindowFlag(Qt::FramelessWindowHint);
-    adjustSizeAccordingToWidgetPolicy();
 
-    QGridLayout *grid = ui->mainLayout;
     if(grid->itemAtPosition(0,0) != nullptr)
     {
         QLayoutItem * item = grid->itemAtPosition(0,0);
@@ -43,9 +45,11 @@ void WidgetForm::setWidget(QWidget *w, QString title)
     }
 
     connect(mainWidget,&QWidget::destroyed,this,&WidgetForm::close);
-    grid->addWidget(w,0,0,Qt::AlignCenter);
+    grid->addWidget(w,0,0);
 
     setFrameTitle(title);
+
+    adjustSizeAccordingToWidgetPolicy();    
 
     show();
 }
@@ -60,13 +64,25 @@ QString WidgetForm::FrameTitle()
     return topFrame->FrameTitle();
 }
 
+
 void WidgetForm::adjustSizeAccordingToWidgetPolicy()
 {
-    setSizePolicy(mainWidget->sizePolicy());
+
+    QRect fRect = widgetFrame->geometry();
+    QRect wRect = mainWidget->geometry();
+
+
+    QSizePolicy wPolicy = mainWidget->sizePolicy();
+
     widgetFrame->setMinimumSize(mainWidget->minimumSize());
     widgetFrame->setMaximumSize(mainWidget->maximumSize());
     setMaximumWidth(mainWidget->width());
     setMinimumWidth(mainWidget->width());
+
+    setSizePolicy(wPolicy);
+
+    wRect.setWidth(fRect.width());
+    wRect.setHeight(fRect.height());
 }
 
 
@@ -84,6 +100,18 @@ void WidgetForm::closeEvent(QCloseEvent *event)
 void WidgetForm::mouseMoveEvent(QMouseEvent *event)
 {
     cout << event->x() << " " << event->y() << endl;
+}
+
+bool WidgetForm::eventFilter(QObject *watched, QEvent *event)
+{
+    if(static_cast<QWidget*>(watched) == mainWidget && event->type() == QEvent::MouseMove)
+    {
+        QMouseEvent *mEvent = static_cast<QMouseEvent*>(event);
+        mEvent->accept();
+        cout << mEvent->x() << " " << mEvent->y() << endl;
+        return true;
+    }
+    return false;
 }
 
 void WidgetForm::moveGlobalEvent(QPoint pos)

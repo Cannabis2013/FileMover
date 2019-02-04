@@ -28,8 +28,6 @@ settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon, Q
     countTimerInterval->setText(sCon->countTimerInterval());
 
     // Setfocus..
-    setFocusPolicy(Qt::StrongFocus);
-    setFocus();
 
     // Rulesview related..
 
@@ -47,6 +45,7 @@ settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon, Q
 
     connect(view,SIGNAL(activated(QModelIndex)),
             this,SLOT(viewClicked(QModelIndex)));
+
 }
 
 settingsWindow::~settingsWindow()
@@ -130,6 +129,7 @@ void settingsWindow::on_insertRule_2_clicked()
     connect(ruleDialog,&addRuleDialog::sendRule,this,&settingsWindow::recieveRule);
 
     WidgetForm *wForm = new WidgetForm(ruleDialog);
+    wForm->setFrameTitle("Indsæt regler");
     wForm->show();
 
 }
@@ -216,6 +216,7 @@ void settingsWindow::on_editRule_2_clicked()
 
     connect(editDialog,&editRuleDialog::sendModifiedRule,this,&settingsWindow::recieveModifiedRule);
     WidgetForm *wForm = new WidgetForm(editDialog);
+    wForm->setFrameTitle("Rediger regel");
     wForm->show();
 }
 

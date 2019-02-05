@@ -1,6 +1,6 @@
 #include "widgetform.h"
 
-WidgetForm::WidgetForm(QWidget *W, QWidget *parent) :
+WidgetForm::WidgetForm(QWidget *W, bool applicationModal, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::WidgetForm)
 {
@@ -17,7 +17,9 @@ WidgetForm::WidgetForm(QWidget *W, QWidget *parent) :
     widgetFrame->setGeometry(fRect);
 
     setWindowFlag(Qt::FramelessWindowHint);
-    setWindowModality(Qt::ApplicationModal);
+
+    if(applicationModal)
+        setWindowModality(Qt::ApplicationModal);
 
 
     setMouseTracking(true);

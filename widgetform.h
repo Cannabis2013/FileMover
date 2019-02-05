@@ -23,7 +23,7 @@ class WidgetForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit WidgetForm(QWidget *W, QWidget *parent = nullptr);
+    explicit WidgetForm(QWidget *W, bool applicationModal = true,QWidget *parent = nullptr);
     ~WidgetForm();
     void setWidget(QWidget *w, QString title = "Frametitle");
 

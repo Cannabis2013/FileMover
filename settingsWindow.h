@@ -21,7 +21,7 @@
 #include "mycombobox.h"
 #include "addruledialog.h"
 #include "editruledialog.h"
-#include "settingscontroller.h"
+#include "settingsmanager.h"
 #include "widgetform.h"
 
 using namespace std;
@@ -35,7 +35,7 @@ class settingsWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit settingsWindow(sC*sCon,ruleController *rCon, QWidget *parent = nullptr);
+    explicit settingsWindow(sM*sCon,rulesManager *rCon, QWidget *parent = nullptr);
     ~settingsWindow();
 
     enum ruleMode{ruleOut,parallelMode};
@@ -43,7 +43,7 @@ public:
     // Void public functions..
 
     // Icons related..
-    void setIconList(QList<myIcon>list);
+    void setIconList(QList<MyIcon>list);
 
     //Rules related..
     void setRulesEnabled(bool r);
@@ -101,15 +101,15 @@ private:
     // Generel methods..
 
     // Icons..
-    void insertIcons(QList<myIcon>ic);
+    void insertIcons(QList<MyIcon>ic);
 
     // Rules..
     void updateRulesView();
 
     // Member variables..
     Ui::settingsWindow *ui;
-    rC *rControl;
-    sC *sControl;
+    rM *rControl;
+    sM *sControl;
     QCheckBox *closeOnBox,*countTimerEnableBox,*enableRules;
     QLineEdit *countTimerInterval;
     QListWidget *view;

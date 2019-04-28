@@ -35,12 +35,18 @@ TEMPLATE = app
 RC_ICONS = xIcon.ico
 
 SOURCES += main.cpp\
+    abstracgraphicallistmanager.cpp \
+    abstractpersistence.cpp \
+    fileinformationview.cpp \
+    mainapplication.cpp \
         mainwindow.cpp \
     fileworker.cpp \
     myapp.cpp \
+    rulesmanager.cpp \
     settingsWindow.cpp \
     fileinformation.cpp \
     mydatetime.cpp \
+    settingsmanager.cpp \
     textpathedit.cpp \
     addfolderwidget.cpp \
     addfiledialog.cpp \
@@ -48,9 +54,7 @@ SOURCES += main.cpp\
     mysplitterhandle.cpp \
     myverticalsplitter.cpp \
     myhorizontalsplitter.cpp \
-    rulecontroller.cpp \
     rulepathselector.cpp \
-    settingscontroller.cpp \
     rulepathdialogselector.cpp \
     abstractRuledialog.cpp \
     addruledialog.cpp \
@@ -64,15 +68,21 @@ SOURCES += main.cpp\
     topframeform.cpp
 
 HEADERS  += mainwindow.h \
+    MyIcon.h \
+    abstractpersistence.h \
+    iconscanner.h \
+    mainapplication.h \
     messageBox.h \
     fileworker.h \
-    myIcon.h \
     myapp.h \
+    processmanager.h \
+    rulesmanager.h \
     settingsWindow.h \
     myscreendimensions.h \
     fileinformation.h \
     mydatetime.h \
     mycombobox.h \
+    settingsmanager.h \
     textpathedit.h \
     fileinformationview.h \
     addfolderwidget.h \
@@ -81,9 +91,7 @@ HEADERS  += mainwindow.h \
     mysplitterhandle.h \
     myverticalsplitter.h \
     myhorizontalsplitter.h \
-    rulecontroller.h \
     rulepathselector.h \
-    settingscontroller.h \
     rulepathdialogselector.h \
     abstractRuleDialog.h \
     addruledialog.h \
@@ -92,7 +100,6 @@ HEADERS  += mainwindow.h \
     argumentvalues.h \
     ruledefinitions.h \
     rules.h \
-    processcontroller.h \
     worker.h \
     fileworkeroperator.h \
     filepathselectordialog.h \

@@ -3,8 +3,6 @@
 
 #include "fileworkeroperator.h"
 
-
-
 namespace fileOperations {
 class processController;
 class fileWorker;
@@ -18,7 +16,7 @@ class fileWorker : public fileWorkerOperator
 {
     Q_OBJECT
 public:
-    explicit fileWorker(processController *pRef = nullptr,QObject *parent = nullptr);
+    explicit fileWorker(processManager *pRef = nullptr,QObject *parent = nullptr);
     virtual ~fileWorker();
 
 public slots:
@@ -56,7 +54,7 @@ private:
 
     //Member variables..
     QString busyMessage;
-    processController *pControllerReference;
+    processManager *pControllerReference;
 };
 
 typedef fileWorker fW;

@@ -60,34 +60,13 @@ private:
 class fileInformationView : public QWidget
 {
 public:
-    fileInformationView(QWidget *parent = nullptr):
-        QWidget(parent)
-    {
-        view = new QTextBrowser(this);
-        grid = new QGridLayout(this);
-
-        view->setHtml("<body style='background-color:rgb(81,81,81)'>"
-                      "</body>");
-
-        grid->addWidget(view);
-        grid->setContentsMargins(0,0,0,0);
-        view->show();
-    }
-    void setHtml(QString html)
-    {
-        view->setHtml(html);
-    }
-    void clear()
-    {
-        view->setHtml("<body style='background-color:rgb(81,81,81)'>"
-                      "</body>");
-    }
+    fileInformationView(QWidget *parent = nullptr);
+    void setHtml(QString html);
+    void clear();
 private:
     QTextBrowser *view;
     QGridLayout *grid;
 };
 #endif
 
-
-
-#endif // FILEINFORMATIONVIEW_H
+#endif // FILEINFORMATIONVIEW.H

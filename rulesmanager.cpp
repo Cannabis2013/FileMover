@@ -1,9 +1,9 @@
-#include "rulecontroller.h"
+#include "rulesmanager.h"
 
-ruleController::ruleController()
+rulesManager::rulesManager()
 {}
 
-QString ruleController::mergeStringList(const QStringList strings)
+QString rulesManager::mergeStringList(const QStringList strings)
 {
     if(strings.empty())
         return QString();
@@ -16,7 +16,7 @@ QString ruleController::mergeStringList(const QStringList strings)
     return result;
 }
 
-QStringList ruleController::splitString(const QString split)
+QStringList rulesManager::splitString(const QString split)
 {
     QString tempString;
     QStringList splittetList;
@@ -35,7 +35,7 @@ QStringList ruleController::splitString(const QString split)
     return splittetList;
 }
 
-QList<QTreeWidgetItem *> ruleController::rulesTreeItems() const
+QList<QTreeWidgetItem *> rulesManager::rulesTreeItems() const
 {
     rD rDefs;
     QList<QTreeWidgetItem*>resultingList;
@@ -57,17 +57,17 @@ QList<QTreeWidgetItem *> ruleController::rulesTreeItems() const
     return resultingList;
 }
 
-void ruleController::insertRule(const rule r)
+void rulesManager::insertRule(const rule r)
 {
     rules << r;
 }
 
-void ruleController::insertRules(const QList<rule> r)
+void rulesManager::insertRules(const QList<rule> r)
 {
     rules << r;
 }
 
-void ruleController::replaceRule(rule r, int index)
+void rulesManager::replaceRule(rule r, int index)
 {
     rules.replace(index,r);
 }

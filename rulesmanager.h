@@ -4,10 +4,10 @@
 #include <QTreeWidgetItem>
 #include "rules.h"
 
-class ruleController
+class rulesManager
 {
 public:
-    ruleController();
+    rulesManager();
 
     static QString mergeStringList(const QStringList strings);
     static QStringList splitString(const QString split);
@@ -28,10 +28,9 @@ private:
 
     void replaceRule(rule r,int index);
 
-    friend class settingsWindow;
-    friend class mainWindow;
+    friend class MainApplication;
 };
 
-typedef ruleController rC;
+typedef rulesManager rM;
 
 #endif // RULECONTROLLER_H

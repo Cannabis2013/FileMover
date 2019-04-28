@@ -4,27 +4,44 @@
 #include <QTimer>
 #include <qicon.h>
 #include <qstring.h>
-#include "rulecontroller.h"
+#include "rulesmanager.h"
 #include "qlist.h"
-#include "myIcon.h"
+#include "MyIcon.h"
+#include "abstractpersistence.h"
+#include "iconscanner.h"
 
 /*
  * Basic settings
  * Contain and handle paths
 */
 
-struct settingsContainer
+struct RessourcePaths
+{
+    QString ressourceFolder = "Ressources";
+    QString fileIconPath = "fileIcons";
+};
+
+struct SettingsContainer
 {
     int timerMsec;
     bool closeOnExit, rulesEnabled, timerEnabled;
     QTimer countTimer;
-    QList<myIcon>trayIconList;
+    QList<MyIcon> trayIconList;
+    QList<MyIcon> fileIconList;
+
+    QIcon currentTrayIcon;
+    QIcon fileIconStandard;
+
+    QStringList mainFolderPaths;
 };
 
-class settingsController : public QObject
+class settingsManager : public QObject,
+        private IconScanner,
+        private AbstractPersistence
 {
     Q_OBJECT
 public:
+    settingsManager(QString appName, QString orgName);
     // void members..
     void setCloseOnExit(bool enable){settings.closeOnExit = enable;}
     void setRulesEnabled(bool enable){settings.rulesEnabled = enable;}
@@ -32,35 +49,36 @@ public:
     void setTimerInterval(int msec){settings.timerMsec = msec;}
 
     // Icons related..
-    void insertIcon(const myIcon ic){settings.trayIconList << ic;}
-    void insertIcons(QList<myIcon>icons){settings.trayIconList << icons;}
+    void insertIcon(const MyIcon ic){settings.trayIconList << ic;}
+    void insertIcons(QList<MyIcon>icons){settings.trayIconList << icons;}
 
     // Path Related..
 
     void insertPath(QString path);
     void insertPaths(QStringList paths);
 
-    // non-void members..
+    QStringList paths() const {return settings.mainFolderPaths;}
+
     bool closeOnQuit() const {return settings.closeOnExit;}
     bool isRulesEnabled() const {return settings.rulesEnabled;}
     bool countTimerEnabled() const {return settings.timerEnabled;}
     QString countTimerInterval() const {return QString::number(settings.timerMsec);}
 
     // Icons related..
-    QList<myIcon>trayIcons() const {return settings.trayIconList;}
+    QList<MyIcon>trayIcons() const {return settings.trayIconList;}
 
+signals:
+    void stateChanged();
+
+protected:
+    void readSettings();
+    void writeSettings();
 private:
 
-    // Non-void Methods..
-
-    QStringList Paths() const{return mainFolderPaths;}
-
-    settingsContainer settings;
-    QStringList mainFolderPaths;
-
-    friend class settingsWindow;
+    SettingsContainer settings;
+    RessourcePaths rPaths;
 };
 
-typedef settingsController sC;
+typedef settingsManager sM;
 
 #endif // SETTINGSCONTROLLER_H

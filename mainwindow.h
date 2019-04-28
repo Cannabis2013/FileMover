@@ -36,17 +36,21 @@
 #include "fileinformationview.h"
 #include "addfolderwidget.h"
 #include "argumentvalues.h"
+#include "abstractpersistence.h"
+#include "iconscanner.h"
 
 namespace Ui {
 class mainWindow;
 }
 
-class mainWindow : public QMainWindow
+class mainWindow : public QMainWindow,
+        private IconScanner,
+        private AbstractPersistence
 {
     Q_OBJECT
 
 public:
-    explicit mainWindow(altArgsContainer args,QWidget *frameForm = nullptr);
+    explicit mainWindow(QString appName, QString orgName, QWidget *frameForm = nullptr);
     ~mainWindow();
 
     enum fontType{listFont,detailedList,labelFont,standardFont};
@@ -179,11 +183,9 @@ private:
     void writeRulesToReg();
 
     // Systemtray related..
-    void showSystemTrayMessage(const QString msg,const QString title = "Info");
+    void popSystemTrayMessage(const QString msg,const QString title = "Info");
 
     // Rules/clear methods..
-
-    void clearAccordingToRules(QStringList paths);
 
     // Non-void Medlems Funktioner..
 
@@ -202,14 +204,10 @@ private:
     QString currentMainFolderPath() const;
 
     //mainFolderView related..
-    QStringList getItemList() const;
-    QString getItemFromList(QString t) const;
+    QStringList folders() const;
+    QString folder(QString t) const;
 
     QFileInfoList fileItemList(const QStringList paths) const;
-
-
-    // Settings related..
-    QList<myIcon> scanForIcons(QString path);
 
     // SuffixTree related..
     QList<QTreeWidgetItem*> sortSuffixes(QTreeWidget *sTree, const int column, Qt::SortOrder sortMode = Qt::AscendingOrder) const;
@@ -221,37 +219,31 @@ private:
     // Member variables..
     Ui::mainWindow *ui;
 
-    bool showLog,dev,closeOnBut,countTimerStatus,rulesEnabledStatus;
+    bool countTimerStatus;
     fileInformation *fM;
     fileInformationView *fileInfoBrowser;
-    fW *fWorker;
     int tempKey,normalListFontSize, detailedListFontSize, countTimerInterval;    
     myScreenDimension laptopScreenSize, screenSize;
-    processController *pController;
-    QFileSystemModel *fModel;
+    processManager *pController;
     QFont viewFont;    
     QHeaderView *suffixHeader;
     QIcon trayStandard,fileStandard;
     QKeyEvent *currentKeyEvent;
     QLineEdit *statusLine;
     QList<int>columnWidths;
-    QList<myIcon>trayIconList,fileIconList;
     QMenu *trayMenu,*countTrayMenu,*clearTrayMenu,*folderTrayMenu,*mainFolderViewMenu, *detailedFolderViewMenu;
     QModelIndex menuIndex,viewTempIndex;
     QPoint offset;
     QPushButton *clBut;
     QSplitter hSplit,vSplit;
     QStackedWidget *buttonContainer;
-    QString ressourceDirectory,ePath,wDir,title,currentDir,resMappe,sysMappe,fileRuleSplitter;
+    QString ePath,title,currentDir;
     QStringList directoriesToAppend;
     QSystemTrayIcon *tray;
     QTextBrowser *tBrowser;
-    QThread *wThread;
     QTimer *countTimer, *clearStatusTextTimer;
     QTreeWidget *detailedFolderView, *suffixTree,*mainFolderView;
     QWidget *infBox;
-    rC rController;
-    sC sController;
 };
 
 #endif // MAINWINDOW_H

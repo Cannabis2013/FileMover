@@ -11,7 +11,7 @@
 #include <QTextCodec>
 #include <QDateEdit>
 
-#include "rulecontroller.h"
+#include "rulesmanager.h"
 
 
 namespace Ui {

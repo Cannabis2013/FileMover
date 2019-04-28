@@ -196,7 +196,7 @@ void abstractRuleDialog::updateView()
         }
         else
         {
-            headerData << rC::mergeStringList(sRule.keyWords);
+            headerData << rM::mergeStringList(sRule.keyWords);
         }
 
         new QTreeWidgetItem(subRuleView,headerData);

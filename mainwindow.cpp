@@ -1,8 +1,11 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-mainWindow::mainWindow(altArgsContainer args, QWidget *frameForm) :
+mainWindow::mainWindow(QString appName,
+                       QString orgName,
+                       QWidget *frameForm) :
     QMainWindow(frameForm),
+    AbstractPersistence(appName,orgName),
     ui(new Ui::mainWindow)
 {
     ui->setupUi(this);
@@ -11,43 +14,32 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *frameForm) :
     clBut = ui->clearButt;
     clearStatusTextTimer = new QTimer();
     clearTrayMenu = new QMenu;
-    closeOnBut = true;
     columnWidths = {384,32};
     countTimer = new QTimer;
+    countTimerStatus = false;
     countTrayMenu = new QMenu;
     currentDir = QDir::currentPath();
-    dev = args.developerMode;
     detailedFolderView = ui->detailView;
     detailedFolderViewMenu = new QMenu();
     detailedListFontSize = 8;
     fileInfoBrowser = ui->fileInformationBrowserView;
     fileStandard = QIcon();
-    for (int i = 0; i < 10; ++i)
-        fileRuleSplitter += "-*-";
-    fModel = new QFileSystemModel;
     folderTrayMenu = new QMenu;
     fM = new fileInformation();
     laptopScreenSize = myScreenDimension(0,0,1280,800);
     mainFolderView = ui->dirView;
     normalListFontSize = 16;
-    pController = new processController();
-    fWorker = new fW(pController);
-    resMappe = "Ressources";
-    ressourceDirectory = currentDir + "/" + resMappe;
+    pController = new processManager();
     screenSize = myScreenDimension(QApplication::desktop()->screenGeometry());
-    showLog = false;
     statusLine = ui->statusLineEdit;
     suffixTree = ui->suffixTree;
     suffixHeader = suffixTree->header();
-    sysMappe = "fileIcons";
     tempKey = 0;
     tray = new QSystemTrayIcon();
     trayMenu = new QMenu;
     title = "FileFolderManager";
     viewFont = QFont("Times",12);
     mainFolderViewMenu = new QMenu;
-    wDir = currentDir + "/" + sysMappe;
-    wThread = new QThread;
     //Setting up path or command to open folders in OS..
 #ifdef Q_OS_WIN32
     ePath = "c:\\Windows\\Explorer.exe ";
@@ -58,13 +50,6 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *frameForm) :
 #else
     ePath = "Is it your own operation system?";
 #endif
-    // Ressource Folder Related..
-
-    QDir dir;
-    if(!dir.exists(resMappe))
-        dir.mkdir(resMappe);
-    if(!dir.exists(sysMappe))
-        dir.mkdir(sysMappe);
 
     // Spacer Related..
 
@@ -72,29 +57,7 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *frameForm) :
     ui->verticalSpacer->changeSize(0,40,QSizePolicy::Ignored,QSizePolicy::Fixed);
 #endif
 
-    // Icon Settings..
-    fileIconList = scanForIcons(sysMappe);
-    if(!args.alternateIconPath.isEmpty())
-        fileIconList += scanForIcons(args.alternateIconPath);
-
-    if(!fileIconList.isEmpty())
-        fileStandard = fileIconList.last();
-
-    trayIconList = scanForIcons(resMappe);
-    if(trayIconList.count() == 0)
-    {
-        tray->setIcon(QIcon(":/My Images/Ressources/Hdd-icon.png"));
-        tray->showMessage("Info","Ingen ikoner i din ressource mappe");
-    }
-    else
-    {
-        sController.insertIcons(trayIconList);
-        trayStandard = trayIconList.last();
-    }
     // Persistent Settings Related..
-
-    QCoreApplication::setApplicationName("Filehandler");
-    QCoreApplication::setOrganizationName("MH");
 
     readSettings();
 
@@ -168,19 +131,9 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *frameForm) :
     trayMenu->addMenu(folderTrayMenu);
     trayMenu->addAction(tr("Quit"));
     tray->setContextMenu(trayMenu);
-    if(!trayIconList.isEmpty())
-        tray->setIcon(trayStandard);
 
     // Fileworker Related..
 
-    fWorker->moveToThread(wThread);
-
-    // settingsWindow Related..
-
-    sController.setCloseOnExit(closeOnBut);
-    sController.setTimerEnabled(countTimer->isActive());
-    sController.setTimerInterval(countTimerInterval);
-    sController.setRulesEnabled(rulesEnabledStatus);
 
     // Register meta types..
 
@@ -228,7 +181,7 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *frameForm) :
 
     // fWorker queue related..
 
-    connect(pController,&processController::wakeUpProcess,fWorker,&fileWorker::handleProcessRequest);
+    connect(pController,&processManager::wakeUpProcess,fWorker,&fileWorker::handleProcessRequest);
 
     //settingsWindow..
     /*
@@ -250,7 +203,6 @@ mainWindow::mainWindow(altArgsContainer args, QWidget *frameForm) :
     //Start functions..
 
     // Add folders to mainFolderView..
-    wThread->start();
     insertTreeItems(directoriesToAppend);
 
     if(frameForm != nullptr)
@@ -267,7 +219,7 @@ mainWindow::~mainWindow()
 }
 void mainWindow::closeEvent(QCloseEvent *cE)
 {
-    if(sController.closeOnQuit())
+    if(1 + 1 == 2)
     {
         fileInfoBrowser->close();
         writeSettings();
@@ -314,7 +266,7 @@ void mainWindow::explorerMenuTriggered(QAction *xAction)
     {
         QString txt = xAction->text(),
         #ifdef Q_OS_WIN32
-                ex = ePath + modifyPath(getItemFromList(txt),"\\");
+                ex = ePath + modifyPath(folder(txt),"\\");
         #elif defined Q_OS_MAC
                 ex = ePath + getItemFromList(txt);
         #else
@@ -325,7 +277,7 @@ void mainWindow::explorerMenuTriggered(QAction *xAction)
     }
     else
     {
-        QStringList list = getItemList();
+        QStringList list = folders();
         for(QString l : list)
         {
             QString ex = ePath;
@@ -412,13 +364,13 @@ void mainWindow::countMenuTriggered(QAction *cAction)
     QString aText = cAction->text();
     if(aText == "Alle mapper")
     {
-        QStringList allItems = getItemList();
+        QStringList allItems = folders();
         wThread->start();
         emit StartCount(allItems);
     }
     else
     {
-        QString item = getItemFromList(aText);
+        QString item = folder(aText);
         QStringList list = {item};
         wThread->start();
         StartCount(list);
@@ -442,7 +394,7 @@ void mainWindow::explorerFolder(bool ok)
 {
     Q_UNUSED(ok);
     int r = mainFolderView->currentIndex().row();
-    QStringList list = getItemList();
+    QStringList list = folders();
 #ifdef Q_OS_MAC
 
     QString path = ePath + list.at(r);
@@ -504,7 +456,7 @@ void mainWindow::actionCountFolder(bool f)
 
 void mainWindow::timerCount()
 {
-    QStringList pathList = getItemList();
+    QStringList pathList = folders();
     wThread->start();
     emit StartCount(pathList);
 }
@@ -613,7 +565,7 @@ void mainWindow::clearFolders(const QList<QTreeWidgetItem *> &itemList)
 
 void mainWindow::countFolders()
 {
-    QStringList list = getItemList();
+    QStringList list = folders();
     wThread->start();
     emit StartCount(list);
 }
@@ -629,7 +581,7 @@ void mainWindow::insertTreeItem(QString path)
 
 void mainWindow::insertTreeItems(QStringList pathList)
 {
-    sController.insertPaths(pathList);
+    sManager.insertPaths(pathList);
     emit processPaths(pathList);
     for(QString path : pathList)
     {
@@ -689,34 +641,6 @@ void mainWindow::updateDetaileditems()
     for(directoryItem item : directoryItems)
         itemList << item.treeWidgetItems();
     detailedFolderView->addTopLevelItems(itemList);
-}
-
-QList<myIcon> mainWindow::scanForIcons(QString path)
-{
-    QList<myIcon>icons;
-    QDirIterator iT(path);
-    while(iT.hasNext())
-    {
-        QFileInfo file = iT.next();
-#ifdef Q_OS_WIN32
-        if(file.suffix() == "ico" || file.suffix() == "png")
-        {
-            QString fP = file.absoluteFilePath(),fN = file.fileName();
-            myIcon ico(fP);
-            ico.setName(fN);
-            icons << ico;
-        }
-#elif defined Q_OS_MAC
-        if(file.suffix() == "icns")
-        {
-            QString fP = file.absoluteFilePath(),fN = file.fileName();
-            myIcon ico(fP);
-            ico.setName(fN);
-            icons << ico;
-        }
-#endif
-    }
-    return icons;
 }
 
 QString mainWindow::createTextBrowserHtml(const QString dirSize, const long fileCount, const int dirCount) const
@@ -779,126 +703,23 @@ QString mainWindow::modifyPath(QString s, QString S) const
     return s;
 }
 
-QString mainWindow::mergeStringList(const QStringList &sList) const
-{
-    QString result = "";
-    if(sList.isEmpty())
-        return result;
-    else if(sList.count() > 1)
-        for(QString s : sList)
-            result += s + ";";
-    else
-        return sList.at(0);
-    return result;
-}
-
-QStringList mainWindow::splitString(const QString &split) const
-{
-    QString tempString;
-    QStringList splittetList;
-    int lastLetter = split.count() -1;
-    for(int i = 0;i<split.count();i++)
-    {
-        QChar w = split.at(i);
-        if(w != ';' && lastLetter != i)
-            tempString.append(w);
-        else
-        {
-            splittetList << tempString + w;
-            tempString.clear();
-        }
-    }
-    return splittetList;
-}
-
 QString mainWindow::currentMainFolderPath() const
 {
     return mainFolderView->currentItem()->text(0);
 }
 
-void mainWindow::clearAccordingToRules(QStringList paths)
-{
-    auto freshList = [paths](QString rPath = QString(),bool recursive = false)->QFileInfoList
-    {
-        QStringList rPaths;
-        if(rPath != QString() && rPath != "Alle")
-            rPaths = QStringList(rPath);
-        else
-            rPaths = paths;
-        QFileInfoList allFiles;
-        if(!recursive)
-        /*Add items to a "QFileInfoList" in a non-recursive manner,
-         * which means that directories, excluding their content, will be added
-         */
-        {
-            for(QString path : rPaths)
-            {
-                QDir dirContent(path);
-                allFiles += dirContent.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System);
-            }
-        }
-        // Add files to a QFileInfoList in a recursive manner, but excludes directories
-        else
-        {
-            for(QString path : paths)
-            {
-                QDirIterator it(path,
-                                QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System,
-                                QDirIterator::Subdirectories);
-                while(it.hasNext())
-                {
-                    QFileInfo fileItem = it.next();
-                    if(!fileItem.isDir())
-                        allFiles.append(fileItem);
-                }
-            }
-        }
-        return allFiles;
-    };
-    auto outputFiles = [](QFileInfoList list)->void
-    {
-        for(QFileInfo file : list)
-        {
-            QString fileSizeUnit;
-            double sz = fW::convertSizeToAppropriateUnits(file.size(),fileSizeUnit);
-            QString fileSize = QString::number(sz) + " " + fileSizeUnit;
-            cout << "Filename: " << file.fileName().toStdString() << " Filepath: " << file.filePath().toStdString() <<
-                 " Size: " << fileSize.toStdString() << endl;
-        }
-    };
-    Q_UNUSED(outputFiles);
-    QList<rule>rules = rController.ruleslist();
-    for(rule r : rules)
-    {
-        QFileInfoList allFiles = freshList(r.appliesToPath,r.deepScanMode);
-        for(subRule sR : r.subRules)
-            allFiles = sR.processList(allFiles);
-
-        // Implementer fileworker operation..
-
-        processItems it;
-        it.destinations = r.destinationPath;
-        it.list = allFiles;
-        it.ruleMode = r.actionRule;
-        pController->addToQueue(it);
-    }
-}
 void mainWindow::writeSettings()
 {
-    bool coe = sController.closeOnQuit(),
-            countEnabled = countTimer->isActive(),
-            rulesEnabled = sController.isRulesEnabled();
+    bool countEnabled = countTimer->isActive();
     QSettings s;
 
     s.beginGroup("Basic settings");
     s.setValue("WinGeo",QVariant(geometry()));
-    s.setValue("CloseonExit",QVariant(coe));
     s.setValue("countTimerEnabled",QVariant(countEnabled));
     s.setValue("countTimerInterval",QVariant(countTimerInterval));
-    s.setValue("rulesEnabled",QVariant(rulesEnabled));
     s.endGroup();
 
-    QStringList list = getItemList();
+    QStringList list = folders();
 
     s.beginWriteArray("DirList",list.count());
     for(int a = 0;a <list.count();a++)
@@ -949,7 +770,7 @@ void mainWindow::readRulesFromReg()
         r.title = s.value("Title","Title").toString();
         r.actionRule = static_cast<rD::fileActionRule>(s.value("Action","").toInt());
         r.appliesToPath = s.value("ApplyPath","Alle").toString();
-        r.destinationPath = splitString(s.value("Destination paths","").toString());
+        r.destinationPath = Worker::splitString(s.value("Destination paths","").toString());
         r.deepScanMode = s.value("Scan Mode",false).toBool();
         int count = s.beginReadArray("Subrules");
         for (int n = 0; n < count; ++n)
@@ -962,7 +783,7 @@ void mainWindow::readRulesFromReg()
             sRule.fileCompareMode = static_cast<rD::compareMode>(s.value("Comparemode",0).toInt());
 
             sRule.matchWholeWords = s.value("Matchwholewords",false).toBool();
-            sRule.keyWords = splitString(s.value("Keywords","").toString());
+            sRule.keyWords = Worker::splitString(s.value("Keywords","").toString());
 
             sRule.sizeLimit.first = s.value("Sizelimit",0).toInt();
             sRule.sizeLimit.second = s.value("Sizelimitunit","kb").toString();
@@ -990,12 +811,12 @@ void mainWindow::readRulesFromReg()
         rules << r;
     }
     s.endArray();
-    rController.insertRules(rules);
+    rManager.insertRules(rules);
 }
 
 void mainWindow::writeRulesToReg()
 {
-    QList<rule> rules = rController.ruleslist();
+    QList<rule> rules = rManager.ruleslist();
 
     QSettings s;
     s.remove("Rules");
@@ -1023,7 +844,7 @@ void mainWindow::writeRulesToReg()
             s.setValue("Comparemode",sRule.fileCompareMode);
 
             s.setValue("Matchwholewords",sRule.matchWholeWords);
-            s.setValue("Keywords",mergeStringList(sRule.keyWords));
+            s.setValue("Keywords",Worker::mergeStringList(sRule.keyWords));
 
             s.setValue("Sizelimit",sRule.sizeLimit.first);
             s.setValue("Sizelimitunit",sRule.sizeLimit.second);
@@ -1049,7 +870,7 @@ void mainWindow::writeRulesToReg()
     s.endArray();
 }
 
-void mainWindow::showSystemTrayMessage(const QString msg, const QString title)
+void mainWindow::popSystemTrayMessage(const QString msg, const QString title)
 {
     tray->showMessage(title,msg);
 }
@@ -1105,7 +926,7 @@ void mainWindow::on_clearButt_clicked()
     for(QTreeWidgetItem*item : list)    
         paths << item->text(0);    
 
-    if(sController.isRulesEnabled())
+    if(sManager.isRulesEnabled())
         clearAccordingToRules(paths);
     else
         clearFolders(list);
@@ -1182,7 +1003,7 @@ void mainWindow::updateViewIcons(QIcon ico)
         mainFolderView->topLevelItem(a)->setIcon(0,ico);
 }
 
-QStringList mainWindow::getItemList() const
+QStringList mainWindow::folders() const
 {
     QStringList list;
     for(int a = 0;a <mainFolderView->topLevelItemCount();a++)
@@ -1191,7 +1012,7 @@ QStringList mainWindow::getItemList() const
     return list;
 }
 
-QString mainWindow::getItemFromList(QString t) const
+QString mainWindow::folder(QString t) const
 {
     int count = mainFolderView->topLevelItemCount();
     for(int a = 0;a <count;a++)
@@ -1309,7 +1130,7 @@ QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QList<QTreeWidgetItem *> sItem
 
 void mainWindow::updateSubTrayMenus()
 {
-    QStringList l = getItemList();
+    QStringList l = folders();
 
     countTrayMenu->clear();
     clearTrayMenu->clear();
@@ -1335,15 +1156,15 @@ void mainWindow::insertPath(QString p)
 {
     if(fM->directoryExists(p))
     {
-        showSystemTrayMessage("The folder already exists");
+        popSystemTrayMessage("The folder already exists");
         return;
     }
     if(p == "C:" || p == "C:/")
     {
-        showSystemTrayMessage("Rod drev ikke tilladt!");
+        popSystemTrayMessage("Rod drev ikke tilladt!");
         return;
     }
-    sController.insertPath(p);
+    sManager.insertPath(p);
 }
 
 void mainWindow::recieveDirectoryItem(directoryItem item)
@@ -1355,9 +1176,8 @@ void mainWindow::recieveDirectoryItem(directoryItem item)
 void mainWindow::recieveDirectoryItems(QList<directoryItem> items)
 {
     for(directoryItem item : items)
-    {
         fM->insertItem(item);
-    }
+
     updateDetaileditems();
 }
 
@@ -1373,7 +1193,7 @@ void mainWindow::clearStatusLine()
 
 void mainWindow::on_actionIndstillinger_triggered()
 {
-    sI *settingsWindow = new sI(&sController,&rController);
+    sI *settingsWindow = new sI(&sManager,&rManager);
 
     connect(settingsWindow,SIGNAL(iconSelected(QIcon)),
             this,SLOT(iconSelected(QIcon)));

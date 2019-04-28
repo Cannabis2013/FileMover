@@ -39,7 +39,6 @@ private slots:
 protected:
     void closeEvent(QCloseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-    bool eventFilter(QObject *watched, QEvent *event);
 private slots:
     void moveGlobalEvent(QPoint pos);
 
@@ -50,7 +49,6 @@ private:
      */
 
     void adjustSizeAccordingToWidgetPolicy();
-
 
     Ui::WidgetForm *ui;
     QFrame *widgetFrame;

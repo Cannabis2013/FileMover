@@ -21,7 +21,6 @@ WidgetForm::WidgetForm(QWidget *W, bool applicationModal, QWidget *parent) :
     if(applicationModal)
         setWindowModality(Qt::ApplicationModal);
 
-
     setMouseTracking(true);
 
     setWidget(W);
@@ -37,7 +36,6 @@ WidgetForm::~WidgetForm()
 void WidgetForm::setWidget(QWidget *w, QString title)
 {
     mainWidget = w;
-    installEventFilter(mainWidget);
     mainWidget->setWindowFlag(Qt::FramelessWindowHint);
 
     if(grid->itemAtPosition(0,0) != nullptr)
@@ -102,18 +100,6 @@ void WidgetForm::closeEvent(QCloseEvent *event)
 void WidgetForm::mouseMoveEvent(QMouseEvent *event)
 {
     cout << event->x() << " " << event->y() << endl;
-}
-
-bool WidgetForm::eventFilter(QObject *watched, QEvent *event)
-{
-    if(static_cast<QWidget*>(watched) == mainWidget && event->type() == QEvent::MouseMove)
-    {
-        QMouseEvent *mEvent = static_cast<QMouseEvent*>(event);
-        mEvent->accept();
-        cout << mEvent->x() << " " << mEvent->y() << endl;
-        return true;
-    }
-    return false;
 }
 
 void WidgetForm::moveGlobalEvent(QPoint pos)

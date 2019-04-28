@@ -13,7 +13,7 @@ class myVerticalSplitter : public QSplitter
 {
 public:
     myVerticalSplitter(Qt::Orientation direction,QWidget *parent = 0);
-    myVerticalSplitter(QWidget *parent = 0);
+    myVerticalSplitter(QWidget *parent = nullptr);
 protected:
     QSplitterHandle *createHandle();
 

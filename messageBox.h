@@ -22,6 +22,7 @@ public:
         QString styleSheet = parent->styleSheet();
         box.setStyleSheet(styleSheet);
 
+
         QRect pGeo = parent->geometry();
         QRect geo;
 

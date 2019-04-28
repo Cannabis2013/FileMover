@@ -1,7 +1,7 @@
 #ifndef FILEWORKEROPERATOR_H
 #define FILEWORKEROPERATOR_H
 
-#include "processcontroller.h"
+#include "processmanager.h"
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 

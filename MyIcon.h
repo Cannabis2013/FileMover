@@ -4,14 +4,15 @@
 #include <qicon.h>
 #include <qstring.h>
 
-class myIcon : public QIcon
+class MyIcon : public QIcon
 {
 public:
-    myIcon(QString fName = QString()):
+    MyIcon(QString fName = QString()):
         QIcon(fName)
     {
         addFile(fName);
     }
+
     void setName(QString n){N = n;}
     QString name() const{return N;}
 private:

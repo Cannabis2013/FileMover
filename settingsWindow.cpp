@@ -1,7 +1,7 @@
 ﻿#include "settingsWindow.h"
 #include "ui_settingsWindow.h"
 
-settingsWindow::settingsWindow(settingsController *sCon, ruleController *rCon, QWidget *parent):
+settingsWindow::settingsWindow(settingsManager *sCon, rulesManager *rCon, QWidget *parent):
     QWidget(parent),
     ui(new Ui::settingsWindow)
 {
@@ -54,9 +54,9 @@ settingsWindow::~settingsWindow()
     delete this;
 }
 
-void settingsWindow::setIconList(QList<myIcon> list)
+void settingsWindow::setIconList(QList<MyIcon> list)
 {
-    for(myIcon icon : list)
+    for(MyIcon icon : list)
         new QListWidgetItem(icon,icon.name(),view);
 }
 

@@ -20,12 +20,12 @@ struct processItems
     QStringList destinations;
 };
 
-class processController : public QObject
+class processManager : public QObject
 {
     Q_OBJECT
 
 public:
-    ~processController()
+    ~processManager()
     {
         delete this;
     }

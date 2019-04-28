@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    mainWindow *w = new mainWindow(altArgs);
+    mainWindow *w = new mainWindow("Filemover","MH");
 
     QObject::connect(w,SIGNAL(quit(bool)),&a,SLOT(QuiT(bool)));
     if(!hidden)

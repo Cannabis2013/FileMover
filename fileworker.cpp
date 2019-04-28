@@ -1,6 +1,6 @@
 ﻿#include "fileworker.h"
 
-fileWorker::fileWorker(processController *pRef, QObject *parent) :
+fileWorker::fileWorker(processManager *pRef, QObject *parent) :
     fileWorkerOperator(parent),pControllerReference(pRef)
 {
     busyMessage = "Luke Fileworker har travlt. Vent et øjeblik.";

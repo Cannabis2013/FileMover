@@ -1,13 +1,23 @@
 #include "editruledialog.h"
 
-editRuleDialog::editRuleDialog(rule editRule, int index, QStringList folderPaths):
-    abstractRuleDialog(editRule,folderPaths), replaceIndex(index)
+EditRuleDialog::EditRuleDialog(Rule editRule, QStringList watchFolders):
+    AbstractRuleDialog(watchFolders)
 {
+    originalRuleTitle = editRule.title;
+    tempRule = editRule;
+    actionBox->setCurrentText(ruleDefs.actionToString(tempRule.actionRule));
+    titleSelector->setText(tempRule.title);
+    applySelector->setCurrentText(tempRule.appliesToPath);
+    pathSelector->setLineText(fW::mergeStringList(tempRule.destinationPath));
+    deepScanRadio->setChecked(tempRule.deepScanMode);
+
+    subRules = tempRule.subRules;
+
     addBut->setText(tr("Færdig"));
     updateView();
 }
 
-void editRuleDialog::on_addButton_clicked()
+void EditRuleDialog::on_addButton_clicked()
 {
     rD rDefs;
     tempRule.title = titleSelector->text();
@@ -17,15 +27,15 @@ void editRuleDialog::on_addButton_clicked()
     tempRule.subRules = subRules;
     tempRule.deepScanMode = deepScanRadio->isChecked();
 
-    emit sendModifiedRule(tempRule,replaceIndex);
+    emit replaceRule(tempRule,originalRuleTitle);
 
     close();
 }
 
-void editRuleDialog::on_addSubRule_clicked()
+void EditRuleDialog::on_addSubRule_clicked()
 {
     rD rDefs;
-    subRule sRule;
+    SubRule sRule;
     QString currentCondition = conditionBox->currentText();
     rD::fileFieldCondition conMode = rDefs.fieldConditionFromString(currentCondition);
     sRule.fieldCondition = conMode;
@@ -66,7 +76,7 @@ void editRuleDialog::on_addSubRule_clicked()
     updateView();
 }
 
-void editRuleDialog::on_removeSubRule_clicked()
+void EditRuleDialog::on_removeSubRule_clicked()
 {
     int cIndex = subRuleView->currentIndex().row();
     subRules.removeAt(cIndex);

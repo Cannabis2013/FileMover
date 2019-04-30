@@ -29,15 +29,13 @@
 #include <qthreadpool.h>
 #include <qsharedpointer.h>
 #include <math.h>
+#include <qstackedwidget.h>
 
 #include "messageBox.h"
-#include "settingsWindow.h"
 #include "myscreendimensions.h"
 #include "fileinformationview.h"
 #include "addfolderwidget.h"
-#include "argumentvalues.h"
-#include "abstractpersistence.h"
-#include "iconscanner.h"
+#include "mainapplication.h"
 
 namespace Ui {
 class mainWindow;
@@ -50,7 +48,7 @@ class mainWindow : public QMainWindow,
     Q_OBJECT
 
 public:
-    explicit mainWindow(QString appName, QString orgName, QWidget *frameForm = nullptr);
+    explicit mainWindow(AbstractCoreApplication *coreApplication, QString appName, QString orgName);
     ~mainWindow();
 
     enum fontType{listFont,detailedList,labelFont,standardFont};
@@ -63,20 +61,6 @@ signals:
     void toLog(QStringList l);
     void quit(bool iH);
 
-    // fileInformation..
-
-    void processDirectory(directoryItem item);
-    void processDirectories(QStringList paths);
-
-    /*
-     * DetailedFolderView related..
-     * Connected to "FileWorker::processFileInformation/FileWorker::processFileInformations"..
-     * Is then returned to "mainWindow::recieveDirectoryItem/mainWindow::recieveDirectoryItems"..
-     */
-
-    void processPath(QString path);
-    void processPaths(QStringList paths);
-
 protected:
     void closeEvent(QCloseEvent *cE);
     void keyPressEvent(QKeyEvent *kE);
@@ -87,11 +71,6 @@ protected:
 
 private slots:
     // Addfolder related..
-    void insertPath(QString p);
-    void recieveDirectoryItem(directoryItem item);
-    void recieveDirectoryItems(QList<directoryItem>items);
-    void insertTreeItem(QString path);
-    void insertTreeItems(QStringList pathList);
 
     // Buttons..
     void on_addBut_clicked(); // Add path to "mainFolderView"
@@ -116,7 +95,7 @@ private slots:
 
     // Fileworker Related..
     void clearCompleted(bool a);
-    void folderContentRecieved(QList<fileObject> sz);
+    void folderContentRecieved(QList<FileObject> sz);
     void actionCountFolder(bool f);
 
     // mainFolderView Related..
@@ -130,7 +109,6 @@ private slots:
 
     // settingsWindow related..
     void iconSelected(QIcon ico);
-    void setCloseonClose(bool c);
 
     // Rules related..
 
@@ -177,10 +155,6 @@ private:
     void writeSettings();
     void readSettings();
 
-    // Persistent rules related..
-
-    void readRulesFromReg();
-    void writeRulesToReg();
 
     // Systemtray related..
     void popSystemTrayMessage(const QString msg,const QString title = "Info");
@@ -219,12 +193,13 @@ private:
     // Member variables..
     Ui::mainWindow *ui;
 
+    AbstractCoreApplication *coreApplication;
+
     bool countTimerStatus;
-    fileInformation *fM;
+    FileInformationManager *fM;
     fileInformationView *fileInfoBrowser;
     int tempKey,normalListFontSize, detailedListFontSize, countTimerInterval;    
     myScreenDimension laptopScreenSize, screenSize;
-    processManager *pController;
     QFont viewFont;    
     QHeaderView *suffixHeader;
     QIcon trayStandard,fileStandard;

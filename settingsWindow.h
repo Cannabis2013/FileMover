@@ -18,11 +18,11 @@
 #include <QFocusEvent>
 #include <qdialog.h>
 
-#include "mycombobox.h"
+#include "customcombobox.h"
 #include "addruledialog.h"
 #include "editruledialog.h"
-#include "settingsmanager.h"
 #include "widgetform.h"
+#include "myIcon.h"
 
 using namespace std;
 
@@ -35,7 +35,7 @@ class settingsWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit settingsWindow(sM*sCon,rulesManager *rCon, QWidget *parent = nullptr);
+    explicit settingsWindow(QWidget *parent = nullptr);
     ~settingsWindow();
 
     enum ruleMode{ruleOut,parallelMode};
@@ -76,8 +76,8 @@ private slots:
     // RulesView related..
 
     // Rules related..
-    void recieveRule(rule r);
-    void recieveModifiedRule(rule r,int index);
+    void recieveRule(Rule r);
+    void recieveModifiedRule(Rule r,int index);
 
     // Buttons related..
     void on_insertRule_2_clicked();
@@ -108,8 +108,6 @@ private:
 
     // Member variables..
     Ui::settingsWindow *ui;
-    rM *rControl;
-    sM *sControl;
     QCheckBox *closeOnBox,*countTimerEnableBox,*enableRules;
     QLineEdit *countTimerInterval;
     QListWidget *view;
@@ -117,7 +115,7 @@ private:
     QPoint mOffset;
     QStringList ruleParentHeaderData,ruleChildrenHeaderData;
     QTreeWidget *rulesView;
-    QList<rule>rules;
+    QList<Rule>rules;
     QWidget *mView;
 };
 

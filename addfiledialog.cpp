@@ -1,6 +1,6 @@
 ﻿#include "addfiledialog.h"
 
-addFileDialog::addFileDialog(QWidget *parent):
+AddFileDialog::AddFileDialog(QWidget *parent):
     filepathSelectorDialog()
 {
     Q_UNUSED(parent);
@@ -13,10 +13,10 @@ addFileDialog::addFileDialog(QWidget *parent):
         "border:2px solid rgb(81,81,81);"
         "border-radius:5px;}");
 
-    connect(view,&QTreeView::clicked,this,&addFileDialog::currentFilePath);
+    connect(view,&QTreeView::clicked,this,&AddFileDialog::currentFilePath);
 }
 
-void addFileDialog::hideExplorer()
+void AddFileDialog::hideExplorer()
 {
     if(!view->isHidden())
     {
@@ -31,23 +31,23 @@ void addFileDialog::hideExplorer()
     }
 }
 
-void addFileDialog::setCurrentIndex(QString txt)
+void AddFileDialog::setCurrentIndex(QString txt)
 {
     QModelIndex fileIndex = fileModel->index(txt);
     view->setCurrentIndex(fileIndex);
 }
 
-void addFileDialog::on_insertPathButton_clicked()
+void AddFileDialog::on_insertPathButton_clicked()
 {
     emit addButtonClicked();
 }
 
-void addFileDialog::on_cancelButton_clicked()
+void AddFileDialog::on_cancelButton_clicked()
 {
     emit quitSignal();
 }
 
-void addFileDialog::currentFilePath(QModelIndex fileIndex)
+void AddFileDialog::currentFilePath(QModelIndex fileIndex)
 {
     QString filePath = fileModel->filePath(fileIndex);
     emit sendCurrentFilePath(filePath);

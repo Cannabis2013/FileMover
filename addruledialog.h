@@ -1,12 +1,12 @@
 #ifndef ADDRULEDIALOG_H
 #define ADDRULEDIALOG_H
 
-#include "abstractRuleDialog.h"
+#include "AbstractRuleDialog.h"
 
-class addRuleDialog : public abstractRuleDialog
+class AddRuleDialog : public AbstractRuleDialog
 {
 public:
-    explicit addRuleDialog(QStringList folderPaths);
+    explicit AddRuleDialog(QStringList watchFolders);
 public slots:
 signals:
 

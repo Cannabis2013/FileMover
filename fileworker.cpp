@@ -1,34 +1,34 @@
 ﻿#include "fileworker.h"
 
-fileWorker::fileWorker(processManager *pRef, QObject *parent) :
+FileWorker::FileWorker(ProcessManager *pRef, QObject *parent) :
     fileWorkerOperator(parent),pControllerReference(pRef)
 {
     busyMessage = "Luke Fileworker har travlt. Vent et øjeblik.";
 }
 
-fileWorker::~fileWorker()
+FileWorker::~FileWorker()
 {
     delete this;
 }
 
-void fileWorker::calcSizeOfIndividualFolderItems(QStringList l)
+void FileWorker::calcSizeOfIndividualFolderItems(QStringList l)
 {
     if(isBusy)
     {
         emit itemText("Fileworker har travlt");
         return;
     }
-    QList<fileObject> resultingList = sizeOfFolderContentItems(l);
+    QList<FileObject> resultingList = sizeOfFolderContentItems(l);
     emit sendFolderContentItems(resultingList);
 }
 
-void fileWorker::beginProcess()
+void FileWorker::beginProcess()
 {
     isBusy = true;
     bool isDone = true;
     while(!pControllerReference->queueIsEmpty())
     {
-        processItems item = pControllerReference->takeItem();
+        ProcessItems item = pControllerReference->takeItem();
         if(item.ruleMode == rD::Delete || item.ruleMode == rD::none)
             isDone = removeFileItems(item.list) ? isDone : false;
         else if(item.ruleMode == rD::Move)
@@ -40,7 +40,7 @@ void fileWorker::beginProcess()
     emit jobDone(isDone);
 }
 
-void fileWorker::processFileInformation(QString path)
+void FileWorker::processFileInformation(QString path)
 {
     if(isBusy)
     {
@@ -48,7 +48,7 @@ void fileWorker::processFileInformation(QString path)
         return;
     }
     QString denotation;
-    directoryItem item;
+    DirectoryItem item;
     item.path = path;
     double directorySize = convertSizeToAppropriateUnits(folderSize(path),denotation);
     item.dirSize = QString::number(directorySize) + " " + denotation;
@@ -60,18 +60,18 @@ void fileWorker::processFileInformation(QString path)
     emit processFinished(item);
 }
 
-void fileWorker::processFileInformations(QStringList paths)
+void FileWorker::processFileInformations(QStringList paths)
 {
     if(isBusy)
     {
         emit itemText("Fileworker har travlt");
         return;
     }
-    QList<directoryItem>directories;
+    QList<DirectoryItem>directories;
     for(QString p: paths)
     {
         QString denotation;
-        directoryItem item;
+        DirectoryItem item;
         item.path = p;
         double directorySize = convertSizeToAppropriateUnits(folderSize(p),denotation);
         item.dirSize = QString::number(directorySize) + " " + denotation;
@@ -84,7 +84,7 @@ void fileWorker::processFileInformations(QStringList paths)
     emit multipleProcessFinished(directories);
 }
 
-void fileWorker::handleProcessRequest()
+void FileWorker::handleProcessRequest()
 {
     if(isBusy)
         return;
@@ -92,7 +92,7 @@ void fileWorker::handleProcessRequest()
         beginProcess();
 }
 
-void fileWorker::countNumberOfFolderItems(QString path,
+void FileWorker::countNumberOfFolderItems(QString path,
                          QDir::Filters f,
                          QDirIterator::IteratorFlags i)
 {
@@ -114,7 +114,7 @@ void fileWorker::countNumberOfFolderItems(QString path,
     isBusy = false;
 }
 
-void fileWorker::countFolders(QStringList Path)
+void FileWorker::countFolders(QStringList Path)
 {
     long taeller = 0;
     for (QString p : Path)

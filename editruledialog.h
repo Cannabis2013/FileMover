@@ -4,12 +4,10 @@
 #include "addruledialog.h"
 
 
-class editRuleDialog : public abstractRuleDialog
+class EditRuleDialog : public AbstractRuleDialog
 {
 public:
-    editRuleDialog(rule editRule, int index, QStringList folderPaths);
-
-signals:
+    EditRuleDialog(Rule editRule, QStringList watchFolders);
 
 
 protected slots:
@@ -18,7 +16,8 @@ protected slots:
     void on_removeSubRule_clicked();
 
 private:
-    int replaceIndex;
+    Rule tempRule;
+    QString originalRuleTitle;
 
 };
 

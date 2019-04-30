@@ -1,29 +1,29 @@
-﻿#include "fileinformation.h"
+﻿#include "fileinformationmanager.h"
 
-fileInformation::fileInformation()
+FileInformationManager::FileInformationManager()
 {
 }
 
-bool fileInformation::directoryExists(QString path)
+bool FileInformationManager::directoryExists(QString path)
 {
-    for(directoryItem item : items)
+    for(DirectoryItem item : items)
         if(item.path == path)
             return true;
     return false;
 }
 
 
-const directoryItem fileInformation::getItemFromPath(const QString p)
+DirectoryItem FileInformationManager::item(QString p)
 {
-    for(directoryItem dI : items)
+    for(DirectoryItem dI : items)
     {
         if(dI.path == p)
             return dI;
     }
-    return directoryItem();
+    throw QString("Item not found");
 }
 
-void fileInformation::updateFileInfo(directoryItem dI)
+void FileInformationManager::updateFileInfo(DirectoryItem dI)
 {
     QString p = dI.path;
     for (int var = 0; var < items.count(); ++var)
@@ -33,18 +33,18 @@ void fileInformation::updateFileInfo(directoryItem dI)
     }
 }
 
-void fileInformation::updateAllFileInfo(QList<directoryItem> list)
+void FileInformationManager::updateAllFileInfo(QList<DirectoryItem> list)
 {
     items.clear();
     items.append(list);
 }
 
-void fileInformation::flushAll()
+void FileInformationManager::flushAll()
 {
     items.clear();
 }
 
-void fileInformation::removeDirectory(QString p)
+void FileInformationManager::removeDirectory(QString p)
 {
     for (int var = 0; var < items.count(); ++var)
     {
@@ -53,50 +53,25 @@ void fileInformation::removeDirectory(QString p)
     }
 }
 
-QList<QTreeWidgetItem *> directoryItem::suffixItems() const
+QString FileInformationManager::createTextBrowserHtml(QString path)
 {
-    QList<QTreeWidgetItem*> resultingList;
-    for(QPair<QString,int> sufPair : sufList)
-        resultingList << new QTreeWidgetItem(QStringList {sufPair.first,QString::number(sufPair.second)});
+    QFileInfo info = path;
+    if(!info.isDir())
+        return QString();
 
-    return resultingList;
-}
+    DirectoryItem dirItem;
 
-QTreeWidgetItem *directoryItem::g(QTreeWidgetItem *item) const
-{
-    QTreeWidgetItem *result = new QTreeWidgetItem;
-    for (int i = 0; i < item->columnCount(); ++i)
-        result->setText(i,item->text(i));
-    if(item->childCount() == 0)
-        return result;
-    else
-    {
-        for (int i = 0; i < item->childCount(); ++i)
-        {
-            if(item->child(i)->childCount() == 0)
-            {
-                QTreeWidgetItem *child = new QTreeWidgetItem;
-                for (int j = 0; j < item->child(i)->columnCount(); ++j)
-                    child->setText(j,item->child(i)->text(j));
-                result->addChild(child);
-            }
-            else
-            {
-                QTreeWidgetItem *child = g(item->child(i));
-                result->addChild(child);
-            }
-        }
+    try {
+        dirItem = item(path);
+    } catch (QString s) {
+        return "Item not found. No information to show.";
     }
-    return result;
-}
 
-QString directoryItem::createTextBrowserHtml() const
-{
-    QString tempSize = dirSize;
+    QString tempSize = dirItem.dirSize;
     if(tempSize == QString())
         tempSize = "Not counted";
-    QString fC = QString::number(fileCount),
-            dC = QString::number(dirCount);
+    QString fC = QString::number(dirItem.fileCount),
+            dC = QString::number(dirItem.dirCount);
 #if(_MSC_VER)
     QString resultingHtml = QString(
                         "<body style='background-color:rgb(81,81,81);'>"
@@ -116,7 +91,7 @@ QString directoryItem::createTextBrowserHtml() const
                             "</table>"
                         "</body>").arg(fC,dC,tempSize);
 #elif(__MINGW32__)
-    QString pth = path != "Not defined" ? path : "Ikke defineret",
+    QString pth = dirItem.path != "Not defined" ? dirItem.path : "Ikke defineret",
             textColor = "color:white;",
             resultingHtml = QString(
                 "<body style='background-image:url(qrc:/My Images/Ressources/solid background black.jpg);'>"
@@ -150,4 +125,42 @@ QString directoryItem::createTextBrowserHtml() const
                 "</body>").arg(fC,dC,tempSize,pth,textColor);
 #endif
     return resultingHtml;
+
+}
+
+QList<QTreeWidgetItem *> DirectoryItem::suffixItems() const
+{
+    QList<QTreeWidgetItem*> resultingList;
+    for(QPair<QString,int> sufPair : sufList)
+        resultingList << new QTreeWidgetItem(QStringList {sufPair.first,QString::number(sufPair.second)});
+
+    return resultingList;
+}
+
+QTreeWidgetItem *DirectoryItem::g(QTreeWidgetItem *item) const
+{
+    QTreeWidgetItem *result = new QTreeWidgetItem;
+    for (int i = 0; i < item->columnCount(); ++i)
+        result->setText(i,item->text(i));
+    if(item->childCount() == 0)
+        return result;
+    else
+    {
+        for (int i = 0; i < item->childCount(); ++i)
+        {
+            if(item->child(i)->childCount() == 0)
+            {
+                QTreeWidgetItem *child = new QTreeWidgetItem;
+                for (int j = 0; j < item->child(i)->columnCount(); ++j)
+                    child->setText(j,item->child(i)->text(j));
+                result->addChild(child);
+            }
+            else
+            {
+                QTreeWidgetItem *child = g(item->child(i));
+                result->addChild(child);
+            }
+        }
+    }
+    return result;
 }

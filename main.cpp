@@ -10,29 +10,15 @@ int main(int argc, char *argv[])
 
     a.setQuitOnLastWindowClosed(false);
 
-    bool hidden = a.hideOnStart();
+    MainApplication *mainApplicaton = new MainApplication("Filehandler", "MH");
 
-#if(__MINGW32__)
-    altArgsContainer altArgs;
-
-    QStringList argList = a.arguments();
-    for(QString arg : argList)
-    {
-        if(arg == "Developer" || arg == "developer")
-            altArgs.developerMode = true;
-        else if(arg.startsWith("i") || arg.startsWith("I"))
-        {
-            arg.remove(0,1);
-            altArgs.alternateIconPath = arg;
-        }
-    }
-#endif
-
-    mainWindow *w = new mainWindow("Filemover","MH");
+    mainWindow *w = new mainWindow(mainApplicaton,
+                                   mainApplicaton->ApplicationTitle(),
+                                   mainApplicaton->OrganisationTitle());
 
     QObject::connect(w,SIGNAL(quit(bool)),&a,SLOT(QuiT(bool)));
-    if(!hidden)
-        w->show();
+
+    w->show();
 
     return a.exec();
 }

@@ -1,10 +1,9 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-mainWindow::mainWindow(QString appName,
-                       QString orgName,
-                       QWidget *frameForm) :
-    QMainWindow(frameForm),
+mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
+                       QString orgName) :
+    QMainWindow(),
     AbstractPersistence(appName,orgName),
     ui(new Ui::mainWindow)
 {
@@ -25,11 +24,10 @@ mainWindow::mainWindow(QString appName,
     fileInfoBrowser = ui->fileInformationBrowserView;
     fileStandard = QIcon();
     folderTrayMenu = new QMenu;
-    fM = new fileInformation();
+    fM = new FileInformationManager();
     laptopScreenSize = myScreenDimension(0,0,1280,800);
     mainFolderView = ui->dirView;
     normalListFontSize = 16;
-    pController = new processManager();
     screenSize = myScreenDimension(QApplication::desktop()->screenGeometry());
     statusLine = ui->statusLineEdit;
     suffixTree = ui->suffixTree;
@@ -137,55 +135,9 @@ mainWindow::mainWindow(QString appName,
 
     // Register meta types..
 
-    qRegisterMetaType<QList<fileObject>>("QList<fileObject>");
-    qRegisterMetaType<directoryItem>("directoryItem");
-    qRegisterMetaType<QList<directoryItem>>("QList<directoryItem>");
-
-    // Connections..
-
-    // Add folder related..
-    connect(this,&mainWindow::processPath,fWorker,&fileWorker::processFileInformation);
-    connect(this,&mainWindow::processPaths,fWorker,&fileWorker::processFileInformations);
-
-    connect(fWorker,&fW::processFinished,this,&mainWindow::recieveDirectoryItem);
-    connect(fWorker,&fW::multipleProcessFinished,this,&mainWindow::recieveDirectoryItems);
-
-    //countTimer..
-    connect(countTimer,SIGNAL(timeout()),
-            this,SLOT(timerCount()));
-    connect(suffixHeader,&QHeaderView::sectionDoubleClicked,
-            this,&mainWindow::sortSuffixTreeColumn);
-
-    // detailedFolderView related..
-    connect(detailedFolderView,&QTreeWidget::customContextMenuRequested,
-            this,&mainWindow::detailedFolderMenuCalled);
-
-    // mainFolderView/suffixView..
-    connect(mainFolderView,SIGNAL(customContextMenuRequested(QPoint)),
-            this,SLOT(contextMenuCalled(QPoint)));
-    connect(mainFolderView,&QTreeWidget::doubleClicked,
-            this,&mainWindow::on_MainWindow_DoubleClicked);
-    connect(mainFolderView,SIGNAL(pressed(QModelIndex)),
-            this,SLOT(updateInfoScreen(QModelIndex)));
-
-    // fWorker Queued Connections..
-    connect(fWorker,SIGNAL(itemText(QString)),this,SLOT(setStatusText(QString)));
-    connect(this,SIGNAL(StartCount(QStringList)),
-            fWorker,SLOT(calcSizeOfIndividualFolderItems(QStringList)));
-    connect(fWorker,SIGNAL(sendFolderContentItems(QList<fileObject>)),
-            this,SLOT(folderContentRecieved(QList<fileObject>)));
-    connect(fWorker,SIGNAL(clearFinished(bool)),
-            this,SLOT(clearCompleted(bool)));
-    connect(fWorker,SIGNAL(infoReport(QString)),
-            this,SLOT(msgToTray(QString)));
-
-    // fWorker queue related..
-
-    connect(pController,&processManager::wakeUpProcess,fWorker,&fileWorker::handleProcessRequest);
-
-    //settingsWindow..
-    /*
-    */
+    qRegisterMetaType<QList<FileObject>>("QList<fileObject>");
+    qRegisterMetaType<DirectoryItem>("directoryItem");
+    qRegisterMetaType<QList<DirectoryItem>>("QList<directoryItem>");
 
     // Systemtray..
     connect(tray,SIGNAL(messageClicked()),this,SLOT(trayMsgClicked()));
@@ -200,16 +152,6 @@ mainWindow::mainWindow(QString appName,
 
     tray->show();
 
-    //Start functions..
-
-    // Add folders to mainFolderView..
-    insertTreeItems(directoriesToAppend);
-
-    if(frameForm != nullptr)
-    {
-        WidgetForm *form = static_cast<WidgetForm*>(parentWidget());
-        form->setWidget(this);
-    }
 }
 
 
@@ -219,20 +161,7 @@ mainWindow::~mainWindow()
 }
 void mainWindow::closeEvent(QCloseEvent *cE)
 {
-    if(1 + 1 == 2)
-    {
-        fileInfoBrowser->close();
-        writeSettings();
-        tray->deleteLater();
-        emit quit(isHidden());
-        cE->accept();
-    }
-    else
-    {
-        hide();
-        tray->show();
-        cE->ignore();
-    }
+
 }
 
 void mainWindow::keyPressEvent(QKeyEvent *kE)
@@ -304,10 +233,6 @@ void mainWindow::msgToTray(const QString &msg)
     tray->showMessage("Error",msg,QSystemTrayIcon::Warning);
 }
 
-void mainWindow::setCloseonClose(bool c)
-{
-    closeOnBut = c;
-}
 
 void mainWindow::on_MainWindow_DoubleClicked(const QModelIndex &index)
 {
@@ -361,21 +286,7 @@ void mainWindow::tMenuClicked(QAction *a)
 
 void mainWindow::countMenuTriggered(QAction *cAction)
 {
-    QString aText = cAction->text();
-    if(aText == "Alle mapper")
-    {
-        QStringList allItems = folders();
-        wThread->start();
-        emit StartCount(allItems);
-    }
-    else
-    {
-        QString item = folder(aText);
-        QStringList list = {item};
-        wThread->start();
-        StartCount(list);
-    }
-    wThread->start();
+
 }
 
 void mainWindow::clearMenuTriggered(QAction *clAction)
@@ -413,10 +324,10 @@ void mainWindow::explorerFolder(bool ok)
 #endif
 }
 
-void mainWindow::folderContentRecieved(QList<fileObject> sz)
+void mainWindow::folderContentRecieved(QList<FileObject> sz)
 {
     QString mes, sizeString;
-    foreach (fileObject fObject, sz)
+    foreach (FileObject fObject, sz)
     {
         QString xSize;
         double count = roundNumber(fObject.sz,xSize,2);
@@ -430,7 +341,7 @@ void mainWindow::folderContentRecieved(QList<fileObject> sz)
             sizeString = "Tom";
             mes += QString("%1 er %2! \n").arg(fObject.path,sizeString);
         }
-        directoryItem rItem = fM->getItemFromPath(fObject.path);
+        DirectoryItem rItem = fM->item(fObject.path);
         rItem.dirSize = sizeString;
         fM->updateFileInfo(rItem);
     }
@@ -456,9 +367,6 @@ void mainWindow::actionCountFolder(bool f)
 
 void mainWindow::timerCount()
 {
-    QStringList pathList = folders();
-    wThread->start();
-    emit StartCount(pathList);
 }
 
 void mainWindow::setTimerStatus(bool makeActive)
@@ -535,62 +443,14 @@ void mainWindow::contextMenuCalled(QPoint p)
 
 void mainWindow::calcAllFiles(QStringList paths)
 {
-    wThread->start();
-    emit StartCount(paths);
 }
 
 void mainWindow::clearFolders(const QList<QTreeWidgetItem *> &itemList)
 {
-    if(itemList.isEmpty())
-    {
-        tray->showMessage("Info","Listen er tom for mapper",
-                          QSystemTrayIcon::Information,1000);
-        return;
-    }
-    QStringList list;
-
-    for(QTreeWidgetItem *item: itemList)
-        list << item->text(0);
-
-    if(messageBx::customBox(this,
-                            "Sikker?",
-                            "Sikker på du vil tømme dine valgte mapper?",
-                            "ja","Nej"))
-    {
-        processItems it;
-        it.list = fileItemList(list);
-        pController->addToQueue(it);
-    }
 }
 
 void mainWindow::countFolders()
 {
-    QStringList list = folders();
-    wThread->start();
-    emit StartCount(list);
-}
-
-void mainWindow::insertTreeItem(QString path)
-{
-    QStringList text {path};
-    QTreeWidgetItem *treeItem = new QTreeWidgetItem(text);
-    treeItem->setIcon(0,QIcon(":/My Images/Ressources/Folder.png"));
-    treeItem->font(0).setPointSize(16);
-    mainFolderView->addTopLevelItem(treeItem);
-}
-
-void mainWindow::insertTreeItems(QStringList pathList)
-{
-    sManager.insertPaths(pathList);
-    emit processPaths(pathList);
-    for(QString path : pathList)
-    {
-        QStringList text {path};
-        QTreeWidgetItem *treeItem = new QTreeWidgetItem(text);
-        treeItem->setIcon(0,QIcon(":/My Images/Ressources/File.png"));
-        treeItem->font(0).setPointSize(16);
-        mainFolderView->addTopLevelItem(treeItem);
-    }
 }
 
 double mainWindow::roundNumber(long long numb, QString &denote, int dec)
@@ -635,12 +495,14 @@ double mainWindow::roundNumber(long long numb, QString &denote, int dec)
 
 void mainWindow::updateDetaileditems()
 {
+    /*
     detailedFolderView->clear();
     QList<QTreeWidgetItem*>itemList;
-    QList<directoryItem> directoryItems = fM->getAllItems();
+    QList<directoryItem> directoryItems = fM->items();
     for(directoryItem item : directoryItems)
         itemList << item.treeWidgetItems();
     detailedFolderView->addTopLevelItems(itemList);
+    */
 }
 
 QString mainWindow::createTextBrowserHtml(const QString dirSize, const long fileCount, const int dirCount) const
@@ -710,164 +572,11 @@ QString mainWindow::currentMainFolderPath() const
 
 void mainWindow::writeSettings()
 {
-    bool countEnabled = countTimer->isActive();
-    QSettings s;
 
-    s.beginGroup("Basic settings");
-    s.setValue("WinGeo",QVariant(geometry()));
-    s.setValue("countTimerEnabled",QVariant(countEnabled));
-    s.setValue("countTimerInterval",QVariant(countTimerInterval));
-    s.endGroup();
-
-    QStringList list = folders();
-
-    s.beginWriteArray("DirList",list.count());
-    for(int a = 0;a <list.count();a++)
-    {
-        s.setArrayIndex(a);
-        QString dir = list.at(a);
-        s.setValue("DirPath",dir);
-    }
-    s.endArray();
-
-    writeRulesToReg();
 }
 
 void mainWindow::readSettings()
 {
-    QSettings s;
-
-    // Load basic settings..
-    s.beginGroup("Basic Settings");
-    setGeometry(s.value("WinGeo",QVariant(QRect(24,24,360,240)).toRect()).toRect());
-    closeOnBut = s.value("CloseonExit",false).toBool();
-    countTimerInterval = s.value("countTimerInterval",QVariant(2*1000*60).toInt()).toInt();
-    countTimerStatus = s.value("countTimerEnabled",QVariant(false).toBool()).toBool();
-    rulesEnabledStatus = s.value("rulesEnabled",false).toBool();
-    s.endGroup();
-
-    // Load dirlist for mainFolderView..
-    int c = s.beginReadArray("DirList");
-    for(int a = 0;a <c;a++)
-    {
-        s.setArrayIndex(a);
-        directoriesToAppend << s.value("DirPath",QVariant("Error")).toString();
-    }
-    s.endArray();
-    // Insert rules from file..
-    readRulesFromReg();
-}
-
-void mainWindow::readRulesFromReg()
-{
-    QList<rule>rules;
-    QSettings s;
-    int total = s.beginReadArray("Rules");
-    for (int i = 0; i < total; ++i)
-    {
-        rule r;
-        s.setArrayIndex(i);
-        r.title = s.value("Title","Title").toString();
-        r.actionRule = static_cast<rD::fileActionRule>(s.value("Action","").toInt());
-        r.appliesToPath = s.value("ApplyPath","Alle").toString();
-        r.destinationPath = Worker::splitString(s.value("Destination paths","").toString());
-        r.deepScanMode = s.value("Scan Mode",false).toBool();
-        int count = s.beginReadArray("Subrules");
-        for (int n = 0; n < count; ++n)
-        {
-            subRule sRule;
-            s.setArrayIndex(n);
-
-            sRule.copymode = static_cast<rD::copyMode>(s.value("Copymode",0).toInt());
-            sRule.fieldCondition = static_cast<rD::fileFieldCondition>(s.value("Condition","").toInt());
-            sRule.fileCompareMode = static_cast<rD::compareMode>(s.value("Comparemode",0).toInt());
-
-            sRule.matchWholeWords = s.value("Matchwholewords",false).toBool();
-            sRule.keyWords = Worker::splitString(s.value("Keywords","").toString());
-
-            sRule.sizeLimit.first = s.value("Sizelimit",0).toInt();
-            sRule.sizeLimit.second = s.value("Sizelimitunit","kb").toString();
-
-            s.beginGroup("Sizelimits");
-            sRule.sizeIntervalLimits.first.first = s.value("Minsizeinterval",0).toInt();
-            sRule.sizeIntervalLimits.first.second = s.value("Minsizeunitinterval","kb").toString();
-            sRule.sizeIntervalLimits.second.first = s.value("Maxsizeinterval",0).toInt();
-            sRule.sizeIntervalLimits.second.second = s.value("Maxsizeunitinterval","kb").toString();
-            s.endGroup();
-
-            sRule.fixedDate.first = static_cast<rD::compareMode>(s.value("Comparemode",0).toInt());
-            sRule.fixedDate.second = QDateTime::fromString(s.value("Datetime","").toString(),"dd.MM.yyyy");
-
-            s.beginGroup("Datelimits");
-            sRule.intervalDate.first = myDateTime::fromString(s.value("Startdate","01.01.2000").toString());
-            sRule.intervalDate.second = myDateTime::fromString(s.value("Enddate","01.01.2000").toString());
-            s.endGroup();
-
-            sRule.typeMode = static_cast<wrk::iteratorMode>(s.value("Iteratormode",0).toInt());
-
-            r.subRules.append(sRule);
-        }
-        s.endArray();
-        rules << r;
-    }
-    s.endArray();
-    rManager.insertRules(rules);
-}
-
-void mainWindow::writeRulesToReg()
-{
-    QList<rule> rules = rManager.ruleslist();
-
-    QSettings s;
-    s.remove("Rules");
-    s.beginWriteArray("Rules",rules.count());
-    for (int i = 0; i < rules.count(); ++i)
-    {
-        s.setArrayIndex(i);
-        rule r = rules.at(i);
-        s.setValue("Title",r.title);
-        s.setValue("Action",r.actionRule);
-        s.setValue("ApplyPath",r.appliesToPath);
-        s.setValue("Destination paths",
-                   mergeStringList(r.destinationPath));
-        s.setValue("Scan Mode",r.deepScanMode);
-        QList<subRule>sRules = r.subRules;
-        int total = sRules.count();
-        s.beginWriteArray("Subrules",total);
-        for (int n = 0; n < total; ++n)
-        {
-            subRule sRule = sRules.at(n);
-            s.setArrayIndex(n);
-
-            s.setValue("Copymode",sRule.copymode);
-            s.setValue("Condition",sRule.fieldCondition);
-            s.setValue("Comparemode",sRule.fileCompareMode);
-
-            s.setValue("Matchwholewords",sRule.matchWholeWords);
-            s.setValue("Keywords",Worker::mergeStringList(sRule.keyWords));
-
-            s.setValue("Sizelimit",sRule.sizeLimit.first);
-            s.setValue("Sizelimitunit",sRule.sizeLimit.second);
-
-            s.beginGroup("Sizelimits");
-            s.setValue("Minsizeinterval",sRule.sizeIntervalLimits.first.first);
-            s.setValue("Minsizeunitinterval",sRule.sizeIntervalLimits.first.second);
-            s.setValue("Maxsizeinterval",sRule.sizeIntervalLimits.second.first);
-            s.setValue("Maxsizeunitinterval",sRule.sizeIntervalLimits.second.second);
-            s.endGroup();
-
-            s.setValue("Datetime",sRule.fixedDate.second.toString("dd.MM.yyyy"));
-
-            s.beginGroup("Datelimits");
-            s.setValue("Startdate",sRule.intervalDate.first.toString("dd.MM.yyyy"));
-            s.setValue("Enddate",sRule.intervalDate.second.toString("dd.MM.yyyy"));
-            s.endGroup();
-
-            s.setValue("Iteratormode",sRule.typeMode);
-        }
-        s.endArray();
-    }
-    s.endArray();
 }
 
 void mainWindow::popSystemTrayMessage(const QString msg, const QString title)
@@ -921,15 +630,6 @@ void mainWindow::Quit()
 
 void mainWindow::on_clearButt_clicked()
 {
-    QList<QTreeWidgetItem*> list = mainFolderView->selectedItems();
-    QStringList paths;
-    for(QTreeWidgetItem*item : list)    
-        paths << item->text(0);    
-
-    if(sManager.isRulesEnabled())
-        clearAccordingToRules(paths);
-    else
-        clearFolders(list);
 
 }
 
@@ -956,23 +656,6 @@ void mainWindow::on_delButt_clicked()
 
 void mainWindow::updateInfoScreen(QModelIndex index)
 {
-    if(!index.isValid())
-    {
-        fileInfoBrowser->clear();
-        suffixTree->clear();
-        return;
-    }
-    QTreeWidgetItem *item = mainFolderView->topLevelItem(index.row());
-    directoryItem dItem = fM->getItemFromPath(item->text(0));
-    if(dItem.path == "Not defined")
-        return;
-    QString infoHtml = dItem.createTextBrowserHtml();
-
-    fileInfoBrowser->setHtml(infoHtml);
-    suffixTree->clear();
-
-    QList<QTreeWidgetItem*> sortetList = sortSuffixes(dItem.suffixItems(),Qt::DescendingOrder);
-    suffixTree->addTopLevelItems(sortetList);
 }
 
 void mainWindow::sortSuffixTreeColumn(int c)
@@ -1151,36 +834,6 @@ void mainWindow::updateSubTrayMenus()
     }
 }
 
-
-void mainWindow::insertPath(QString p)
-{
-    if(fM->directoryExists(p))
-    {
-        popSystemTrayMessage("The folder already exists");
-        return;
-    }
-    if(p == "C:" || p == "C:/")
-    {
-        popSystemTrayMessage("Rod drev ikke tilladt!");
-        return;
-    }
-    sManager.insertPath(p);
-}
-
-void mainWindow::recieveDirectoryItem(directoryItem item)
-{
-    fM->insertItem(item);
-    updateDetaileditems();
-}
-
-void mainWindow::recieveDirectoryItems(QList<directoryItem> items)
-{
-    for(directoryItem item : items)
-        fM->insertItem(item);
-
-    updateDetaileditems();
-}
-
 void mainWindow::setStatusText(QString txt)
 {
     statusLine->setText(txt);
@@ -1193,23 +846,6 @@ void mainWindow::clearStatusLine()
 
 void mainWindow::on_actionIndstillinger_triggered()
 {
-    sI *settingsWindow = new sI(&sManager,&rManager);
-
-    connect(settingsWindow,SIGNAL(iconSelected(QIcon)),
-            this,SLOT(iconSelected(QIcon)));
-    connect(settingsWindow,SIGNAL(countTimerActivated(bool)),
-            this,SLOT(setTimerStatus(bool)));
-    connect(settingsWindow,SIGNAL(sendCheckBox(bool)),
-            this,SLOT(setCloseonClose(bool)));
-    connect(settingsWindow,SIGNAL(sendInterval(int)),
-            this,SLOT(setTimerInterval(int)));
-    connect(settingsWindow,SIGNAL(enableTimer(bool)),
-            this,SLOT(setTimerStatus(bool)));
-
-    WidgetForm *wForm = new WidgetForm(settingsWindow);
-
-    wForm->setFrameTitle("Generelle indstillinger");
-    wForm->show();
 
 }
 
@@ -1221,27 +857,11 @@ void mainWindow::on_actionQuit_triggered()
 
 void mainWindow::on_addBut_clicked()
 {
-    addFolderWidget *addView = new addFolderWidget();
-    connect(addView,&addFolderWidget::sendPath,this,&mainWindow::insertPath);
-    addView->show();
 }
 
 void mainWindow::on_countButt_clicked()
 {
-    QList<QTreeWidgetItem*> selectedItems = mainFolderView->selectedItems();
-    QStringList list;
-    if(!selectedItems.isEmpty())
-    {
-        foreach (QTreeWidgetItem *item, selectedItems)
-            list << item->text(0);
-    }
-    else
-    {
-        tray->showMessage("Info!","Vælg en sti fra oversigten!");
-        return;
-    }
-    wThread->start();
-    emit StartCount(list);
+
 }
 
 void mainWindow::on_actionOpen_current_directory_triggered()

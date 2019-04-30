@@ -4,36 +4,12 @@
 #include <QTimer>
 #include <qicon.h>
 #include <qstring.h>
-#include "rulesmanager.h"
+#include <QTreeWidgetItem>
 #include "qlist.h"
-#include "MyIcon.h"
+#include "myIcon.h"
 #include "abstractpersistence.h"
 #include "iconscanner.h"
 
-/*
- * Basic settings
- * Contain and handle paths
-*/
-
-struct RessourcePaths
-{
-    QString ressourceFolder = "Ressources";
-    QString fileIconPath = "fileIcons";
-};
-
-struct SettingsContainer
-{
-    int timerMsec;
-    bool closeOnExit, rulesEnabled, timerEnabled;
-    QTimer countTimer;
-    QList<MyIcon> trayIconList;
-    QList<MyIcon> fileIconList;
-
-    QIcon currentTrayIcon;
-    QIcon fileIconStandard;
-
-    QStringList mainFolderPaths;
-};
 
 class settingsManager : public QObject,
         private IconScanner,
@@ -42,30 +18,35 @@ class settingsManager : public QObject,
     Q_OBJECT
 public:
     settingsManager(QString appName, QString orgName);
+    ~settingsManager();
     // void members..
-    void setCloseOnExit(bool enable){settings.closeOnExit = enable;}
-    void setRulesEnabled(bool enable){settings.rulesEnabled = enable;}
-    void setTimerEnabled(bool enable){settings.timerEnabled = enable;}
-    void setTimerInterval(int msec){settings.timerMsec = msec;}
+    void setCloseOnExit(bool enable){closeOnExit = enable;}
+    void setRulesEnabled(bool enable){rulesEnabled = enable;}
+    void setTimerEnabled(bool enable){timerEnabled = enable;}
+    void setTimerInterval(int msec){timerMsec = msec;}
 
     // Icons related..
-    void insertIcon(const MyIcon ic){settings.trayIconList << ic;}
-    void insertIcons(QList<MyIcon>icons){settings.trayIconList << icons;}
+    void insertIcon(const MyIcon ic){trayIconList << ic;}
+    void insertIcons(QList<MyIcon>icons){trayIconList << icons;}
 
     // Path Related..
 
     void insertPath(QString path);
     void insertPaths(QStringList paths);
 
-    QStringList paths() const {return settings.mainFolderPaths;}
+    void removePath(QString path);
+    void removePathAt(int index);
 
-    bool closeOnQuit() const {return settings.closeOnExit;}
-    bool isRulesEnabled() const {return settings.rulesEnabled;}
-    bool countTimerEnabled() const {return settings.timerEnabled;}
-    QString countTimerInterval() const {return QString::number(settings.timerMsec);}
+    QStringList paths() {return mainFolderPaths;}
+    QList<QTreeWidgetItem*> pathItems();
+
+    bool closeOnQuit() {return closeOnExit;}
+    bool isRulesEnabled() {return rulesEnabled;}
+    bool countTimerEnabled() {return timerEnabled;}
+    QString countTimerInterval() {return QString::number(timerMsec);}
 
     // Icons related..
-    QList<MyIcon>trayIcons() const {return settings.trayIconList;}
+    QList<MyIcon>trayIcons() const {return trayIconList;}
 
 signals:
     void stateChanged();
@@ -75,8 +56,17 @@ protected:
     void writeSettings();
 private:
 
-    SettingsContainer settings;
-    RessourcePaths rPaths;
+    QStringList mainFolderPaths;
+    QString ressourceFolder = "Ressources";
+    QString fileIconPath = "fileIcons";
+    int timerMsec;
+    bool closeOnExit = false, rulesEnabled = false, timerEnabled = false;
+    QTimer countTimer;
+    QList<MyIcon> trayIconList;
+    QList<MyIcon> fileIconList;
+
+    QIcon currentTrayIcon;
+    QIcon fileIconStandard;
 };
 
 typedef settingsManager sM;

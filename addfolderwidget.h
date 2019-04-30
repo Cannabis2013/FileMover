@@ -11,16 +11,16 @@
 using namespace std;
 
 namespace Ui {
-class addFolderWidget;
+class AddFolderWidget;
 }
 
-class addFolderWidget : public QDialog
+class AddFolderWidget : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit addFolderWidget();
-    ~addFolderWidget();
+    explicit AddFolderWidget();
+    ~AddFolderWidget();
 
 signals:
     void sendPath(QString path);
@@ -30,8 +30,8 @@ private slots:
     void on_Add_Button_Clicked();
 
 private:
-    Ui::addFolderWidget *ui;
-    addFileDialog *fileWidget;
+    Ui::AddFolderWidget *ui;
+    AddFileDialog *fileWidget;
     pathLine *pathWidget;
     QVBoxLayout *vLayout;
     int tempHeight;

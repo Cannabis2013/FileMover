@@ -1,8 +1,8 @@
 ﻿#include "addfolderwidget.h"
 #include "ui_addfolderwidget.h"
 
-addFolderWidget::addFolderWidget() :
-    ui(new Ui::addFolderWidget)
+AddFolderWidget::AddFolderWidget() :
+    ui(new Ui::AddFolderWidget)
 {
     ui->setupUi(this);
     fileWidget = ui->widget;
@@ -13,12 +13,12 @@ addFolderWidget::addFolderWidget() :
 
 }
 
-addFolderWidget::~addFolderWidget()
+AddFolderWidget::~AddFolderWidget()
 {
     delete ui;
 }
 
-void addFolderWidget::sizeAdjust(QSizePolicy::Policy p, int H)
+void AddFolderWidget::sizeAdjust(QSizePolicy::Policy p, int H)
 {
     QSizePolicy::Policy hPol = sizePolicy().horizontalPolicy();
     QRect maxHeight = QApplication::desktop()->screenGeometry(this);
@@ -35,7 +35,7 @@ void addFolderWidget::sizeAdjust(QSizePolicy::Policy p, int H)
     }
 }
 
-void addFolderWidget::on_Add_Button_Clicked()
+void AddFolderWidget::on_Add_Button_Clicked()
 {
     QString filePath = pathWidget->text();
     emit sendPath(filePath);

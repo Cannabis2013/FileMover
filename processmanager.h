@@ -2,35 +2,35 @@
 #define PROCESSCONTROLLER_H
 
 #include "mydatetime.h"
-#include "fileinformation.h"
+#include "fileinformationmanager.h"
 #include "ruledefinitions.h"
 
 /*
  * These classes handles the queues.
 */
-struct fileObject
+struct FileObject
 {
     long long sz;
     QString path;
 };
-struct processItems
+struct ProcessItems
 {
     QFileInfoList list;
     rD::fileActionRule ruleMode = rD::none;
     QStringList destinations;
 };
 
-class processManager : public QObject
+class ProcessManager : public QObject
 {
     Q_OBJECT
 
 public:
-    ~processManager()
+    ~ProcessManager()
     {
         delete this;
     }
 
-    void addToQueue(processItems pI)
+    void addToQueue(ProcessItems pI)
     {
         processQeue.append(pI);
         emit wakeUpProcess();
@@ -42,17 +42,17 @@ signals:
 
 
 private:
-    processItems takeItem()
+    ProcessItems takeItem()
     {
         if(processQeue.isEmpty())
-            return processItems();
+            return ProcessItems();
         else
             return processQeue.takeFirst();
     }
     bool queueIsEmpty(){return processQeue.isEmpty();}
 
-    QList<processItems>processQeue;
-    friend class fileWorker;
+    QList<ProcessItems>processQeue;
+    friend class FileWorker;
 };
 
 #endif // PROCESSCONTROLLER_H

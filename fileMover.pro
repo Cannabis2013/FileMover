@@ -35,8 +35,11 @@ TEMPLATE = app
 RC_ICONS = xIcon.ico
 
 SOURCES += main.cpp\
+    AbstractRuleDialog.cpp \
     abstracgraphicallistmanager.cpp \
+    abstractcoreapplication.cpp \
     abstractpersistence.cpp \
+    fileinformationmanager.cpp \
     fileinformationview.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
@@ -44,7 +47,6 @@ SOURCES += main.cpp\
     myapp.cpp \
     rulesmanager.cpp \
     settingsWindow.cpp \
-    fileinformation.cpp \
     mydatetime.cpp \
     settingsmanager.cpp \
     textpathedit.cpp \
@@ -56,7 +58,6 @@ SOURCES += main.cpp\
     myhorizontalsplitter.cpp \
     rulepathselector.cpp \
     rulepathdialogselector.cpp \
-    abstractRuledialog.cpp \
     addruledialog.cpp \
     editruledialog.cpp \
     conditionWidget.cpp \
@@ -68,8 +69,12 @@ SOURCES += main.cpp\
     topframeform.cpp
 
 HEADERS  += mainwindow.h \
+    AbstractRuleDialog.h \
     MyIcon.h \
+    abstractcoreapplication.h \
     abstractpersistence.h \
+    customcombobox.h \
+    fileinformationmanager.h \
     iconscanner.h \
     mainapplication.h \
     messageBox.h \
@@ -79,9 +84,7 @@ HEADERS  += mainwindow.h \
     rulesmanager.h \
     settingsWindow.h \
     myscreendimensions.h \
-    fileinformation.h \
     mydatetime.h \
-    mycombobox.h \
     settingsmanager.h \
     textpathedit.h \
     fileinformationview.h \
@@ -93,7 +96,6 @@ HEADERS  += mainwindow.h \
     myhorizontalsplitter.h \
     rulepathselector.h \
     rulepathdialogselector.h \
-    abstractRuleDialog.h \
     addruledialog.h \
     editruledialog.h \
     conditionWidget.h \

@@ -100,9 +100,9 @@ private:
     rD::fileFieldCondition currentFileModeRule;
     Ui::conditionWidget *ui;
 
-    friend class abstractRuleDialog;
-    friend class editRuleDialog;
-    friend class addRuleDialog;
+    friend class AbstractRuleDialog;
+    friend class EditRuleDialog;
+    friend class AddRuleDialog;
 };
 
 #endif // CONDITIONWIDGET_H

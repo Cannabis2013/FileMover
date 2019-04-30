@@ -15,7 +15,7 @@
 */
 using namespace std;
 
-struct directoryItem
+struct DirectoryItem
 {
     QString dirSize = nullptr;
     int dirCount;
@@ -31,28 +31,29 @@ struct directoryItem
     {
         return g(allFiles);
     }
-    QString createTextBrowserHtml() const;
 };
 
-class fileInformation
+class FileInformationManager
 {
 public:
-    fileInformation();
+    FileInformationManager();
 
-    void insertItem(directoryItem item){items << item;}
-    void setItemList(QList<directoryItem> nList){items = nList;}
+    void insertItem(DirectoryItem item){items << item;}
+    void insertItems(QList<DirectoryItem> items) {this->items << items;}
+    void setItemList(QList<DirectoryItem> nList){items = nList;}
 
     bool directoryExists(QString path);
-    QList<directoryItem> getAllItems() {return items;}
-    directoryItem const getItemFromPath(const QString p);
+    QList<DirectoryItem> allItems() {return items;}
+    DirectoryItem item(QString p);
 
-    void updateFileInfo(directoryItem dI);
-    void updateAllFileInfo(QList<directoryItem> list);
+    void updateFileInfo(DirectoryItem dI);
+    void updateAllFileInfo(QList<DirectoryItem> list);
     void flushAll();
     void removeDirectory(QString p);
-private:
-    QList<directoryItem>items;
 
+    QString createTextBrowserHtml(QString path);
+private:
+    QList<DirectoryItem>items;
 };
 
 #endif // FILEINFORMATION_H

@@ -25,7 +25,7 @@ protected slots:
 signals:
     void itemText(QString iT);
     void antalFiler(long antal);
-    void sendFolderContentItems(QList<fileObject> s);
+    void sendFolderContentItems(QList<FileObject> s);
 
 protected:
     /*
@@ -33,7 +33,7 @@ protected:
      * Methods related to calc size of folders and the numbers of them
      */
 
-    QList<fileObject> sizeOfFolderContentItems(QStringList l);
+    QList<FileObject> sizeOfFolderContentItems(QStringList l);
 
     // Methods to count files and number of contents in folders
     int folderCount(QString p);

@@ -1,7 +1,7 @@
-#include "abstractRuleDialog.h"
+#include "AbstractRuleDialog.h"
 #include "ui_abstractRuledialog.h"
 
-abstractRuleDialog::abstractRuleDialog(QStringList folderPaths) :
+AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
     ui(new Ui::abstractRuleDialog)
 {
     ui->setupUi(this);
@@ -16,8 +16,6 @@ abstractRuleDialog::abstractRuleDialog(QStringList folderPaths) :
     titleSelector = ui->titleBox;
     deepScanRadio = ui->deepScanRadioButton;
     condWidget = ui->conditionView;
-    rD ruleDefs;
-
 
     QStringList actionList = ruleDefs.propertyListToStrings(rD::actionProperty),
             conditionList = ruleDefs.propertyListToStrings(rD::conditionProperty),
@@ -26,61 +24,21 @@ abstractRuleDialog::abstractRuleDialog(QStringList folderPaths) :
     actionBox->addItems(actionList);
     conditionBox->addItems(conditionList);
 
-    folderPaths << "Alle";
-    applySelector->addItems(folderPaths);
+    applySelector->addItem( "Alle");
+    applySelector->addItems(watchFolders);
     applySelector->setCurrentText("Alle");
 
     conditionBox->setCurrentText("Ingen betingelser");
     conditionBox->currentIndexChanged("Ingen betingelser");
 }
 
-abstractRuleDialog::abstractRuleDialog(rule r, QStringList folderPaths):
-    ui(new Ui::abstractRuleDialog)
-{
-    ui->setupUi(this);
-
-    addBut = ui->addButton;
-    actionBox = ui->actionComboBox;
-    applySelector = ui->appliesSelector;
-    conditionBox = ui->conditionComboBox;
-    destinationFrame= ui->DestinationFrame;
-    pathSelector = ui->textPathEdit;
-    subRuleView = ui->treeWidget;
-    titleSelector = ui->titleBox;
-    deepScanRadio = ui->deepScanRadioButton;
-    condWidget = ui->conditionView;
-
-    rD rDefs;
-
-    QStringList actionList = rDefs.propertyListToStrings(rD::actionProperty),
-            conditionList = rDefs.propertyListToStrings(rD::conditionProperty),
-            unitList = rDefs.sizeUnits();
-
-    actionBox->addItems(actionList);
-    conditionBox->addItems(conditionList);
-
-    folderPaths << "Alle";
-
-    applySelector->addItems(folderPaths);
-    applySelector->setCurrentText("Alle");
-
-    tempRule = r;
-    actionBox->setCurrentText(rDefs.actionToString(tempRule.actionRule));
-    titleSelector->setText(tempRule.title);
-    applySelector->setCurrentText(tempRule.appliesToPath);
-    pathSelector->setLineText(fW::mergeStringList(tempRule.destinationPath));
-    deepScanRadio->setChecked(tempRule.deepScanMode);
-
-    subRules = tempRule.subRules;
-}
-
-abstractRuleDialog::~abstractRuleDialog()
+AbstractRuleDialog::~AbstractRuleDialog()
 {
     delete ui;
     delete this;
 }
 
-void abstractRuleDialog::resetSubForm()
+void AbstractRuleDialog::resetSubForm()
 {
     actionBox->setCurrentIndex(0);
     conditionBox->setCurrentIndex(0);
@@ -89,7 +47,7 @@ void abstractRuleDialog::resetSubForm()
     pathSelector->clear();
 }
 
-void abstractRuleDialog::resetAllForm()
+void AbstractRuleDialog::resetAllForm()
 {
     titleSelector->clear();
     actionBox->setCurrentIndex(0);
@@ -101,7 +59,7 @@ void abstractRuleDialog::resetAllForm()
     subRuleView->clear();
 }
 
-void abstractRuleDialog::updateConditionView(subRule &sR)
+void AbstractRuleDialog::updateConditionView(SubRule &sR)
 {
     rD::fileFieldCondition cond = sR.fieldCondition;
     rD::compareMode comp = sR.fileCompareMode;
@@ -134,29 +92,29 @@ void abstractRuleDialog::updateConditionView(subRule &sR)
     }
 }
 
-void abstractRuleDialog::on_conditionComboBox_currentIndexChanged(const QString &arg1)
+void AbstractRuleDialog::on_conditionComboBox_currentIndexChanged(const QString &arg1)
 {
     condWidget->setMode(arg1);
 }
 
-void abstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
+void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     int rowIndex = index.row();
     rD rDefs;
-    subRule clickedSubRule = subRules.at(rowIndex);
+    SubRule clickedSubRule = subRules.at(rowIndex);
     conditionBox->setCurrentText(rDefs.fieldConditionToString(clickedSubRule.fieldCondition));
     conditionBox->currentIndexChanged(rDefs.fieldConditionToString( clickedSubRule.fieldCondition));
 
     updateConditionView(clickedSubRule);
 }
 
-void abstractRuleDialog::closeEvent(QCloseEvent *event)
+void AbstractRuleDialog::closeEvent(QCloseEvent *event)
 {
     emit destroyed();
 }
 
 
-void abstractRuleDialog::updateView()
+void AbstractRuleDialog::updateView()
 {
     rD rDefs;
     subRuleView->clear();
@@ -164,7 +122,7 @@ void abstractRuleDialog::updateView()
     for (int i = 0; i < total; ++i)
     {
         QStringList headerData;
-        subRule sRule = subRules.at(i);
+        SubRule sRule = subRules.at(i);
         rD::fileFieldCondition condition = sRule.fieldCondition;
 
         headerData << rDefs.fieldConditionToString(condition);
@@ -196,14 +154,14 @@ void abstractRuleDialog::updateView()
         }
         else
         {
-            headerData << rM::mergeStringList(sRule.keyWords);
+            headerData << rulesManager::mergeStringList(sRule.keyWords);
         }
 
         new QTreeWidgetItem(subRuleView,headerData);
     }
 }
 
-void abstractRuleDialog::on_actionComboBox_currentIndexChanged(const QString &arg1)
+void AbstractRuleDialog::on_actionComboBox_currentIndexChanged(const QString &arg1)
 {
     rD rDefs;
     (rDefs.actionFromString(arg1) == rD::Delete) ?

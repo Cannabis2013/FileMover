@@ -8,12 +8,12 @@
 
 using namespace std;
 
-class myComboBox : public QComboBox
+class CustomComboBox : public QComboBox
 {
 
     Q_OBJECT
 public:
-    myComboBox(int parentRowIndex)
+    CustomComboBox(int parentRowIndex)
     {
         rowIndex = parentRowIndex;
         connect(this,SIGNAL(currentIndexChanged(int)),this,SLOT(ListChanged(int)));

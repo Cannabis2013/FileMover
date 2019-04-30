@@ -71,9 +71,9 @@ bool fileWorkerOperator::copyEntities(const QFileInfoList files, const QStringLi
     return result;
 }
 
-QList<fileObject> fileWorkerOperator::sizeOfFolderContentItems(QStringList l)
+QList<FileObject> fileWorkerOperator::sizeOfFolderContentItems(QStringList l)
 {
-    QList<fileObject>resultingList;
+    QList<FileObject>resultingList;
     long long sZ = 0;
     isBusy = true;
 
@@ -92,7 +92,7 @@ QList<fileObject> fileWorkerOperator::sizeOfFolderContentItems(QStringList l)
 
             emit itemText(f.fileName());
          }
-         fileObject fObject;
+         FileObject fObject;
          fObject.path = path.filePath();
          fObject.sz = sZ;
          resultingList << fObject;

@@ -11,7 +11,7 @@ class IconScanner
 {
 public:
     IconScanner();
-    virtual ~IconScanner();
+    ~IconScanner();
 
 protected:
     QList<MyIcon> iconsFromPath(QString path);

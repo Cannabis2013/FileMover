@@ -12,12 +12,12 @@ class fileWorker;
  * This handles the file operations. It runs in its own thread to ensure multi-tasking capabilities.
 */
 
-class fileWorker : public fileWorkerOperator
+class FileWorker : public fileWorkerOperator
 {
     Q_OBJECT
 public:
-    explicit fileWorker(processManager *pRef = nullptr,QObject *parent = nullptr);
-    virtual ~fileWorker();
+    explicit FileWorker(ProcessManager *pRef = nullptr,QObject *parent = nullptr);
+    virtual ~FileWorker();
 
 public slots:
     // Count files & size related..
@@ -42,8 +42,8 @@ signals:
 
     // Queue related..
     void infoReport(const QString &error);
-    void processFinished(directoryItem item);
-    void multipleProcessFinished(QList<directoryItem>items);
+    void processFinished(DirectoryItem item);
+    void multipleProcessFinished(QList<DirectoryItem>items);
     void jobDone(bool status);
 
 private:
@@ -54,9 +54,9 @@ private:
 
     //Member variables..
     QString busyMessage;
-    processManager *pControllerReference;
+    ProcessManager *pControllerReference;
 };
 
-typedef fileWorker fW;
+typedef FileWorker fW;
 
 #endif // FILEWORKER_H

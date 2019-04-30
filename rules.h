@@ -5,7 +5,7 @@
 #include <QPair>
 #include <QStringList>
 
-struct subRule
+struct SubRule
 {
     // Enumerated values..
     rD::copyMode copymode = rD::noMode;
@@ -216,14 +216,14 @@ struct subRule
     }
 };
 
-struct rule
+struct Rule
 {
     QString identification,title = "title";
     rD::fileActionRule actionRule;
     QStringList destinationPath;
     QString appliesToPath = "Alle";
     bool deepScanMode = false;
-    QList<subRule> subRules;
+    QList<SubRule> subRules;
     rD::fileActionRule actionFromString();
 };
 

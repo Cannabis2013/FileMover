@@ -1,7 +1,7 @@
 ﻿#include "settingsWindow.h"
 #include "ui_settingsWindow.h"
 
-settingsWindow::settingsWindow(settingsManager *sCon, rulesManager *rCon, QWidget *parent):
+settingsWindow::settingsWindow(QWidget *parent):
     QWidget(parent),
     ui(new Ui::settingsWindow)
 {
@@ -12,26 +12,16 @@ settingsWindow::settingsWindow(settingsManager *sCon, rulesManager *rCon, QWidge
     countTimerInterval = ui->countTImerIntervalEdit_2;
     enableRules = ui->enableRules_2;
     mView = ui->mainWidget;
-    rControl = rCon;
     rulesView = ui->ruleItemView_2;
     ruleParentHeaderData= QStringList{"Regel titel","Handling","Mappe sti"};
     ruleChildrenHeaderData = QStringList{"Betingelse","Betingelses metode","Værdi"};
-    sControl = sCon;
     view = ui->listWidget_2;
     vScroll = new QScrollBar(Qt::Vertical);
 
-    // setValues..
-
-    closeOnBox->setChecked(sCon->closeOnQuit());
-    countTimerEnableBox->setChecked(sCon->countTimerEnabled());
-    enableRules->setChecked(sCon->isRulesEnabled());
-    countTimerInterval->setText(sCon->countTimerInterval());
 
     // Setfocus..
 
     // Rulesview related..
-
-    rulesView->addTopLevelItems(rControl->rulesTreeItems());
 
     // ... Header related..
 
@@ -62,15 +52,11 @@ void settingsWindow::setIconList(QList<MyIcon> list)
 
 bool settingsWindow::rulesEnabled()
 {
-    return sControl->isRulesEnabled();
 }
 
 void settingsWindow::focusOutEvent(QFocusEvent *event)
 {
-    if(event->type() == QFocusEvent::FocusOut)
-    {
-        activateWindow();
-    }
+
 }
 
 void settingsWindow::changeEvent(QEvent *event)
@@ -111,43 +97,26 @@ void settingsWindow::closeBoxClicked(bool c)
 }
 
 
-void settingsWindow::recieveRule(rule r)
+void settingsWindow::recieveRule(Rule r)
 {
-    rControl->insertRule(r);
-    updateRulesView();
 }
 
-void settingsWindow::recieveModifiedRule(rule r, int index)
+void settingsWindow::recieveModifiedRule(Rule r, int index)
 {
-    rControl->replaceRule(r,index);
-    updateRulesView();
 }
 
 void settingsWindow::on_insertRule_2_clicked()
 {
-    addRuleDialog *ruleDialog = new addRuleDialog(sControl->Paths());
-    connect(ruleDialog,&addRuleDialog::sendRule,this,&settingsWindow::recieveRule);
-
-    WidgetForm *wForm = new WidgetForm(ruleDialog);
-    wForm->setFrameTitle("Indsæt regler");
-    wForm->show();
 
 }
 
 void settingsWindow::on_lukKnap_2_clicked()
 {
-    sControl->setCloseOnExit(closeOnBox->isChecked());
-    sControl->setTimerEnabled(countTimerEnableBox->isChecked());
-    sControl->setTimerInterval(countTimerInterval->text().toInt());
-    sControl->setRulesEnabled(enableRules->isChecked());
-
     close();
 }
 
 void settingsWindow::updateRulesView()
 {
-    rulesView->clear();
-    rulesView->addTopLevelItems(rControl->rulesTreeItems());
 }
 
 void settingsWindow::on_fortrydKnap_2_clicked()
@@ -158,9 +127,6 @@ void settingsWindow::on_fortrydKnap_2_clicked()
 
 void settingsWindow::on_deleteRule_2_clicked()
 {
-    QModelIndex cIndex = rulesView->currentIndex();
-    rControl->removeRule(cIndex.row());
-    updateRulesView();
 }
 
 void settingsWindow::on_exitButton_clicked()
@@ -170,26 +136,10 @@ void settingsWindow::on_exitButton_clicked()
 
 void settingsWindow::on_moveDownButton_2_clicked()
 {
-    QList<rule>*allRules = rControl->pointerToRules();
-    int rowIndex = rulesView->currentIndex().row();
-    if(rowIndex> 0)
-    {
-        allRules->move(rowIndex,rowIndex-1);
-        rowIndex--;
-    }
-    updateRulesView();
 }
 
 void settingsWindow::on_moveUpButton_2_clicked()
 {
-    QList<rule>*allRules = rControl->pointerToRules();
-    int rowIndex = rulesView->currentIndex().row();
-    if(rowIndex <(allRules->count()-1))
-    {
-        allRules->move(rowIndex,rowIndex +1);
-        rowIndex++;
-    }
-    updateRulesView();
 }
 
 void settingsWindow::on_countTImerIntervalEdit_2_returnPressed()
@@ -205,19 +155,7 @@ void settingsWindow::on_countTimerActivateBox_2_toggled(bool checked)
 
 void settingsWindow::on_editRule_2_clicked()
 {
-    if(rulesView->topLevelItemCount() == 0)
-        return;
-    int cIndex = rulesView->currentIndex().row();
 
-    rule r = rControl->rules.at(cIndex);
-    QStringList folderPaths = sControl->Paths();
-
-    editRuleDialog *editDialog = new editRuleDialog(r,cIndex,folderPaths);
-
-    connect(editDialog,&editRuleDialog::sendModifiedRule,this,&settingsWindow::recieveModifiedRule);
-    WidgetForm *wForm = new WidgetForm(editDialog);
-    wForm->setFrameTitle("Rediger regel");
-    wForm->show();
 }
 
 

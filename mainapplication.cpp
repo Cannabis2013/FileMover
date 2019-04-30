@@ -1,24 +1,23 @@
 #include "mainapplication.h"
 
-
-
 MainApplication::MainApplication(QString appName, QString orgName):
     AbstractPersistence(appName, orgName)
 {
-    rManager = new rulesManager();
+    rManager = new rulesManager(appName,orgName);
     sManager = new settingsManager(appName,orgName);
-    closeOnBut = true;
+    pManager = new ProcessManager();
+    fManager = new FileInformationManager();
+    fWorker = new FileWorker();
 
-    bool rulesEnabled= true;
 
     QString ressourceFolderPath = "Ressources";
 
-    /*
-     * Initialize SettingsManager
-     */
+    // Detailed directory information
+    connect(this,&MainApplication::processPath,fWorker,&FileWorker::processFileInformation);
+    connect(this,&MainApplication::processPaths,fWorker,&FileWorker::processFileInformations);
 
-    sManager->setCloseOnExit(closeOnBut);
-    sManager->setRulesEnabled(rulesEnabled);
+    connect(fWorker,&fW::processFinished,this,&MainApplication::recieveDirectoryItem);
+    connect(fWorker,&fW::multipleProcessFinished,this,&MainApplication::recieveDirectoryItems);
 }
 
 MainApplication::~MainApplication()
@@ -87,16 +86,16 @@ void MainApplication::clearFolders(QStringList paths)
         }
     };
     Q_UNUSED(outputFiles);
-    QList<rule>rules = rManager.ruleslist();
-    for(rule r : rules)
+    QList<Rule>rules = rManager->ruleslist();
+    for(Rule r : rules)
     {
         QFileInfoList allFiles = freshList(r.appliesToPath,r.deepScanMode);
-        for(subRule sR : r.subRules)
+        for(SubRule sR : r.subRules)
             allFiles = sR.processList(allFiles);
 
         // Implementer fileworker operation..
 
-        processItems it;
+        ProcessItems it;
         it.destinations = r.destinationPath;
         it.list = allFiles;
         it.ruleMode = r.actionRule;
@@ -108,11 +107,19 @@ void MainApplication::clearFolders(QStringList paths)
 void MainApplication::addWatchFolder(QString path)
 {
     sManager->insertPath(path);
+    emit processPath(path);
 }
 
-QString MainApplication::watchFolder(int index)
+void MainApplication::addWatchFolders(QStringList paths)
 {
+    sManager->insertPaths(paths);
+    emit processPaths(paths);
+}
 
+
+QString MainApplication::watchFolder(int index) const
+{
+    return sManager->paths().value(index);
 }
 
 QStringList MainApplication::watchFolders()
@@ -120,3 +127,22 @@ QStringList MainApplication::watchFolders()
     return sManager->paths();
 }
 
+void MainApplication::removeWatchFolderAt(int index)
+{
+    sManager->removePathAt(index);
+}
+
+void MainApplication::removeWatchFolder(QString path)
+{
+    sManager->removePath(path);
+}
+
+void MainApplication::recieveDirectoryItem(DirectoryItem item)
+{
+    fManager->insertItem(item);
+}
+
+void MainApplication::recieveDirectoryItems(QList<DirectoryItem> items)
+{
+    fManager->insertItems(items);
+}

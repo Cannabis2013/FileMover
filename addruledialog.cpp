@@ -1,23 +1,23 @@
 #include "addruledialog.h"
 
-addRuleDialog::addRuleDialog(QStringList folderPaths):
-    abstractRuleDialog(folderPaths)
+AddRuleDialog::AddRuleDialog(QStringList watchFolders):
+    AbstractRuleDialog(watchFolders)
 {}
 
 
-void addRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
+void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     rD rDefs;
     int row = index.row();
-    subRule sRule = subRules.at(row);
+    SubRule sRule = subRules.at(row);
     QString condText = rDefs.fieldConditionToString(sRule.fieldCondition);
     conditionBox->setCurrentText(condText);
     conditionBox->currentTextChanged(condText);
 }
 
-void addRuleDialog::on_addSubRule_clicked()
+void AddRuleDialog::on_addSubRule_clicked()
 {
-    subRule sRule;
+    SubRule sRule;
     rD rDefs;
     QString cText = conditionBox->currentText();
     rD::fileFieldCondition conMode = rDefs.fieldConditionFromString(cText);
@@ -59,7 +59,7 @@ void addRuleDialog::on_addSubRule_clicked()
     updateView();
 }
 
-void addRuleDialog::on_removeSubRule_clicked()
+void AddRuleDialog::on_removeSubRule_clicked()
 {
     int cIndex = subRuleView->currentIndex().row();
     subRules.removeAt(cIndex);
@@ -67,10 +67,10 @@ void addRuleDialog::on_removeSubRule_clicked()
 }
 
 
-void addRuleDialog::on_addButton_clicked()
+void AddRuleDialog::on_addButton_clicked()
 {
     rD rDefs;
-    rule r;
+    Rule r;
     r.title = titleSelector->text();
     r.appliesToPath = applySelector->currentText();
     r.actionRule = rDefs.actionFromString(actionBox->currentText());

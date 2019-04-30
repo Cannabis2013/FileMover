@@ -5,11 +5,11 @@
 #include <qsizepolicy.h>
 #include <QModelIndex>
 
-class addFileDialog : public filepathSelectorDialog
+class AddFileDialog : public filepathSelectorDialog
 {
     Q_OBJECT
 public:
-    addFileDialog(QWidget *parent);
+    AddFileDialog(QWidget *parent);
 
 public slots:
     void hideExplorer();

@@ -21,23 +21,25 @@
 #include "rulepathselector.h"
 #include "conditionWidget.h"
 #include "widgetform.h"
+#include "abstractcoreapplication.h"
 
 
 namespace Ui {
 class abstractRuleDialog;
 }
 
-class abstractRuleDialog : public QDialog
+class AbstractRuleDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit abstractRuleDialog(QStringList folderPaths);
-    abstractRuleDialog(rule r, QStringList folderPaths);
-    ~abstractRuleDialog();
+    explicit AbstractRuleDialog(QStringList watchFolders);
+    ~AbstractRuleDialog();
+
+    rD ruleDefs;
 
 signals:
-    void sendRule(rule R);
-    void sendModifiedRule(rule r, int index);
+    void sendRule(Rule R);
+    void replaceRule(Rule rule, QString title);
 
 protected slots:
 
@@ -67,7 +69,6 @@ protected:
 
     // Protected member variables
     conditionWidget *condWidget;
-    rule tempRule;
     rulePathSelector *pathSelector;
     QComboBox *actionBox,
         *conditionBox,
@@ -78,7 +79,7 @@ protected:
     QLineEdit *titleSelector,
         *keyWordSelector,
         *destinationPathSelector;
-    QList<subRule> subRules;
+    QList<SubRule> subRules;
     QPushButton *addBut;
     QRadioButton *deepScanRadio;
     QSpinBox *minSizeSelector,
@@ -91,7 +92,7 @@ protected:
     void resetSubForm();
     void resetAllForm();
 
-    void updateConditionView(subRule &sR);
+    void updateConditionView(SubRule &sR);
 
 private:
     Ui::abstractRuleDialog *ui;

@@ -2,35 +2,44 @@
 #define RULECONTROLLER_H
 
 #include <QTreeWidgetItem>
+
+
+#include "abstractpersistence.h"
 #include "rules.h"
 
-class rulesManager
+
+class rulesManager : private AbstractPersistence
 {
 public:
-    rulesManager();
+    rulesManager(QString appName, QString orgName);
 
     static QString mergeStringList(const QStringList strings);
     static QStringList splitString(const QString split);
 
     QList<QTreeWidgetItem*>rulesTreeItems() const;
 
-    void removeRule(const int i){rules.removeAt(i);}
+protected:
 
-public slots:
-    void insertRule(const rule r);
-    void insertRules(const QList<rule>r);
+    void readSettings();
+    void writeSettings();
 
 private:
-    QList<rule> ruleslist(){return rules;}
-    QList<rule>*pointerToRules(){return &rules;}
+    void writeRulesToReg();
 
-    QList<rule> rules;
+    QList<Rule> ruleslist(){return rules;}
 
-    void replaceRule(rule r,int index);
+    QList<Rule> rules;
+
+    void addRule(const Rule r);
+    void addRules(const QList<Rule>r);
+    void replaceRule(const Rule r, int index);
+    void replaceRule(const Rule r, QString title);
+    void removeRuleAt(const int i){rules.removeAt(i);}
+    void removeRule(const QString title);
+    Rule rule(int index) {return rules.value(index);}
+    Rule rule(QString title);
 
     friend class MainApplication;
 };
-
-typedef rulesManager rM;
 
 #endif // RULECONTROLLER_H

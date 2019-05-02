@@ -52,6 +52,10 @@ signals:
     void toLog(QStringList l);
     void quit(bool iH);
 
+public slots:
+    void setStatusText(QString txt);
+
+
 protected:
 
     // Persistent Settings..
@@ -78,7 +82,6 @@ private slots:
     // countTimer related..
     void timerCount();
     void setTimerStatus(bool makeActive);
-    void setTimerInterval(int m);
 
     // DetailedFolderView related..
 
@@ -109,7 +112,7 @@ private slots:
     // Rules related..
 
     // statusLine related..
-    void setStatusText(QString txt);
+
     void clearStatusLine();
 
     // Sub Tray Menu Related..

@@ -18,6 +18,7 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
     columnWidths = {384,32};
     countTimer = new QTimer;
     countTimerStatus = false;
+    countTimerInterval = 1000*60;
     countTrayMenu = new QMenu;
     currentDir = QDir::currentPath();
     detailedFolderView = ui->detailView;
@@ -145,6 +146,8 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
             this,SLOT(tMenuClicked(QAction*)));
     connect(folderTrayMenu,SIGNAL(triggered(QAction*)),
             this,SLOT(explorerMenuTriggered(QAction*)));
+
+    connect(clearStatusTextTimer,&QTimer::timeout,this,&mainWindow::clearStatusLine);
 
     connect(coreApplication,&AbstractCoreApplication::stateChanged,this,&mainWindow::updateViews);
 
@@ -334,10 +337,6 @@ void mainWindow::setTimerStatus(bool makeActive)
     makeActive ? countTimer->start() : countTimer->stop();
 }
 
-void mainWindow::setTimerInterval(int m)
-{
-    countTimerInterval = m*1000*60;
-}
 
 void mainWindow::detailedFolderMenuCalled(QPoint p)
 {
@@ -750,6 +749,7 @@ void mainWindow::updateSubTrayMenus()
 void mainWindow::setStatusText(QString txt)
 {
     statusLine->setText(txt);
+    clearStatusTextTimer->start();
 }
 
 void mainWindow::clearStatusLine()

@@ -41,9 +41,9 @@ SOURCES += main.cpp\
     abstractpersistence.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
+    fileworker.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
-    fileworker.cpp \
     rulesmanager.cpp \
     settingsWindow.cpp \
     mydatetime.cpp \
@@ -61,7 +61,6 @@ SOURCES += main.cpp\
     editruledialog.cpp \
     conditionWidget.cpp \
     worker.cpp \
-    fileworkeroperator.cpp \
     filepathselectordialog.cpp \
     mywidget.cpp \
     widgetform.cpp \
@@ -74,10 +73,10 @@ HEADERS  += mainwindow.h \
     abstractpersistence.h \
     customcombobox.h \
     fileinformationmanager.h \
+    fileworker.h \
     iconscanner.h \
     mainapplication.h \
     messageBox.h \
-    fileworker.h \
     processmanager.h \
     rulesmanager.h \
     settingsWindow.h \
@@ -100,7 +99,6 @@ HEADERS  += mainwindow.h \
     ruledefinitions.h \
     rules.h \
     worker.h \
-    fileworkeroperator.h \
     filepathselectordialog.h \
     mywidget.h \
     widgetform.h \

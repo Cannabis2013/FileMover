@@ -1,45 +1,42 @@
-﻿#ifndef FILEWORKER_H
-#define FILEWORKER_H
+#ifndef FILEWORKEROPERATOR_H
+#define FILEWORKEROPERATOR_H
 
 #include "rules.h"
 
-namespace fileOperations {
-class processController;
-class fileWorker;
-}
+extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
-/*
- * This handles the file operations. It runs in its own thread to ensure multi-tasking capabilities.
-*/
-
-class FileWorker : public fileWorkerOperator
+class FileWorker : public Worker
 {
     Q_OBJECT
-public:
-    explicit FileWorker(ProcessManager *pRef = nullptr,QObject *parent = nullptr);
-    virtual ~FileWorker();
 
-    QFileInfoList processList(QFileInfoList files, SubRule rule);
+public:
+    FileWorker(ProcessManager *pRef = nullptr,
+               QObject * parent = nullptr);
+
+    QStringList static createHeader(QFileInfo fi = QFileInfo());
+
+    static QFileInfoList processList(QFileInfoList files, SubRule rule);
 
 public slots:
-    // Count files & size related..
+    void calcSize(QString path);
+    void calcSize(QStringList l);
 
-    void calcSizeOfIndividualFolderItems(QStringList l);
     void countNumberOfFolderItems(QString path,
                     QDir::Filters f = QDir::NoFilter,
                     QDirIterator::IteratorFlags i = QDirIterator::NoIteratorFlags);
     void countFolders(QStringList Path);
-    // Queue related..
 
     void handleProcessRequest();
 
-    /* 
-     * Add directories
-    */
-
     void processFileInformation(QString path);
     void processFileInformations(QStringList paths);
+
 signals:
+    void itemText(QString iT);
+    void antalFiler(long antal);
+    void sendFolderSizeEntity(FileObject fObj);
+    void sendFolderSizeEntities(QList<FileObject> s);
+
     void clearFinished(bool a);
 
     // Queue related..
@@ -50,16 +47,48 @@ signals:
 
 private:
 
-    // Methods..
-    // Start pending process in queue..
+    // Fileoperation from QFileinfoList..
+    bool removeFileItems(const QFileInfoList filePaths);
+    bool moveEntities(const QFileInfoList files, const QStringList destinations);
+    bool copyEntities(const QFileInfoList files, const QStringList destinations);
+
+    /*
+     * Methods related to calc size of folders and the numbers of them
+     */
+
+    FileObject folderContentSize(QString p);
+    QList<FileObject> foldersContentSize(QStringList l);
+
+    // Methods to count files and number of contents in folders
+    int folderCount(QString p);
+    int fileCount(QString p);
+
+    // Methods of calculating size of files and content of folders
+
+    long long folderSize(QString pf);
+
+    // Create a list of suffixes and their occurencies..
+    QList<QPair<QString,int> > getListOfSuffixOccuriencies(QString p);
+
+    // Create a list of treeWidgetItem
+
+    QTreeWidgetItem *scanDir(QString p);
+
+    // Protected member variables;
+    bool isBusy;
+
+    void removeDir(QString &dirName, QStringList &errs);
+    bool moveRecursively(QString path,
+                         QString destination);
+    bool copyRecursively(QString path,
+                         QString destination);
+
     void beginProcess();
 
-    //Member variables..
     QString busyMessage;
     ProcessManager *pControllerReference;
 };
 
-
 typedef FileWorker fW;
-#endif // FILEWORKER_H
 
+#endif // FILEWORKEROPERATOR_H

@@ -39,6 +39,5 @@ public:
     static bool containsTrailingBackslash(QString path);
     static QString directoryName(QString path);
     };
-    typedef Worker wrk;
 
 #endif // WORKER_H

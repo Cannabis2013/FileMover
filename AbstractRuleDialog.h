@@ -25,7 +25,7 @@
 
 
 namespace Ui {
-class abstractRuleDialog;
+class AbstractRuleDialog;
 }
 
 class AbstractRuleDialog : public QDialog
@@ -95,7 +95,7 @@ protected:
     void updateConditionView(SubRule &sR);
 
 private:
-    Ui::abstractRuleDialog *ui;
+    Ui::AbstractRuleDialog *ui;
 
     friend class settingsWindow;
 };

@@ -97,17 +97,17 @@ void conditionWidget::setIntervalDate(QPair<myDateTime, myDateTime> iDate)
 
 void conditionWidget::setTypeValues(Worker::iteratorMode tMode)
 {
-    if(tMode == fW::folderOnly)
+    if(tMode == Worker::folderOnly)
     {
         folderCheckBox->setChecked(true);
         fileCheckBox->setChecked(false);
     }
-    else if(tMode == fW::filesOnly)
+    else if(tMode == Worker::filesOnly)
     {
         fileCheckBox->setChecked(true);
         folderCheckBox->setChecked(false);
     }
-    else if(tMode == fW::allEntries)
+    else if(tMode == Worker::allEntries)
     {
         fileCheckBox->setChecked(true);
         folderCheckBox->setChecked(true);
@@ -325,11 +325,11 @@ QPair<myDateTime, myDateTime> conditionWidget::intervalDates() const
 Worker::iteratorMode conditionWidget::typeMode() const
 {
     if(folderCheckBox->isChecked())
-        return fW::folderOnly;
+        return Worker::folderOnly;
     else if(fileCheckBox->isChecked())
-        return fW::filesOnly;
+        return Worker::filesOnly;
     else
-        return fW::allEntries;
+        return Worker::allEntries;
 }
 
 void conditionWidget::on_modeSelector_currentIndexChanged(int index)

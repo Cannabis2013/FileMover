@@ -2,9 +2,7 @@
 
 AbstractPersistence::AbstractPersistence(QString appName, QString orgName)
 {
-    QCoreApplication::setApplicationName(appName);
-    QCoreApplication::setOrganizationName(orgName);
-
+    persistenceSettings = new QSettings(orgName,appName);
     applicationTitle = appName;
     organisationTitle = orgName;
 }

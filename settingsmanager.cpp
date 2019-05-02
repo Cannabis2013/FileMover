@@ -32,18 +32,21 @@ settingsManager::~settingsManager()
 void settingsManager::insertPath(QString path)
 {
     mainFolderPaths << path;
+    emit processPath(path);
     emit stateChanged();
 }
 
 void settingsManager::insertPaths(QStringList paths)
 {
     mainFolderPaths << paths;
+    emit processPaths(paths);
     emit stateChanged();
 }
 
 void settingsManager::removePath(QString path)
 {
     mainFolderPaths.removeOne(path);
+    emit removeItem(path);
     emit stateChanged();
 }
 
@@ -66,27 +69,41 @@ QList<QTreeWidgetItem *> settingsManager::pathItems()
 
 void settingsManager::readSettings()
 {
-    QSettings settings(OrganisationTitle(),ApplicationTitle());
+    persistenceSettings->beginGroup("Settings");
+
+    closeOnExit = persistenceSettings->value("Close on exit",true).toBool();
+    timerMsec = persistenceSettings->value("Count timer interval", 2000).toInt();
+    rulesEnabled = persistenceSettings->value("Rules enabled", false).toBool();
+
+    persistenceSettings->endGroup();
+
+    int count = persistenceSettings->beginReadArray("Watchfolders");
+    QStringList folders;
+    for (int i = 0;i < count;i++)
+        folders << persistenceSettings->value(QString("Folder (%1)").arg(i)).toString();
+
+    insertPaths(folders);
+    persistenceSettings->endArray();
 }
 
 void settingsManager::writeSettings()
 {
-    QSettings s(OrganisationTitle(),ApplicationTitle());
+    persistenceSettings->beginGroup("Settings");
 
-    s.beginGroup("Settings");
+    persistenceSettings->setValue("Close on exit", closeOnExit);
+    persistenceSettings->setValue("Count timer interval", timerMsec);
+    persistenceSettings->setValue("Rules enabled", rulesEnabled);
 
-    s.setValue("Close on exit", closeOnExit);
-    s.setValue("Count timer interval", timerMsec);
-    s.setValue("Rules enabled", rulesEnabled);
+    persistenceSettings->endGroup();
 
-    s.endGroup();
+    persistenceSettings->beginWriteArray("Watchfolders", mainFolderPaths.count());
 
-    int index = 0;
-    s.beginGroup("WatchFolders");
-    for(QString path : paths())
+    for(int i = 0;i < mainFolderPaths.count();i++)
     {
-        QString keyVal = QString("Folder (%1)").arg(index++);
-        s.setValue(keyVal,path);
+        QString path = mainFolderPaths.at(i);
+        QString keyVal = QString("Folder (%1)").arg(i);
+        persistenceSettings->setValue(keyVal,path);
+        persistenceSettings->setArrayIndex(i);
     }
-    s.endGroup();
+    persistenceSettings->endArray();
 }

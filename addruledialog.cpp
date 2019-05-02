@@ -26,7 +26,7 @@ void AddRuleDialog::on_addSubRule_clicked()
     sRule.fileCompareMode = condWidget->currentCompareMode();
     if(conMode == rD::filepathMode|| conMode == rD::extensionMode)
     {
-        sRule.keyWords = fW::splitString(condWidget->keyWordValues());
+        sRule.keyWords = Worker::splitString(condWidget->keyWordValues());
 
     }
     else if(conMode == rD::sizeMode &&
@@ -74,7 +74,7 @@ void AddRuleDialog::on_addButton_clicked()
     r.title = titleSelector->text();
     r.appliesToPath = applySelector->currentText();
     r.actionRule = rDefs.actionFromString(actionBox->currentText());
-    r.destinationPath = fW::splitString(pathSelector->text());
+    r.destinationPath = Worker::splitString(pathSelector->text());
     r.deepScanMode = deepScanRadio->isChecked();
 
     r.subRules = subRules;

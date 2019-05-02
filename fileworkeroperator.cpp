@@ -216,10 +216,9 @@ int fileWorkerOperator::fileCount(QString p)
     int taeller = 0;
     while(ite.hasNext())
     {
-        QFileInfo i = ite.fileInfo();
+        QFileInfo i = ite.next();
         taeller = i.isFile() ? ++taeller : taeller;
         emit itemText(QString("%1 files").arg(QString::number(taeller)));
-        ite.next();
     }
     return taeller;
 }
@@ -229,11 +228,14 @@ QList<QPair<QString, int> > fileWorkerOperator::getListOfSuffixOccuriencies(QStr
     QList<QPair<QString, int> > resultingList;
     QStringList allSufs,tempSufs;
     QDirIterator ite(p,
-                     QDir::AllEntries | QDir::NoDotAndDotDot | QDir::Files,
+                     QDir::NoDotAndDotDot |
+                     QDir::Files |
+                     QDir::Hidden |
+                     QDir::System,
                      QDirIterator::Subdirectories);
     while(ite.hasNext())
     {
-        QFileInfo i = ite.fileInfo();
+        QFileInfo i = ite.next();;
         if(i.isFile())
         {
             if(i.suffix() == "")
@@ -241,7 +243,6 @@ QList<QPair<QString, int> > fileWorkerOperator::getListOfSuffixOccuriencies(QStr
             else
                 allSufs << i.suffix();
         }
-        ite.next();
     }
 
     tempSufs = allSufs;

@@ -2,23 +2,26 @@
 #define SETTINGSCONTROLLER_H
 
 #include <QTimer>
-#include <qicon.h>
 #include <qstring.h>
 #include <QTreeWidgetItem>
 #include "qlist.h"
-#include "myIcon.h"
 #include "abstractpersistence.h"
 #include "iconscanner.h"
 
 
 class settingsManager : public QObject,
         private IconScanner,
-        private AbstractPersistence
+        public AbstractPersistence
 {
     Q_OBJECT
 public:
     settingsManager(QString appName, QString orgName);
     ~settingsManager();
+
+    // Persistence
+    void readSettings();
+    void writeSettings();
+
     // void members..
     void setCloseOnExit(bool enable){closeOnExit = enable;}
     void setRulesEnabled(bool enable){rulesEnabled = enable;}
@@ -46,14 +49,15 @@ public:
     QString countTimerInterval() {return QString::number(timerMsec);}
 
     // Icons related..
-    QList<MyIcon>trayIcons() const {return trayIconList;}
+    QList<MyIcon>allIcons() const {return trayIconList;}
 
 signals:
     void stateChanged();
+    void processPath(QString path);
+    void processPaths(QStringList paths);
 
-protected:
-    void readSettings();
-    void writeSettings();
+    void removeItem(QString path);
+
 private:
 
     QStringList mainFolderPaths;

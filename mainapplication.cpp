@@ -1,38 +1,42 @@
 #include "mainapplication.h"
 
-MainApplication::MainApplication(QString appName, QString orgName):
-    AbstractPersistence(appName, orgName)
+MainApplication::MainApplication(QString appName, QString orgName)
 {
     rManager = new rulesManager(appName,orgName);
     sManager = new settingsManager(appName,orgName);
     pManager = new ProcessManager();
-    fManager = new FileInformationManager();
+    fManager = new FileInformationManager(appName,orgName);
     fWorker = new FileWorker();
+    fileWorkerThread = new QThread();
 
+    fWorker->moveToThread(fileWorkerThread);
 
     QString ressourceFolderPath = "Ressources";
 
-    // Detailed directory information
-    connect(this,&MainApplication::processPath,fWorker,&FileWorker::processFileInformation);
-    connect(this,&MainApplication::processPaths,fWorker,&FileWorker::processFileInformations);
+    qRegisterMetaType<DirectoryItem>("DirectoryItem");
+    qRegisterMetaType<QList<DirectoryItem>>("QList<DirectoryItem>");
 
-    connect(fWorker,&fW::processFinished,this,&MainApplication::recieveDirectoryItem);
-    connect(fWorker,&fW::multipleProcessFinished,this,&MainApplication::recieveDirectoryItems);
+    // Detailed directory information
+    connect(sManager,&settingsManager::processPath,fWorker,&FileWorker::processFileInformation);
+    connect(sManager,&settingsManager::processPaths,fWorker,&FileWorker::processFileInformations);
+
+    connect(sManager,&settingsManager::removeItem,fManager,&FileInformationManager::removeItem);
+
+    connect(fWorker,&fW::processFinished,fManager,&FileInformationManager::insertItem);
+    connect(fWorker,&fW::multipleProcessFinished,fManager,&FileInformationManager::insertItems);
+
+    connect(sManager,&settingsManager::stateChanged,this,&MainApplication::stateChanged);
+    connect(rManager,&rulesManager::stateChanged,this,&MainApplication::stateChanged);
+    connect(fManager,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);
+
+    fileWorkerThread->start();
 }
 
 MainApplication::~MainApplication()
 {
-
-}
-
-void MainApplication::readSettings()
-{
-
-}
-
-void MainApplication::writeSettings()
-{
-
+    delete sManager;
+    delete fManager;
+    delete rManager;
 }
 
 void MainApplication::clearFolders(QStringList paths)
@@ -91,7 +95,7 @@ void MainApplication::clearFolders(QStringList paths)
     {
         QFileInfoList allFiles = freshList(r.appliesToPath,r.deepScanMode);
         for(SubRule sR : r.subRules)
-            allFiles = sR.processList(allFiles);
+            allFiles = fWorker->processList(allFiles,sR);
 
         // Implementer fileworker operation..
 
@@ -104,16 +108,11 @@ void MainApplication::clearFolders(QStringList paths)
 
 }
 
-void MainApplication::addWatchFolder(QString path)
-{
-    sManager->insertPath(path);
-    emit processPath(path);
-}
+
 
 void MainApplication::addWatchFolders(QStringList paths)
 {
     sManager->insertPaths(paths);
-    emit processPaths(paths);
 }
 
 
@@ -137,12 +136,10 @@ void MainApplication::removeWatchFolder(QString path)
     sManager->removePath(path);
 }
 
-void MainApplication::recieveDirectoryItem(DirectoryItem item)
-{
-    fManager->insertItem(item);
-}
 
-void MainApplication::recieveDirectoryItems(QList<DirectoryItem> items)
+void MainApplication::readPersistence()
 {
-    fManager->insertItems(items);
+    sManager->readSettings();
+    rManager->readSettings();
+    fManager->readSettings();
 }

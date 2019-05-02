@@ -1,7 +1,14 @@
 ﻿#include "fileinformationmanager.h"
 
-FileInformationManager::FileInformationManager()
+FileInformationManager::FileInformationManager(QString appName, QString orgName):
+    AbstractPersistence (appName,orgName)
 {
+
+}
+
+FileInformationManager::~FileInformationManager()
+{
+    writeSettings();
 }
 
 bool FileInformationManager::directoryExists(QString path)
@@ -23,6 +30,15 @@ DirectoryItem FileInformationManager::item(QString p)
     throw QString("Item not found");
 }
 
+QList<QTreeWidgetItem*> FileInformationManager::allTreeItems()
+{
+    QList<QTreeWidgetItem*> resultingList;
+    for (DirectoryItem item : items)
+        resultingList.append(item.treeWidgetItems());
+
+    return resultingList;
+}
+
 void FileInformationManager::updateFileInfo(DirectoryItem dI)
 {
     QString p = dI.path;
@@ -42,15 +58,6 @@ void FileInformationManager::updateAllFileInfo(QList<DirectoryItem> list)
 void FileInformationManager::flushAll()
 {
     items.clear();
-}
-
-void FileInformationManager::removeDirectory(QString p)
-{
-    for (int var = 0; var < items.count(); ++var)
-    {
-        if(items.at(var).path == p)
-            items.removeAt(var);
-    }
 }
 
 QString FileInformationManager::createTextBrowserHtml(QString path)
@@ -128,6 +135,32 @@ QString FileInformationManager::createTextBrowserHtml(QString path)
 
 }
 
+void FileInformationManager::insertItem(DirectoryItem item)
+{
+    items << item;
+    emit stateChanged();
+}
+
+void FileInformationManager::insertItems(QList<DirectoryItem> items)
+{
+    this->items << items;
+    emit stateChanged();
+}
+
+void FileInformationManager::removeItem(QString path)
+{
+    for(int i = 0;i < items.count();i++)
+    {
+        DirectoryItem dirItem = items.at(i);
+        if(dirItem.path == path)
+        {
+            items.removeAt(i);
+            emit stateChanged();
+            return;
+        }
+    }
+}
+
 QList<QTreeWidgetItem *> DirectoryItem::suffixItems() const
 {
     QList<QTreeWidgetItem*> resultingList;
@@ -137,7 +170,7 @@ QList<QTreeWidgetItem *> DirectoryItem::suffixItems() const
     return resultingList;
 }
 
-QTreeWidgetItem *DirectoryItem::g(QTreeWidgetItem *item) const
+QTreeWidgetItem *DirectoryItem::organizeTreeItems(QTreeWidgetItem *item) const
 {
     QTreeWidgetItem *result = new QTreeWidgetItem;
     for (int i = 0; i < item->columnCount(); ++i)
@@ -157,10 +190,20 @@ QTreeWidgetItem *DirectoryItem::g(QTreeWidgetItem *item) const
             }
             else
             {
-                QTreeWidgetItem *child = g(item->child(i));
+                QTreeWidgetItem *child = organizeTreeItems(item->child(i));
                 result->addChild(child);
             }
         }
     }
     return result;
+}
+
+
+void FileInformationManager::readSettings()
+{
+}
+
+void FileInformationManager::writeSettings()
+{
+
 }

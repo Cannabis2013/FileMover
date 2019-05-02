@@ -11,6 +11,165 @@ FileWorker::~FileWorker()
     delete this;
 }
 
+QFileInfoList FileWorker::processList(QFileInfoList files, SubRule rule)
+{
+    bool condition = false;
+
+    QFileInfoList filesToProcess;
+    for(QFileInfo file : files)
+    {
+
+        // Evaluating filename patterns
+        if(rule.fieldCondition == rD::filepathMode)
+        {
+            if(rule.fileCompareMode == rD::contains)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(file.fileName().contains(kWord))
+                        condition = true;
+                if(condition)
+                    filesToProcess << file;
+            }
+            else if(rule.fileCompareMode == rD::dontContain)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(file.fileName().contains(kWord))
+                        condition = true;
+                if(!condition)
+                    filesToProcess << file;
+            }
+            else if(rule.fileCompareMode == rD::match)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(file.fileName() == kWord)
+                        condition = true;
+                if(condition)
+                    filesToProcess << file;
+            }
+            else if(rule.fileCompareMode == rD::dontMatch)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(file.fileName() == kWord)
+                        condition = true;
+                if(!condition)
+                    filesToProcess << file;
+            }
+        }
+
+        // Evaluating file extension related patterns
+        else if(rule.fieldCondition == rD::extensionMode && file.isFile())
+        {
+            if(rule.fileCompareMode == rD::contains)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(file.suffix().contains(kWord))
+                        condition = true;
+                if(condition)
+                    filesToProcess << file;
+            }
+            else if(rule.fileCompareMode == rD::dontContain)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(file.suffix().contains(kWord))
+                        condition = true;
+                if(!condition)
+                    filesToProcess << file;
+            }
+            else if(rule.fileCompareMode == rD::match)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(file.suffix() == kWord)
+                        condition = true;
+                if(condition)
+                    filesToProcess << file;
+            }
+            else if(rule.fileCompareMode == rD::dontMatch)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(file.suffix() == kWord)
+                        condition = true;
+                if(!condition)
+                    filesToProcess << file;
+            }
+        }
+        else if(rule.fieldCondition == rD::sizeMode)
+        {
+            if(rule.fileCompareMode != rD::interval)
+            {
+                if(rule.fileCompareMode == rD::lesser && file.size() < fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << file;
+                else if(rule.fileCompareMode == rD::lesserOrEqual &&
+                        file.size() <= fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << file;
+                else if(rule.fileCompareMode == rD::equal &&
+                        file.size() == fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << file;
+                else if(rule.fileCompareMode == rD::biggerOrEqual &&
+                        file.size() >= fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << file;
+                else if(rule.fileCompareMode == rD::bigger &&
+                        file.size() > fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << file;
+            }
+            else if(rule.fileCompareMode == rD::interval &&
+                    file.size() >= fW::byteConvert(rule.sizeIntervalLimits.first.first,rule.sizeIntervalLimits.first.second) &&
+                    file.size() <= fW::byteConvert(rule.sizeIntervalLimits.second.first,rule.sizeIntervalLimits.second.second))
+                filesToProcess << file;
+
+        }
+        else if(rule.fieldCondition == rD::dateCreatedMode)
+        {
+            if(rule.fileCompareMode == rD::interval)
+            {
+                if(rule.intervalDate.first > file.created() && rule.intervalDate.second < file.created())
+                    filesToProcess << file;
+            }
+            else if(rule.fileCompareMode != rD::interval)
+            {
+                if(rule.fileCompareMode == rD::youngerThan && rule.fixedDate.second > file.created())
+                    filesToProcess << file;
+                else if(rule.fileCompareMode == rD::exactDate && rule.fixedDate.second== file.created())
+                    filesToProcess << file;
+                else if(rule.fileCompareMode == rD::olderThan && rule.fixedDate.second < file.created())
+                    filesToProcess << file;
+            }
+
+        }
+        else if(rule.fieldCondition == rD::dateModifiedMode)
+        {
+            if(rule.fileCompareMode == rD::interval)
+            {
+                if(rule.intervalDate.first > file.lastModified() && rule.intervalDate.second < file.lastModified())
+                    filesToProcess << file;
+            }
+            else if(rule.fileCompareMode != rD::interval)
+            {
+                if(rule.fileCompareMode == rD::youngerThan && rule.fixedDate.second > file.lastModified())
+                    filesToProcess << file;
+                else if(rule.fileCompareMode == rD::exactDate && rule.fixedDate.second == file.lastModified())
+                    filesToProcess << file;
+                else if(rule.fileCompareMode == rD::olderThan && rule.fixedDate.second < file.lastModified())
+                    filesToProcess << file;
+            }
+        }
+        //
+        else if(rule.fieldCondition == rD::typeMode)
+        {
+            if(rule.typeMode == fW::folderOnly && file.isDir())
+                filesToProcess << file;
+            else if(rule.typeMode == fW::filesOnly && file.isFile())
+                filesToProcess << file;
+            else if(rule.typeMode == fW::allEntries)
+                filesToProcess << file;
+        }
+        else if(rule.fieldCondition == rD::nonConditionalMode)
+        {
+            filesToProcess << file;
+        }
+    }
+    return filesToProcess;
+}
+
 void FileWorker::calcSizeOfIndividualFolderItems(QStringList l)
 {
     if(isBusy)

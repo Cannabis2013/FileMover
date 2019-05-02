@@ -1,7 +1,7 @@
 ﻿#ifndef FILEWORKER_H
 #define FILEWORKER_H
 
-#include "fileworkeroperator.h"
+#include "rules.h"
 
 namespace fileOperations {
 class processController;
@@ -18,6 +18,8 @@ class FileWorker : public fileWorkerOperator
 public:
     explicit FileWorker(ProcessManager *pRef = nullptr,QObject *parent = nullptr);
     virtual ~FileWorker();
+
+    QFileInfoList processList(QFileInfoList files, SubRule rule);
 
 public slots:
     // Count files & size related..
@@ -57,6 +59,7 @@ private:
     ProcessManager *pControllerReference;
 };
 
-typedef FileWorker fW;
 
+typedef FileWorker fW;
 #endif // FILEWORKER_H
+

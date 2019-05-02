@@ -8,7 +8,7 @@ EditRuleDialog::EditRuleDialog(Rule editRule, QStringList watchFolders):
     actionBox->setCurrentText(ruleDefs.actionToString(tempRule.actionRule));
     titleSelector->setText(tempRule.title);
     applySelector->setCurrentText(tempRule.appliesToPath);
-    pathSelector->setLineText(fW::mergeStringList(tempRule.destinationPath));
+    pathSelector->setLineText(Worker::mergeStringList(tempRule.destinationPath));
     deepScanRadio->setChecked(tempRule.deepScanMode);
 
     subRules = tempRule.subRules;
@@ -23,7 +23,7 @@ void EditRuleDialog::on_addButton_clicked()
     tempRule.title = titleSelector->text();
     tempRule.appliesToPath = applySelector->currentText();
     tempRule.actionRule = rDefs.actionFromString(actionBox->currentText());
-    tempRule.destinationPath = fW::splitString(pathSelector->text());
+    tempRule.destinationPath = Worker::splitString(pathSelector->text());
     tempRule.subRules = subRules;
     tempRule.deepScanMode = deepScanRadio->isChecked();
 
@@ -43,7 +43,7 @@ void EditRuleDialog::on_addSubRule_clicked()
     sRule.fileCompareMode = currentCompareMode;
     if(conMode == rD::filepathMode|| conMode == rD::extensionMode)
     {
-        sRule.keyWords = fW::splitString(condWidget->keyWordValues());
+        sRule.keyWords = Worker::splitString(condWidget->keyWordValues());
 
     }
     else if(conMode == rD::sizeMode &&

@@ -2,7 +2,7 @@
 #include "ui_abstractRuledialog.h"
 
 AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
-    ui(new Ui::abstractRuleDialog)
+    ui(new Ui::AbstractRuleDialog)
 {
     ui->setupUi(this);
 
@@ -30,6 +30,8 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
 
     conditionBox->setCurrentText("Ingen betingelser");
     conditionBox->currentIndexChanged("Ingen betingelser");
+
+    qRegisterMetaType<Rule>("Rule");
 }
 
 AbstractRuleDialog::~AbstractRuleDialog()

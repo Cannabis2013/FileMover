@@ -4,38 +4,29 @@
 #include <QMainWindow>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
-#include <QRect>
 #include <qpoint.h>
-#include <QCloseEvent>
-#include <QSystemTrayIcon>
-#include <QAction>
-#include <QThread>
-#include <QSettings>
 #include <qprocess.h>
 #include <qdial.h>
-#include <QLabel>
 #include <qfont.h>
 #include <qscreen.h>
 #include <qstringlist.h>
 #include <qheaderview.h>
 #include <qtextbrowser.h>
 #include <qsplitter.h>
-#include <QKeyEvent>
 #include <qcheckbox.h>
-#include <QTimer>
 #include <qevent.h>
-#include <QMouseEvent>
 #include <qtextstream.h>
 #include <qthreadpool.h>
 #include <qsharedpointer.h>
 #include <math.h>
 #include <qstackedwidget.h>
+#include <QSystemTrayIcon>
 
 #include "messageBox.h"
 #include "myscreendimensions.h"
 #include "fileinformationview.h"
 #include "addfolderwidget.h"
-#include "mainapplication.h"
+#include "settingsWindow.h"
 
 namespace Ui {
 class mainWindow;
@@ -62,6 +53,11 @@ signals:
     void quit(bool iH);
 
 protected:
+
+    // Persistent Settings..
+    void writeSettings();
+    void readSettings();
+
     void closeEvent(QCloseEvent *cE);
     void keyPressEvent(QKeyEvent *kE);
     void keyReleaseEvent(QKeyEvent *kR);
@@ -70,7 +66,8 @@ protected:
 
 
 private slots:
-    // Addfolder related..
+
+    void updateViews();
 
     // Buttons..
     void on_addBut_clicked(); // Add path to "mainFolderView"
@@ -99,7 +96,6 @@ private slots:
     void actionCountFolder(bool f);
 
     // mainFolderView Related..
-    void on_MainWindow_DoubleClicked(const QModelIndex &index);
     void explorerFolder(bool ok);
     void contextMenuCalled(QPoint p);
 
@@ -129,6 +125,8 @@ private slots:
 
     void on_actionOpen_current_directory_triggered();
 
+    void on_WatchFolderView_doubleClicked(const QModelIndex &index);
+
 private:
 
     // Void member methods..
@@ -136,42 +134,23 @@ private:
     // Add folder related..
     void updateViewIcons(QIcon ico);
 
-    // Close..
-    void Quit();
-
-    // Fileinformation..
-
-    // Fileworker..
-    void calcAllFiles(QStringList paths);
-    void clearFolders(const QList<QTreeWidgetItem *> &itemList);
-    void countFolders();
-
-    // mainFolderView related..
-
     // Menu..
     void updateSubTrayMenus();
 
-    // Persistent Settings..
-    void writeSettings();
-    void readSettings();
-
-
     // Systemtray related..
     void popSystemTrayMessage(const QString msg,const QString title = "Info");
-
-    // Rules/clear methods..
 
     // Non-void Medlems Funktioner..
 
     //detailedFolderView related..
     void updateDetaileditems();
+    void updateWatchFolderView();
 
     // General..
     double roundNumber(long long numb,QString &denote, int dec = 0);
     int fromSecondsToMilliseconds(int seconds){return seconds *1000;}
     int fromMinutesToMilliseconds(int minutes){return minutes *1000*60;}
     QFont createFont(fontType ft = fontType::standardFont, QString family = "Times New Roman",bool bold = false,bool italic = false, int staticSize = -1);
-    QString createTextBrowserHtml(const QString dirSize , const long fileCount, const int dirCount) const;
     QString modifyPath(QString s,QString S) const;
     QString mergeStringList(const QStringList &sList) const;
     QStringList splitString(const QString &split) const;
@@ -196,7 +175,6 @@ private:
     AbstractCoreApplication *coreApplication;
 
     bool countTimerStatus;
-    FileInformationManager *fM;
     fileInformationView *fileInfoBrowser;
     int tempKey,normalListFontSize, detailedListFontSize, countTimerInterval;    
     myScreenDimension laptopScreenSize, screenSize;
@@ -217,7 +195,7 @@ private:
     QSystemTrayIcon *tray;
     QTextBrowser *tBrowser;
     QTimer *countTimer, *clearStatusTextTimer;
-    QTreeWidget *detailedFolderView, *suffixTree,*mainFolderView;
+    QTreeWidget *detailedFolderView, *suffixTree,*watchFolderView;
     QWidget *infBox;
 };
 

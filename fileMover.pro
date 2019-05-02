@@ -44,7 +44,6 @@ SOURCES += main.cpp\
     mainapplication.cpp \
         mainwindow.cpp \
     fileworker.cpp \
-    myapp.cpp \
     rulesmanager.cpp \
     settingsWindow.cpp \
     mydatetime.cpp \
@@ -79,7 +78,6 @@ HEADERS  += mainwindow.h \
     mainapplication.h \
     messageBox.h \
     fileworker.h \
-    myapp.h \
     processmanager.h \
     rulesmanager.h \
     settingsWindow.h \
@@ -99,7 +97,6 @@ HEADERS  += mainwindow.h \
     addruledialog.h \
     editruledialog.h \
     conditionWidget.h \
-    argumentvalues.h \
     ruledefinitions.h \
     rules.h \
     worker.h \

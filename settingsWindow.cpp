@@ -1,12 +1,13 @@
 ﻿#include "settingsWindow.h"
 #include "ui_settingsWindow.h"
 
-settingsWindow::settingsWindow(QWidget *parent):
-    QWidget(parent),
+settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication):
+    QWidget(),
     ui(new Ui::settingsWindow)
 {
     ui->setupUi(this);
 
+    this->coreApplication = coreApplication;
     closeOnBox = ui->closeOnExitBox_2;
     countTimerEnableBox = ui->countTimerActivateBox_2;
     countTimerInterval = ui->countTImerIntervalEdit_2;
@@ -18,24 +19,16 @@ settingsWindow::settingsWindow(QWidget *parent):
     view = ui->listWidget_2;
     vScroll = new QScrollBar(Qt::Vertical);
 
-
-    // Setfocus..
-
-    // Rulesview related..
-
     // ... Header related..
-
 
     rulesView->setColumnCount(3);
     rulesView->setHeaderHidden(false);
     rulesView->setHeaderLabels(ruleParentHeaderData);
 
-
     // Insert Icons..
 
     connect(view,SIGNAL(activated(QModelIndex)),
             this,SLOT(viewClicked(QModelIndex)));
-
 }
 
 settingsWindow::~settingsWindow()
@@ -48,15 +41,6 @@ void settingsWindow::setIconList(QList<MyIcon> list)
 {
     for(MyIcon icon : list)
         new QListWidgetItem(icon,icon.name(),view);
-}
-
-bool settingsWindow::rulesEnabled()
-{
-}
-
-void settingsWindow::focusOutEvent(QFocusEvent *event)
-{
-
 }
 
 void settingsWindow::changeEvent(QEvent *event)
@@ -80,6 +64,11 @@ void settingsWindow::closeEvent(QCloseEvent *event)
     }
 }
 
+void settingsWindow::updateViews()
+{
+    updateRulesView();
+}
+
 void settingsWindow::viewClicked(QModelIndex i)
 {
     if(i.isValid())
@@ -96,18 +85,22 @@ void settingsWindow::closeBoxClicked(bool c)
     emit sendCheckBox(c);
 }
 
-
-void settingsWindow::recieveRule(Rule r)
-{
-}
-
-void settingsWindow::recieveModifiedRule(Rule r, int index)
-{
-}
-
 void settingsWindow::on_insertRule_2_clicked()
 {
+    AddRuleDialog *ruleDialog = new AddRuleDialog(coreApplication->watchFolders());
+    connect(ruleDialog,&AddRuleDialog::sendRule,coreApplication,&AbstractCoreApplication::insertRule);
+    ruleDialog->show();
+}
 
+void settingsWindow::on_editRule_2_clicked()
+{
+    QString title = rulesView->currentItem()->text(0);
+    Rule r = coreApplication->rule(title);
+
+    EditRuleDialog *ruleDialog = new EditRuleDialog(r,coreApplication->watchFolders());
+    connect(ruleDialog,&AbstractRuleDialog::replaceRule,coreApplication,&AbstractCoreApplication::replaceRule);
+
+    ruleDialog->show();
 }
 
 void settingsWindow::on_lukKnap_2_clicked()
@@ -117,6 +110,9 @@ void settingsWindow::on_lukKnap_2_clicked()
 
 void settingsWindow::updateRulesView()
 {
+    rulesView->clear();
+    QList<QTreeWidgetItem*> allRules = coreApplication->ruleItems();
+    rulesView->addTopLevelItems(allRules);
 }
 
 void settingsWindow::on_fortrydKnap_2_clicked()
@@ -127,6 +123,8 @@ void settingsWindow::on_fortrydKnap_2_clicked()
 
 void settingsWindow::on_deleteRule_2_clicked()
 {
+    QString ruleTitle = rulesView->currentItem()->text(0);
+    coreApplication->removeRule(ruleTitle);
 }
 
 void settingsWindow::on_exitButton_clicked()
@@ -136,10 +134,40 @@ void settingsWindow::on_exitButton_clicked()
 
 void settingsWindow::on_moveDownButton_2_clicked()
 {
+    QTreeWidgetItem *cItem = rulesView->currentItem();
+
+    int i = rulesView->indexOfTopLevelItem(cItem);
+    if(i == -1)
+        return;
+
+    try {
+        coreApplication->swapRule(i,i - 1);
+    }
+    catch (std::overflow_error e)
+    {
+        return;
+    }
+
+    updateRulesView();
 }
 
 void settingsWindow::on_moveUpButton_2_clicked()
 {
+    QTreeWidgetItem *cItem = rulesView->currentItem();
+
+    int i = rulesView->indexOfTopLevelItem(cItem);
+    if(i == -1)
+        return;
+
+    try {
+        coreApplication->swapRule(i,i + 1);
+    }
+    catch (std::overflow_error e)
+    {
+        return;
+    }
+
+    updateRulesView();
 }
 
 void settingsWindow::on_countTImerIntervalEdit_2_returnPressed()
@@ -152,12 +180,6 @@ void settingsWindow::on_countTimerActivateBox_2_toggled(bool checked)
 {
     emit enableTimer(checked);
 }
-
-void settingsWindow::on_editRule_2_clicked()
-{
-
-}
-
 
 void settingsWindow::on_ruleItemView_2_itemClicked(QTreeWidgetItem *item, int column)
 {

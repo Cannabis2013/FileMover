@@ -9,6 +9,8 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
 {
     ui->setupUi(this);
 
+    this->coreApplication = coreApplication;
+
     // Init..
     clBut = ui->clearButt;
     clearStatusTextTimer = new QTimer();
@@ -24,9 +26,8 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
     fileInfoBrowser = ui->fileInformationBrowserView;
     fileStandard = QIcon();
     folderTrayMenu = new QMenu;
-    fM = new FileInformationManager();
     laptopScreenSize = myScreenDimension(0,0,1280,800);
-    mainFolderView = ui->dirView;
+    watchFolderView = ui->WatchFolderView;
     normalListFontSize = 16;
     screenSize = myScreenDimension(QApplication::desktop()->screenGeometry());
     statusLine = ui->statusLineEdit;
@@ -60,24 +61,24 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
     readSettings();
 
     // mainFolderView related..
-    mainFolderView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    mainFolderView->setStyleSheet("QTreeWidget::branch{display:none;}");
+    watchFolderView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    watchFolderView->setStyleSheet("QTreeWidget::branch{display:none;}");
     setWindowTitle(title);
-    mainFolderView->setIconSize(QSize(32,32));
+    watchFolderView->setIconSize(QSize(32,32));
 
     // mainFolderView Setting columnwidth..
-    mainFolderView->setColumnCount(1);
-    for(int w = 0;w < mainFolderView->topLevelItemCount();w++)
+    watchFolderView->setColumnCount(1);
+    for(int w = 0;w < watchFolderView->topLevelItemCount();w++)
     {
         int width = columnWidths.at(w);
-        mainFolderView->setColumnWidth(w,width);        
+        watchFolderView->setColumnWidth(w,width);
     }
-    mainFolderView->setHeaderHidden(true);
-    mainFolderView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    mainFolderView->setContextMenuPolicy(Qt::CustomContextMenu);
-    mainFolderView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    mainFolderView->setFont(createFont(fontType::listFont));
-    mainFolderView->setStyleSheet("border:0px;padding:0;margin:0px;");    
+    watchFolderView->setHeaderHidden(true);
+    watchFolderView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    watchFolderView->setContextMenuPolicy(Qt::CustomContextMenu);
+    watchFolderView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    watchFolderView->setFont(createFont(fontType::listFont));
+    watchFolderView->setStyleSheet("border:0px;padding:0;margin:0px;");
 
     // mainFolderView Menu..
 
@@ -132,12 +133,7 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
 
     // Fileworker Related..
 
-
-    // Register meta types..
-
     qRegisterMetaType<QList<FileObject>>("QList<fileObject>");
-    qRegisterMetaType<DirectoryItem>("directoryItem");
-    qRegisterMetaType<QList<DirectoryItem>>("QList<directoryItem>");
 
     // Systemtray..
     connect(tray,SIGNAL(messageClicked()),this,SLOT(trayMsgClicked()));
@@ -150,8 +146,11 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
     connect(folderTrayMenu,SIGNAL(triggered(QAction*)),
             this,SLOT(explorerMenuTriggered(QAction*)));
 
-    tray->show();
+    connect(coreApplication,&AbstractCoreApplication::stateChanged,this,&mainWindow::updateViews);
 
+    coreApplication->readPersistence();
+
+    tray->show();
 }
 
 
@@ -161,7 +160,15 @@ mainWindow::~mainWindow()
 }
 void mainWindow::closeEvent(QCloseEvent *cE)
 {
-
+    if(coreApplication->closeOnExit()) {
+        cE->accept();
+        delete coreApplication;
+        writeSettings();
+    }
+    else {
+        cE->ignore();
+        hide();
+    }
 }
 
 void mainWindow::keyPressEvent(QKeyEvent *kE)
@@ -233,23 +240,6 @@ void mainWindow::msgToTray(const QString &msg)
     tray->showMessage("Error",msg,QSystemTrayIcon::Warning);
 }
 
-
-void mainWindow::on_MainWindow_DoubleClicked(const QModelIndex &index)
-{
-    if(!index.isValid())
-        return;
-    int row = index.row();
-    QTreeWidgetItem *item = mainFolderView->topLevelItem(row);
-    QString p = item->text(0),
-            pX = ePath + modifyPath(p,("\\"));
-    if(!QFile::exists(p))
-        return;
-
-    unique_ptr<QProcess>process(new QProcess);
-    process->start(pX);
-    process->waitForFinished();
-}
-
 void mainWindow::iconSelected(QIcon ico)
 {
     tray->setIcon(ico);
@@ -278,10 +268,7 @@ void mainWindow::tMenuClicked(QAction *a)
 {
     QString txt = a->text();
     if(txt == "Quit")
-    {
-        writeSettings();
-        Quit();
-    }
+        close();
 }
 
 void mainWindow::countMenuTriggered(QAction *cAction)
@@ -304,7 +291,7 @@ void mainWindow::clearMenuTriggered(QAction *clAction)
 void mainWindow::explorerFolder(bool ok)
 {
     Q_UNUSED(ok);
-    int r = mainFolderView->currentIndex().row();
+    int r = watchFolderView->currentIndex().row();
     QStringList list = folders();
 #ifdef Q_OS_MAC
 
@@ -326,40 +313,13 @@ void mainWindow::explorerFolder(bool ok)
 
 void mainWindow::folderContentRecieved(QList<FileObject> sz)
 {
-    QString mes, sizeString;
-    foreach (FileObject fObject, sz)
-    {
-        QString xSize;
-        double count = roundNumber(fObject.sz,xSize,2);
-        if(count > 0)
-        {
-            sizeString = QString::number(count) + " " + xSize;
-            mes += QString("'%1' indeholder %2 data! \n").arg(fObject.path,sizeString);
-        }
-        else
-        {
-            sizeString = "Tom";
-            mes += QString("%1 er %2! \n").arg(fObject.path,sizeString);
-        }
-        DirectoryItem rItem = fM->item(fObject.path);
-        rItem.dirSize = sizeString;
-        fM->updateFileInfo(rItem);
-    }
-    tray->showMessage("Info",mes,QSystemTrayIcon::Information);
-    statusLine->setText("No status. Last count: " +
-                        QDate::currentDate().toString() +
-                        " "
-                        + QTime::currentTime().toString());
-    QModelIndex cIndex = mainFolderView->currentIndex();
-    updateDetaileditems();
-    updateInfoScreen(cIndex);
 
 }
 
 void mainWindow::actionCountFolder(bool f)
 {
     Q_UNUSED(f);
-    if(mainFolderView->topLevelItemCount() == 0)
+    if(watchFolderView->topLevelItemCount() == 0)
         return;
     QStringList list {currentMainFolderPath()};
     emit StartCount(list);
@@ -431,26 +391,14 @@ void mainWindow::clearCompleted(bool a)
 
 void mainWindow::contextMenuCalled(QPoint p)
 {
-    if(!mainFolderView->currentIndex().isValid())
+    if(!watchFolderView->currentIndex().isValid())
         return;
 
-    QPoint P = mainFolderView->mapToGlobal(p);
+    QPoint P = watchFolderView->mapToGlobal(p);
     int Y = P.y();
     P.setY(Y + 12);
 
     mainFolderViewMenu->popup(P);
-}
-
-void mainWindow::calcAllFiles(QStringList paths)
-{
-}
-
-void mainWindow::clearFolders(const QList<QTreeWidgetItem *> &itemList)
-{
-}
-
-void mainWindow::countFolders()
-{
 }
 
 double mainWindow::roundNumber(long long numb, QString &denote, int dec)
@@ -495,62 +443,16 @@ double mainWindow::roundNumber(long long numb, QString &denote, int dec)
 
 void mainWindow::updateDetaileditems()
 {
-    /*
     detailedFolderView->clear();
-    QList<QTreeWidgetItem*>itemList;
-    QList<directoryItem> directoryItems = fM->items();
-    for(directoryItem item : directoryItems)
-        itemList << item.treeWidgetItems();
+    QList<QTreeWidgetItem*>itemList = coreApplication->detailedWatchFolderItems();
     detailedFolderView->addTopLevelItems(itemList);
-    */
 }
 
-QString mainWindow::createTextBrowserHtml(const QString dirSize, const long fileCount, const int dirCount) const
+void mainWindow::updateWatchFolderView()
 {
-    QString tempSize = dirSize;
-    if(tempSize == QString())
-        tempSize = "Not counted";
-    QString fC = QString::number(fileCount),
-            dC = QString::number(dirCount);
-    QString resultingHtml = QString(
-#if(_MSC_VER)
-    QString resultingHtml = QString(                            
-                            "<body style='background-color:rgb(81,81,81);'>"
-                            "<table>"
-                                "<td style='padding:5px;background-color:transparent;text-align:center;font-size:24px;font-weight:bold;'>"
-                                    "<img src='qrc:/My Images/Ressources/File.png' width=102 height=128 >"
-                                    "<p style='color:white;'>%1</p>"
-                                "</td>"
-                                "<td style='padding:5px;background-color:transparent;text-align:center;font-size:24px;font-weight:bold;'>"
-                                    "<img src='qrc:/My Images/Ressources/Folder.png' width=102 height=128>"
-                                    "<p style='color:white;'>%2</p>"
-                                "</td>"
-                                "<td style='padding:5px;background-color:transparent;text-align:center;font-size:24px;font-weight:bold;'>"
-                                    "<img src='qrc:/My Images/Ressources/Hdd-icon.png' width=102 height=128>"
-                                    "<p style='color:white;'>%3</p>"
-                                "</td>"
-                            "</table>"
-                            "</body>").arg(fC,dC,tempSize);
-#elif(__MINGW32__)
-                            "<body style='background-color:rgb(81,81,81);'>"
-                            "<table>"
-                                "<td style='padding:5px;background-color:transparent;text-align:center;font-size:24px;font-weight:bold;'>"
-                                    "<img src='qrc:/My Images/Ressources/File.png' width=102 height=128 >"
-                                    "<p style='color:white;'>%1</p>"
-                                "</td>"
-                                "<td style='padding:5px;background-color:transparent;text-align:center;font-size:24px;font-weight:bold;'>"
-                                    "<img src='qrc:/My Images/Ressources/Folder.png' width=102 height=128>"
-                                    "<p style='color:white;'>%2</p>"
-                                "</td>"
-                                "<td style='padding:5px;background-color:transparent;text-align:center;font-size:24px;font-weight:bold;'>"
-                                    "<img src='qrc:/My Images/Ressources/Hdd-icon.png' width=102 height=128>"
-                                    "<p style='color:white;'>%3</p>"
-                                "</td>"
-                            "</table>"
-                            "</body>").arg(fC,dC,tempSize);
-
-#endif
-    return resultingHtml;
+    watchFolderView->clear();
+    QList<QTreeWidgetItem*> watchFolders = coreApplication->watchFolderItems();
+    watchFolderView->addTopLevelItems(watchFolders);
 }
 
 QString mainWindow::modifyPath(QString s, QString S) const
@@ -567,16 +469,25 @@ QString mainWindow::modifyPath(QString s, QString S) const
 
 QString mainWindow::currentMainFolderPath() const
 {
-    return mainFolderView->currentItem()->text(0);
+    return watchFolderView->currentItem()->text(0);
 }
 
 void mainWindow::writeSettings()
 {
+    persistenceSettings->beginGroup("Basic window settings");
 
+    persistenceSettings->setValue("Window geometry",geometry());
+
+    persistenceSettings->endGroup();
 }
 
 void mainWindow::readSettings()
 {
+    persistenceSettings->beginGroup("Basic window settings");
+
+    setGeometry(persistenceSettings->value("Window geometry").toRect());
+
+    persistenceSettings->endGroup();
 }
 
 void mainWindow::popSystemTrayMessage(const QString msg, const QString title)
@@ -621,13 +532,6 @@ QFont mainWindow::createFont(fontType ft, QString family, bool bold, bool italic
     return result;
 }
 
-void mainWindow::Quit()
-{
-    tray->deleteLater();
-    bool i = isHidden();
-    emit quit(i);
-}
-
 void mainWindow::on_clearButt_clicked()
 {
 
@@ -636,26 +540,35 @@ void mainWindow::on_clearButt_clicked()
 
 void mainWindow::on_delButt_clicked()
 {
-    if(mainFolderView->topLevelItemCount() == 0)
+    if(watchFolderView->topLevelItemCount() == 0)
         return;
-    QModelIndex index = mainFolderView->currentIndex();
+    QModelIndex index = watchFolderView->currentIndex();
     if(!index.isValid())
         return;
     if(messageBx::customBox(this,"Sikker","Er du sikker på du vil slette posten?","Ja","Nej"))
     {
-        QTreeWidgetItem *item = mainFolderView->takeTopLevelItem(index.row());
+        QTreeWidgetItem *item = watchFolderView->takeTopLevelItem(index.row());
         QString path = item->text(0);
-        fM->removeDirectory(path);
+        coreApplication->removeWatchFolder(path);
     }
     updateSubTrayMenus();
     updateDetaileditems();
     suffixTree->clear();
     fileInfoBrowser->clear();
-
 }
 
 void mainWindow::updateInfoScreen(QModelIndex index)
 {
+    if(!index.isValid())
+        return;
+
+    QTreeWidgetItem *watchFolderItem = watchFolderView->itemAt(index.column(),index.row());
+    QString path = watchFolderItem->text(0);
+    QString html = coreApplication->directoryInformationHtml(path);
+    fileInfoBrowser->setHtml(html);
+
+    suffixTree->clear();
+    suffixTree->addTopLevelItems(coreApplication->suffixList(path));
 }
 
 void mainWindow::sortSuffixTreeColumn(int c)
@@ -682,25 +595,25 @@ void mainWindow::sortSuffixTreeColumn(int c)
 
 void mainWindow::updateViewIcons(QIcon ico)
 {
-    for(int a = 0;a <mainFolderView->topLevelItemCount();a++)
-        mainFolderView->topLevelItem(a)->setIcon(0,ico);
+    for(int a = 0;a <watchFolderView->topLevelItemCount();a++)
+        watchFolderView->topLevelItem(a)->setIcon(0,ico);
 }
 
 QStringList mainWindow::folders() const
 {
     QStringList list;
-    for(int a = 0;a <mainFolderView->topLevelItemCount();a++)
-        list << mainFolderView->topLevelItem(a)->text(0);
+    for(int a = 0;a <watchFolderView->topLevelItemCount();a++)
+        list << watchFolderView->topLevelItem(a)->text(0);
 
     return list;
 }
 
 QString mainWindow::folder(QString t) const
 {
-    int count = mainFolderView->topLevelItemCount();
+    int count = watchFolderView->topLevelItemCount();
     for(int a = 0;a <count;a++)
     {
-        QString item = mainFolderView->topLevelItem(a)->text(0);
+        QString item = watchFolderView->topLevelItem(a)->text(0);
         if(item == t)
             return item;
     }
@@ -857,6 +770,10 @@ void mainWindow::on_actionQuit_triggered()
 
 void mainWindow::on_addBut_clicked()
 {
+    AddFolderWidget *folderWidget = new AddFolderWidget();
+    connect(folderWidget,&AddFolderWidget::sendPath,coreApplication,&AbstractCoreApplication::addWatchFolder);
+
+    folderWidget->show();
 }
 
 void mainWindow::on_countButt_clicked()
@@ -873,16 +790,38 @@ void mainWindow::on_actionOpen_current_directory_triggered()
     process->waitForFinished();
 }
 
+void mainWindow::updateViews()
+{
+    updateWatchFolderView();
+    updateDetaileditems();
+}
+
 void mainWindow::on_detailView_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
     Q_UNUSED(column);
     if(item->childCount() >0)
         return;
 
-    QString path = item->text(1),appLaunch = "explorer ";
-    QString cmd = appLaunch + modifyPath(path,"\\");
+    QString path = item->text(1);
+    QString cmd = ePath + modifyPath(path,"\\");
 
     unique_ptr<QProcess>process(new QProcess(this));
     process->start(cmd);
+    process->waitForFinished();
+}
+
+void mainWindow::on_WatchFolderView_doubleClicked(const QModelIndex &index)
+{
+    if(!index.isValid())
+        return;
+    int row = index.row();
+    QTreeWidgetItem *item = watchFolderView->topLevelItem(row);
+    QString p = item->text(0),
+            pX = ePath + modifyPath(p,("\\"));
+    if(!QFile::exists(p))
+        return;
+
+    unique_ptr<QProcess>process(new QProcess);
+    process->start(pX);
     process->waitForFinished();
 }

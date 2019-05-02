@@ -256,15 +256,15 @@ struct ruleDefinitions
     {
         return typeList().at(index);
     }
-    static QString typeFromEnum(wrk::iteratorMode tMode)
+    static QString typeFromEnum(Worker::iteratorMode tMode)
     {
-        if(tMode == wrk::folderOnly)
+        if(tMode == Worker::folderOnly)
             return "Mapper";
-        else if(tMode == wrk::filesOnly)
+        else if(tMode == Worker::filesOnly)
             return "Filer";
-        else if(tMode == wrk::allEntries)
+        else if(tMode == Worker::allEntries)
             return "Begge";
-        else if(tMode == wrk::noTypeSet)
+        else if(tMode == Worker::noTypeSet)
             return "none";
         else
             return "error";

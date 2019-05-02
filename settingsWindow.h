@@ -23,6 +23,7 @@
 #include "editruledialog.h"
 #include "widgetform.h"
 #include "myIcon.h"
+#include "mainapplication.h"
 
 using namespace std;
 
@@ -35,7 +36,7 @@ class settingsWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit settingsWindow(QWidget *parent = nullptr);
+    explicit settingsWindow(AbstractCoreApplication *coreApplication);
     ~settingsWindow();
 
     enum ruleMode{ruleOut,parallelMode};
@@ -62,10 +63,11 @@ signals:
     void widgetHasQuitted();
 
 protected:
-    void focusOutEvent(QFocusEvent *event);
     void changeEvent(QEvent *event);
     void closeEvent(QCloseEvent *event);
 private slots:
+
+    void updateViews();
 
     // Select icon related..
     void viewClicked(QModelIndex i);
@@ -75,19 +77,15 @@ private slots:
 
     // RulesView related..
 
-    // Rules related..
-    void recieveRule(Rule r);
-    void recieveModifiedRule(Rule r,int index);
-
     // Buttons related..
     void on_insertRule_2_clicked();
+    void on_editRule_2_clicked();
     void on_lukKnap_2_clicked();
     void on_fortrydKnap_2_clicked();
     void on_deleteRule_2_clicked();
     void on_exitButton_clicked();
     void on_moveUpButton_2_clicked();
     void on_moveDownButton_2_clicked();
-    void on_editRule_2_clicked();
 
     //RuleItemView related..
     void on_ruleItemView_2_itemClicked(QTreeWidgetItem *item, int column);
@@ -117,6 +115,7 @@ private:
     QTreeWidget *rulesView;
     QList<Rule>rules;
     QWidget *mView;
+    AbstractCoreApplication *coreApplication;
 };
 
 typedef settingsWindow sI;

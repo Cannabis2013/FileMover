@@ -6,16 +6,18 @@
 
 class AbstractPersistence
 {
+
 public:
     AbstractPersistence(QString appName, QString orgName);
-    virtual ~AbstractPersistence();
+    virtual ~AbstractPersistence() = 0;
 
     QString OrganisationTitle() const;
     QString ApplicationTitle() const;
 
-protected:
     virtual void readSettings() = 0;
     virtual void writeSettings() = 0;
+
+    QSettings *persistenceSettings;
 
 private:
     QString applicationTitle, organisationTitle;

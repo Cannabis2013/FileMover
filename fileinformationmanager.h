@@ -9,6 +9,8 @@
 #include <memory>
 #include <QTreeWidgetItem>
 
+#include "abstractpersistence.h"
+
 /*
  * This class generates infortion about the current folder in the "informationView" widget.
  *
@@ -24,34 +26,46 @@ struct DirectoryItem
     QList<QPair<QString,int> > sufList;
     QList<QTreeWidgetItem*> suffixItems() const;
 
-    QTreeWidgetItem *g(QTreeWidgetItem*item) const;
+    QTreeWidgetItem *organizeTreeItems(QTreeWidgetItem*item) const;
 
     QTreeWidgetItem *allFiles;
     QTreeWidgetItem *treeWidgetItems()
     {
-        return g(allFiles);
+        return organizeTreeItems(allFiles);
     }
 };
 
-class FileInformationManager
+class FileInformationManager : public QObject, public AbstractPersistence
 {
+    Q_OBJECT
 public:
-    FileInformationManager();
+    FileInformationManager(QString appName, QString orgName);
+    ~FileInformationManager();
 
-    void insertItem(DirectoryItem item){items << item;}
-    void insertItems(QList<DirectoryItem> items) {this->items << items;}
     void setItemList(QList<DirectoryItem> nList){items = nList;}
 
     bool directoryExists(QString path);
     QList<DirectoryItem> allItems() {return items;}
     DirectoryItem item(QString p);
+    QList<QTreeWidgetItem *> allTreeItems();
 
     void updateFileInfo(DirectoryItem dI);
     void updateAllFileInfo(QList<DirectoryItem> list);
     void flushAll();
-    void removeDirectory(QString p);
 
     QString createTextBrowserHtml(QString path);
+
+    void readSettings();
+    void writeSettings();
+
+public slots:
+    void insertItem(DirectoryItem item);
+    void insertItems(QList<DirectoryItem> items);
+
+    void removeItem(QString path);
+
+signals:
+    void stateChanged();
 private:
     QList<DirectoryItem>items;
 };

@@ -1,22 +1,18 @@
 ﻿#include "mainwindow.h"
-#include "myapp.h"
-#include "argumentvalues.h"
 
 int main(int argc, char *argv[])
 {
-    myApp a(argc, argv);
-    QCoreApplication::setApplicationName("Filehandler");
-    QCoreApplication::setOrganizationName("MH");
+    QApplication a(argc, argv);
 
-    a.setQuitOnLastWindowClosed(false);
+    a.setQuitOnLastWindowClosed(true);
 
-    MainApplication *mainApplicaton = new MainApplication("Filehandler", "MH");
+    QString applicationName = "Filehandler", organizationName = "MH";
+
+    MainApplication *mainApplicaton = new MainApplication(applicationName, organizationName);
 
     mainWindow *w = new mainWindow(mainApplicaton,
-                                   mainApplicaton->ApplicationTitle(),
-                                   mainApplicaton->OrganisationTitle());
-
-    QObject::connect(w,SIGNAL(quit(bool)),&a,SLOT(QuiT(bool)));
+                                   applicationName,
+                                   organizationName);
 
     w->show();
 

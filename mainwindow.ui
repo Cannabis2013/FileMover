@@ -312,7 +312,7 @@ border-bottom:2px solid black;</string>
              </widget>
             </item>
             <item>
-             <widget class="QTreeWidget" name="dirView">
+             <widget class="QTreeWidget" name="WatchFolderView">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -484,5 +484,25 @@ border-bottom:2px solid black;</string>
   <tabstop>suffixTree</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>WatchFolderView</sender>
+   <signal>clicked(QModelIndex)</signal>
+   <receiver>mainWindow</receiver>
+   <slot>updateInfoScreen(QModelIndex)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>735</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1304</x>
+     <y>155</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>updateInfoScreen(QModelIndex)</slot>
+ </slots>
 </ui>

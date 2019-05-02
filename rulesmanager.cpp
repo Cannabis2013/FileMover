@@ -4,6 +4,11 @@ rulesManager::rulesManager(QString appName, QString orgName):
     AbstractPersistence (appName,orgName)
 {}
 
+rulesManager::~rulesManager()
+{
+    writeSettings();
+}
+
 QString rulesManager::mergeStringList(const QStringList strings)
 {
     if(strings.empty())
@@ -36,13 +41,13 @@ QStringList rulesManager::splitString(const QString split)
     return splittetList;
 }
 
-QList<QTreeWidgetItem *> rulesManager::rulesTreeItems() const
+QList<QTreeWidgetItem *> rulesManager::ruleItems() const
 {
     rD rDefs;
     QList<QTreeWidgetItem*>resultingList;
     for(Rule r : rules)
     {
-        QStringList headerData {r.title,rDefs.actionToString(r.actionRule),fW::mergeStringList(r.destinationPath)};
+        QStringList headerData {r.title,rDefs.actionToString(r.actionRule),Worker::mergeStringList(r.destinationPath)};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         for(SubRule sRule : r.subRules)
         {
@@ -61,11 +66,13 @@ QList<QTreeWidgetItem *> rulesManager::rulesTreeItems() const
 void rulesManager::addRule(const Rule r)
 {
     rules << r;
+    emit stateChanged();
 }
 
 void rulesManager::addRules(const QList<Rule> r)
 {
     rules << r;
+    emit stateChanged();
 }
 
 void rulesManager::removeRule(const QString title)
@@ -75,6 +82,7 @@ void rulesManager::removeRule(const QString title)
         if(r.title == title)
         {
             rules.removeAt(i);
+            emit stateChanged();
             return;
         }
     }
@@ -137,7 +145,7 @@ void rulesManager::readSettings()
             sRule.intervalDate.second = myDateTime::fromString(s.value("Enddate","01.01.2000").toString());
             s.endGroup();
 
-            sRule.typeMode = static_cast<wrk::iteratorMode>(s.value("Iteratormode",0).toInt());
+            sRule.typeMode = static_cast<Worker::iteratorMode>(s.value("Iteratormode",0).toInt());
 
             r.subRules.append(sRule);
         }
@@ -152,56 +160,55 @@ void rulesManager::writeSettings()
 {
     QList<Rule> rules = ruleslist();
 
-    QSettings s;
-    s.remove("Rules");
-    s.beginWriteArray("Rules",rules.count());
+    persistenceSettings->remove("Rules");
+    persistenceSettings->beginWriteArray("Rules",rules.count());
     for (int i = 0; i < rules.count(); ++i)
     {
-        s.setArrayIndex(i);
+        persistenceSettings->setArrayIndex(i);
         Rule r = rules.at(i);
-        s.setValue("Title",r.title);
-        s.setValue("Action",r.actionRule);
-        s.setValue("ApplyPath",r.appliesToPath);
-        s.setValue("Destination paths",
+        persistenceSettings->setValue("Title",r.title);
+        persistenceSettings->setValue("Action",r.actionRule);
+        persistenceSettings->setValue("ApplyPath",r.appliesToPath);
+        persistenceSettings->setValue("Destination paths",
                    mergeStringList(r.destinationPath));
-        s.setValue("Scan Mode",r.deepScanMode);
+        persistenceSettings->setValue("Scan Mode",r.deepScanMode);
         QList<SubRule>sRules = r.subRules;
         int total = sRules.count();
-        s.beginWriteArray("Subrules",total);
+        persistenceSettings->beginWriteArray("Subrules",total);
         for (int n = 0; n < total; ++n)
         {
             SubRule sRule = sRules.at(n);
-            s.setArrayIndex(n);
+            persistenceSettings->setArrayIndex(n);
 
-            s.setValue("Copymode",sRule.copymode);
-            s.setValue("Condition",sRule.fieldCondition);
-            s.setValue("Comparemode",sRule.fileCompareMode);
+            persistenceSettings->setValue("Copymode",sRule.copymode);
+            persistenceSettings->setValue("Condition",sRule.fieldCondition);
+            persistenceSettings->setValue("Comparemode",sRule.fileCompareMode);
 
-            s.setValue("Matchwholewords",sRule.matchWholeWords);
-            s.setValue("Keywords",Worker::mergeStringList(sRule.keyWords));
+            persistenceSettings->setValue("Matchwholewords",sRule.matchWholeWords);
+            persistenceSettings->setValue("Keywords",Worker::mergeStringList(sRule.keyWords));
 
-            s.setValue("Sizelimit",sRule.sizeLimit.first);
-            s.setValue("Sizelimitunit",sRule.sizeLimit.second);
+            persistenceSettings->setValue("Sizelimit",sRule.sizeLimit.first);
+            persistenceSettings->setValue("Sizelimitunit",sRule.sizeLimit.second);
 
-            s.beginGroup("Sizelimits");
-            s.setValue("Minsizeinterval",sRule.sizeIntervalLimits.first.first);
-            s.setValue("Minsizeunitinterval",sRule.sizeIntervalLimits.first.second);
-            s.setValue("Maxsizeinterval",sRule.sizeIntervalLimits.second.first);
-            s.setValue("Maxsizeunitinterval",sRule.sizeIntervalLimits.second.second);
-            s.endGroup();
+            persistenceSettings->beginGroup("Sizelimits");
+            persistenceSettings->setValue("Minsizeinterval",sRule.sizeIntervalLimits.first.first);
+            persistenceSettings->setValue("Minsizeunitinterval",sRule.sizeIntervalLimits.first.second);
+            persistenceSettings->setValue("Maxsizeinterval",sRule.sizeIntervalLimits.second.first);
+            persistenceSettings->setValue("Maxsizeunitinterval",sRule.sizeIntervalLimits.second.second);
+            persistenceSettings->endGroup();
 
-            s.setValue("Datetime",sRule.fixedDate.second.toString("dd.MM.yyyy"));
+            persistenceSettings->setValue("Datetime",sRule.fixedDate.second.toString("dd.MM.yyyy"));
 
-            s.beginGroup("Datelimits");
-            s.setValue("Startdate",sRule.intervalDate.first.toString("dd.MM.yyyy"));
-            s.setValue("Enddate",sRule.intervalDate.second.toString("dd.MM.yyyy"));
-            s.endGroup();
+            persistenceSettings->beginGroup("Datelimits");
+            persistenceSettings->setValue("Startdate",sRule.intervalDate.first.toString("dd.MM.yyyy"));
+            persistenceSettings->setValue("Enddate",sRule.intervalDate.second.toString("dd.MM.yyyy"));
+            persistenceSettings->endGroup();
 
-            s.setValue("Iteratormode",sRule.typeMode);
+            persistenceSettings->setValue("Iteratormode",sRule.typeMode);
         }
-        s.endArray();
+        persistenceSettings->endArray();
     }
-    s.endArray();
+    persistenceSettings->endArray();
 }
 
 void rulesManager::writeRulesToReg()
@@ -225,5 +232,15 @@ void rulesManager::replaceRule(const Rule r, QString title)
         }
     }
     throw QString("Item not found");
+}
+
+void rulesManager::swapRule(int i, int j)
+{
+    if(i >= rules.count() || j >= rules.count())
+        throw new std::overflow_error("");
+    if(i < 0 || j < 0)
+        throw new std::overflow_error("");
+
+    rules.swap(i,j);
 }
 

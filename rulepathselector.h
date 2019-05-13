@@ -11,7 +11,7 @@
 
 using namespace std;
 
-class rulePathSelector : public textPathEdit
+class rulePathSelector : public TextPathEdit
 {
 public:
     rulePathSelector(QWidget *parent = nullptr);

@@ -10,11 +10,11 @@
 using namespace std;
 
 
-class myWidget : public QWidget
+class MyWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit myWidget(QWidget *parent = nullptr);
+    explicit MyWidget(QWidget *parent = nullptr);
     enum printMode{lineBreak,noLineBreak};
     enum listMode{noBreak,breakLines};
     void print(int val, printMode mode = printMode::lineBreak);

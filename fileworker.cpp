@@ -73,27 +73,32 @@ bool FileWorker::copyEntities(const QFileInfoList files, const QStringList desti
     return result;
 }
 
-FileObject FileWorker::folderContentSize(QString p)
+DirectoryObject FileWorker::folderContentSize(QString p)
 {
     isBusy = true;
 
-     FileObject fObject;
-     fObject.path = p;
-     fObject.sz = folderSize(p);
-     isBusy = false;
-     return fObject;
+    QFileInfo fInfo = p;
+
+    DirectoryObject fObject;
+    fObject.path = fInfo.absoluteFilePath();
+    fObject.sz = folderSize(fInfo.absoluteFilePath());
+    fObject.dirName = fInfo.fileName();
+    isBusy = false;
+    return fObject;
 }
 
-QList<FileObject> FileWorker::foldersContentSize(QStringList l)
+QList<DirectoryObject> FileWorker::foldersContentSize(QStringList l)
 {
-    QList<FileObject>resultingList;
+    QList<DirectoryObject>resultingList;
     isBusy = true;
 
     for(QString path : l)
     {
-        FileObject fObject;
-        fObject.path = path;;
-        fObject.sz = folderSize(path);
+        QFileInfo fInfo = path;
+        DirectoryObject fObject;
+        fObject.path = fInfo.absoluteFilePath();
+        fObject.sz = folderSize(fInfo.absoluteFilePath());
+        fObject.dirName = fInfo.fileName();
         resultingList << fObject;
     }
     isBusy = false;
@@ -556,7 +561,7 @@ void FileWorker::calcSize(QStringList l)
         emit itemText("Patience my young padawan.");
         return;
     }
-    QList<FileObject> resultingList = foldersContentSize(l);
+    QList<DirectoryObject> resultingList = foldersContentSize(l);
     emit sendFolderSizeEntities(resultingList);
 }
 
@@ -576,7 +581,7 @@ void FileWorker::countNumberOfFolderItems(QString path, QDir::Filters f, QDirIte
         if(!fil.isDir())
             taeller++;
     }
-    emit antalFiler(taeller);
+    emit fileCount(taeller);
     isBusy = false;
 }
 
@@ -587,7 +592,7 @@ void FileWorker::countFolders(QStringList Path)
     {
          taeller += folderCount(p);
     }
-    emit antalFiler(taeller);
+    emit fileCount(taeller);
 }
 
 void FileWorker::handleProcessRequest()

@@ -1,7 +1,7 @@
 #include "widgetform.h"
 
-WidgetForm::WidgetForm(QWidget *W, bool applicationModal, QWidget *parent) :
-    QWidget(parent),
+WidgetForm::WidgetForm(QWidget *parent, bool applicationModal) :
+    QWidget(),
     ui(new Ui::WidgetForm)
 {
     ui->setupUi(this);
@@ -23,7 +23,6 @@ WidgetForm::WidgetForm(QWidget *W, bool applicationModal, QWidget *parent) :
 
     setMouseTracking(true);
 
-    setWidget(W);
 
     connect(topFrame,&TopFrameForm::moveParent,this,&WidgetForm::moveGlobalEvent);
 }
@@ -36,6 +35,7 @@ WidgetForm::~WidgetForm()
 void WidgetForm::setWidget(QWidget *w, QString title)
 {
     mainWidget = w;
+
     mainWidget->setWindowFlag(Qt::FramelessWindowHint);
 
     if(grid->itemAtPosition(0,0) != nullptr)
@@ -97,12 +97,9 @@ void WidgetForm::closeEvent(QCloseEvent *event)
         mainWidget->close();
 }
 
-void WidgetForm::mouseMoveEvent(QMouseEvent *event)
-{
-    cout << event->x() << " " << event->y() << endl;
-}
 
 void WidgetForm::moveGlobalEvent(QPoint pos)
 {
     move(mapToParent(pos));
+
 }

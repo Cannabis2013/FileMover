@@ -1,9 +1,9 @@
 ﻿#include "textpathedit.h"
 #include "ui_textpathedit.h"
 
-textPathEdit::textPathEdit(QWidget *parent, QString txt) :
-    myWidget(parent),
-    ui(new Ui::textPathEdit)
+TextPathEdit::TextPathEdit(QWidget *parent, QString txt) :
+    MyWidget(parent),
+    ui(new Ui::TextPathEdit)
 {
     ui->setupUi(this);
 
@@ -20,37 +20,37 @@ textPathEdit::textPathEdit(QWidget *parent, QString txt) :
     installEventFilter(this);
 }
 
-textPathEdit::~textPathEdit()
+TextPathEdit::~TextPathEdit()
 {
     delete ui;
 }
 
-void textPathEdit::setLineText(QString txt)
+void TextPathEdit::setLineText(QString txt)
 {
     line->setText(txt);
 }
 
-QString textPathEdit::text()
+QString TextPathEdit::text()
 {    
     return line->text();
 }
 
-void textPathEdit::clear()
+void TextPathEdit::clear()
 {
     line->clear();
 }
 
-void textPathEdit::addWidgetToLayout(QWidget *w)
+void TextPathEdit::addWidgetToLayout(QWidget *w)
 {
     ui->verticalLayout->addWidget(w);
 }
 
-QVBoxLayout *textPathEdit::verticalLayot()
+QVBoxLayout *TextPathEdit::verticalLayot()
 {
     return ui->verticalLayout;
 }
 
-void textPathEdit::insertChosenPath(QString p)
+void TextPathEdit::insertChosenPath(QString p)
 {
     QString currentText = line->text();
     if(currentText.isEmpty())
@@ -61,10 +61,10 @@ void textPathEdit::insertChosenPath(QString p)
     line->setText(currentText);
 }
 
-void textPathEdit::on_toolButton_clicked()
+void TextPathEdit::on_toolButton_clicked()
 {
     filepathSelectorDialog *chooseFilePathDialog = new filepathSelectorDialog();
-    connect(chooseFilePathDialog,&filepathSelectorDialog::chosenPath,this,&textPathEdit::insertChosenPath);
+    connect(chooseFilePathDialog,&filepathSelectorDialog::chosenPath,this,&TextPathEdit::insertChosenPath);
     chooseFilePathDialog->show();
 }
 

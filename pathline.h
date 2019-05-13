@@ -4,12 +4,12 @@
 #include <qlineedit.h>
 #include "textpathedit.h"
 
-class pathLine : public textPathEdit
+class PathLine : public TextPathEdit
 {
     Q_OBJECT
 
 public:
-    pathLine(QWidget *parent = nullptr);
+    PathLine(QWidget *parent = nullptr);
 
 public slots:
     void setCurrentFilePath(QString fp);

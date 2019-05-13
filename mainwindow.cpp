@@ -134,7 +134,7 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
 
     // Fileworker Related..
 
-    qRegisterMetaType<QList<FileObject>>("QList<fileObject>");
+    qRegisterMetaType<QList<DirectoryObject>>("QList<fileObject>");
 
     // Systemtray..
     connect(tray,SIGNAL(messageClicked()),this,SLOT(trayMsgClicked()));
@@ -146,6 +146,11 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
             this,SLOT(tMenuClicked(QAction*)));
     connect(folderTrayMenu,SIGNAL(triggered(QAction*)),
             this,SLOT(explorerMenuTriggered(QAction*)));
+
+    connect(coreApplication,&AbstractCoreApplication::sendFolderSize,this,&mainWindow::folderContentRecieved);
+
+
+    connect(coreApplication,&AbstractCoreApplication::sendFilePath,this,&mainWindow::setStatusText);
 
     connect(clearStatusTextTimer,&QTimer::timeout,this,&mainWindow::clearStatusLine);
 
@@ -314,7 +319,7 @@ void mainWindow::explorerFolder(bool ok)
 #endif
 }
 
-void mainWindow::folderContentRecieved(QList<FileObject> sz)
+void mainWindow::folderContentsRecieved(QList<DirectoryObject> fObjects)
 {
 
 }
@@ -386,6 +391,11 @@ void mainWindow::clearCompleted(bool a)
 
     msg = "Folder removal " + txt;
     tray->showMessage("Removal",msg);
+}
+
+void mainWindow::folderContentRecieved(DirectoryObject fObject)
+{
+    QString fileName = fObject.path;
 }
 
 void mainWindow::contextMenuCalled(QPoint p)
@@ -759,7 +769,8 @@ void mainWindow::clearStatusLine()
 
 void mainWindow::on_actionIndstillinger_triggered()
 {
-
+    settingsWindow *sView = new settingsWindow(coreApplication);
+    sView->show();
 }
 
 void mainWindow::on_actionQuit_triggered()
@@ -778,7 +789,9 @@ void mainWindow::on_addBut_clicked()
 
 void mainWindow::on_countButt_clicked()
 {
+    QString path = watchFolderView->currentItem()->text(0);
 
+    coreApplication->beginCalcSize(path);
 }
 
 void mainWindow::on_actionOpen_current_directory_triggered()

@@ -1,11 +1,14 @@
 ﻿#include "settingsWindow.h"
 #include "ui_settingsWindow.h"
 
-settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication):
-    QWidget(),
+settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication, bool applicationModal,QWidget *parent):
+    WidgetForm(parent,applicationModal),
     ui(new Ui::settingsWindow)
 {
     ui->setupUi(this);
+
+
+
 
     this->coreApplication = coreApplication;
     closeOnBox = ui->closeOnExitBox_2;
@@ -29,6 +32,8 @@ settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication):
 
     connect(view,SIGNAL(activated(QModelIndex)),
             this,SLOT(viewClicked(QModelIndex)));
+
+    setWidget(ui->mainWidget);
 }
 
 settingsWindow::~settingsWindow()

@@ -33,9 +33,9 @@ public slots:
 
 signals:
     void itemText(QString iT);
-    void antalFiler(long antal);
-    void sendFolderSizeEntity(FileObject fObj);
-    void sendFolderSizeEntities(QList<FileObject> s);
+    void fileCount(long antal);
+    void sendFolderSizeEntity(DirectoryObject fObj);
+    void sendFolderSizeEntities(QList<DirectoryObject> s);
 
     void clearFinished(bool a);
 
@@ -56,8 +56,8 @@ private:
      * Methods related to calc size of folders and the numbers of them
      */
 
-    FileObject folderContentSize(QString p);
-    QList<FileObject> foldersContentSize(QStringList l);
+    DirectoryObject folderContentSize(QString p);
+    QList<DirectoryObject> foldersContentSize(QStringList l);
 
     // Methods to count files and number of contents in folders
     int folderCount(QString p);

@@ -46,15 +46,10 @@ public:
     enum dateSpecifier{day,month,year};
 
 signals:
-
     void StartCount(QStringList ps);
     void toLog(QString t);
     void toLog(QStringList l);
     void quit(bool iH);
-
-public slots:
-    void setStatusText(QString txt);
-
 
 protected:
 
@@ -68,8 +63,9 @@ protected:
     void mousePressEvent(QMouseEvent *mp);
     void mouseMoveEvent(QMouseEvent *e);
 
-
 private slots:
+
+    void setStatusText(QString txt);
 
     void updateViews();
 
@@ -95,7 +91,8 @@ private slots:
 
     // Fileworker Related..
     void clearCompleted(bool a);
-    void folderContentRecieved(QList<FileObject> sz);
+    void folderContentRecieved(DirectoryObject fObject);
+    void folderContentsRecieved(QList<DirectoryObject> fObjects);
     void actionCountFolder(bool f);
 
     // mainFolderView Related..
@@ -132,8 +129,6 @@ private slots:
 
 private:
 
-    // Void member methods..
-
     // Add folder related..
     void updateViewIcons(QIcon ico);
 
@@ -142,8 +137,6 @@ private:
 
     // Systemtray related..
     void popSystemTrayMessage(const QString msg,const QString title = "Info");
-
-    // Non-void Medlems Funktioner..
 
     //detailedFolderView related..
     void updateDetaileditems();
@@ -155,8 +148,6 @@ private:
     int fromMinutesToMilliseconds(int minutes){return minutes *1000*60;}
     QFont createFont(fontType ft = fontType::standardFont, QString family = "Times New Roman",bool bold = false,bool italic = false, int staticSize = -1);
     QString modifyPath(QString s,QString S) const;
-    QString mergeStringList(const QStringList &sList) const;
-    QStringList splitString(const QString &split) const;
     QString currentMainFolderPath() const;
 
     //mainFolderView related..

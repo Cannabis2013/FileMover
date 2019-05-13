@@ -31,12 +31,13 @@ namespace Ui {
 class settingsWindow;
 }
 
-class settingsWindow : public QWidget
+class settingsWindow : public WidgetForm
 {
     Q_OBJECT
 
 public:
-    explicit settingsWindow(AbstractCoreApplication *coreApplication);
+    explicit settingsWindow(AbstractCoreApplication *coreApplication, bool applicationModal = true,QWidget *parent = nullptr);
+    settingsWindow();
     ~settingsWindow();
 
     enum ruleMode{ruleOut,parallelMode};
@@ -93,7 +94,6 @@ private slots:
     // Timer related..
     void on_countTimerActivateBox_2_toggled(bool checked);
     void on_countTImerIntervalEdit_2_returnPressed();
-
 
 private:
     // Generel methods..

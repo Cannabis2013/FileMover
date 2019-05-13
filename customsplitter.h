@@ -4,16 +4,16 @@
 #include <QWidget>
 #include <qsplitter.h>
 #include <iostream>
-#include "mysplitterhandle.h"
+#include "customsplitterhandle.h"
 #include <qlayout.h>
 
 using namespace std;
 
-class myVerticalSplitter : public QSplitter
+class CustomSplitter : public QSplitter
 {
 public:
-    myVerticalSplitter(Qt::Orientation direction,QWidget *parent = 0);
-    myVerticalSplitter(QWidget *parent = nullptr);
+    CustomSplitter(Qt::Orientation direction,QWidget *parent = nullptr);
+    CustomSplitter(QWidget *parent = nullptr);
 protected:
     QSplitterHandle *createHandle();
 

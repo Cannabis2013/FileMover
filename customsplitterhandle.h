@@ -8,16 +8,16 @@
 #include <iostream>
 #include <qlist.h>
 #include <qsplitter.h>
-#include <myverticalsplitter.h>
+#include <customsplitter.h>
 #include <qlabel.h>
 #include <qpen.h>
 
 using namespace std;
 
-class mySplitterHandle : public QSplitterHandle
+class CustomSplitterHandle : public QSplitterHandle
 {
 public:
-    mySplitterHandle(Qt::Orientation direction, QSplitter *parent = nullptr, QString label = QString());
+    CustomSplitterHandle(Qt::Orientation direction, QSplitter *parent = nullptr, QString label = QString());
 
 protected:
     void paintEvent(QPaintEvent *event);

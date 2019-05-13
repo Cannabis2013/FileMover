@@ -15,6 +15,8 @@ MainApplication::MainApplication(QString appName, QString orgName)
 
     qRegisterMetaType<DirectoryItem>("DirectoryItem");
     qRegisterMetaType<QList<DirectoryItem>>("QList<DirectoryItem>");
+    qRegisterMetaType<DirectoryObject>("DirectoryObject");
+    qRegisterMetaType<QList<DirectoryObject>>("QList<DirectoryObject>");
 
     // Detailed directory information
     connect(sManager,&settingsManager::processPath,fWorker,&FileWorker::processFileInformation);
@@ -24,6 +26,11 @@ MainApplication::MainApplication(QString appName, QString orgName)
 
     connect(fWorker,&fW::processFinished,fManager,&FileInformationManager::insertItem);
     connect(fWorker,&fW::multipleProcessFinished,fManager,&FileInformationManager::insertItems);
+
+    connect(fWorker,&FileWorker::sendFolderSizeEntity,this,&MainApplication::sendFolderSize);
+    connect(fWorker,&FileWorker::sendFolderSizeEntities,this,&MainApplication::sendFolderSizes);
+
+    connect(fWorker,&FileWorker::itemText,this,&MainApplication::sendFilePath);
 
     connect(sManager,&settingsManager::stateChanged,this,&MainApplication::stateChanged);
     connect(rManager,&rulesManager::stateChanged,this,&MainApplication::stateChanged);

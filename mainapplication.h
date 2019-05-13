@@ -38,6 +38,9 @@ public:
 
     void readPersistence();
 
+    void beginCalcSize(QString path){fWorker->calcSize(path);}
+    void beginCalcSizes(QStringList paths){fWorker->calcSize(paths);}
+
 public slots:
 
     void clearFolders(QStringList paths);
@@ -50,7 +53,6 @@ public slots:
     void replaceRule(Rule newRule, QString title){rManager->replaceRule(newRule,title);}
     void removeRuleAt(int index){rManager->removeRuleAt(index);}
     void removeRule(QString title){rManager->removeRule(title);}
-
 private:
 
     FileWorker *fWorker;

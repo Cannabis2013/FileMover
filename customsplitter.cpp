@@ -1,6 +1,6 @@
-﻿#include "myverticalsplitter.h"
+﻿#include "customsplitter.h"
 
-myVerticalSplitter::myVerticalSplitter(Qt::Orientation direction, QWidget *parent):
+CustomSplitter::CustomSplitter(Qt::Orientation direction, QWidget *parent):
     QSplitter(direction,parent)
 {
     handleCount = 0;
@@ -8,7 +8,7 @@ myVerticalSplitter::myVerticalSplitter(Qt::Orientation direction, QWidget *paren
     setStyleSheet("margin-left:0px;");
 }
 
-myVerticalSplitter::myVerticalSplitter(QWidget *parent):
+CustomSplitter::CustomSplitter(QWidget *parent):
     QSplitter(parent)
 {
     setOrientation(Qt::Vertical);
@@ -17,7 +17,7 @@ myVerticalSplitter::myVerticalSplitter(QWidget *parent):
     setStyleSheet("margin-left:0px;");
 }
 
-QSplitterHandle *myVerticalSplitter::createHandle()
+QSplitterHandle *CustomSplitter::createHandle()
 {
     QStringList labels {"Detailedview","Extention list"};
     QString txt;
@@ -26,5 +26,5 @@ QSplitterHandle *myVerticalSplitter::createHandle()
     else if(handleCount == 2)
         txt = labels.at(1);
     handleCount++;
-    return new mySplitterHandle(orientation(),this,txt);
+    return new CustomSplitterHandle(orientation(),this,txt);
 }

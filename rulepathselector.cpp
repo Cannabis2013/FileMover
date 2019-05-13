@@ -1,7 +1,7 @@
 #include "rulepathselector.h"
 
 rulePathSelector::rulePathSelector(QWidget *parent):
-    textPathEdit(parent)
+    TextPathEdit(parent)
 {
     pDialog = new rulePathSelectorDialog();
     pDialog->setWindowFlag(Qt::FramelessWindowHint);

@@ -204,7 +204,7 @@ border-bottom:2px solid black;</string>
          </widget>
         </item>
         <item>
-         <widget class="myVerticalSplitter" name="splitter">
+         <widget class="CustomSplitter" name="splitter">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
@@ -472,9 +472,9 @@ border-bottom:2px solid black;</string>
    <header>fileinformationview.h</header>
   </customwidget>
   <customwidget>
-   <class>myVerticalSplitter</class>
+   <class>CustomSplitter</class>
    <extends>QSplitter</extends>
-   <header>myverticalsplitter.h</header>
+   <header>customsplitter.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

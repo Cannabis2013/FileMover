@@ -18,18 +18,18 @@ using namespace std;
 #include <qtoolbutton.h>
 
 namespace Ui {
-class textPathEdit;
+class TextPathEdit;
 }
 
 // Base class..
 
-class textPathEdit : public myWidget
+class TextPathEdit : public MyWidget
 {
     Q_OBJECT
 
 public:
-    explicit textPathEdit(QWidget *parent = nullptr,QString txt = QString());
-    ~textPathEdit();
+    explicit TextPathEdit(QWidget *parent = nullptr,QString txt = QString());
+    ~TextPathEdit();
 
     void setLineText(QString txt);
     QString text();
@@ -43,7 +43,7 @@ protected:
     QVBoxLayout *verticalLayot();
     QLineEdit *line;
     QToolButton *toolButton;
-    Ui::textPathEdit *ui;
+    Ui::TextPathEdit *ui;
 
 protected slots:
     void insertChosenPath(QString p);

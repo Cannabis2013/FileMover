@@ -32,7 +32,7 @@ private slots:
 private:
     Ui::AddFolderWidget *ui;
     AddFileDialog *fileWidget;
-    pathLine *pathWidget;
+    PathLine *pathWidget;
     QVBoxLayout *vLayout;
     int tempHeight;
 };

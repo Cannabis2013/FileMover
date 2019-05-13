@@ -1,11 +1,11 @@
 #include "mywidget.h"
 
-myWidget::myWidget(QWidget *parent) : QWidget(parent)
+MyWidget::MyWidget(QWidget *parent) : QWidget(parent)
 {
 
 }
 
-void myWidget::print(int val, myWidget::printMode mode)
+void MyWidget::print(int val, MyWidget::printMode mode)
 {
     if(mode == printMode::lineBreak)
         cout << val << endl;
@@ -13,7 +13,7 @@ void myWidget::print(int val, myWidget::printMode mode)
         cout << val;
 }
 
-void myWidget::print(QString text, myWidget::printMode mode)
+void MyWidget::print(QString text, MyWidget::printMode mode)
 {
     if(mode == printMode::lineBreak)
         cout << text.toStdString() << endl;
@@ -21,7 +21,7 @@ void myWidget::print(QString text, myWidget::printMode mode)
         cout << text.toStdString();
 }
 
-void myWidget::print(QStringList textList, myWidget::listMode breakBetweenElemenets, myWidget::printMode mode)
+void MyWidget::print(QStringList textList, MyWidget::listMode breakBetweenElemenets, MyWidget::printMode mode)
 {
     for(QString str : textList)
     {

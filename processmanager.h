@@ -8,9 +8,10 @@
 /*
  * These classes handles the queues.
 */
-struct FileObject
+struct DirectoryObject
 {
     long long sz;
+    QString dirName;
     QString path;
 };
 struct ProcessItems

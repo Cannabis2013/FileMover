@@ -22,7 +22,7 @@
   <property name="styleSheet">
    <string notr="true">QWidget#AddFolderWidget
 {
-	background-color:rgb(81,81,81);
+	background-color: rgb(0, 0, 0);
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -42,7 +42,14 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="pathLine" name="widget_2" native="true"/>
+    <widget class="PathLine" name="widget_2" native="true">
+     <property name="styleSheet">
+      <string notr="true">PathLine
+{
+	margin-bottom: 1px;
+}</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="AddFileDialog" name="widget" native="true">
@@ -71,7 +78,7 @@
    </slots>
   </customwidget>
   <customwidget>
-   <class>pathLine</class>
+   <class>PathLine</class>
    <extends>QWidget</extends>
    <header>pathline.h</header>
    <container>1</container>

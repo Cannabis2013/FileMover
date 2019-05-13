@@ -32,6 +32,9 @@ public:
 
     virtual void readPersistence() = 0;
 
+    virtual void beginCalcSize(QString path) = 0;
+    virtual void beginCalcSizes(QStringList paths) = 0;
+
 public slots:
     virtual void clearFolders(QStringList paths) = 0;
 
@@ -46,18 +49,23 @@ public slots:
     virtual void removeRuleAt(int index) = 0;
     virtual void removeRule(QString title) = 0;
 
-
 signals:
 
     // Notify observers
 
     void stateChanged();
 
-    // fileInformation..
+    // FileInformation..
 
     void processDirectory(DirectoryItem item);
     void processDirectories(QStringList paths);
 
+    // FileWorker
+
+    void sendFolderSize(DirectoryObject fObject);
+    void sendFolderSizes(QList<DirectoryObject> fObjects);
+
+    void sendFilePath(QString filePath);
 
     /*
      * DetailedFolderView related..

@@ -1,17 +1,17 @@
 ﻿#include "pathline.h"
 
-pathLine::pathLine(QWidget *parent):
-    textPathEdit(parent)
+PathLine::PathLine(QWidget *parent):
+    TextPathEdit(parent)
 {
-    connect(line,&QLineEdit::textChanged,this,&pathLine::sendCurrentFilePath);
+    connect(line,&QLineEdit::textChanged,this,&PathLine::sendCurrentFilePath);
 }
 
-void pathLine::setCurrentFilePath(QString fp)
+void PathLine::setCurrentFilePath(QString fp)
 {
     line->setText(fp);
 }
 
-void pathLine::on_toolButton_clicked()
+void PathLine::on_toolButton_clicked()
 {
     emit showFileExplorer();
 }

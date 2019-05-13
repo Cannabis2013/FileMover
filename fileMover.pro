@@ -39,6 +39,8 @@ SOURCES += main.cpp\
     abstracgraphicallistmanager.cpp \
     abstractcoreapplication.cpp \
     abstractpersistence.cpp \
+    customsplitter.cpp \
+    customsplitterhandle.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
     fileworker.cpp \
@@ -52,9 +54,6 @@ SOURCES += main.cpp\
     addfolderwidget.cpp \
     addfiledialog.cpp \
     pathline.cpp \
-    mysplitterhandle.cpp \
-    myverticalsplitter.cpp \
-    myhorizontalsplitter.cpp \
     rulepathselector.cpp \
     rulepathdialogselector.cpp \
     addruledialog.cpp \
@@ -72,6 +71,8 @@ HEADERS  += mainwindow.h \
     abstractcoreapplication.h \
     abstractpersistence.h \
     customcombobox.h \
+    customsplitter.h \
+    customsplitterhandle.h \
     fileinformationmanager.h \
     fileworker.h \
     iconscanner.h \
@@ -88,9 +89,6 @@ HEADERS  += mainwindow.h \
     addfolderwidget.h \
     addfiledialog.h \
     pathline.h \
-    mysplitterhandle.h \
-    myverticalsplitter.h \
-    myhorizontalsplitter.h \
     rulepathselector.h \
     rulepathdialogselector.h \
     addruledialog.h \

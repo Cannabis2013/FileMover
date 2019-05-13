@@ -23,14 +23,16 @@ class WidgetForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit WidgetForm(QWidget *W, bool applicationModal = true,QWidget *parent = nullptr);
+    explicit WidgetForm(QWidget *parent = nullptr, bool applicationModal = true);
     ~WidgetForm();
-    void setWidget(QWidget *w, QString title = "Frametitle");
 
     void setFrameTitle(QString title);
     QString FrameTitle();
 
     void Show();
+
+protected:
+    void setWidget(QWidget *w, QString title = "Frametitle");
 
 private slots:
 
@@ -38,7 +40,6 @@ private slots:
 
 protected:
     void closeEvent(QCloseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
 private slots:
     void moveGlobalEvent(QPoint pos);
 

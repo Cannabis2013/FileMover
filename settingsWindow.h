@@ -21,9 +21,10 @@
 #include "customcombobox.h"
 #include "addruledialog.h"
 #include "editruledialog.h"
-#include "widgetform.h"
+#include "customdialog.h"
 #include "myIcon.h"
 #include "mainapplication.h"
+
 
 using namespace std;
 
@@ -31,12 +32,12 @@ namespace Ui {
 class settingsWindow;
 }
 
-class settingsWindow : public WidgetForm
+class settingsWindow : public AbstractFrameImplementable
 {
     Q_OBJECT
 
 public:
-    explicit settingsWindow(AbstractCoreApplication *coreApplication, bool applicationModal = true,QWidget *parent = nullptr);
+    explicit settingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent = nullptr);
     settingsWindow();
     ~settingsWindow();
 
@@ -64,8 +65,9 @@ signals:
     void widgetHasQuitted();
 
 protected:
-    void changeEvent(QEvent *event);
     void closeEvent(QCloseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+
 private slots:
 
     void updateViews();

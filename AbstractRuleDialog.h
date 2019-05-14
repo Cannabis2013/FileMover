@@ -20,7 +20,7 @@
 #include "textpathedit.h"
 #include "rulepathselector.h"
 #include "conditionWidget.h"
-#include "widgetform.h"
+#include "customdialog.h"
 #include "abstractcoreapplication.h"
 
 

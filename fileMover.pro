@@ -38,7 +38,9 @@ SOURCES += main.cpp\
     AbstractRuleDialog.cpp \
     abstracgraphicallistmanager.cpp \
     abstractcoreapplication.cpp \
+    abstractframeimplementable.cpp \
     abstractpersistence.cpp \
+    customdialog.cpp \
     customsplitter.cpp \
     customsplitterhandle.cpp \
     fileinformationmanager.cpp \
@@ -62,15 +64,16 @@ SOURCES += main.cpp\
     worker.cpp \
     filepathselectordialog.cpp \
     mywidget.cpp \
-    widgetform.cpp \
     topframeform.cpp
 
 HEADERS  += mainwindow.h \
     AbstractRuleDialog.h \
     MyIcon.h \
     abstractcoreapplication.h \
+    abstractframeimplementable.h \
     abstractpersistence.h \
     customcombobox.h \
+    customdialog.h \
     customsplitter.h \
     customsplitterhandle.h \
     fileinformationmanager.h \
@@ -99,10 +102,10 @@ HEADERS  += mainwindow.h \
     worker.h \
     filepathselectordialog.h \
     mywidget.h \
-    widgetform.h \
     topframeform.h
 
 FORMS    += mainwindow.ui \
+    customdialog.ui \
     logger.ui \
     settingsWindow.ui \
     textpathedit.ui \
@@ -110,7 +113,6 @@ FORMS    += mainwindow.ui \
     abstractRuledialog.ui \
     conditionWidget.ui \
     filepathselectordialog.ui \
-    widgetform.ui \
     topframeform.ui
 
 DISTFILES += \

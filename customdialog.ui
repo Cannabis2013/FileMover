@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WidgetForm</class>
- <widget class="QWidget" name="WidgetForm">
+ <class>CustomDialog</class>
+ <widget class="QWidget" name="CustomDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,13 +16,22 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="cursor">
+   <cursorShape>ArrowCursor</cursorShape>
+  </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">QWidget#CustomDialog
+{
+	
+}</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="mainLayout">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -62,6 +71,12 @@
        <height>0</height>
       </size>
      </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
+     <property name="tabletTracking">
+      <bool>false</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true"/>
      </property>
@@ -76,16 +91,16 @@
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <property name="leftMargin">
-       <number>0</number>
+       <number>5</number>
       </property>
       <property name="topMargin">
        <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>0</number>
+       <number>5</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>5</number>
       </property>
       <property name="spacing">
        <number>0</number>

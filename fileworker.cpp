@@ -4,7 +4,7 @@ FileWorker::FileWorker(ProcessManager *pRef, QObject *parent):
     Worker (parent)
 {
     pControllerReference = pRef;
-    busyMessage = "Luke Fileworker is busy. Pations my young padawan.";
+    busyMessage = "Luke Fileworker is busy. Patience my young padawan.";
     isBusy = false;
     qt_ntfs_permission_lookup++;
 }

@@ -1,14 +1,11 @@
 ﻿#include "settingsWindow.h"
 #include "ui_settingsWindow.h"
 
-settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication, bool applicationModal,QWidget *parent):
-    WidgetForm(parent,applicationModal),
+settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent):
+    AbstractFrameImplementable(parent),
     ui(new Ui::settingsWindow)
 {
     ui->setupUi(this);
-
-
-
 
     this->coreApplication = coreApplication;
     closeOnBox = ui->closeOnExitBox_2;
@@ -33,7 +30,8 @@ settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication, bool ap
     connect(view,SIGNAL(activated(QModelIndex)),
             this,SLOT(viewClicked(QModelIndex)));
 
-    setWidget(ui->mainWidget);
+    setMouseTracking(true);
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 settingsWindow::~settingsWindow()
@@ -48,17 +46,6 @@ void settingsWindow::setIconList(QList<MyIcon> list)
         new QListWidgetItem(icon,icon.name(),view);
 }
 
-void settingsWindow::changeEvent(QEvent *event)
-{
-    if(event->type() == QEvent::FocusOut || event->type() == event->FocusAboutToChange)
-    {
-        event->ignore();
-    }
-    else
-    {
-        event->accept();
-    }
-}
 
 void settingsWindow::closeEvent(QCloseEvent *event)
 {
@@ -68,6 +55,13 @@ void settingsWindow::closeEvent(QCloseEvent *event)
         event->accept();
     }
 }
+
+void settingsWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    QCursor cursor = QCursor(Qt::ArrowCursor);
+    setCursor(cursor);
+}
+
 
 void settingsWindow::updateViews()
 {

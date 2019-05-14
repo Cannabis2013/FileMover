@@ -9,37 +9,40 @@
 #include <qpoint.h>
 #include <qsizepolicy.h>
 #include <iostream>
+#include <memory>
+#include <qpointer.h>
 
-#include "ui_widgetform.h"
+#include "ui_customdialog.h"
+
+#include "abstractframeimplementable.h"
 
 using namespace std;
 
 namespace Ui {
-    class WidgetForm;
+    class CustomDialog;
 }
 
-class WidgetForm : public QWidget
+class CustomDialog : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit WidgetForm(QWidget *parent = nullptr, bool applicationModal = true);
-    ~WidgetForm();
+    explicit CustomDialog(AbstractFrameImplementable *implementable, bool applicationModal = true, QWidget *parent = nullptr);
+    ~CustomDialog();
 
     void setFrameTitle(QString title);
     QString FrameTitle();
 
-    void Show();
+    void setWidget(AbstractFrameImplementable *implementable, QString title = "Frametitle");
 
 protected:
-    void setWidget(QWidget *w, QString title = "Frametitle");
+    void closeEvent(QCloseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
 private slots:
 
     void on_exitButton_clicked();
 
-protected:
-    void closeEvent(QCloseEvent *event);
 private slots:
     void moveGlobalEvent(QPoint pos);
 
@@ -49,13 +52,11 @@ private:
      * Private methods declarations
      */
 
-    void adjustSizeAccordingToWidgetPolicy();
-
-    Ui::WidgetForm *ui;
+    Ui::CustomDialog *ui;
     QFrame *widgetFrame;
 
     TopFrameForm *topFrame;
-    QWidget *mainWidget;
+    QPointer<AbstractFrameImplementable> mainWidget;
     QGridLayout *grid;
 };
 

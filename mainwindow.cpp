@@ -769,8 +769,7 @@ void mainWindow::clearStatusLine()
 
 void mainWindow::on_actionIndstillinger_triggered()
 {
-    settingsWindow *sView = new settingsWindow(coreApplication);
-    sView->show();
+    CustomDialog *dialog = new CustomDialog(new settingsWindow(coreApplication), true);
 }
 
 void mainWindow::on_actionQuit_triggered()

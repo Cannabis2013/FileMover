@@ -5,6 +5,7 @@
 #include <qdesktopwidget.h>
 #include "pathline.h"
 #include "addfiledialog.h"
+#include "frameimplementable.h"
 
 #include <iostream>
 
@@ -14,7 +15,7 @@ namespace Ui {
 class AddFolderWidget;
 }
 
-class AddFolderWidget : public QDialog
+class AddFolderWidget : public FrameImplementable
 {
     Q_OBJECT
 

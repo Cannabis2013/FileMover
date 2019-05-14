@@ -14,7 +14,7 @@
 
 #include "ui_customdialog.h"
 
-#include "abstractframeimplementable.h"
+#include "frameimplementable.h"
 
 using namespace std;
 
@@ -27,17 +27,20 @@ class CustomDialog : public QWidget
     Q_OBJECT
 
 public:
-    explicit CustomDialog(AbstractFrameImplementable *implementable, bool applicationModal = true, QWidget *parent = nullptr);
+    explicit CustomDialog(FrameImplementable *implementable, bool applicationModal = true, QWidget *parent = nullptr);
     ~CustomDialog();
 
     void setFrameTitle(QString title);
     QString FrameTitle();
 
-    void setWidget(AbstractFrameImplementable *implementable, QString title = "Frametitle");
+    void setWidget(FrameImplementable *implementable, QString title = "Frametitle");
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+
 
 private slots:
 
@@ -53,11 +56,15 @@ private:
      */
 
     Ui::CustomDialog *ui;
+    bool isMouseButtonPressed = false;
     QFrame *widgetFrame;
-
+    int margin;
     TopFrameForm *topFrame;
-    QPointer<AbstractFrameImplementable> mainWidget;
+    QPointer<FrameImplementable> mainWidget;
     QGridLayout *grid;
+
+    QPoint mousePressPosition;
+    QRect tempGeometry;
 };
 
 #endif // WIDGETFORM_H

@@ -19,8 +19,11 @@
   <property name="minimumSize">
    <size>
     <width>500</width>
-    <height>0</height>
+    <height>400</height>
    </size>
+  </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -123,6 +126,9 @@ border-radius:5px;
        <height>0</height>
       </size>
      </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true"/>
      </property>
@@ -159,6 +165,9 @@ background-color:transparent;</string>
         </property>
         <property name="widgetResizable">
          <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
         <widget class="QWidget" name="scrollAreaWidgetContents_2">
          <property name="geometry">
@@ -220,43 +229,60 @@ background-color:transparent;</string>
                 <pointsize>12</pointsize>
                </font>
               </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
               <property name="title">
                <string>Vælg ikon</string>
               </property>
-              <widget class="QListWidget" name="listWidget_2">
-               <property name="geometry">
-                <rect>
-                 <x>5</x>
-                 <y>15</y>
-                 <width>612</width>
-                 <height>126</height>
-                </rect>
+              <layout class="QGridLayout" name="gridLayout">
+               <property name="leftMargin">
+                <number>0</number>
                </property>
-               <property name="styleSheet">
-                <string notr="true"/>
+               <property name="topMargin">
+                <number>0</number>
                </property>
-               <property name="frameShape">
-                <enum>QFrame::WinPanel</enum>
+               <property name="rightMargin">
+                <number>0</number>
                </property>
-               <property name="frameShadow">
-                <enum>QFrame::Sunken</enum>
+               <property name="bottomMargin">
+                <number>0</number>
                </property>
-               <property name="lineWidth">
-                <number>1</number>
+               <property name="spacing">
+                <number>0</number>
                </property>
-               <property name="editTriggers">
-                <set>QAbstractItemView::NoEditTriggers</set>
-               </property>
-               <property name="layoutMode">
-                <enum>QListView::SinglePass</enum>
-               </property>
-               <property name="viewMode">
-                <enum>QListView::ListMode</enum>
-               </property>
-               <property name="uniformItemSizes">
-                <bool>false</bool>
-               </property>
-              </widget>
+               <item row="0" column="0">
+                <widget class="QListWidget" name="listWidget_2">
+                 <property name="mouseTracking">
+                  <bool>true</bool>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::WinPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Sunken</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::NoEditTriggers</set>
+                 </property>
+                 <property name="layoutMode">
+                  <enum>QListView::SinglePass</enum>
+                 </property>
+                 <property name="viewMode">
+                  <enum>QListView::ListMode</enum>
+                 </property>
+                 <property name="uniformItemSizes">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </widget>
             </item>
             <item>
@@ -271,6 +297,9 @@ background-color:transparent;</string>
                <font>
                 <pointsize>12</pointsize>
                </font>
+              </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
               </property>
               <property name="styleSheet">
                <string notr="true"/>
@@ -437,6 +466,9 @@ background-color:transparent;</string>
               <pointsize>12</pointsize>
              </font>
             </property>
+            <property name="mouseTracking">
+             <bool>true</bool>
+            </property>
             <property name="title">
              <string>Regler</string>
             </property>
@@ -448,6 +480,9 @@ background-color:transparent;</string>
                  <width>0</width>
                  <height>32</height>
                 </size>
+               </property>
+               <property name="mouseTracking">
+                <bool>true</bool>
                </property>
                <property name="styleSheet">
                 <string notr="true">background-color:white;</string>

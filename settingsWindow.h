@@ -21,9 +21,9 @@
 #include "customcombobox.h"
 #include "addruledialog.h"
 #include "editruledialog.h"
-#include "customdialog.h"
 #include "myIcon.h"
 #include "mainapplication.h"
+#include "frameimplementable.h"
 
 
 using namespace std;
@@ -32,7 +32,7 @@ namespace Ui {
 class settingsWindow;
 }
 
-class settingsWindow : public AbstractFrameImplementable
+class settingsWindow : public FrameImplementable
 {
     Q_OBJECT
 

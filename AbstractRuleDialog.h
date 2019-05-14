@@ -20,15 +20,14 @@
 #include "textpathedit.h"
 #include "rulepathselector.h"
 #include "conditionWidget.h"
-#include "customdialog.h"
 #include "abstractcoreapplication.h"
-
+#include "frameimplementable.h"
 
 namespace Ui {
 class AbstractRuleDialog;
 }
 
-class AbstractRuleDialog : public QDialog
+class AbstractRuleDialog : public FrameImplementable
 {
     Q_OBJECT
 public:

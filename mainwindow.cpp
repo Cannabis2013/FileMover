@@ -782,8 +782,8 @@ void mainWindow::on_addBut_clicked()
 {
     AddFolderWidget *folderWidget = new AddFolderWidget();
     connect(folderWidget,&AddFolderWidget::sendPath,coreApplication,&AbstractCoreApplication::addWatchFolder);
-
-    folderWidget->show();
+    CustomDialog *dialog = new CustomDialog(folderWidget,true);
+    dialog->show();
 }
 
 void mainWindow::on_countButt_clicked()

@@ -1,7 +1,7 @@
 #include "customdialog.h"
 
 
-CustomDialog::CustomDialog(AbstractFrameImplementable *implementable, bool applicationModal, QWidget *parent) :
+CustomDialog::CustomDialog(FrameImplementable *implementable, bool applicationModal, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CustomDialog)
 {
@@ -11,6 +11,8 @@ CustomDialog::CustomDialog(AbstractFrameImplementable *implementable, bool appli
     mainWidget = nullptr;
     topFrame = ui->TopFrame;
     grid = ui->widgetLayout;
+    margin = grid->contentsMargins().bottom();
+
     setWindowFlag(Qt::FramelessWindowHint);
 
     if(applicationModal)
@@ -28,7 +30,7 @@ CustomDialog::~CustomDialog()
     delete ui;
 }
 
-void CustomDialog::setWidget(AbstractFrameImplementable *implementable, QString title)
+void CustomDialog::setWidget(FrameImplementable *implementable, QString title)
 {
 
     mainWidget = implementable;
@@ -68,11 +70,27 @@ void CustomDialog::closeEvent(QCloseEvent *event)
         mainWidget->close();
 }
 
+void CustomDialog::mousePressEvent(QMouseEvent *event)
+{
+    int rightBorder = width() - margin, southBorder = height() - margin;
+    if((event->pos().x() >= rightBorder && event->pos().y() >= southBorder) && mainWidget->Resizeable())
+    {
+        mousePressPosition = event->pos();
+        tempGeometry = geometry();
+        isMouseButtonPressed = true;
+    }
+}
+
+void CustomDialog::mouseReleaseEvent(QMouseEvent *event)
+{
+    isMouseButtonPressed = false;
+    setMouseTracking(true);
+}
+
 void CustomDialog::mouseMoveEvent(QMouseEvent *event)
 {
-    int borderWidth = 4;
-    int rightBorder = width() - borderWidth,
-            lowerBorder = height() - borderWidth;
+    int rightBorder = width() - margin,
+            lowerBorder = height() - margin;
 
 
     if(event->pos().x() >= rightBorder && event->pos().y() >= lowerBorder)
@@ -80,10 +98,27 @@ void CustomDialog::mouseMoveEvent(QMouseEvent *event)
         QCursor cursor = QCursor(Qt::SizeFDiagCursor);
         setCursor(cursor);
     }
-    else {
+    else if(!isMouseButtonPressed) {
         QCursor cursor = QCursor(Qt::ArrowCursor);
         setCursor(cursor);
     }
+
+    if(isMouseButtonPressed)
+    {
+        QPoint mousePositionDiff = event->pos() -
+                QPoint(mousePressPosition.x(),mousePressPosition.y());
+        int xDiff = mousePositionDiff.x(), yDiff = mousePositionDiff.y();
+
+        QRect currentGeometry = geometry();
+        int newWidth = tempGeometry.width() + xDiff,
+                newHeight = tempGeometry.height() + yDiff;
+
+        currentGeometry.setWidth(newWidth);
+        currentGeometry.setHeight(newHeight);
+
+        setGeometry(currentGeometry);
+    }
+
 }
 
 

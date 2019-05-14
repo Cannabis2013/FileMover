@@ -27,6 +27,7 @@
 #include "fileinformationview.h"
 #include "addfolderwidget.h"
 #include "settingsWindow.h"
+#include "customdialog.h"
 
 namespace Ui {
 class mainWindow;

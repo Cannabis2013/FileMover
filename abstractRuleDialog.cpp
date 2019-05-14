@@ -2,6 +2,7 @@
 #include "ui_abstractRuledialog.h"
 
 AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
+    FrameImplementable(),
     ui(new Ui::AbstractRuleDialog)
 {
     ui->setupUi(this);

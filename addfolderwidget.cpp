@@ -2,6 +2,7 @@
 #include "ui_addfolderwidget.h"
 
 AddFolderWidget::AddFolderWidget() :
+    FrameImplementable(),
     ui(new Ui::AddFolderWidget)
 {
     ui->setupUi(this);
@@ -11,10 +12,12 @@ AddFolderWidget::AddFolderWidget() :
 
     setWindowModality(Qt::ApplicationModal);
 
+    setResizeable(false);
 }
 
 AddFolderWidget::~AddFolderWidget()
 {
+    close();
     delete ui;
 }
 

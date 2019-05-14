@@ -2,6 +2,7 @@
 #include "ui_filepathselectordialog.h"
 
 filepathSelectorDialog::filepathSelectorDialog() :
+    FrameImplementable(),
     ui(new Ui::filepathSelectorDialog)
 {
     ui->setupUi(this);

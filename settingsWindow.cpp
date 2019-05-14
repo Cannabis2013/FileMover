@@ -2,7 +2,7 @@
 #include "ui_settingsWindow.h"
 
 settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent):
-    AbstractFrameImplementable(parent),
+    FrameImplementable(parent),
     ui(new Ui::settingsWindow)
 {
     ui->setupUi(this);
@@ -30,8 +30,6 @@ settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication, QWidget
     connect(view,SIGNAL(activated(QModelIndex)),
             this,SLOT(viewClicked(QModelIndex)));
 
-    setMouseTracking(true);
-    setFocusPolicy(Qt::StrongFocus);
 }
 
 settingsWindow::~settingsWindow()
@@ -116,7 +114,6 @@ void settingsWindow::updateRulesView()
 
 void settingsWindow::on_fortrydKnap_2_clicked()
 {
-    emit close();
     close();
 }
 

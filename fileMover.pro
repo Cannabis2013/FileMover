@@ -27,10 +27,13 @@ macx
 CONFIG   += C++11
 }
 
+QT += testlib
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Filehandler
 TEMPLATE = app
+
 
 RC_ICONS = xIcon.ico
 

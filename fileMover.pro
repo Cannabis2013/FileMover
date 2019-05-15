@@ -81,6 +81,8 @@ HEADERS  += mainwindow.h \
     iconscanner.h \
     mainapplication.h \
     messageBox.h \
+    myIcon.h \
+    myIcon.h \
     processmanager.h \
     rulesmanager.h \
     settingsWindow.h \
@@ -120,3 +122,5 @@ DISTFILES += \
 
 RESOURCES += \
     myressource.qrc
+
+TEST += \

@@ -41,7 +41,7 @@ private:
     QLabel *frameTitle;
     QWidget *topWidget;
     QPushButton *exitButton;
-    bool isMousePressed;
+    bool isMousePressed = false;
 };
 
 #endif // TOPFRAMEFORM_H

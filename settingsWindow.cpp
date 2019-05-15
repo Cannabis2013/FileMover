@@ -74,9 +74,11 @@ void settingsWindow::closeBoxClicked(bool c)
 
 void settingsWindow::on_insertRule_2_clicked()
 {
-    AddRuleDialog *ruleDialog = new AddRuleDialog(coreApplication->watchFolders());
+    QStringList watchFolders = coreApplication->watchFolders();
+    AddRuleDialog *ruleDialog =  new AddRuleDialog(watchFolders);
+    CustomDialog *dialog = new CustomDialog(ruleDialog,true);
     connect(ruleDialog,&AddRuleDialog::sendRule,coreApplication,&AbstractCoreApplication::insertRule);
-    ruleDialog->show();
+    dialog->show();
 }
 
 void settingsWindow::on_editRule_2_clicked()

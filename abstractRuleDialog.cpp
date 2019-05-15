@@ -33,6 +33,8 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
     conditionBox->currentIndexChanged("Ingen betingelser");
 
     qRegisterMetaType<Rule>("Rule");
+
+    setResizeable(false);
 }
 
 AbstractRuleDialog::~AbstractRuleDialog()

@@ -23,7 +23,7 @@
 #include "editruledialog.h"
 #include "myIcon.h"
 #include "mainapplication.h"
-#include "frameimplementable.h"
+#include "customdialog.h"
 
 
 using namespace std;

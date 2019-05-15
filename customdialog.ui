@@ -26,10 +26,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget#CustomDialog
-{
-	
-}</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="mainLayout">
    <property name="spacing">
@@ -78,7 +75,11 @@
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">QFrame#frame
+{
+	
+	background-color: rgb(0, 0, 0);
+}</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -91,16 +92,16 @@
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <property name="leftMargin">
-       <number>5</number>
+       <number>3</number>
       </property>
       <property name="topMargin">
        <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>5</number>
+       <number>3</number>
       </property>
       <property name="bottomMargin">
-       <number>5</number>
+       <number>3</number>
       </property>
       <property name="spacing">
        <number>0</number>

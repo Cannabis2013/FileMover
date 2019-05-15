@@ -37,6 +37,8 @@ public:
     void setFrameTitle(QString title);
     QString FrameTitle();
 
+    FrameImplementable *containedWidget(){return mainWidget;}
+
     void setWidget(FrameImplementable *implementable, QString title = "Frametitle");
 
 

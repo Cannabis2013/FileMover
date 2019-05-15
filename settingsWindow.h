@@ -32,7 +32,7 @@ namespace Ui {
 class settingsWindow;
 }
 
-class settingsWindow : public FrameImplementable
+class settingsWindow : public AbstractFrameImplementable
 {
     Q_OBJECT
 
@@ -66,6 +66,7 @@ signals:
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);
+    void resizeEvent(QSize newSize);
 
 private slots:
 
@@ -117,6 +118,7 @@ private:
     QList<Rule>rules;
     QWidget *mView;
     AbstractCoreApplication *coreApplication;
+
 };
 
 typedef settingsWindow sI;

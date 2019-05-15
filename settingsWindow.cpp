@@ -2,7 +2,7 @@
 #include "ui_settingsWindow.h"
 
 settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent):
-    FrameImplementable(parent),
+    AbstractFrameImplementable(parent),
     ui(new Ui::settingsWindow)
 {
     ui->setupUi(this);
@@ -48,6 +48,11 @@ void settingsWindow::mouseMoveEvent(QMouseEvent *event)
 {
     QCursor cursor = QCursor(Qt::ArrowCursor);
     setCursor(cursor);
+}
+
+void settingsWindow::resizeEvent(QSize newSize)
+{
+
 }
 
 

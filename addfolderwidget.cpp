@@ -2,7 +2,7 @@
 #include "ui_addfolderwidget.h"
 
 AddFolderWidget::AddFolderWidget() :
-    FrameImplementable(),
+    AbstractFrameImplementable(),
     ui(new Ui::AddFolderWidget)
 {
     ui->setupUi(this);
@@ -21,6 +21,11 @@ AddFolderWidget::~AddFolderWidget()
     delete ui;
 }
 
+void AddFolderWidget::resizeEvent(QSize newSize)
+{
+    emit sizeChanged(newSize);
+}
+
 void AddFolderWidget::sizeAdjust(QSizePolicy::Policy p, int H)
 {
     QSizePolicy::Policy hPol = sizePolicy().horizontalPolicy();
@@ -36,6 +41,7 @@ void AddFolderWidget::sizeAdjust(QSizePolicy::Policy p, int H)
         setFixedHeight(tempHeight);
         setMaximumHeight(maxHeight.height());
     }
+    resizeEvent(size());
 }
 
 void AddFolderWidget::on_Add_Button_Clicked()

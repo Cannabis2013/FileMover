@@ -770,6 +770,7 @@ void mainWindow::clearStatusLine()
 void mainWindow::on_actionIndstillinger_triggered()
 {
     CustomDialog *dialog = new CustomDialog(new settingsWindow(coreApplication), true);
+    dialog->show();
 }
 
 void mainWindow::on_actionQuit_triggered()

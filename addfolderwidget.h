@@ -5,7 +5,7 @@
 #include <qdesktopwidget.h>
 #include "pathline.h"
 #include "addfiledialog.h"
-#include "frameimplementable.h"
+#include "abstractframeimplementable.h"
 
 #include <iostream>
 
@@ -15,7 +15,7 @@ namespace Ui {
 class AddFolderWidget;
 }
 
-class AddFolderWidget : public FrameImplementable
+class AddFolderWidget : public AbstractFrameImplementable
 {
     Q_OBJECT
 
@@ -25,6 +25,9 @@ public:
 
 signals:
     void sendPath(QString path);
+
+protected:
+    void resizeEvent(QSize newSize);
 
 private slots:
     void sizeAdjust(QSizePolicy::Policy p,int H);
@@ -36,6 +39,8 @@ private:
     PathLine *pathWidget;
     QVBoxLayout *vLayout;
     int tempHeight;
+
+
 };
 
 #endif // ADDFOLDERWIDGET_H

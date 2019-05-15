@@ -5,14 +5,14 @@
 #include <qtreeview.h>
 #include <iostream>
 #include <QDialog>
-#include "frameimplementable.h"
+#include "abstractframeimplementable.h"
 
 
 namespace Ui {
 class filepathSelectorDialog;
 }
 
-class filepathSelectorDialog : public FrameImplementable
+class filepathSelectorDialog : public AbstractFrameImplementable
 {
     Q_OBJECT
 
@@ -33,8 +33,11 @@ protected slots:
 
 protected:
 
+    void resizeEvent(QSize newSize);
+
     QTreeView *fileView;
     QFileSystemModel *model;
     Ui::filepathSelectorDialog *ui;
+
 };
 #endif // FILEPATHSELECTORDIALOG_H

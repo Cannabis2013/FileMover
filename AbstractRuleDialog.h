@@ -21,13 +21,13 @@
 #include "rulepathselector.h"
 #include "conditionWidget.h"
 #include "abstractcoreapplication.h"
-#include "frameimplementable.h"
+#include "abstractframeimplementable.h"
 
 namespace Ui {
 class AbstractRuleDialog;
 }
 
-class AbstractRuleDialog : public FrameImplementable
+class AbstractRuleDialog : public AbstractFrameImplementable
 {
     Q_OBJECT
 public:
@@ -65,6 +65,7 @@ protected:
     // Protected methods
     enum buttonType {acceptButton,cancelButton};
     void setButtonText(QString txt,buttonType bType = buttonType::acceptButton);
+    void resizeEvent(QSize newSize);
 
     // Protected member variables
     conditionWidget *condWidget;
@@ -97,6 +98,7 @@ private:
     Ui::AbstractRuleDialog *ui;
 
     friend class settingsWindow;
+
 };
 
 #endif // abstractRuleDialog_H

@@ -41,6 +41,7 @@ SOURCES += main.cpp\
     AbstractRuleDialog.cpp \
     abstracgraphicallistmanager.cpp \
     abstractcoreapplication.cpp \
+    abstractframeimplementable.cpp \
     abstractpersistence.cpp \
     customdialog.cpp \
     customsplitter.cpp \
@@ -48,7 +49,6 @@ SOURCES += main.cpp\
     fileinformationmanager.cpp \
     fileinformationview.cpp \
     fileworker.cpp \
-    frameimplementable.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
     rulesmanager.cpp \
@@ -73,6 +73,7 @@ HEADERS  += mainwindow.h \
     AbstractRuleDialog.h \
     MyIcon.h \
     abstractcoreapplication.h \
+    abstractframeimplementable.h \
     abstractpersistence.h \
     customcombobox.h \
     customdialog.h \
@@ -80,7 +81,6 @@ HEADERS  += mainwindow.h \
     customsplitterhandle.h \
     fileinformationmanager.h \
     fileworker.h \
-    frameimplementable.h \
     iconscanner.h \
     mainapplication.h \
     messageBox.h \

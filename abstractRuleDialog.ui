@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>402</width>
-    <height>613</height>
+    <height>500</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,13 +19,13 @@
   <property name="minimumSize">
    <size>
     <width>402</width>
-    <height>600</height>
+    <height>500</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>402</width>
-    <height>16777215</height>
+    <height>500</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -597,7 +597,7 @@ QFrame
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>20</height>
+          <height>10</height>
          </size>
         </property>
        </spacer>
@@ -624,8 +624,12 @@ QFrame
         <property name="styleSheet">
          <string notr="true">QGroupBox
 {	
-	border:0px solid;
+	border:1px solid white;
 	background-color: rgb(91, 86, 72);
+	margin-left: 5px;
+	margin-right: 5px;
+	padding: 2px;
+	border-radius:5px;
 }
 QGroupBox::title
 {
@@ -938,7 +942,7 @@ QGroupBox::title
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>20</height>
+          <height>10</height>
          </size>
         </property>
        </spacer>

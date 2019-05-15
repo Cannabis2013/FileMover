@@ -2,7 +2,7 @@
 #include "ui_abstractRuledialog.h"
 
 AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
-    FrameImplementable(),
+    AbstractFrameImplementable(),
     ui(new Ui::AbstractRuleDialog)
 {
     ui->setupUi(this);
@@ -116,6 +116,11 @@ void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 void AbstractRuleDialog::closeEvent(QCloseEvent *event)
 {
     emit destroyed();
+}
+
+void AbstractRuleDialog::resizeEvent(QSize newSize)
+{
+
 }
 
 

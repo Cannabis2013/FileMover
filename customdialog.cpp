@@ -1,17 +1,17 @@
 #include "customdialog.h"
 
 
-CustomDialog::CustomDialog(FrameImplementable *implementable, bool applicationModal, widget_Location location, QWidget *parent) :
+CustomDialog::CustomDialog(AbstractFrameImplementable *implementable, bool applicationModal, widget_Location location, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CustomDialog)
 {
     ui->setupUi(this);
 
-    widgetFrame = ui->frame;
+    widgetContainer = ui->frame;
     mainWidget = nullptr;
     topFrame = ui->TopFrame;
     grid = ui->widgetLayout;
-    margin = grid->contentsMargins().bottom();
+    eventThreshold = 10;
 
     setWindowFlag(Qt::FramelessWindowHint);
 
@@ -22,7 +22,6 @@ CustomDialog::CustomDialog(FrameImplementable *implementable, bool applicationMo
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     setWidget(implementable);
-    show();
     setPosition(location);
 }
 
@@ -31,9 +30,8 @@ CustomDialog::~CustomDialog()
     delete ui;
 }
 
-void CustomDialog::setWidget(FrameImplementable *implementable, QString title)
+void CustomDialog::setWidget(AbstractFrameImplementable *implementable, QString title)
 {
-
     mainWidget = implementable;
     widgetSize = mainWidget->size();
     if(grid->itemAtPosition(0,0) != nullptr)
@@ -42,7 +40,8 @@ void CustomDialog::setWidget(FrameImplementable *implementable, QString title)
         grid->removeItem(item);
     }
 
-    connect(mainWidget,&FrameImplementable::destroyed,this,&CustomDialog::close);
+    connect(mainWidget,&AbstractFrameImplementable::destroyed,this,&CustomDialog::close);
+    connect(mainWidget,&AbstractFrameImplementable::sizeChanged,this,&CustomDialog::widgetSizeChanged);
     grid->addWidget(mainWidget,0,0);
 
     setFrameTitle(title);
@@ -72,7 +71,7 @@ void CustomDialog::closeEvent(QCloseEvent *event)
 
 void CustomDialog::mousePressEvent(QMouseEvent *event)
 {
-    int rightBorder = width() - margin, southBorder = height() - margin;
+    int rightBorder = width() - eventThreshold, southBorder = height() - eventThreshold;
     if((event->pos().x() >= rightBorder && event->pos().y() >= southBorder) && mainWidget->Resizeable())
     {
         mousePressPosition = event->pos();
@@ -89,8 +88,8 @@ void CustomDialog::mouseReleaseEvent(QMouseEvent *event)
 
 void CustomDialog::mouseMoveEvent(QMouseEvent *event)
 {
-    int rightBorder = width() - margin,
-            lowerBorder = height() - margin;
+    int rightBorder = width() - eventThreshold,
+            lowerBorder = height() - eventThreshold;
 
 
     if((event->pos().x() >= rightBorder && event->pos().y() >= lowerBorder) && mainWidget->Resizeable())
@@ -128,10 +127,21 @@ void CustomDialog::moveGlobalEvent(QPoint pos)
     move(mapToParent(pos));
 }
 
+void CustomDialog::widgetSizeChanged(QSize newSize)
+{
+    setSize(newSize);
+}
+
 void CustomDialog::setPosition(widget_Location location)
 {
     if(location == center_on_screen)
         show_centered_on_screen();
+}
+
+void CustomDialog::setSize(QSize size)
+{
+    int totalHeight = topFrame->height() + size.height() + grid->contentsMargins().bottom();
+    setFixedHeight(totalHeight);
 }
 
 void CustomDialog::show_centered_on_screen()

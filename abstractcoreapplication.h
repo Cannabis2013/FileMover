@@ -75,7 +75,6 @@ signals:
 
     void processPath(QString path);
     void processPaths(QStringList paths);
-
 };
 
 #endif // ABSTRACTCOREAPPLICATION_H

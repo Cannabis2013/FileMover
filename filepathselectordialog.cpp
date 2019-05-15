@@ -2,7 +2,7 @@
 #include "ui_filepathselectordialog.h"
 
 filepathSelectorDialog::filepathSelectorDialog() :
-    FrameImplementable(),
+    AbstractFrameImplementable(),
     ui(new Ui::filepathSelectorDialog)
 {
     ui->setupUi(this);
@@ -38,4 +38,9 @@ void filepathSelectorDialog::on_insertPathButton_clicked()
     QString filePath = model->filePath(currentIndex);
     emit chosenPath(filePath);
     close();
+}
+
+void filepathSelectorDialog::resizeEvent(QSize newSize)
+{
+
 }

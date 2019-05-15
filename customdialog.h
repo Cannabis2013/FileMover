@@ -15,7 +15,7 @@
 
 #include "ui_customdialog.h"
 
-#include "frameimplementable.h"
+#include "abstractframeimplementable.h"
 
 using namespace std;
 
@@ -29,7 +29,7 @@ class CustomDialog : public QWidget
 
 public:
     enum widget_Location {center_on_screen,center_according_to_parent, default_location};
-    explicit CustomDialog(FrameImplementable *implementable,
+    explicit CustomDialog(AbstractFrameImplementable *implementable,
                           bool applicationModal = true, widget_Location location = center_on_screen,
                           QWidget *parent = nullptr);
     ~CustomDialog();
@@ -37,9 +37,9 @@ public:
     void setFrameTitle(QString title);
     QString FrameTitle();
 
-    FrameImplementable *containedWidget(){return mainWidget;}
+    AbstractFrameImplementable *containedWidget(){return mainWidget;}
 
-    void setWidget(FrameImplementable *implementable, QString title = "Frametitle");
+    void setWidget(AbstractFrameImplementable *implementable, QString title = "Frametitle");
 
 
 protected:
@@ -53,19 +53,20 @@ private slots:
 
     void on_exitButton_clicked();
 
-private slots:
     void moveGlobalEvent(QPoint pos);
+    void widgetSizeChanged(QSize newSize);
 
 private:
     void setPosition(widget_Location location);
+    void setSize(QSize size);
     void show_centered_on_screen();
 
     Ui::CustomDialog *ui;
     bool isMouseButtonPressed = false;
-    QFrame *widgetFrame;
-    int margin;
+    QFrame *widgetContainer;
+    int eventThreshold;
     TopFrameForm *topFrame;
-    QPointer<FrameImplementable> mainWidget;
+    QPointer<AbstractFrameImplementable> mainWidget;
     QGridLayout *grid;
 
     QPoint mousePressPosition;

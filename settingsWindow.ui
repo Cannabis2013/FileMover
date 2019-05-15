@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>480</height>
+    <width>900</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>500</width>
-    <height>400</height>
+    <height>450</height>
    </size>
   </property>
   <property name="mouseTracking">
@@ -174,8 +174,8 @@ background-color:transparent;</string>
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>500</width>
-           <height>480</height>
+           <width>900</width>
+           <height>450</height>
           </rect>
          </property>
          <property name="mouseTracking">

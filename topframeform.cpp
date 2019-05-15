@@ -5,10 +5,10 @@ TopFrameForm::TopFrameForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TopFrameForm)
 {
-    topWidget = ui->topWidget;
     ui->setupUi(this);
+    topWidget = ui->topWidget;
+    exitButton = ui->exitButton;
 
-    //setMouseTracking(true);
     frameTitle = ui->frameTitle;
 }
 
@@ -19,14 +19,28 @@ TopFrameForm::~TopFrameForm()
 
 void TopFrameForm::mouseMoveEvent(QMouseEvent *event)
 {
-    if(event->buttons() & Qt::LeftButton)
-    {
+    int buttonLeftBound = width() - exitButton->width();
+    if(event->pos().x() >= buttonLeftBound)
+        topWidget->setCursor(QCursor(Qt::ArrowCursor));
+    else
+        topWidget->setCursor(QCursor(Qt::SizeAllCursor));
+
+    if(isMousePressed)
         emit moveParent(event->pos() - mOffset);
-    }
+}
+
+void TopFrameForm::mouseReleaseEvent(QMouseEvent *event)
+{
+    isMousePressed = false;
 }
 
 void TopFrameForm::mousePressEvent(QMouseEvent *event)
 {
+    int buttonLeftBound = width() - exitButton->width();
+    if(event->pos().x() >= buttonLeftBound)
+        event->ignore();
+
+    isMousePressed = true;
     mOffset = event->pos();
 }
 

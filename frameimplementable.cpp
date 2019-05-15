@@ -5,3 +5,12 @@ FrameImplementable::FrameImplementable(QWidget *parent):
 {
 
 }
+
+void FrameImplementable::closeEvent(QCloseEvent *event)
+{
+    if(event->type() == QEvent::Close)
+    {
+        emit destroyed();
+        event->accept();
+    }
+}

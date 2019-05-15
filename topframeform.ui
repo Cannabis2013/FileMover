@@ -28,6 +28,9 @@
     <height>32</height>
    </size>
   </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -49,6 +52,9 @@
    </property>
    <item>
     <widget class="QWidget" name="topWidget" native="true">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -62,7 +68,7 @@
       </size>
      </property>
      <property name="cursor">
-      <cursorShape>SizeAllCursor</cursorShape>
+      <cursorShape>ArrowCursor</cursorShape>
      </property>
      <property name="mouseTracking">
       <bool>true</bool>
@@ -166,6 +172,12 @@ background-color:white;</string>
           <weight>50</weight>
           <bold>false</bold>
          </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#exitButton

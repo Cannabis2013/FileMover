@@ -11,8 +11,7 @@ AddFileDialog::AddFileDialog(QWidget *parent):
     view->setStyleSheet("QScrollBar::handle"
         "{background-color:rgb(81,81,81);"
         "border:2px solid rgb(81,81,81);"
-        "border-radius:5px;};"
-        "QPushButton{text-color: white;};");
+        "border-radius:5px;}");
 
     connect(view,&QTreeView::clicked,this,&AddFileDialog::currentFilePath);
 }

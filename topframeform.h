@@ -5,6 +5,10 @@
 #include <QMouseEvent>
 #include <qlabel.h>
 #include <qcursor.h>
+#include <qpushbutton.h>
+#include <iostream>
+
+using namespace std;
 
 namespace Ui {
     class TopFrameForm;
@@ -27,6 +31,7 @@ signals:
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
 
 private:
@@ -35,6 +40,8 @@ private:
     QPoint mOffset;
     QLabel *frameTitle;
     QWidget *topWidget;
+    QPushButton *exitButton;
+    bool isMousePressed;
 };
 
 #endif // TOPFRAMEFORM_H

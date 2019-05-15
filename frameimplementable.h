@@ -17,6 +17,8 @@ public:
 
 protected:
 
+    void closeEvent(QCloseEvent *event);
+
 private:
     bool resizeable = true;
 

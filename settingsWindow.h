@@ -65,7 +65,6 @@ signals:
     void widgetHasQuitted();
 
 protected:
-    void closeEvent(QCloseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
 
 private slots:

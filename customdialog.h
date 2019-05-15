@@ -11,6 +11,7 @@
 #include <iostream>
 #include <memory>
 #include <qpointer.h>
+#include <qscreen.h>
 
 #include "ui_customdialog.h"
 
@@ -27,13 +28,17 @@ class CustomDialog : public QWidget
     Q_OBJECT
 
 public:
-    explicit CustomDialog(FrameImplementable *implementable, bool applicationModal = true, QWidget *parent = nullptr);
+    enum widget_Location {center_on_screen,center_according_to_parent, default_location};
+    explicit CustomDialog(FrameImplementable *implementable,
+                          bool applicationModal = true, widget_Location location = center_on_screen,
+                          QWidget *parent = nullptr);
     ~CustomDialog();
 
     void setFrameTitle(QString title);
     QString FrameTitle();
 
     void setWidget(FrameImplementable *implementable, QString title = "Frametitle");
+
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -50,10 +55,8 @@ private slots:
     void moveGlobalEvent(QPoint pos);
 
 private:
-
-    /*
-     * Private methods declarations
-     */
+    void setPosition(widget_Location location);
+    void show_centered_on_screen();
 
     Ui::CustomDialog *ui;
     bool isMouseButtonPressed = false;
@@ -65,6 +68,7 @@ private:
 
     QPoint mousePressPosition;
     QRect tempGeometry;
+    QSize widgetSize;
 };
 
 #endif // WIDGETFORM_H

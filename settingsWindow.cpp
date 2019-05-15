@@ -44,16 +44,6 @@ void settingsWindow::setIconList(QList<MyIcon> list)
         new QListWidgetItem(icon,icon.name(),view);
 }
 
-
-void settingsWindow::closeEvent(QCloseEvent *event)
-{
-    if(event->type() == QEvent::Close)
-    {
-        emit destroyed();
-        event->accept();
-    }
-}
-
 void settingsWindow::mouseMoveEvent(QMouseEvent *event)
 {
     QCursor cursor = QCursor(Qt::ArrowCursor);

@@ -772,7 +772,6 @@ void mainWindow::on_addBut_clicked()
 void mainWindow::on_countButt_clicked()
 {
     QString path = watchFolderView->currentItem()->text(0);
-
     coreApplication->beginCalcSize(path);
 }
 

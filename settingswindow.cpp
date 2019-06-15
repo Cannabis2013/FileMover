@@ -90,9 +90,10 @@ void SettingsWindow::on_editRule_2_clicked()
     Rule r = coreApplication->rule(title);
 
     EditRuleDialog *ruleDialog = new EditRuleDialog(r,coreApplication->watchFolders());
+    CustomDialog *dialog = new CustomDialog(ruleDialog,true);
     connect(ruleDialog,&AbstractRuleDialog::replaceRule,coreApplication,&AbstractCoreApplication::replaceRule);
 
-    ruleDialog->show();
+    dialog->show();
 }
 
 

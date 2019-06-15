@@ -270,10 +270,11 @@ void rulesManager::replaceRule(const Rule r, int index)
 void rulesManager::replaceRule(const Rule r, QString title)
 {
     for (int i = 0; i < rules.count(); ++i) {
-        Rule r = rules.at(i);
-        if(r.title == title)
+        Rule currentRule = rules.at(i);
+        if(currentRule.title == title)
         {
             rules.replace(i,r);
+            emit stateChanged();
             return;
         }
     }

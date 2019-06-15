@@ -322,6 +322,21 @@ border-bottom:2px solid black;</string>
               <property name="styleSheet">
                <string notr="true"/>
               </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="rootIsDecorated">
+               <bool>false</bool>
+              </property>
+              <property name="headerHidden">
+               <bool>true</bool>
+              </property>
+              <attribute name="headerVisible">
+               <bool>false</bool>
+              </attribute>
               <column>
                <property name="text">
                 <string notr="true">1</string>
@@ -479,9 +494,15 @@ border-bottom:2px solid black;</string>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>fileInformationBrowserView</tabstop>
+  <tabstop>clearButt</tabstop>
+  <tabstop>countButt</tabstop>
+  <tabstop>addBut</tabstop>
+  <tabstop>delButt</tabstop>
+  <tabstop>WatchFolderView</tabstop>
   <tabstop>statusLineEdit</tabstop>
+  <tabstop>fileInformationBrowserView</tabstop>
   <tabstop>suffixTree</tabstop>
+  <tabstop>detailView</tabstop>
  </tabstops>
  <resources/>
  <connections>

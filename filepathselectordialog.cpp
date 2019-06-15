@@ -39,8 +39,3 @@ void filepathSelectorDialog::on_insertPathButton_clicked()
     emit chosenPath(filePath);
     close();
 }
-
-void filepathSelectorDialog::resizeEvent(QSize newSize)
-{
-
-}

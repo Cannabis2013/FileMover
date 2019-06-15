@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += testlib
 
 windows {
     *-g++* {
@@ -52,9 +53,9 @@ SOURCES += main.cpp\
     mainapplication.cpp \
         mainwindow.cpp \
     rulesmanager.cpp \
-    settingsWindow.cpp \
     mydatetime.cpp \
     settingsmanager.cpp \
+    settingswindow.cpp \
     textpathedit.cpp \
     addfolderwidget.cpp \
     addfiledialog.cpp \
@@ -88,10 +89,11 @@ HEADERS  += mainwindow.h \
     myIcon.h \
     processmanager.h \
     rulesmanager.h \
-    settingsWindow.h \
     myscreendimensions.h \
     mydatetime.h \
+    settingsdelegate.h \
     settingsmanager.h \
+    settingswindow.h \
     textpathedit.h \
     fileinformationview.h \
     addfolderwidget.h \
@@ -112,7 +114,7 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     customdialog.ui \
     logger.ui \
-    settingsWindow.ui \
+    settingswindow.ui \
     textpathedit.ui \
     addfolderwidget.ui \
     abstractRuledialog.ui \

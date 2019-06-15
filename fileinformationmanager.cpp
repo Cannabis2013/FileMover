@@ -3,7 +3,7 @@
 FileInformationManager::FileInformationManager(QString appName, QString orgName):
     AbstractPersistence (appName,orgName)
 {
-
+    readSettings();
 }
 
 FileInformationManager::~FileInformationManager()
@@ -201,6 +201,7 @@ QTreeWidgetItem *DirectoryItem::organizeTreeItems(QTreeWidgetItem *item) const
 
 void FileInformationManager::readSettings()
 {
+
 }
 
 void FileInformationManager::writeSettings()

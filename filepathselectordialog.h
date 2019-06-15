@@ -32,8 +32,7 @@ protected slots:
     virtual void on_insertPathButton_clicked();
 
 protected:
-
-    void resizeEvent(QSize newSize);
+    void resizeEvent(QSize newSize){Q_UNUSED(newSize);}
 
     QTreeView *fileView;
     QFileSystemModel *model;

@@ -6,5 +6,7 @@
         <file>Ressources/cplusplus.jpg</file>
         <file>Ressources/solid background black.jpg</file>
         <file>Ressources/Stock Index Down.png</file>
+        <file>Ressources/rule_icon.png</file>
+        <file>Ressources/sub_rule_icon.png</file>
     </qresource>
 </RCC>

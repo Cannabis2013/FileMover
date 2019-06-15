@@ -11,7 +11,7 @@ class AbstractFrameImplementable : public QWidget
 public:
     AbstractFrameImplementable(QWidget *parent = nullptr);
 
-    bool Resizeable(){return resizeable;}
+    bool isResizeable(){return resizeable;}
     void setResizeable(bool resizeMode){resizeable = resizeMode;}
 
 signals:
@@ -24,8 +24,6 @@ protected:
 
 private:
     bool resizeable = true;
-
-
 };
 
 #endif // ABSTRACTFRAMEIMPLEMENTABLE_H

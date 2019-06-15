@@ -29,17 +29,17 @@
 using namespace std;
 
 namespace Ui {
-class settingsWindow;
+class SettingsWindow;
 }
 
-class settingsWindow : public AbstractFrameImplementable
+class SettingsWindow : public AbstractFrameImplementable
 {
     Q_OBJECT
 
 public:
-    explicit settingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent = nullptr);
-    settingsWindow();
-    ~settingsWindow();
+    explicit SettingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent = nullptr);
+    SettingsWindow();
+    ~SettingsWindow();
 
     enum ruleMode{ruleOut,parallelMode};
 
@@ -56,6 +56,11 @@ public:
     // Rules Related..
     bool rulesEnabled();
 
+public slots:
+
+    // Update rules view
+    void updateView();
+
 signals:
     void countTimerActivated(bool tf);
     void sendInterval(int minutes);
@@ -66,11 +71,9 @@ signals:
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);
-    void resizeEvent(QSize newSize);
+    void resizeEvent(QSize newSize){Q_UNUSED(newSize);}
 
 private slots:
-
-    void updateViews();
 
     // Select icon related..
     void viewClicked(QModelIndex i);
@@ -83,8 +86,6 @@ private slots:
     // Buttons related..
     void on_insertRule_2_clicked();
     void on_editRule_2_clicked();
-    void on_lukKnap_2_clicked();
-    void on_fortrydKnap_2_clicked();
     void on_deleteRule_2_clicked();
     void on_exitButton_clicked();
     void on_moveUpButton_2_clicked();
@@ -97,17 +98,20 @@ private slots:
     void on_countTimerActivateBox_2_toggled(bool checked);
     void on_countTImerIntervalEdit_2_returnPressed();
 
+    void on_saveButton_clicked();
+
+    void on_cancelButton_clicked();
+
 private:
     // Generel methods..
+
+    void initializeState();
 
     // Icons..
     void insertIcons(QList<MyIcon>ic);
 
-    // Rules..
-    void updateRulesView();
-
     // Member variables..
-    Ui::settingsWindow *ui;
+    Ui::SettingsWindow *ui;
     QCheckBox *closeOnBox,*countTimerEnableBox,*enableRules;
     QLineEdit *countTimerInterval;
     QListWidget *view;
@@ -121,6 +125,6 @@ private:
 
 };
 
-typedef settingsWindow sI;
+typedef SettingsWindow sI;
 
-#endif // settingsWindow_H
+#endif // settingswindow_H

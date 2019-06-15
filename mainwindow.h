@@ -22,12 +22,14 @@
 #include <qstackedwidget.h>
 #include <QSystemTrayIcon>
 
+
 #include "messageBox.h"
 #include "myscreendimensions.h"
 #include "fileinformationview.h"
 #include "addfolderwidget.h"
-#include "settingsWindow.h"
+#include "settingswindow.h"
 #include "customdialog.h"
+
 
 namespace Ui {
 class mainWindow;
@@ -68,7 +70,7 @@ private slots:
 
     void setStatusText(QString txt);
 
-    void updateViews();
+    void updateView();
 
     // Buttons..
     void on_addBut_clicked(); // Add path to "mainFolderView"
@@ -77,7 +79,6 @@ private slots:
     void on_delButt_clicked(); // Delete an item in "mainFolderView"
 
     // countTimer related..
-    void timerCount();
     void setTimerStatus(bool makeActive);
 
     // DetailedFolderView related..
@@ -93,12 +94,12 @@ private slots:
     // Fileworker Related..
     void clearCompleted(bool a);
     void folderContentRecieved(DirectoryObject fObject);
-    void folderContentsRecieved(QList<DirectoryObject> fObjects);
     void actionCountFolder(bool f);
 
-    // mainFolderView Related..
+    // watchFolderView Related..
     void explorerFolder(bool ok);
     void contextMenuCalled(QPoint p);
+    void on_WatchFolderView_doubleClicked(const QModelIndex &index);
 
     // Menu actions related..
     void on_actionIndstillinger_triggered();
@@ -126,8 +127,6 @@ private slots:
 
     void on_actionOpen_current_directory_triggered();
 
-    void on_WatchFolderView_doubleClicked(const QModelIndex &index);
-
 private:
 
     // Add folder related..
@@ -137,7 +136,7 @@ private:
     void updateSubTrayMenus();
 
     // Systemtray related..
-    void popSystemTrayMessage(const QString msg,const QString title = "Info");
+    void showSystemMessage(const QString msg,const QString title = "Info");
 
     //detailedFolderView related..
     void updateDetaileditems();
@@ -152,8 +151,6 @@ private:
     QString currentMainFolderPath() const;
 
     //mainFolderView related..
-    QStringList folders() const;
-    QString folder(QString t) const;
 
     QFileInfoList fileItemList(const QStringList paths) const;
 
@@ -179,7 +176,7 @@ private:
     QKeyEvent *currentKeyEvent;
     QLineEdit *statusLine;
     QList<int>columnWidths;
-    QMenu *trayMenu,*countTrayMenu,*clearTrayMenu,*folderTrayMenu,*mainFolderViewMenu, *detailedFolderViewMenu;
+    QMenu *trayMenu,*countTrayMenu,*clearTrayMenu,*folderTrayMenu,*watchFolderViewMenu, *detailedFolderViewMenu;
     QModelIndex menuIndex,viewTempIndex;
     QPoint offset;
     QPushButton *clBut;

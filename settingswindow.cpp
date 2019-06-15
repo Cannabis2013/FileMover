@@ -1,9 +1,9 @@
-﻿#include "settingsWindow.h"
-#include "ui_settingsWindow.h"
+﻿#include "settingswindow.h"
+#include "ui_SettingsWindow.h"
 
-settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent):
+SettingsWindow::SettingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent):
     AbstractFrameImplementable(parent),
-    ui(new Ui::settingsWindow)
+    ui(new Ui::SettingsWindow)
 {
     ui->setupUi(this);
 
@@ -19,6 +19,12 @@ settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication, QWidget
     view = ui->listWidget_2;
     vScroll = new QScrollBar(Qt::Vertical);
 
+    rulesView->setIconSize(QSize(32,32));
+
+    QFont stdFont = QApplication::font();
+    stdFont.setPointSize(12);
+
+    rulesView->setFont(stdFont);
     // ... Header related..
 
     rulesView->setColumnCount(3);
@@ -30,38 +36,30 @@ settingsWindow::settingsWindow(AbstractCoreApplication *coreApplication, QWidget
     connect(view,SIGNAL(activated(QModelIndex)),
             this,SLOT(viewClicked(QModelIndex)));
 
+    initializeState();
+    updateView();
 }
 
-settingsWindow::~settingsWindow()
+SettingsWindow::~SettingsWindow()
 {
     delete ui;
     delete this;
 }
 
-void settingsWindow::setIconList(QList<MyIcon> list)
+void SettingsWindow::setIconList(QList<MyIcon> list)
 {
     for(MyIcon icon : list)
         new QListWidgetItem(icon,icon.name(),view);
 }
 
-void settingsWindow::mouseMoveEvent(QMouseEvent *event)
+void SettingsWindow::mouseMoveEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event);
     QCursor cursor = QCursor(Qt::ArrowCursor);
     setCursor(cursor);
 }
 
-void settingsWindow::resizeEvent(QSize newSize)
-{
-
-}
-
-
-void settingsWindow::updateViews()
-{
-    updateRulesView();
-}
-
-void settingsWindow::viewClicked(QModelIndex i)
+void SettingsWindow::viewClicked(QModelIndex i)
 {
     if(i.isValid())
     {
@@ -72,12 +70,12 @@ void settingsWindow::viewClicked(QModelIndex i)
     }
 }
 
-void settingsWindow::closeBoxClicked(bool c)
+void SettingsWindow::closeBoxClicked(bool c)
 {
     emit sendCheckBox(c);
 }
 
-void settingsWindow::on_insertRule_2_clicked()
+void SettingsWindow::on_insertRule_2_clicked()
 {
     QStringList watchFolders = coreApplication->watchFolders();
     AddRuleDialog *ruleDialog =  new AddRuleDialog(watchFolders);
@@ -86,7 +84,7 @@ void settingsWindow::on_insertRule_2_clicked()
     dialog->show();
 }
 
-void settingsWindow::on_editRule_2_clicked()
+void SettingsWindow::on_editRule_2_clicked()
 {
     QString title = rulesView->currentItem()->text(0);
     Rule r = coreApplication->rule(title);
@@ -97,35 +95,26 @@ void settingsWindow::on_editRule_2_clicked()
     ruleDialog->show();
 }
 
-void settingsWindow::on_lukKnap_2_clicked()
-{
-    close();
-}
 
-void settingsWindow::updateRulesView()
+void SettingsWindow::updateView()
 {
     rulesView->clear();
-    QList<QTreeWidgetItem*> allRules = coreApplication->ruleItems();
+    QList<QTreeWidgetItem*> allRules = coreApplication->ruleItemModels();
     rulesView->addTopLevelItems(allRules);
 }
 
-void settingsWindow::on_fortrydKnap_2_clicked()
-{
-    close();
-}
-
-void settingsWindow::on_deleteRule_2_clicked()
+void SettingsWindow::on_deleteRule_2_clicked()
 {
     QString ruleTitle = rulesView->currentItem()->text(0);
     coreApplication->removeRule(ruleTitle);
 }
 
-void settingsWindow::on_exitButton_clicked()
+void SettingsWindow::on_exitButton_clicked()
 {
     close();
 }
 
-void settingsWindow::on_moveDownButton_2_clicked()
+void SettingsWindow::on_moveDownButton_2_clicked()
 {
     QTreeWidgetItem *cItem = rulesView->currentItem();
 
@@ -141,10 +130,10 @@ void settingsWindow::on_moveDownButton_2_clicked()
         return;
     }
 
-    updateRulesView();
+    updateView();
 }
 
-void settingsWindow::on_moveUpButton_2_clicked()
+void SettingsWindow::on_moveUpButton_2_clicked()
 {
     QTreeWidgetItem *cItem = rulesView->currentItem();
 
@@ -160,25 +149,49 @@ void settingsWindow::on_moveUpButton_2_clicked()
         return;
     }
 
-    updateRulesView();
+    updateView();
 }
 
-void settingsWindow::on_countTImerIntervalEdit_2_returnPressed()
+void SettingsWindow::on_countTImerIntervalEdit_2_returnPressed()
 {
     int min = ui->countTImerIntervalEdit_2->text().toInt();
     emit sendInterval(min);
 }
 
-void settingsWindow::on_countTimerActivateBox_2_toggled(bool checked)
+void SettingsWindow::on_saveButton_clicked()
+{
+    SettingsDelegate currentState;
+    currentState.closeOnExit = closeOnBox->isChecked();
+    currentState.ruleTimerEnabled = enableRules;
+    currentState.ruleCountInterval = countTimerInterval->text().toInt();
+
+    coreApplication->setSettings(currentState);
+    close();
+}
+
+void SettingsWindow::initializeState()
+{
+    SettingsDelegate state = coreApplication->settingsState();
+    closeOnBox->setChecked(state.closeOnExit);
+    enableRules->setChecked(state.ruleTimerEnabled);
+    countTimerInterval->setText(QString::number(state.ruleCountInterval));
+}
+
+void SettingsWindow::on_countTimerActivateBox_2_toggled(bool checked)
 {
     emit enableTimer(checked);
 }
 
-void settingsWindow::on_ruleItemView_2_itemClicked(QTreeWidgetItem *item, int column)
+void SettingsWindow::on_ruleItemView_2_itemClicked(QTreeWidgetItem *item, int column)
 {
     Q_UNUSED(column);
     if(item->childCount() > 0)
         rulesView->setHeaderLabels(ruleParentHeaderData);
     else
         rulesView->setHeaderLabels(ruleChildrenHeaderData);
+}
+
+void SettingsWindow::on_cancelButton_clicked()
+{
+    this->close();
 }

@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>settingsWindow</class>
- <widget class="QWidget" name="settingsWindow">
+ <class>SettingsWindow</class>
+ <widget class="QWidget" name="SettingsWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>900</width>
-    <height>450</height>
+    <height>500</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>500</width>
-    <height>450</height>
+    <height>500</height>
    </size>
   </property>
   <property name="mouseTracking">
@@ -175,7 +175,7 @@ background-color:transparent;</string>
            <x>0</x>
            <y>0</y>
            <width>900</width>
-           <height>450</height>
+           <height>458</height>
           </rect>
          </property>
          <property name="mouseTracking">
@@ -213,7 +213,7 @@ background-color:transparent;</string>
             <item>
              <widget class="QGroupBox" name="groupBox_3">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -222,6 +222,12 @@ background-color:transparent;</string>
                <size>
                 <width>159</width>
                 <height>146</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>191</height>
                </size>
               </property>
               <property name="font">
@@ -288,10 +294,16 @@ background-color:transparent;</string>
             <item>
              <widget class="QGroupBox" name="lukGroupBox_2">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>191</height>
+               </size>
               </property>
               <property name="font">
                <font>
@@ -455,6 +467,12 @@ background-color:transparent;</string>
           </item>
           <item>
            <widget class="QGroupBox" name="ruleView_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -486,6 +504,9 @@ background-color:transparent;</string>
                </property>
                <property name="styleSheet">
                 <string notr="true">background-color:white;</string>
+               </property>
+               <property name="rootIsDecorated">
+                <bool>false</bool>
                </property>
                <column>
                 <property name="text">
@@ -677,119 +698,119 @@ QPushButton::hover
                </item>
               </layout>
              </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <item>
-                <spacer name="horizontalSpacer_4">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="fortrydKnap_2">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>128</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>16</pointsize>
-                  </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">QPushButton#fortrydKnap_2
-{
-	background-color: rgba(255, 255, 255, 175);
-	border:0px;
-	border-radius:5px;
-	margin:2px;
-}
-QPushButton#fortrydKnap_2:hover
-{
-	background-color:white;
-}</string>
-                 </property>
-                 <property name="text">
-                  <string>Fortyd</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="lukKnap_2">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>128</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>16</pointsize>
-                  </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">QPushButton#lukKnap_2
-{
-	background-color: rgba(255, 255, 255, 175);
-	border:0px;
-	border-radius:5px;
-	margin:2px;
-}
-QPushButton#lukKnap_2:hover
-{
-	background-color:white;
-}</string>
-                 </property>
-                 <property name="text">
-                  <string>Gem</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_5">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </item>
             </layout>
            </widget>
           </item>
          </layout>
         </widget>
        </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="cancelButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>128</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton#cancelButton
+{
+	background-color: rgba(255, 255, 255, 175);
+	border:0px;
+	border-radius:5px;
+	margin:2px;
+}
+QPushButton#cancelButton:hover
+{
+	background-color:white;
+}</string>
+          </property>
+          <property name="text">
+           <string>Fortyd</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="saveButton">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>128</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton#saveButton
+{
+	background-color: rgba(255, 255, 255, 175);
+	border:0px;
+	border-radius:5px;
+	margin:2px;
+}
+QPushButton#saveButton:hover
+{
+	background-color:white;
+}</string>
+          </property>
+          <property name="text">
+           <string>Gem</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

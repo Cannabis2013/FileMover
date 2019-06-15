@@ -18,13 +18,11 @@ public:
         QMessageBox box;
         box.setWindowTitle(title);
         box.setText(text);
+        box.setWindowFlag(Qt::FramelessWindowHint);
 
-        QString styleSheet = parent->styleSheet();
-        box.setStyleSheet(styleSheet);
-
+        box.setStyleSheet("QMessageBox{background-color: black;border:5px solid black;border-radius:5px;} QLabel{color:white;}");
 
         QRect pGeo = parent->geometry();
-        QRect geo;
 
         int nH = pGeo.height() /2,
             nW = pGeo.width() /2,

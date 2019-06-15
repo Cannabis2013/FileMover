@@ -7,6 +7,7 @@
 #include "qlist.h"
 #include "abstractpersistence.h"
 #include "iconscanner.h"
+#include "settingsdelegate.h"
 
 
 class settingsManager : public QObject,
@@ -31,6 +32,9 @@ public:
     // Icons related..
     void insertIcon(const MyIcon ic){trayIconList << ic;}
     void insertIcons(QList<MyIcon>icons){trayIconList << icons;}
+
+    SettingsDelegate settingsState();
+    void setSettings(SettingsDelegate s);
 
     // Path Related..
 
@@ -64,7 +68,7 @@ private:
     QString ressourceFolder = "Ressources";
     QString fileIconPath = "fileIcons";
     int timerMsec;
-    bool closeOnExit = false, rulesEnabled = false, timerEnabled = false;
+    bool closeOnExit = true, rulesEnabled = false, timerEnabled = false;
     QTimer countTimer;
     QList<MyIcon> trayIconList;
     QList<MyIcon> fileIconList;

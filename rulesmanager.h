@@ -3,6 +3,8 @@
 
 #include <QListWidgetItem>
 
+#include <qapplication.h>
+
 #include "abstractpersistence.h"
 #include "rules.h"
 
@@ -20,6 +22,10 @@ public:
 
     static QString mergeStringList(const QStringList strings);
     static QStringList splitString(const QString split);
+
+    static QString ruleKeyWordToString(SubRule sRule);
+    static QString ruleSizeLimitsToString(SubRule sRule);
+    static QString ruleDateLimitsToString(SubRule sRule);
 
     QList<QTreeWidgetItem*>ruleItems() const;
 

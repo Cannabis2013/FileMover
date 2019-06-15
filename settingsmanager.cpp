@@ -22,6 +22,8 @@ settingsManager::settingsManager(QString appName, QString orgName):
     fileIconList = iconsFromPath(fileIconPath);
     if(!fileIconList.isEmpty())
         fileIconStandard = fileIconList.last();
+
+    readSettings();
 }
 
 settingsManager::~settingsManager()
@@ -61,6 +63,7 @@ QList<QTreeWidgetItem *> settingsManager::pathItems()
     QList<QTreeWidgetItem*> items;
     for (QString path : mainFolderPaths) {
         QTreeWidgetItem *treeItem = new QTreeWidgetItem();
+        treeItem->setIcon(0,QIcon(":/My Images/Ressources/Folder.png"));
         treeItem->setText(0,path);
         items << treeItem;
     }
@@ -80,7 +83,10 @@ void settingsManager::readSettings()
     int count = persistenceSettings->beginReadArray("Watchfolders");
     QStringList folders;
     for (int i = 0;i < count;i++)
+    {
         folders << persistenceSettings->value(QString("Folder (%1)").arg(i)).toString();
+        persistenceSettings->setArrayIndex(i);
+    }
 
     insertPaths(folders);
     persistenceSettings->endArray();
@@ -106,4 +112,21 @@ void settingsManager::writeSettings()
         persistenceSettings->setArrayIndex(i);
     }
     persistenceSettings->endArray();
+}
+
+SettingsDelegate settingsManager::settingsState()
+{
+    SettingsDelegate s;
+    s.closeOnExit = closeOnExit;
+    s.ruleTimerEnabled = timerEnabled;
+    s.ruleTimerEnabled = timerMsec;
+
+    return s;
+}
+
+void settingsManager::setSettings(SettingsDelegate s)
+{
+    closeOnExit = s.closeOnExit;
+    timerEnabled = s.ruleTimerEnabled;
+    timerMsec = s.ruleCountInterval;
 }

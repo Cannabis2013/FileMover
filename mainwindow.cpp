@@ -39,7 +39,7 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
     trayMenu = new QMenu;
     title = "FileFolderManager";
     viewFont = QFont("Times",12);
-    mainFolderViewMenu = new QMenu;
+    watchFolderViewMenu = new QMenu;
     //Setting up path or command to open folders in OS..
 #ifdef Q_OS_WIN32
     ePath = "c:\\Windows\\Explorer.exe ";
@@ -83,9 +83,9 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
 
     // mainFolderView Menu..
 
-    mainFolderViewMenu->setStyleSheet("icon-size:12px;");
-    mainFolderViewMenu->setTitle("MyMenu");
-    mainFolderViewMenu->addAction(fileStandard,tr("Åbn mappen i explorer"),
+    watchFolderViewMenu->setStyleSheet("icon-size:12px;");
+    watchFolderViewMenu->setTitle("MyMenu");
+    watchFolderViewMenu->addAction(fileStandard,tr("Åbn mappen i explorer"),
                         this,SLOT(explorerFolder(bool)));
 
     // detailedFolderview related..
@@ -114,6 +114,7 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
     countTimer->setInterval(countTimerInterval);
     countTimerStatus ? countTimer->start() : countTimer->stop();
     // Eventfilter..
+    tray->setIcon(QIcon(":/My Images/Ressources/cplusplus.jpg"));
 
     installEventFilter(this);
 
@@ -148,17 +149,15 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
             this,SLOT(explorerMenuTriggered(QAction*)));
 
     connect(coreApplication,&AbstractCoreApplication::sendFolderSize,this,&mainWindow::folderContentRecieved);
-
-
     connect(coreApplication,&AbstractCoreApplication::sendFilePath,this,&mainWindow::setStatusText);
 
     connect(clearStatusTextTimer,&QTimer::timeout,this,&mainWindow::clearStatusLine);
 
-    connect(coreApplication,&AbstractCoreApplication::stateChanged,this,&mainWindow::updateViews);
-
-    coreApplication->readPersistence();
+    connect(coreApplication,&AbstractCoreApplication::stateChanged,this,&mainWindow::updateView);
 
     tray->show();
+
+    updateView();
 }
 
 
@@ -176,6 +175,7 @@ void mainWindow::closeEvent(QCloseEvent *cE)
     else {
         cE->ignore();
         hide();
+        tray->show();
     }
 }
 
@@ -210,7 +210,7 @@ void mainWindow::explorerMenuTriggered(QAction *xAction)
     {
         QString txt = xAction->text(),
         #ifdef Q_OS_WIN32
-                ex = ePath + modifyPath(folder(txt),"\\");
+                ex = ePath + modifyPath(txt,"\\");
         #elif defined Q_OS_MAC
                 ex = ePath + getItemFromList(txt);
         #else
@@ -221,7 +221,7 @@ void mainWindow::explorerMenuTriggered(QAction *xAction)
     }
     else
     {
-        QStringList list = folders();
+        QStringList list = coreApplication->watchFolders();
         for(QString l : list)
         {
             QString ex = ePath;
@@ -281,7 +281,8 @@ void mainWindow::tMenuClicked(QAction *a)
 
 void mainWindow::countMenuTriggered(QAction *cAction)
 {
-
+    QString fPath = cAction->text();
+    coreApplication->beginCalcSize(fPath);
 }
 
 void mainWindow::clearMenuTriggered(QAction *clAction)
@@ -300,7 +301,7 @@ void mainWindow::explorerFolder(bool ok)
 {
     Q_UNUSED(ok);
     int r = watchFolderView->currentIndex().row();
-    QStringList list = folders();
+    QStringList list = coreApplication->watchFolders();
 #ifdef Q_OS_MAC
 
     QString path = ePath + list.at(r);
@@ -319,11 +320,6 @@ void mainWindow::explorerFolder(bool ok)
 #endif
 }
 
-void mainWindow::folderContentsRecieved(QList<DirectoryObject> fObjects)
-{
-
-}
-
 void mainWindow::actionCountFolder(bool f)
 {
     Q_UNUSED(f);
@@ -331,10 +327,6 @@ void mainWindow::actionCountFolder(bool f)
         return;
     QStringList list {currentMainFolderPath()};
     emit StartCount(list);
-}
-
-void mainWindow::timerCount()
-{
 }
 
 void mainWindow::setTimerStatus(bool makeActive)
@@ -395,7 +387,12 @@ void mainWindow::clearCompleted(bool a)
 
 void mainWindow::folderContentRecieved(DirectoryObject fObject)
 {
-    QString fileName = fObject.path;
+    QString sizeNotation;
+    double scaledAndRoundedSize = fW::convertSizeToAppropriateUnits(fObject.sz,sizeNotation,2);
+    QString folderName = fObject.path,
+            folderSize = QString::number(scaledAndRoundedSize),
+            message = QString("Size of folder content is %1 %2").arg(folderSize).arg(sizeNotation);
+    showSystemMessage(message,folderName);
 }
 
 void mainWindow::contextMenuCalled(QPoint p)
@@ -407,7 +404,7 @@ void mainWindow::contextMenuCalled(QPoint p)
     int Y = P.y();
     P.setY(Y + 12);
 
-    mainFolderViewMenu->popup(P);
+    watchFolderViewMenu->popup(P);
 }
 
 double mainWindow::roundNumber(long long numb, QString &denote, int dec)
@@ -499,7 +496,7 @@ void mainWindow::readSettings()
     persistenceSettings->endGroup();
 }
 
-void mainWindow::popSystemTrayMessage(const QString msg, const QString title)
+void mainWindow::showSystemMessage(const QString msg, const QString title)
 {
     tray->showMessage(title,msg);
 }
@@ -543,9 +540,7 @@ QFont mainWindow::createFont(fontType ft, QString family, bool bold, bool italic
 
 void mainWindow::on_clearButt_clicked()
 {
-
 }
-
 
 void mainWindow::on_delButt_clicked()
 {
@@ -571,13 +566,18 @@ void mainWindow::updateInfoScreen(QModelIndex index)
     if(!index.isValid())
         return;
 
-    QTreeWidgetItem *watchFolderItem = watchFolderView->itemAt(index.column(),index.row());
+    QTreeWidgetItem *watchFolderItem = watchFolderView->topLevelItem(index.row());
     QString path = watchFolderItem->text(0);
     QString html = coreApplication->directoryInformationHtml(path);
     fileInfoBrowser->setHtml(html);
 
     suffixTree->clear();
-    suffixTree->addTopLevelItems(coreApplication->suffixList(path));
+    try {
+        suffixTree->addTopLevelItems(coreApplication->suffixList(path));
+    } catch (QString string) {
+        if(messageBx::customBox(this,"Item not found or ready to show","Error")){};
+    }
+
 }
 
 void mainWindow::sortSuffixTreeColumn(int c)
@@ -606,27 +606,6 @@ void mainWindow::updateViewIcons(QIcon ico)
 {
     for(int a = 0;a <watchFolderView->topLevelItemCount();a++)
         watchFolderView->topLevelItem(a)->setIcon(0,ico);
-}
-
-QStringList mainWindow::folders() const
-{
-    QStringList list;
-    for(int a = 0;a <watchFolderView->topLevelItemCount();a++)
-        list << watchFolderView->topLevelItem(a)->text(0);
-
-    return list;
-}
-
-QString mainWindow::folder(QString t) const
-{
-    int count = watchFolderView->topLevelItemCount();
-    for(int a = 0;a <count;a++)
-    {
-        QString item = watchFolderView->topLevelItem(a)->text(0);
-        if(item == t)
-            return item;
-    }
-    return QString();
 }
 
 QFileInfoList mainWindow::fileItemList(const QStringList paths) const
@@ -735,7 +714,7 @@ QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QList<QTreeWidgetItem *> sItem
 
 void mainWindow::updateSubTrayMenus()
 {
-    QStringList l = folders();
+    QStringList l = coreApplication->watchFolders();
 
     countTrayMenu->clear();
     clearTrayMenu->clear();
@@ -769,7 +748,10 @@ void mainWindow::clearStatusLine()
 
 void mainWindow::on_actionIndstillinger_triggered()
 {
-    CustomDialog *dialog = new CustomDialog(new settingsWindow(coreApplication), true);
+    QPointer<SettingsWindow> sWidget = new SettingsWindow(coreApplication);
+    QPointer<CustomDialog> dialog = new CustomDialog(sWidget, true);
+    connect(coreApplication,&AbstractCoreApplication::stateChanged,sWidget,&SettingsWindow::updateView);
+
     dialog->show();
 }
 
@@ -803,9 +785,10 @@ void mainWindow::on_actionOpen_current_directory_triggered()
     process->waitForFinished();
 }
 
-void mainWindow::updateViews()
+void mainWindow::updateView()
 {
     updateWatchFolderView();
+    updateSubTrayMenus();
     updateDetaileditems();
 }
 

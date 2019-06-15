@@ -5,6 +5,7 @@
 #include "fileworker.h"
 #include "myIcon.h"
 #include "rulesmanager.h"
+#include "settingsdelegate.h"
 
 class AbstractCoreApplication : public QObject
 {
@@ -19,7 +20,7 @@ public:
 
     virtual Rule ruleAt(int index) = 0;
     virtual Rule rule(QString title) = 0;
-    virtual QList<QTreeWidgetItem*> ruleItems() = 0;
+    virtual QList<QTreeWidgetItem*> ruleItemModels() = 0;
     virtual void swapRule(int i, int j) = 0;
 
     virtual QString directoryInformationHtml(QString path) = 0;
@@ -28,9 +29,10 @@ public:
 
     virtual QList<MyIcon> icons() = 0;
 
-    virtual bool closeOnExit() = 0;
+    virtual SettingsDelegate settingsState() = 0;
+    virtual void setSettings(SettingsDelegate s) =0;
 
-    virtual void readPersistence() = 0;
+    virtual bool closeOnExit() = 0;
 
     virtual void beginCalcSize(QString path) = 0;
     virtual void beginCalcSizes(QStringList paths) = 0;

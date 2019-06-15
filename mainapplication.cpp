@@ -37,6 +37,9 @@ MainApplication::MainApplication(QString appName, QString orgName)
     connect(fManager,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);
 
     fileWorkerThread->start();
+
+    emit sManager->processPaths(watchFolders());
+
 }
 
 MainApplication::~MainApplication()
@@ -115,8 +118,6 @@ void MainApplication::clearFolders(QStringList paths)
 
 }
 
-
-
 void MainApplication::addWatchFolders(QStringList paths)
 {
     sManager->insertPaths(paths);
@@ -133,6 +134,16 @@ QStringList MainApplication::watchFolders()
     return sManager->paths();
 }
 
+SettingsDelegate MainApplication::settingsState()
+{
+    return sManager->settingsState();
+}
+
+void MainApplication::setSettings(SettingsDelegate s)
+{
+    sManager->setSettings(s);
+}
+
 void MainApplication::removeWatchFolderAt(int index)
 {
     sManager->removePathAt(index);
@@ -141,12 +152,4 @@ void MainApplication::removeWatchFolderAt(int index)
 void MainApplication::removeWatchFolder(QString path)
 {
     sManager->removePath(path);
-}
-
-
-void MainApplication::readPersistence()
-{
-    sManager->readSettings();
-    rManager->readSettings();
-    fManager->readSettings();
 }

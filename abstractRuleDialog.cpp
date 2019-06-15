@@ -70,7 +70,7 @@ void AbstractRuleDialog::updateConditionView(SubRule &sR)
     rD::compareMode comp = sR.fileCompareMode;
     if(cond == rD::filepathMode || cond == rD::extensionMode)
     {
-        condWidget->setKeyWords(sR.Keyword());
+        condWidget->setKeyWords(rulesManager::ruleKeyWordToString(sR));
         condWidget->setCompareView(sR.fileCompareMode);
     }
     else if(cond == rD::sizeMode && comp != rD::interval)
@@ -141,26 +141,26 @@ void AbstractRuleDialog::updateView()
         if((condition == rD::dateCreatedMode || condition == rD::dateModifiedMode) &&
                 sRule.fileCompareMode != rD::interval)
         {
-            headerData << sRule.Keyword();
+            headerData << rulesManager::ruleKeyWordToString(sRule);
         }
         else if((condition == rD::dateCreatedMode || condition == rD::dateModifiedMode) &&
                 sRule.fileCompareMode == rD::interval)
         {
-            headerData << sRule.dateLimitsToString();
+            headerData << rulesManager::ruleDateLimitsToString(sRule);
         }
         else if(condition == rD::sizeMode &&
                 sRule.fileCompareMode != rD::interval)
         {
-           headerData << sRule.Keyword();
+           headerData << rulesManager::ruleKeyWordToString(sRule);
         }
         else if(condition == rD::sizeMode &&
                 sRule.fileCompareMode == rD::interval)
         {
-            headerData << sRule.sizeLimitsToString();
+            headerData << rulesManager::ruleSizeLimitsToString(sRule);
         }
         else if(condition == rD::typeMode)
         {
-            headerData << sRule.Keyword();
+            headerData << rulesManager::ruleKeyWordToString(sRule);
         }
         else
         {

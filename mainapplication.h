@@ -29,10 +29,13 @@ public:
 
     Rule ruleAt(int index) {return rManager->rule(index);}
     Rule rule(QString title){return rManager->rule(title);}
-    QList<QTreeWidgetItem*> ruleItems(){return rManager->ruleItems();}
+    QList<QTreeWidgetItem*> ruleItemModels(){return rManager->ruleItems();}
     void swapRule(int i, int j){rManager->swapRule(i,j);}
 
     QList<MyIcon> icons(){return sManager->allIcons();}
+
+    SettingsDelegate settingsState();
+    void setSettings(SettingsDelegate s);
 
     bool closeOnExit(){return sManager->closeOnQuit();}
 

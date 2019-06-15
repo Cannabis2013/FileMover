@@ -14,7 +14,6 @@ int main(int argc, char *argv[])
     mainWindow *w = new mainWindow(mainApplicaton,
                                    applicationName,
                                    organizationName);
-
     w->show();
 
     return a.exec();

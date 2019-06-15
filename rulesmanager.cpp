@@ -2,7 +2,9 @@
 
 rulesManager::rulesManager(QString appName, QString orgName):
     AbstractPersistence (appName,orgName)
-{}
+{
+    readSettings();
+}
 
 rulesManager::~rulesManager()
 {
@@ -41,6 +43,44 @@ QStringList rulesManager::splitString(const QString split)
     return splittetList;
 }
 
+QString rulesManager::ruleKeyWordToString(SubRule sRule)
+{
+    if(sRule.fieldCondition == rD::sizeMode &&
+            sRule.fileCompareMode != rD::interval)
+        return QString::number(sRule.sizeLimit.first) + " " + sRule.sizeLimit.second;
+    else if(sRule.fieldCondition == rD::sizeMode &&
+            sRule.fileCompareMode == rD::interval)
+        return rulesManager::ruleSizeLimitsToString(sRule);
+    else if((sRule.fieldCondition == rD::dateCreatedMode || sRule.fieldCondition == rD::dateModifiedMode) &&
+            sRule.fileCompareMode != rD::interval)
+        return sRule.fixedDate.second.toString("dd.MM.yyyy");
+    else if((sRule.fieldCondition == rD::dateCreatedMode || sRule.fieldCondition == rD::dateModifiedMode) &&
+            sRule.fileCompareMode == rD::interval)
+        return rulesManager::ruleDateLimitsToString(sRule);
+    else if(sRule.fieldCondition == rD::typeMode)
+        return rD::typeFromEnum(sRule.typeMode);
+    else
+        return Worker::mergeStringList(sRule.keyWords);
+}
+
+
+QString rulesManager::ruleSizeLimitsToString(SubRule sRule)
+{
+    QString minSize = QString::number(sRule.sizeIntervalLimits.first.first),
+            maxSize = QString::number(sRule.sizeIntervalLimits.second.first);
+    QString sizeUnitMin = sRule.sizeIntervalLimits.first.second,
+            sizeUnitMax = sRule.sizeIntervalLimits.second.second;
+    return "Min: " + minSize + " " + sizeUnitMin
+            + " " + "max: " + maxSize + " " + sizeUnitMax;
+}
+
+QString rulesManager::ruleDateLimitsToString(SubRule sRule)
+{
+    QString startDate = sRule.intervalDate.first.date().toString("dd.MM.yyyy"),
+            endDate = sRule.intervalDate.second.date().toString("dd.MM.yyyy");
+    return "Start dato: " + startDate + " slut dato: " + endDate;
+}
+
 QList<QTreeWidgetItem *> rulesManager::ruleItems() const
 {
     rD rDefs;
@@ -49,12 +89,19 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     {
         QStringList headerData {r.title,rDefs.actionToString(r.actionRule),Worker::mergeStringList(r.destinationPath)};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
+        QIcon itemIcon = QIcon(":/My Images/Ressources/rule_icon.png");
+        pItem->setIcon(0,itemIcon);
         for(SubRule sRule : r.subRules)
         {
             QStringList hData;
-            hData << rDefs.fieldConditionToString(sRule.fieldCondition) << rDefs.compareToString(sRule.fileCompareMode) <<  sRule.Keyword();
+            hData << rDefs.fieldConditionToString(sRule.fieldCondition) <<
+                     rDefs.compareToString(sRule.fileCompareMode) <<
+                     rulesManager::ruleKeyWordToString(sRule);
 
             QTreeWidgetItem *cItem = new QTreeWidgetItem(hData);
+            cItem->setIcon(0,QIcon(":/My Images/Ressources/sub_rule_icon.png"));
+            for (int i = 0; i < hData.count(); ++i)
+                cItem->setFont(i,QApplication::font());
             pItem->addChild(cItem);
         }
         resultingList << pItem;
@@ -103,56 +150,55 @@ Rule rulesManager::rule(QString title)
 void rulesManager::readSettings()
 {
     QList<Rule>rules;
-    QSettings s;
-    int total = s.beginReadArray("Rules");
+    int total = persistenceSettings->beginReadArray("Rules");
     for (int i = 0; i < total; ++i)
     {
         Rule r;
-        s.setArrayIndex(i);
-        r.title = s.value("Title","Title").toString();
-        r.actionRule = static_cast<rD::fileActionRule>(s.value("Action","").toInt());
-        r.appliesToPath = s.value("ApplyPath","Alle").toString();
-        r.destinationPath = Worker::splitString(s.value("Destination paths","").toString());
-        r.deepScanMode = s.value("Scan Mode",false).toBool();
-        int count = s.beginReadArray("Subrules");
+        persistenceSettings->setArrayIndex(i);
+        r.title = persistenceSettings->value("Title","Title").toString();
+        r.actionRule = static_cast<rD::fileActionRule>(persistenceSettings->value("Action","").toInt());
+        r.appliesToPath = persistenceSettings->value("ApplyPath","Alle").toString();
+        r.destinationPath = Worker::splitString(persistenceSettings->value("Destination paths","").toString());
+        r.deepScanMode = persistenceSettings->value("Scan Mode",false).toBool();
+        int count = persistenceSettings->beginReadArray("Subrules");
         for (int n = 0; n < count; ++n)
         {
             SubRule sRule;
-            s.setArrayIndex(n);
+            persistenceSettings->setArrayIndex(n);
 
-            sRule.copymode = static_cast<rD::copyMode>(s.value("Copymode",0).toInt());
-            sRule.fieldCondition = static_cast<rD::fileFieldCondition>(s.value("Condition","").toInt());
-            sRule.fileCompareMode = static_cast<rD::compareMode>(s.value("Comparemode",0).toInt());
+            sRule.copymode = static_cast<rD::copyMode>(persistenceSettings->value("Copymode",0).toInt());
+            sRule.fieldCondition = static_cast<rD::fileFieldCondition>(persistenceSettings->value("Condition","").toInt());
+            sRule.fileCompareMode = static_cast<rD::compareMode>(persistenceSettings->value("Comparemode",0).toInt());
 
-            sRule.matchWholeWords = s.value("Matchwholewords",false).toBool();
-            sRule.keyWords = Worker::splitString(s.value("Keywords","").toString());
+            sRule.matchWholeWords = persistenceSettings->value("Matchwholewords",false).toBool();
+            sRule.keyWords = Worker::splitString(persistenceSettings->value("Keywords","").toString());
 
-            sRule.sizeLimit.first = s.value("Sizelimit",0).toInt();
-            sRule.sizeLimit.second = s.value("Sizelimitunit","kb").toString();
+            sRule.sizeLimit.first = persistenceSettings->value("Sizelimit",0).toInt();
+            sRule.sizeLimit.second = persistenceSettings->value("Sizelimitunit","kb").toString();
 
-            s.beginGroup("Sizelimits");
-            sRule.sizeIntervalLimits.first.first = s.value("Minsizeinterval",0).toInt();
-            sRule.sizeIntervalLimits.first.second = s.value("Minsizeunitinterval","kb").toString();
-            sRule.sizeIntervalLimits.second.first = s.value("Maxsizeinterval",0).toInt();
-            sRule.sizeIntervalLimits.second.second = s.value("Maxsizeunitinterval","kb").toString();
-            s.endGroup();
+            persistenceSettings->beginGroup("Sizelimits");
+            sRule.sizeIntervalLimits.first.first = persistenceSettings->value("Minsizeinterval",0).toInt();
+            sRule.sizeIntervalLimits.first.second = persistenceSettings->value("Minsizeunitinterval","kb").toString();
+            sRule.sizeIntervalLimits.second.first = persistenceSettings->value("Maxsizeinterval",0).toInt();
+            sRule.sizeIntervalLimits.second.second = persistenceSettings->value("Maxsizeunitinterval","kb").toString();
+            persistenceSettings->endGroup();
 
-            sRule.fixedDate.first = static_cast<rD::compareMode>(s.value("Comparemode",0).toInt());
-            sRule.fixedDate.second = QDateTime::fromString(s.value("Datetime","").toString(),"dd.MM.yyyy");
+            sRule.fixedDate.first = static_cast<rD::compareMode>(persistenceSettings->value("Comparemode",0).toInt());
+            sRule.fixedDate.second = QDateTime::fromString(persistenceSettings->value("Datetime","").toString(),"dd.MM.yyyy");
 
-            s.beginGroup("Datelimits");
-            sRule.intervalDate.first = myDateTime::fromString(s.value("Startdate","01.01.2000").toString());
-            sRule.intervalDate.second = myDateTime::fromString(s.value("Enddate","01.01.2000").toString());
-            s.endGroup();
+            persistenceSettings->beginGroup("Datelimits");
+            sRule.intervalDate.first = myDateTime::fromString(persistenceSettings->value("Startdate","01.01.2000").toString());
+            sRule.intervalDate.second = myDateTime::fromString(persistenceSettings->value("Enddate","01.01.2000").toString());
+            persistenceSettings->endGroup();
 
-            sRule.typeMode = static_cast<Worker::iteratorMode>(s.value("Iteratormode",0).toInt());
+            sRule.typeMode = static_cast<Worker::iteratorMode>(persistenceSettings->value("Iteratormode",0).toInt());
 
             r.subRules.append(sRule);
         }
-        s.endArray();
+        persistenceSettings->endArray();
         rules << r;
     }
-    s.endArray();
+    persistenceSettings->endArray();
     addRules(rules);
 }
 

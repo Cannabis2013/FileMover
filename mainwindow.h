@@ -75,8 +75,8 @@ private slots:
     // Buttons..
     void on_addBut_clicked(); // Add path to "mainFolderView"
     void on_clearButt_clicked(); // The button slot that starts the "clear process"
-    void on_countButt_clicked(); // Count number of items in the selected "path"
-    void on_delButt_clicked(); // Delete an item in "mainFolderView"
+    void on_countButt_clicked(); // Count the number of items in the selected "path"
+    void on_delButt_clicked(); // Delete an item in "watchFolderView"
 
     // countTimer related..
     void setTimerStatus(bool makeActive);
@@ -126,6 +126,7 @@ private slots:
     void msgToTray(const QString &msg);
 
     void on_actionOpen_current_directory_triggered();
+
 
 private:
 

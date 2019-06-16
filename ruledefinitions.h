@@ -86,13 +86,13 @@ struct ruleDefinitions
     // List variables..
     static QStringList sizeUnits(){return QStringList{"b","kb","mb","gb"};}
 
-    const QList<QPair<QString,fileActionRule> > actions {
+    const QList<QPair<QString,fileActionRule> > actionMappings {
         QPair<QString,fileActionRule>("Flytte indhold",fileActionRule::Move),
                 QPair<QString,fileActionRule>("Slette indhold",fileActionRule::Delete),
                 QPair<QString,fileActionRule>("Kopiere indhold",fileActionRule::Copy),
                 QPair<QString,fileActionRule>("Gøre intet",fileActionRule::none)};
 
-    const QList<QPair<QString,fileFieldCondition> > fields {
+    const QList<QPair<QString,fileFieldCondition> > fieldConditionMappings {
         QPair<QString,fileFieldCondition>("Filnavn",fileFieldCondition::filepathMode),
                 QPair<QString,fileFieldCondition>("Filendelse",fileFieldCondition::extensionMode),
                 QPair<QString,fileFieldCondition>("Størrelse",fileFieldCondition::sizeMode),
@@ -101,7 +101,7 @@ struct ruleDefinitions
                 QPair<QString,fileFieldCondition>("Type",fileFieldCondition::typeMode),
                 QPair<QString,fileFieldCondition>("Ingen betingelser",fileFieldCondition::nonConditionalMode)};
 
-    const QList<QPair<QString,compareMode> > compareOperators {
+    const QList<QPair<QString,compareMode> > compareMappings {
         QPair<QString,compareMode>("Indeholder følgende",compareMode::contains),
                 QPair<QString,compareMode>("Indeholder ikke følgende",compareMode::dontMatch),
                 QPair<QString,compareMode>("Matcher følgende",compareMode::match),
@@ -122,17 +122,17 @@ struct ruleDefinitions
         QStringList resultingList;
         if(property == typeProperty::actionProperty || property == typeProperty::everyProperty)
         {
-            for ( QPair<QString,fileActionRule> pair : actions)
-                resultingList << pair.first;
+            for ( QPair<QString,fileActionRule> actionMapping : actionMappings)
+                resultingList << actionMapping.first;
         }
         if(property == typeProperty::conditionProperty || property == typeProperty::everyProperty)
         {
-            for ( QPair<QString,fileFieldCondition> pair : fields)
+            for ( QPair<QString,fileFieldCondition> pair : fieldConditionMappings)
                 resultingList << pair.first;
         }
         if(property == typeProperty::compareProperty || property == typeProperty::everyProperty)
         {
-            for ( QPair<QString,compareMode> pair : compareOperators)
+            for ( QPair<QString,compareMode> pair : compareMappings)
                 resultingList << pair.first;
         }
 
@@ -145,7 +145,7 @@ struct ruleDefinitions
         if(condition == fileFieldCondition::filepathMode ||
                 condition == fileFieldCondition::extensionMode)
         {
-            for(QPair<QString,compareMode> pair : compareOperators) {
+            for(QPair<QString,compareMode> pair : compareMappings) {
                 if(pair.second == compareMode::contains ||
                         pair.second == compareMode::dontMatch ||
                         pair.second == compareMode::match ||
@@ -157,7 +157,7 @@ struct ruleDefinitions
         }
         else if(condition == fileFieldCondition::sizeMode)
         {
-            for(QPair<QString,compareMode> pair : compareOperators)
+            for(QPair<QString,compareMode> pair : compareMappings)
             {
                 if(pair.second == compareMode::bigger ||
                         pair.second ==compareMode::biggerOrEqual ||
@@ -172,7 +172,7 @@ struct ruleDefinitions
         else if(condition == fileFieldCondition::dateCreatedMode ||
                 condition == fileFieldCondition::dateModifiedMode)
         {
-            for(QPair<QString,compareMode> pair : compareOperators)
+            for(QPair<QString,compareMode> pair : compareMappings)
             {
                 if(pair.second == compareMode::olderThan ||
                         pair.second == compareMode::exactDate ||
@@ -190,7 +190,7 @@ struct ruleDefinitions
 
     fileActionRule actionFromString(const QString mode)
     {
-        for(QPair<QString,fileActionRule> pair : actions)
+        for(QPair<QString,fileActionRule> pair : actionMappings)
         {
             if(pair.first == mode)
                 return pair.second;
@@ -199,7 +199,7 @@ struct ruleDefinitions
     }
     QString actionToString(const fileActionRule mode)
     {
-        for(QPair<QString,fileActionRule> pair : actions)
+        for(QPair<QString,fileActionRule> pair : actionMappings)
         {
             if(pair.second == mode)
                 return pair.first;
@@ -209,7 +209,7 @@ struct ruleDefinitions
 
     QString fieldConditionToString(const fileFieldCondition mode)
     {
-        for(QPair<QString,fileFieldCondition> pair : fields)
+        for(QPair<QString,fileFieldCondition> pair : fieldConditionMappings)
         {
             if(pair.second == mode)
                 return pair.first;
@@ -219,7 +219,7 @@ struct ruleDefinitions
 
     fileFieldCondition fieldConditionFromString(const QString string)
     {
-        for(QPair<QString,fileFieldCondition> pair : fields)
+        for(QPair<QString,fileFieldCondition> pair : fieldConditionMappings)
         {
             if(pair.first == string)
                 return pair.second;
@@ -229,7 +229,7 @@ struct ruleDefinitions
 
     QString compareToString(const compareMode mode)
     {
-        for(QPair<QString,compareMode> pair : compareOperators)
+        for(QPair<QString,compareMode> pair : compareMappings)
         {
             if(pair.second == mode)
                 return pair.first;
@@ -239,7 +239,7 @@ struct ruleDefinitions
 
     compareMode compareFromString(const QString string)
     {
-        for(QPair<QString,compareMode> pair : compareOperators)
+        for(QPair<QString,compareMode> pair : compareMappings)
         {
             if(pair.first == string)
                 return pair.second;

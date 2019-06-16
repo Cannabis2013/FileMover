@@ -137,6 +137,14 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
 
     qRegisterMetaType<QList<DirectoryObject>>("QList<fileObject>");
 
+    /*
+     * Setup connections
+     */
+
+    // suffixTree..
+
+    connect(suffixHeader,&QHeaderView::sectionDoubleClicked,this,&mainWindow::sortSuffixTreeColumn);
+
     // Systemtray..
     connect(tray,SIGNAL(messageClicked()),this,SLOT(trayMsgClicked()));
     connect(tray,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
@@ -171,6 +179,7 @@ void mainWindow::closeEvent(QCloseEvent *cE)
         cE->accept();
         delete coreApplication;
         writeSettings();
+        tray->hide();
     }
     else {
         cE->ignore();

@@ -1,5 +1,5 @@
-#ifndef WIDGETFORM_H
-#define WIDGETFORM_H
+#ifndef CUSTOMDIALOG_H
+#define CUSTOMDIALOG_H
 
 #include <QWidget>
 #include <qframe.h>
@@ -74,4 +74,4 @@ private:
     QSize widgetSize;
 };
 
-#endif // WIDGETFORM_H
+#endif // CUSTOMDIALOG_H

@@ -1,5 +1,5 @@
-﻿#ifndef settingsWindow_H
-#define settingsWindow_H
+﻿#ifndef SETTINGSWINDOW_H
+#define SETTINGSWINDOW_H
 
 #include <QWidget>
 #include <QListWidget>

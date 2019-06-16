@@ -10,7 +10,6 @@ using namespace std;
 
 class CustomComboBox : public QComboBox
 {
-
     Q_OBJECT
 public:
     CustomComboBox(int parentRowIndex)

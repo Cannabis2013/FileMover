@@ -29,7 +29,7 @@ struct DirectoryItem
     QString path = "Not defined";
     QList<QPair<QString,int> > sufList;
     QList<QTreeWidgetItem*> suffixItems() const;
-    QTreeWidgetItem *allFiles;
+    QTreeWidgetItem *directoryContent;
 };
 
 class FileInformationManager : public QObject, public AbstractPersistence
@@ -55,7 +55,7 @@ public:
     void readSettings();
     void writeSettings();
 
-    static QTreeWidgetItem *createTreeItems(QTreeWidgetItem *item);
+    static QTreeWidgetItem *assembleTreeItems(QTreeWidgetItem *item);
 
 public slots:
     void insertItem(DirectoryItem item);

@@ -34,7 +34,7 @@ QList<QTreeWidgetItem*> FileInformationManager::allTreeItems()
 {
     QList<QTreeWidgetItem*> resultingList;
     for (DirectoryItem item : items)
-        resultingList.append(createTreeItems(item.allFiles));
+        resultingList.append(assembleTreeItems(item.directoryContent));
 
     return resultingList;
 }
@@ -170,7 +170,7 @@ QList<QTreeWidgetItem *> DirectoryItem::suffixItems() const
     return resultingList;
 }
 
-QTreeWidgetItem *FileInformationManager::createTreeItems(QTreeWidgetItem *item)
+QTreeWidgetItem *FileInformationManager::assembleTreeItems(QTreeWidgetItem *item)
 {
     QTreeWidgetItem *result = new QTreeWidgetItem;
     for (int i = 0; i < item->columnCount(); ++i)
@@ -190,7 +190,7 @@ QTreeWidgetItem *FileInformationManager::createTreeItems(QTreeWidgetItem *item)
             }
             else
             {
-                QTreeWidgetItem *child = createTreeItems(item->child(i));
+                QTreeWidgetItem *child = assembleTreeItems(item->child(i));
                 result->addChild(child);
             }
         }

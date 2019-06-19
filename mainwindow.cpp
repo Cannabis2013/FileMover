@@ -717,6 +717,7 @@ void mainWindow::clearStatusLine()
 void mainWindow::on_actionIndstillinger_triggered()
 {
     QPointer<SettingsWindow> sWidget = new SettingsWindow(coreApplication);
+    sWidget->setWidgetTitle("Settings and rules");
     QPointer<CustomDialog> dialog = new CustomDialog(sWidget, true);
     connect(coreApplication,&AbstractCoreApplication::stateChanged,sWidget,&SettingsWindow::updateView);
 

@@ -617,7 +617,7 @@ void FileWorker::processFileInformation(QString path)
     item.dirSize = QString::number(directorySize) + " " + denotation;
     item.dirCount = folderCount(path);
     item.fileCount = fileCount(path);
-    item.allFiles = scanDir(path);
+    item.directoryContent = scanDir(path);
     item.sufList = getListOfSuffixOccuriencies(path);
 
     emit processFinished(item);
@@ -640,7 +640,7 @@ void FileWorker::processFileInformations(QStringList paths)
         item.dirSize = QString::number(directorySize) + " " + denotation;
         item.dirCount = folderCount(p);
         item.fileCount = fileCount(p);
-        item.allFiles = scanDir(p);
+        item.directoryContent = scanDir(p);
         item.sufList = getListOfSuffixOccuriencies(p);
         directories << item;
     }

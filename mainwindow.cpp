@@ -421,8 +421,6 @@ void mainWindow::updateDetaileditems()
     detailedFolderView->clear();
     QList<QTreeWidgetItem*>itemList = coreApplication->detailedWatchFolderItems();
     detailedFolderView->addTopLevelItems(itemList);
-
-    cout << "updateDetailedItems runned" << endl;
 }
 
 void mainWindow::updateWatchFolderView()
@@ -430,7 +428,6 @@ void mainWindow::updateWatchFolderView()
     watchFolderView->clear();
     QList<QTreeWidgetItem*> watchFolders = coreApplication->watchFolderItems();
     watchFolderView->addTopLevelItems(watchFolders);
-    cout << "updateWatchfolderView runned" << endl;
 }
 
 QString mainWindow::modifyPath(QString s, QString S) const
@@ -588,8 +585,7 @@ QFileInfoList mainWindow::fileItemList(const QStringList paths) const
         QDir dir = QDir(path);
         resultingList += dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries);
     }
-    for(QFileInfo f : resultingList)
-        cout << f.absoluteFilePath().toStdString() << endl;
+
     return resultingList;
 }
 
@@ -705,7 +701,6 @@ void mainWindow::updateSubTrayMenus()
         clearTrayMenu->addAction(path);
         folderTrayMenu->addAction(path);
     }
-    cout << "updateSubTrayMenus runned" << endl;
 }
 
 void mainWindow::setStatusText(QString txt)

@@ -55,6 +55,8 @@ public:
     void readSettings();
     void writeSettings();
 
+    static QTreeWidgetItem *createTreeItems(QTreeWidgetItem *item);
+
 public slots:
     void insertItem(DirectoryItem item);
     void insertItems(QList<DirectoryItem> items);

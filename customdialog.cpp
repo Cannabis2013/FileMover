@@ -143,7 +143,6 @@ void CustomDialog::setSize(QSize size)
             widgetGridLayout->contentsMargins().bottom() + 2;
 
     setFixedHeight(totalHeight);
-    cout << this->size().height() << endl;
 }
 
 void CustomDialog::show_centered_on_screen()

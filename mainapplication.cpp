@@ -95,8 +95,6 @@ void MainApplication::clearFolders(QStringList paths)
             QString fileSizeUnit;
             double sz = fW::convertSizeToAppropriateUnits(file.size(),fileSizeUnit);
             QString fileSize = QString::number(sz) + " " + fileSizeUnit;
-            cout << "Filename: " << file.fileName().toStdString() << " Filepath: " << file.filePath().toStdString() <<
-                 " Size: " << fileSize.toStdString() << endl;
         }
     };
     Q_UNUSED(outputFiles);

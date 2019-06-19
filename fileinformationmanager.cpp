@@ -34,7 +34,7 @@ QList<QTreeWidgetItem*> FileInformationManager::allTreeItems()
 {
     QList<QTreeWidgetItem*> resultingList;
     for (DirectoryItem item : items)
-        resultingList.append(item.allFiles);
+        resultingList.append(createTreeItems(item.allFiles));
 
     return resultingList;
 }
@@ -168,6 +168,34 @@ QList<QTreeWidgetItem *> DirectoryItem::suffixItems() const
         resultingList << new QTreeWidgetItem(QStringList {sufPair.first,QString::number(sufPair.second)});
 
     return resultingList;
+}
+
+QTreeWidgetItem *FileInformationManager::createTreeItems(QTreeWidgetItem *item)
+{
+    QTreeWidgetItem *result = new QTreeWidgetItem;
+    for (int i = 0; i < item->columnCount(); ++i)
+        result->setText(i,item->text(i));
+    if(item->childCount() == 0)
+        return result;
+    else
+    {
+        for (int i = 0; i < item->childCount(); ++i)
+        {
+            if(item->child(i)->childCount() == 0)
+            {
+                QTreeWidgetItem *child = new QTreeWidgetItem;
+                for (int j = 0; j < item->child(i)->columnCount(); ++j)
+                    child->setText(j,item->child(i)->text(j));
+                result->addChild(child);
+            }
+            else
+            {
+                QTreeWidgetItem *child = createTreeItems(item->child(i));
+                result->addChild(child);
+            }
+        }
+    }
+    return result;
 }
 
 void FileInformationManager::readSettings()

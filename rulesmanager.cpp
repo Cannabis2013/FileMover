@@ -129,7 +129,6 @@ void rulesManager::removeRule(const QString title)
         if(r.title == title)
         {
             rules.removeAt(i);
-            cout << "Rule removed" << endl;
             emit stateChanged();
             return;
         }
@@ -286,9 +285,9 @@ void rulesManager::replaceRule(const Rule r, QString title)
 void rulesManager::swapRule(int i, int j)
 {
     if(i >= rules.count() || j >= rules.count())
-        throw new std::overflow_error("");
+        throw std::out_of_range("Index out of range");
     if(i < 0 || j < 0)
-        throw new std::overflow_error("");
+        throw std::out_of_range("Index out of range");
 
     rules.swap(i,j);
 

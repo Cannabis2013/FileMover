@@ -220,7 +220,7 @@ border-bottom:2px solid black;</string>
              <enum>QLayout::SetMaximumSize</enum>
             </property>
             <item>
-             <widget class="QWidget" name="widget" native="true">
+             <widget class="QWidget" name="buttonContainer" native="true">
               <layout class="QVBoxLayout" name="verticalLayout_4">
                <property name="spacing">
                 <number>0</number>

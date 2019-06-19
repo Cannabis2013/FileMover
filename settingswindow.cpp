@@ -86,6 +86,9 @@ void SettingsWindow::on_insertRule_2_clicked()
 
 void SettingsWindow::on_editRule_2_clicked()
 {
+    if(rulesView->currentItem() == nullptr)
+        return;
+
     QString title = rulesView->currentItem()->text(0);
     Rule r = coreApplication->rule(title);
 
@@ -106,6 +109,9 @@ void SettingsWindow::updateView()
 
 void SettingsWindow::on_deleteRule_2_clicked()
 {
+    if(rulesView->currentItem() == nullptr)
+        return;
+
     QString ruleTitle = rulesView->currentItem()->text(0);
     coreApplication->removeRule(ruleTitle);
 }
@@ -120,7 +126,7 @@ void SettingsWindow::on_moveDownButton_2_clicked()
     QTreeWidgetItem *cItem = rulesView->currentItem();
 
     int i = rulesView->indexOfTopLevelItem(cItem);
-    if(i == -1)
+    if(i == -1 || cItem == nullptr)
         return;
 
     try {
@@ -137,7 +143,7 @@ void SettingsWindow::on_moveUpButton_2_clicked()
     QTreeWidgetItem *cItem = rulesView->currentItem();
 
     int i = rulesView->indexOfTopLevelItem(cItem);
-    if(i == -1)
+    if(i == -1 || cItem == nullptr)
         return;
 
     try {
@@ -187,9 +193,4 @@ void SettingsWindow::on_ruleItemView_2_itemClicked(QTreeWidgetItem *item, int co
         rulesView->setHeaderLabels(ruleParentHeaderData);
     else
         rulesView->setHeaderLabels(ruleChildrenHeaderData);
-}
-
-void SettingsWindow::on_cancelButton_clicked()
-{
-    this->close();
 }

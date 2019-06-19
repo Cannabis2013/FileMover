@@ -194,8 +194,3 @@ void SettingsWindow::on_ruleItemView_2_itemClicked(QTreeWidgetItem *item, int co
     else
         rulesView->setHeaderLabels(ruleChildrenHeaderData);
 }
-
-void SettingsWindow::on_cancelButton_clicked()
-{
-    this->close();
-}

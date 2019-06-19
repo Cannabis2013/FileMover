@@ -99,7 +99,6 @@ private slots:
     void on_countTImerIntervalEdit_2_returnPressed();
 
     void on_saveButton_clicked();
-    void on_cancelButton_clicked();
 
 private:
     // Generel methods..

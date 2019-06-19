@@ -37,8 +37,6 @@ private:
 
     QList<Rule> ruleslist(){return rules;}
 
-    QList<Rule> rules;
-
     void addRule(const Rule r);
     void addRules(const QList<Rule>r);
     void replaceRule(const Rule r, int index);
@@ -49,6 +47,7 @@ private:
     Rule rule(int index) {return rules.value(index);}
     Rule rule(QString title);
 
+    QList<Rule> rules;
 
     friend class MainApplication;
 };

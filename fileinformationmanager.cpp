@@ -77,8 +77,8 @@ QString FileInformationManager::createTextBrowserHtml(QString path)
     QString tempSize = dirItem.dirSize;
     if(tempSize == QString())
         tempSize = "Not counted";
-    QString fC = QString::number(dirItem.fileCount),
-            dC = QString::number(dirItem.dirCount);
+    QString fC = QString::number(dirItem.numberOfFiles),
+            dC = QString::number(dirItem.numberOfDirectories);
 #if(_MSC_VER)
     QString resultingHtml = QString(
                         "<body style='background-color:rgb(81,81,81);'>"

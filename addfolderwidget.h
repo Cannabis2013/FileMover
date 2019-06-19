@@ -38,9 +38,7 @@ private:
     AddFileDialog *fileWidget;
     PathLine *pathWidget;
     QVBoxLayout *vLayout;
-    int tempHeight;
-
-
+    int lastSavedHeight;
 };
 
 #endif // ADDFOLDERWIDGET_H

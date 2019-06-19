@@ -10,7 +10,6 @@ AddFolderWidget::AddFolderWidget() :
     pathWidget = ui->widget_2;
     vLayout = ui->verticalLayout;
 
-    setWindowModality(Qt::ApplicationModal);
 
     setResizeable(false);
 }
@@ -33,12 +32,12 @@ void AddFolderWidget::sizeAdjust(QSizePolicy::Policy p, int H)
     setSizePolicy(hPol,p);
     if(p == QSizePolicy::Fixed)
     {
-        tempHeight = height();
-        setFixedHeight(this->height() - H);
+        lastSavedHeight = height();
+        setFixedHeight(height() - H);
     }
     else
     {
-        setFixedHeight(tempHeight);
+        setFixedHeight(lastSavedHeight);
         setMaximumHeight(maxHeight.height());
     }
     resizeEvent(size());

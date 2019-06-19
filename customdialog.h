@@ -39,7 +39,7 @@ public:
 
     AbstractFrameImplementable *containedWidget(){return mainWidget;}
 
-    void setWidget(AbstractFrameImplementable *implementable, QString title = "Frametitle");
+    void setWidget(AbstractFrameImplementable *implementable);
 
 
 protected:
@@ -67,7 +67,8 @@ private:
     int eventThreshold;
     TopFrameForm *topFrame;
     QPointer<AbstractFrameImplementable> mainWidget;
-    QGridLayout *grid;
+    QGridLayout *widgetGridLayout;
+    QVBoxLayout *mainLayout;
 
     QPoint mousePressPosition;
     QRect tempGeometry;

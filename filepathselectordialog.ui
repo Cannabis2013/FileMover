@@ -26,6 +26,23 @@
 	background-color:white;
 }
 
+QPushButton
+{
+	border-radius:0px;
+	border-color:blue;
+	color:white;
+	background-color: rgb(85, 0, 255);
+}
+QPushButton::hover
+{
+	
+	background-color: rgb(35, 35, 35);
+}
+QPushButton::pressed
+{
+	
+	font: 6pt &quot;MS Shell Dlg 2&quot;;
+}
 </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -65,30 +82,54 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
       <widget class="QPushButton" name="cancelButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string>Cancel</string>
        </property>
        <property name="flat">
         <bool>false</bool>
        </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="insertPathButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>24</height>
+        </size>
+       </property>
        <property name="text">
         <string>Add</string>
        </property>
        <property name="flat">
         <bool>false</bool>
        </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
       </widget>
      </item>
     </layout>
@@ -97,7 +138,4 @@
  </widget>
  <resources/>
  <connections/>
- <buttongroups>
-  <buttongroup name="buttonGroup"/>
- </buttongroups>
 </ui>

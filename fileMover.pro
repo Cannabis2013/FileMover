@@ -49,6 +49,7 @@ SOURCES += main.cpp\
     customsplitterhandle.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
+    filepathdialogwidget.cpp \
     fileworker.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
@@ -61,12 +62,10 @@ SOURCES += main.cpp\
     addfiledialog.cpp \
     pathline.cpp \
     rulepathselector.cpp \
-    rulepathdialogselector.cpp \
     addruledialog.cpp \
     editruledialog.cpp \
     conditionWidget.cpp \
     worker.cpp \
-    filepathselectordialog.cpp \
     mywidget.cpp \
     topframeform.cpp
 
@@ -81,6 +80,7 @@ HEADERS  += mainwindow.h \
     customsplitter.h \
     customsplitterhandle.h \
     fileinformationmanager.h \
+    filepathdialogwidget.h \
     fileworker.h \
     iconscanner.h \
     mainapplication.h \
@@ -100,14 +100,12 @@ HEADERS  += mainwindow.h \
     addfiledialog.h \
     pathline.h \
     rulepathselector.h \
-    rulepathdialogselector.h \
     addruledialog.h \
     editruledialog.h \
     conditionWidget.h \
     ruledefinitions.h \
     rules.h \
     worker.h \
-    filepathselectordialog.h \
     mywidget.h \
     topframeform.h
 

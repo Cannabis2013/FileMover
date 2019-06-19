@@ -1,7 +1,7 @@
 ﻿#include "addfiledialog.h"
 
 AddFileDialog::AddFileDialog(QWidget *parent):
-    filepathSelectorDialog()
+    filepathDialogWidget()
 {
     Q_UNUSED(parent);
     view = fView();

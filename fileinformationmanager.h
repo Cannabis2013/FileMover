@@ -12,10 +12,14 @@
 #include "abstractpersistence.h"
 
 /*
- * This class generates infortion about the current folder in the "informationView" widget.
- *
-*/
+ * It provides data for the "detailedFolderView" and "fileInformationView" classes.
+ */
+
 using namespace std;
+
+/*
+ * The model to be presented in view classes.
+ */
 
 struct DirectoryItem
 {
@@ -25,14 +29,7 @@ struct DirectoryItem
     QString path = "Not defined";
     QList<QPair<QString,int> > sufList;
     QList<QTreeWidgetItem*> suffixItems() const;
-
-    QTreeWidgetItem *organizeTreeItems(QTreeWidgetItem*item) const;
-
     QTreeWidgetItem *allFiles;
-    QTreeWidgetItem *treeWidgetItems()
-    {
-        return organizeTreeItems(allFiles);
-    }
 };
 
 class FileInformationManager : public QObject, public AbstractPersistence

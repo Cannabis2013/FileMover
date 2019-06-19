@@ -7,16 +7,16 @@ TextPathEdit::TextPathEdit(QWidget *parent, QString txt) :
 {
     ui->setupUi(this);
 
-    line = ui->pathSelector;
+    pathSelector = ui->pathSelector;
     toolButton = ui->toolButton;
 
     if(txt != QString())
-        line->setText(txt);
+        pathSelector->setText(txt);
 
     QCompleter *completer = new QCompleter();
     completer->setModel(new QDirModel(completer));
 
-    line->setCompleter(completer);
+    pathSelector->setCompleter(completer);
     installEventFilter(this);
 }
 
@@ -27,17 +27,17 @@ TextPathEdit::~TextPathEdit()
 
 void TextPathEdit::setLineText(QString txt)
 {
-    line->setText(txt);
+    pathSelector->setText(txt);
 }
 
 QString TextPathEdit::text()
 {    
-    return line->text();
+    return pathSelector->text();
 }
 
 void TextPathEdit::clear()
 {
-    line->clear();
+    pathSelector->clear();
 }
 
 void TextPathEdit::addWidgetToLayout(QWidget *w)
@@ -52,19 +52,19 @@ QVBoxLayout *TextPathEdit::verticalLayot()
 
 void TextPathEdit::insertChosenPath(QString p)
 {
-    QString currentText = line->text();
+    QString currentText = pathSelector->text();
     if(currentText.isEmpty())
         currentText = p;
     else
         currentText += ";" + p;
 
-    line->setText(currentText);
+    pathSelector->setText(currentText);
 }
 
 void TextPathEdit::on_toolButton_clicked()
 {
-    filepathSelectorDialog *chooseFilePathDialog = new filepathSelectorDialog();
-    connect(chooseFilePathDialog,&filepathSelectorDialog::chosenPath,this,&TextPathEdit::insertChosenPath);
+    filepathDialogWidget *chooseFilePathDialog = new filepathDialogWidget();
+    connect(chooseFilePathDialog,&filepathDialogWidget::chosenPath,this,&TextPathEdit::insertChosenPath);
     chooseFilePathDialog->show();
 }
 

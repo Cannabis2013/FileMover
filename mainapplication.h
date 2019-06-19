@@ -24,7 +24,6 @@ public:
     QList<QTreeWidgetItem *> watchFolderItems(){return sManager->pathItems();}
     QList<QTreeWidgetItem*> detailedWatchFolderItems(){return fManager->allTreeItems();}
 
-
     QList<QTreeWidgetItem*> suffixList(QString path){return fManager->item(path).suffixItems();}
 
     Rule ruleAt(int index) {return rManager->rule(index);}
@@ -45,7 +44,6 @@ public:
     void beginCalcSizes(QStringList paths){fWorker->calcSize(paths);}
 
 public slots:
-
     void clearFolders(QStringList paths);
 
     void addWatchFolder(QString path){sManager->insertPath(path);}
@@ -57,7 +55,6 @@ public slots:
     void removeRuleAt(int index){rManager->removeRuleAt(index);}
     void removeRule(QString title){rManager->removeRule(title);}
 private:
-
     FileWorker *fWorker;
     ProcessManager *pManager;
     rulesManager *rManager;

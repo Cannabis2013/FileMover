@@ -416,51 +416,13 @@ void mainWindow::contextMenuCalled(QPoint p)
     watchFolderViewMenu->popup(P);
 }
 
-double mainWindow::roundNumber(long long numb, QString &denote, int dec)
-{
-    long long d = 1,
-        dc = 10,
-        sizeKb = 1024,
-        sizeMb = sizeKb *1024,
-        sizeGb = sizeMb * 1024;
-
-    double byteSize = 1024, byteX, result;
-
-    if(dec != 0)
-    {
-        for(int a = 0;a <dec;a++)
-        {
-            d = d *dc;
-        }
-    }
-    if(numb <sizeKb)
-    {
-        byteX = numb;
-        denote = "bytes";
-    }
-    else if(numb > sizeKb && numb <sizeMb)
-    {
-        byteX = numb / byteSize;
-        denote = "kb";
-    }
-    else if(numb > sizeMb && numb < sizeGb)
-    {
-        byteX = (numb /byteSize) / byteSize;
-        denote = "mb";
-    }
-    else
-    {
-        byteX = ((numb / byteSize) / byteSize) / byteSize;
-        denote = "gb";
-    }
-    return result = round(byteX *d) / d;
-}
-
 void mainWindow::updateDetaileditems()
 {
     detailedFolderView->clear();
     QList<QTreeWidgetItem*>itemList = coreApplication->detailedWatchFolderItems();
     detailedFolderView->addTopLevelItems(itemList);
+
+    cout << "updateDetailedItems runned" << endl;
 }
 
 void mainWindow::updateWatchFolderView()
@@ -468,6 +430,7 @@ void mainWindow::updateWatchFolderView()
     watchFolderView->clear();
     QList<QTreeWidgetItem*> watchFolders = coreApplication->watchFolderItems();
     watchFolderView->addTopLevelItems(watchFolders);
+    cout << "updateWatchfolderView runned" << endl;
 }
 
 QString mainWindow::modifyPath(QString s, QString S) const
@@ -742,6 +705,7 @@ void mainWindow::updateSubTrayMenus()
         clearTrayMenu->addAction(path);
         folderTrayMenu->addAction(path);
     }
+    cout << "updateSubTrayMenus runned" << endl;
 }
 
 void mainWindow::setStatusText(QString txt)
@@ -773,6 +737,7 @@ void mainWindow::on_actionQuit_triggered()
 void mainWindow::on_addBut_clicked()
 {
     AddFolderWidget *folderWidget = new AddFolderWidget();
+    folderWidget->setWidgetTitle("Add folder dialog");
     connect(folderWidget,&AddFolderWidget::sendPath,coreApplication,&AbstractCoreApplication::addWatchFolder);
     CustomDialog *dialog = new CustomDialog(folderWidget,true);
     dialog->show();

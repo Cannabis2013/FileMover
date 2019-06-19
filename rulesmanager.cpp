@@ -129,6 +129,7 @@ void rulesManager::removeRule(const QString title)
         if(r.title == title)
         {
             rules.removeAt(i);
+            cout << "Rule removed" << endl;
             emit stateChanged();
             return;
         }
@@ -265,6 +266,7 @@ void rulesManager::writeRulesToReg()
 void rulesManager::replaceRule(const Rule r, int index)
 {
     rules.replace(index,r);
+    emit stateChanged();
 }
 
 void rulesManager::replaceRule(const Rule r, QString title)
@@ -289,5 +291,7 @@ void rulesManager::swapRule(int i, int j)
         throw new std::overflow_error("");
 
     rules.swap(i,j);
+
+    emit stateChanged();
 }
 

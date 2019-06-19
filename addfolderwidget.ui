@@ -41,10 +41,7 @@
    <item>
     <widget class="PathLine" name="widget_2" native="true">
      <property name="styleSheet">
-      <string notr="true">PathLine
-{
-	margin-bottom: 1px;
-}</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>

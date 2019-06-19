@@ -1,5 +1,5 @@
-﻿#ifndef FILEPATHSELECTORDIALOG_H
-#define FILEPATHSELECTORDIALOG_H
+﻿#ifndef FILEPATHDIALOGWIDGET_H
+#define FILEPATHDIALOGWIDGET_H
 
 #include <QFileSystemModel>
 #include <qtreeview.h>
@@ -12,19 +12,20 @@ namespace Ui {
 class filepathSelectorDialog;
 }
 
-class filepathSelectorDialog : public AbstractFrameImplementable
+class filepathDialogWidget : public AbstractFrameImplementable
 {
     Q_OBJECT
 
 public:
-    explicit filepathSelectorDialog();
+    explicit filepathDialogWidget(Qt::WindowModality modality = Qt::NonModal);
 
-    ~filepathSelectorDialog();
+    ~filepathDialogWidget();
     QTreeView *fView();
 
 signals:
     void on_fileView_focusOut();
     void chosenPath(QString p);
+    void currentFilePathChanged(QString path);
 
 protected slots:
 
@@ -37,6 +38,9 @@ protected:
     QTreeView *fileView;
     QFileSystemModel *model;
     Ui::filepathSelectorDialog *ui;
+
+private slots:
+    void handleModelStateChange(const QModelIndex &index);
 
 };
 #endif // FILEPATHSELECTORDIALOG_H

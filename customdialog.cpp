@@ -7,10 +7,11 @@ CustomDialog::CustomDialog(AbstractFrameImplementable *implementable, bool appli
 {
     ui->setupUi(this);
 
-    widgetContainer = ui->frame;
+    widgetContainer = ui->widgetContainer;
     mainWidget = nullptr;
     topFrame = ui->TopFrame;
-    grid = ui->widgetLayout;
+    widgetGridLayout = ui->widgetLayout;
+    mainLayout = ui->mainLayout;
     eventThreshold = 10;
 
     setWindowFlag(Qt::FramelessWindowHint);
@@ -30,21 +31,21 @@ CustomDialog::~CustomDialog()
     delete ui;
 }
 
-void CustomDialog::setWidget(AbstractFrameImplementable *implementable, QString title)
+void CustomDialog::setWidget(AbstractFrameImplementable *implementable)
 {
     mainWidget = implementable;
     widgetSize = mainWidget->size();
-    if(grid->itemAtPosition(0,0) != nullptr)
+    if(widgetGridLayout->itemAtPosition(0,0) != nullptr)
     {
-        QLayoutItem * item = grid->itemAtPosition(0,0);
-        grid->removeItem(item);
+        QLayoutItem * item = widgetGridLayout->itemAtPosition(0,0);
+        widgetGridLayout->removeItem(item);
     }
 
     connect(mainWidget,&AbstractFrameImplementable::destroyed,this,&CustomDialog::close);
     connect(mainWidget,&AbstractFrameImplementable::sizeChanged,this,&CustomDialog::widgetSizeChanged);
-    grid->addWidget(mainWidget,0,0);
 
-    setFrameTitle(title);
+    widgetGridLayout->addWidget(mainWidget,0,0);
+    setFrameTitle(mainWidget->getWidgetTitle());
 }
 
 void CustomDialog::setFrameTitle(QString title)
@@ -83,7 +84,6 @@ void CustomDialog::mousePressEvent(QMouseEvent *event)
 void CustomDialog::mouseReleaseEvent(QMouseEvent *event)
 {
     isMouseButtonPressed = false;
-    setMouseTracking(true);
 }
 
 void CustomDialog::mouseMoveEvent(QMouseEvent *event)
@@ -120,8 +120,6 @@ void CustomDialog::mouseMoveEvent(QMouseEvent *event)
 
 }
 
-
-
 void CustomDialog::moveGlobalEvent(QPoint pos)
 {
     move(mapToParent(pos));
@@ -140,12 +138,19 @@ void CustomDialog::setPosition(widget_Location location)
 
 void CustomDialog::setSize(QSize size)
 {
-    int totalHeight = topFrame->height() + size.height() + grid->contentsMargins().bottom();
+    int totalHeight = topFrame->height() +
+            size.height() +
+            widgetGridLayout->contentsMargins().bottom() + 2;
+
     setFixedHeight(totalHeight);
+    cout << this->size().height() << endl;
 }
 
 void CustomDialog::show_centered_on_screen()
 {
+    if(widgetSize == QSize())
+        return;
+
     QPointer<QScreen> screen = QApplication::screens().at(0);
     QSize screenResolution = screen->size();
     int screenWidth = screenResolution.width(), screenHeight = screenResolution.height();

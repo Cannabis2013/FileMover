@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include "textpathedit.h"
-#include "rulepathdialogselector.h"
 #include <iostream>
 #include <qmenu.h>
 #include <QEvent>
@@ -16,16 +15,11 @@ class rulePathSelector : public TextPathEdit
 public:
     rulePathSelector(QWidget *parent = nullptr);
 
-public slots:
-
-
-protected:
-
 protected slots:
     void on_toolButton_clicked() override;
 
 private:
-    rulePathSelectorDialog*pDialog;
+    filepathDialogWidget*pDialog;
 };
 
 #endif // RULEPATHSELECTOR_H

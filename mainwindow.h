@@ -127,7 +127,6 @@ private slots:
 
     void on_actionOpen_current_directory_triggered();
 
-
 private:
 
     // Add folder related..
@@ -144,7 +143,6 @@ private:
     void updateWatchFolderView();
 
     // General..
-    double roundNumber(long long numb,QString &denote, int dec = 0);
     int fromSecondsToMilliseconds(int seconds){return seconds *1000;}
     int fromMinutesToMilliseconds(int minutes){return minutes *1000*60;}
     QFont createFont(fontType ft = fontType::standardFont, QString family = "Times New Roman",bool bold = false,bool italic = false, int staticSize = -1);

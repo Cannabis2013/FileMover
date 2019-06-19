@@ -3,12 +3,12 @@
 PathLine::PathLine(QWidget *parent):
     TextPathEdit(parent)
 {
-    connect(line,&QLineEdit::textChanged,this,&PathLine::sendCurrentFilePath);
+    connect(pathSelector,&QLineEdit::textChanged,this,&PathLine::sendCurrentFilePath);
 }
 
 void PathLine::setCurrentFilePath(QString fp)
 {
-    line->setText(fp);
+    pathSelector->setText(fp);
 }
 
 void PathLine::on_toolButton_clicked()

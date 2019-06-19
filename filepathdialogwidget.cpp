@@ -1,7 +1,7 @@
-﻿#include "filepathselectordialog.h"
+﻿#include "filepathdialogwidget.h"
 #include "ui_filepathselectordialog.h"
 
-filepathSelectorDialog::filepathSelectorDialog() :
+filepathDialogWidget::filepathDialogWidget(Qt::WindowModality modality) :
     AbstractFrameImplementable(),
     ui(new Ui::filepathSelectorDialog)
 {
@@ -15,27 +15,37 @@ filepathSelectorDialog::filepathSelectorDialog() :
     fileView->setColumnWidth(0,128);
     for (int i = 1; i < 4; ++i)
         fileView->setColumnHidden(i,true);
+
+    setWindowModality(modality);
+
+    connect(fileView,&QTreeView::activated,this,&filepathDialogWidget::handleModelStateChange);
 }
 
-filepathSelectorDialog::~filepathSelectorDialog()
+filepathDialogWidget::~filepathDialogWidget()
 {
     delete ui;
 }
 
-QTreeView *filepathSelectorDialog::fView()
+QTreeView *filepathDialogWidget::fView()
 {
     return fileView;
 }
 
-void filepathSelectorDialog::on_cancelButton_clicked()
+void filepathDialogWidget::on_cancelButton_clicked()
 {
     close();
 }
 
-void filepathSelectorDialog::on_insertPathButton_clicked()
+void filepathDialogWidget::on_insertPathButton_clicked()
 {
     QModelIndex currentIndex = fileView->currentIndex();
     QString filePath = model->filePath(currentIndex);
     emit chosenPath(filePath);
     close();
+}
+
+void filepathDialogWidget::handleModelStateChange(const QModelIndex &index)
+{
+    QString currentSelectedFilePath = model->filePath(index);
+    emit currentFilePathChanged(currentSelectedFilePath);
 }

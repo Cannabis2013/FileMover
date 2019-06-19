@@ -14,7 +14,7 @@
 using namespace std;
 
 
-#include "filepathselectordialog.h"
+#include "filepathdialogwidget.h"
 #include <qtoolbutton.h>
 
 namespace Ui {
@@ -38,10 +38,9 @@ public:
 signals:
 
 protected:
-
     void addWidgetToLayout(QWidget *w);
     QVBoxLayout *verticalLayot();
-    QLineEdit *line;
+    QLineEdit *pathSelector;
     QToolButton *toolButton;
     Ui::TextPathEdit *ui;
 

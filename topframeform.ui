@@ -97,7 +97,7 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
+      <item alignment="Qt::AlignTop">
        <widget class="QLabel" name="frameTitle">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -105,15 +105,22 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>24</height>
+         </size>
+        </property>
         <property name="font">
          <font>
           <family>Comic Sans MS</family>
-          <pointsize>15</pointsize>
+          <pointsize>11</pointsize>
          </font>
         </property>
         <property name="styleSheet">
          <string notr="true">color:black;
-background-color:white;</string>
+background-color:white;
+padding:2px;</string>
         </property>
         <property name="text">
          <string>Frame title</string>
@@ -145,7 +152,7 @@ background-color:white;</string>
         </property>
        </spacer>
       </item>
-      <item alignment="Qt::AlignVCenter">
+      <item alignment="Qt::AlignTop">
        <widget class="QPushButton" name="exitButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -162,7 +169,7 @@ background-color:white;</string>
         <property name="maximumSize">
          <size>
           <width>32</width>
-          <height>16777215</height>
+          <height>24</height>
          </size>
         </property>
         <property name="font">
@@ -184,8 +191,10 @@ background-color:white;</string>
 {
 	background-color:red;
 	color:white;
-	border:0px solid;
+	border:1px solid black;
 	padding:4px;
+	margin-right:2px;
+	border-radius:5px;
 }
 QPushButton#exitButton:hover
 {

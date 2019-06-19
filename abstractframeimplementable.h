@@ -14,6 +14,10 @@ public:
     bool isResizeable(){return resizeable;}
     void setResizeable(bool resizeMode){resizeable = resizeMode;}
 
+    void setWidgetTitle(QString title);
+
+    QString getWidgetTitle() {return widgetTitle;}
+
 signals:
     void sizeChanged(QSize newSize);
 
@@ -24,6 +28,7 @@ protected:
 
 private:
     bool resizeable = true;
+    QString widgetTitle = "Frametitle";
 };
 
 #endif // ABSTRACTFRAMEIMPLEMENTABLE_H

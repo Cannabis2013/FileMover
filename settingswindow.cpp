@@ -1,5 +1,5 @@
 ﻿#include "settingswindow.h"
-#include "ui_SettingsWindow.h"
+#include "ui_settingsWindow.h"
 
 SettingsWindow::SettingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent):
     AbstractFrameImplementable(parent),
@@ -102,12 +102,14 @@ void SettingsWindow::updateView()
     rulesView->clear();
     QList<QTreeWidgetItem*> allRules = coreApplication->ruleItemModels();
     rulesView->addTopLevelItems(allRules);
+    cout << "settingsWindow updateView runned" << endl;
 }
 
 void SettingsWindow::on_deleteRule_2_clicked()
 {
     QString ruleTitle = rulesView->currentItem()->text(0);
     coreApplication->removeRule(ruleTitle);
+    cout << "End of scope" << endl;
 }
 
 void SettingsWindow::on_exitButton_clicked()
@@ -130,8 +132,6 @@ void SettingsWindow::on_moveDownButton_2_clicked()
     {
         return;
     }
-
-    updateView();
 }
 
 void SettingsWindow::on_moveUpButton_2_clicked()
@@ -149,8 +149,6 @@ void SettingsWindow::on_moveUpButton_2_clicked()
     {
         return;
     }
-
-    updateView();
 }
 
 void SettingsWindow::on_countTImerIntervalEdit_2_returnPressed()

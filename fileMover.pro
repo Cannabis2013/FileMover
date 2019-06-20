@@ -40,7 +40,6 @@ RC_ICONS = xIcon.ico
 
 SOURCES += main.cpp\
     AbstractRuleDialog.cpp \
-    abstracgraphicallistmanager.cpp \
     abstractcoreapplication.cpp \
     abstractframeimplementable.cpp \
     abstractpersistence.cpp \
@@ -51,6 +50,7 @@ SOURCES += main.cpp\
     fileinformationview.cpp \
     filepathdialogwidget.cpp \
     fileworker.cpp \
+    iconscanner.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
     rulesmanager.cpp \

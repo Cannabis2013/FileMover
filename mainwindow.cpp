@@ -509,6 +509,20 @@ QFont mainWindow::createFont(fontType ft, QString family, bool bold, bool italic
 
 void mainWindow::on_clearButt_clicked()
 {
+    SettingsDelegate sDelegate = coreApplication->settingsState();
+    if(sDelegate.rulesEnabled)
+    {
+        QString path = watchFolderView->currentItem()->text(0);
+        coreApplication->clearFoldersAccordingToRules(QStringList(path));
+    }
+    else
+    {
+        if(watchFolderView->currentItem() != nullptr)
+        {
+            QString path = watchFolderView->currentItem()->text(0);
+            coreApplication->clearFolders(QStringList(path));
+        }
+    }
 }
 
 void mainWindow::on_delButt_clicked()

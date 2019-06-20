@@ -14,11 +14,11 @@ struct DirectoryObject
     QString dirName;
     QString path;
 };
-struct ProcessItems
+struct ProcessEntity
 {
     QFileInfoList list;
     rD::fileActionRule ruleMode = rD::none;
-    QStringList destinations;
+    QStringList destinations = QStringList();
 };
 
 class ProcessManager : public QObject
@@ -31,7 +31,7 @@ public:
         delete this;
     }
 
-    void addToQueue(ProcessItems pI)
+    void addToQueue(ProcessEntity pI)
     {
         processQeue.append(pI);
         emit wakeUpProcess();
@@ -43,16 +43,16 @@ signals:
 
 
 private:
-    ProcessItems takeItem()
+    ProcessEntity takeItem()
     {
         if(processQeue.isEmpty())
-            return ProcessItems();
+            return ProcessEntity();
         else
             return processQeue.takeFirst();
     }
     bool queueIsEmpty(){return processQeue.isEmpty();}
 
-    QList<ProcessItems>processQeue;
+    QList<ProcessEntity>processQeue;
     friend class FileWorker;
 };
 

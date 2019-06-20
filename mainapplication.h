@@ -7,8 +7,7 @@
 #include "fileinformationmanager.h"
 #include "abstractcoreapplication.h"
 
-class MainApplication : public AbstractCoreApplication,
-        private IconScanner
+class MainApplication : public AbstractCoreApplication
 {
     Q_OBJECT
 public:
@@ -45,6 +44,7 @@ public:
 
 public slots:
     void clearFolders(QStringList paths);
+    void clearFoldersAccordingToRules(QStringList paths);
 
     void addWatchFolder(QString path){sManager->insertPath(path);}
     void removeWatchFolderAt(int index);

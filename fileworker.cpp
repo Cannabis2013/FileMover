@@ -543,6 +543,45 @@ QFileInfoList FileWorker::processList(QFileInfoList files, SubRule rule)
     return filesToProcess;
 }
 
+QFileInfoList FileWorker::generateFilesList(QString rPath, QStringList paths, bool recursive)
+{
+    QStringList rPaths;
+    if(rPath != QString() && rPath != "Alle")
+        rPaths = QStringList(rPath);
+    else
+        rPaths = paths;
+
+    QFileInfoList allFiles;
+    if(!recursive)
+    /*Add items to a "QFileInfoList" in a non-recursive manner,
+     * which means that directories, excluding their content, will be added
+     */
+    {
+        for(QString path : rPaths)
+        {
+            QDir dirContent(path);
+            allFiles += dirContent.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System);
+        }
+    }
+    // Add files to a QFileInfoList in a recursive manner, but excludes directories
+    else
+    {
+        for(QString path : paths)
+        {
+            QDirIterator it(path,
+                            QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System,
+                            QDirIterator::Subdirectories);
+            while(it.hasNext())
+            {
+                QFileInfo fileItem = it.next();
+                if(!fileItem.isDir())
+                    allFiles.append(fileItem);
+            }
+        }
+    }
+    return allFiles;
+}
+
 void FileWorker::calcSize(QString path)
 {
     if(isBusy)

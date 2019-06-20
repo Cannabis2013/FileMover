@@ -36,7 +36,6 @@ class mainWindow;
 }
 
 class mainWindow : public QMainWindow,
-        private IconScanner,
         private AbstractPersistence
 {
     Q_OBJECT

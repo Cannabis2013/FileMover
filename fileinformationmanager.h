@@ -24,8 +24,8 @@ using namespace std;
 struct DirectoryItem
 {
     QString dirSize = nullptr;
-    int dirCount;
-    long fileCount;
+    int numberOfDirectories;
+    long numberOfFiles;
     QString path = "Not defined";
     QList<QPair<QString,int> > sufList;
     QList<QTreeWidgetItem*> suffixItems() const;

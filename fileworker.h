@@ -16,6 +16,7 @@ public:
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
     static QFileInfoList processList(QFileInfoList files, SubRule rule);
+    static QFileInfoList generateFilesList(QString rPath, QStringList paths,bool recursive = false);
 
 public slots:
     void calcSize(QString path);

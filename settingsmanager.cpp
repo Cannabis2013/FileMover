@@ -120,6 +120,7 @@ SettingsDelegate settingsManager::settingsState()
     s.closeOnExit = closeOnExit;
     s.ruleTimerEnabled = timerEnabled;
     s.ruleTimerEnabled = timerMsec;
+    s.rulesEnabled = rulesEnabled;
 
     return s;
 }
@@ -129,4 +130,5 @@ void settingsManager::setSettings(SettingsDelegate s)
     closeOnExit = s.closeOnExit;
     timerEnabled = s.ruleTimerEnabled;
     timerMsec = s.ruleCountInterval;
+    rulesEnabled = s.rulesEnabled;
 }

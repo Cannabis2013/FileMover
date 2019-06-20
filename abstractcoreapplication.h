@@ -39,6 +39,7 @@ public:
 
 public slots:
     virtual void clearFolders(QStringList paths) = 0;
+    virtual void clearFoldersAccordingToRules(QStringList paths) = 0;
 
     virtual void addWatchFolder(QString path) = 0;
     virtual void addWatchFolders(QStringList paths) = 0;

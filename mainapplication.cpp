@@ -51,67 +51,29 @@ MainApplication::~MainApplication()
 
 void MainApplication::clearFolders(QStringList paths)
 {
-    auto freshList = [paths](QString rPath = QString(),bool recursive = false)->QFileInfoList
-    {
-        QStringList rPaths;
-        if(rPath != QString() && rPath != "Alle")
-            rPaths = QStringList(rPath);
-        else
-            rPaths = paths;
-        QFileInfoList allFiles;
-        if(!recursive)
-        /*Add items to a "QFileInfoList" in a non-recursive manner,
-         * which means that directories, excluding their content, will be added
-         */
-        {
-            for(QString path : rPaths)
-            {
-                QDir dirContent(path);
-                allFiles += dirContent.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System);
-            }
-        }
-        // Add files to a QFileInfoList in a recursive manner, but excludes directories
-        else
-        {
-            for(QString path : paths)
-            {
-                QDirIterator it(path,
-                                QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System,
-                                QDirIterator::Subdirectories);
-                while(it.hasNext())
-                {
-                    QFileInfo fileItem = it.next();
-                    if(!fileItem.isDir())
-                        allFiles.append(fileItem);
-                }
-            }
-        }
-        return allFiles;
-    };
-    auto outputFiles = [](QFileInfoList list)->void
-    {
-        for(QFileInfo file : list)
-        {
-            QString fileSizeUnit;
-            double sz = fW::convertSizeToAppropriateUnits(file.size(),fileSizeUnit);
-            QString fileSize = QString::number(sz) + " " + fileSizeUnit;
-        }
-    };
-    Q_UNUSED(outputFiles);
+
+    QFileInfoList allFiles = fW::generateFilesList(QString(),paths,false);
+    ProcessEntity entity;
+    entity.list = allFiles;
+    pManager->addToQueue(entity);
+}
+
+void MainApplication::clearFoldersAccordingToRules(QStringList paths)
+{
     QList<Rule>rules = rManager->ruleslist();
     for(Rule r : rules)
     {
-        QFileInfoList allFiles = freshList(r.appliesToPath,r.deepScanMode);
+        QFileInfoList allFiles = fW::generateFilesList(r.appliesToPath,paths,r.deepScanMode);
         for(SubRule sR : r.subRules)
             allFiles = fWorker->processList(allFiles,sR);
 
         // Implementer fileworker operation..
 
-        ProcessItems it;
-        it.destinations = r.destinationPath;
-        it.list = allFiles;
-        it.ruleMode = r.actionRule;
-        pManager->addToQueue(it);
+        ProcessEntity entity;
+        entity.destinations = r.destinationPath;
+        entity.list = allFiles;
+        entity.ruleMode = r.actionRule;
+        pManager->addToQueue(entity);
     }
 
 }

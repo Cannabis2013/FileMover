@@ -5,6 +5,7 @@ struct SettingsDelegate
 {
     bool closeOnExit;
     bool ruleTimerEnabled;
+    bool rulesEnabled;
     int ruleCountInterval;
 };
 

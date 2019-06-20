@@ -151,7 +151,6 @@ void SettingsWindow::on_moveUpButton_2_clicked()
     }
     catch (std::out_of_range e)
     {
-        const char *msg = e.what();
         return;
     }
 }
@@ -166,7 +165,7 @@ void SettingsWindow::on_saveButton_clicked()
 {
     SettingsDelegate currentState;
     currentState.closeOnExit = closeOnBox->isChecked();
-    currentState.ruleTimerEnabled = enableRules;
+    currentState.rulesEnabled = enableRules->isChecked();
     currentState.ruleCountInterval = countTimerInterval->text().toInt();
 
     coreApplication->setSettings(currentState);
@@ -177,7 +176,7 @@ void SettingsWindow::initializeState()
 {
     SettingsDelegate state = coreApplication->settingsState();
     closeOnBox->setChecked(state.closeOnExit);
-    enableRules->setChecked(state.ruleTimerEnabled);
+    enableRules->setChecked(state.rulesEnabled);
     countTimerInterval->setText(QString::number(state.ruleCountInterval));
 }
 

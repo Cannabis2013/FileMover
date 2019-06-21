@@ -3,7 +3,7 @@
 settingsManager::settingsManager(QString appName, QString orgName):
     AbstractPersistence (appName,orgName)
 {
-    QList<MyIcon> trayIconList = iconsFromPath(ressourceFolder);
+    QList<MyIcon> trayIconList = scanForIcons(ressourceFolder);
 
     QDir dir;
     if(!dir.exists(ressourceFolder))
@@ -19,7 +19,7 @@ settingsManager::settingsManager(QString appName, QString orgName):
         currentTrayIcon = trayIconList.last();
     }
 
-    fileIconList = iconsFromPath(fileIconPath);
+    fileIconList = scanForIcons(fileIconPath);
     if(!fileIconList.isEmpty())
         fileIconStandard = fileIconList.last();
 
@@ -67,7 +67,36 @@ QList<QTreeWidgetItem *> settingsManager::pathItems()
         treeItem->setText(0,path);
         items << treeItem;
     }
+
     return items;
+}
+
+QList<MyIcon> settingsManager::scanForIcons(QString path)
+{
+    QList<MyIcon>icons;
+    QDirIterator iT(path);
+    while(iT.hasNext())
+    {
+        QFileInfo file = iT.next();
+#ifdef Q_OS_WIN32
+        if(file.suffix() == "ico" || file.suffix() == "png")
+        {
+            QString fP = file.absoluteFilePath(),fN = file.fileName();
+            MyIcon ico(fP);
+            ico.setName(fN);
+            icons << ico;
+        }
+#elif defined Q_OS_MAC
+        if(file.suffix() == "icns")
+        {
+            QString fP = file.absoluteFilePath(),fN = file.fileName();
+            myIcon ico(fP);
+            ico.setName(fN);
+            icons << ico;
+        }
+#endif
+    }
+    return icons;
 }
 
 void settingsManager::readSettings()

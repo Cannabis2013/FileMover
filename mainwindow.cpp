@@ -512,12 +512,21 @@ void mainWindow::on_clearButt_clicked()
     SettingsDelegate sDelegate = coreApplication->settingsState();
     if(sDelegate.rulesEnabled)
     {
-        QString path = watchFolderView->currentItem()->text(0);
-        coreApplication->clearFoldersAccordingToRules(QStringList(path));
+        if(messageBox::customBox(this,
+                                "Advarsel","Sikker på du vil gøre dette?",
+                                "Ja","Nej"))
+        {
+            QString path = watchFolderView->currentItem()->text(0);
+            coreApplication->clearFoldersAccordingToRules(QStringList(path));
+        }
+
     }
     else
     {
-        if(watchFolderView->currentItem() != nullptr)
+        if(watchFolderView->currentItem() != nullptr &&
+                messageBox::customBox(this,
+                                     "Advarsel","Sikker på du vil gøre dette?",
+                                     "Ja","Nej for helvede, det er hele min porno samling!"))
         {
             QString path = watchFolderView->currentItem()->text(0);
             coreApplication->clearFolders(QStringList(path));
@@ -532,7 +541,7 @@ void mainWindow::on_delButt_clicked()
     QModelIndex index = watchFolderView->currentIndex();
     if(!index.isValid())
         return;
-    if(messageBx::customBox(this,"Sikker","Er du sikker på du vil slette posten?","Ja","Nej"))
+    if(messageBox::customBox(this,"Sikker","Er du sikker på du vil slette posten?","Ja","Nej"))
     {
         QTreeWidgetItem *item = watchFolderView->takeTopLevelItem(index.row());
         QString path = item->text(0);
@@ -558,9 +567,8 @@ void mainWindow::updateInfoScreen(QModelIndex index)
     try {
         suffixTree->addTopLevelItems(coreApplication->suffixList(path));
     } catch (QString string) {
-        if(messageBx::customBox(this,"Item not found or ready to show","Error")){};
+        setStatusText(string);
     }
-
 }
 
 void mainWindow::sortSuffixTreeColumn(int c)

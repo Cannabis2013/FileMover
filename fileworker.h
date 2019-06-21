@@ -10,8 +10,7 @@ class FileWorker : public Worker
     Q_OBJECT
 
 public:
-    FileWorker(ProcessManager *pRef = nullptr,
-               QObject * parent = nullptr);
+    FileWorker(ProcessManager *pRef);
 
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
@@ -31,6 +30,8 @@ public slots:
 
     void processFileInformation(QString path);
     void processFileInformations(QStringList paths);
+    void reProcessFileInformation(const QString path);
+    void reProcessFileInformations(const QStringList paths);
 
 signals:
     void itemText(QString iT);
@@ -47,6 +48,7 @@ signals:
     void jobDone(bool status);
 
 private:
+
 
     // Fileoperation from QFileinfoList..
     bool removeFileItems(const QFileInfoList filePaths);

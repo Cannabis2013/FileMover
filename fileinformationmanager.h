@@ -12,6 +12,7 @@
 #include "abstractpersistence.h"
 
 /*
+ * Contains meta information related to directories and their content.
  * It provides data for the "detailedFolderView" and "fileInformationView" classes.
  */
 
@@ -44,11 +45,12 @@ public:
     bool directoryExists(QString path);
     QList<DirectoryItem> allItems() {return items;}
     DirectoryItem item(QString p);
+    DirectoryItem itemRef(QString p);
     QList<QTreeWidgetItem *> allTreeItems();
 
     void updateFileInfo(DirectoryItem dI);
     void updateAllFileInfo(QList<DirectoryItem> list);
-    void flushAll();
+    void flush();
 
     QString createTextBrowserHtml(QString path);
 
@@ -59,13 +61,18 @@ public:
 
 public slots:
     void insertItem(DirectoryItem item);
-    void insertItems(QList<DirectoryItem> items);
+    void insertItems(QList<DirectoryItem> dirItems);
+
+    void replaceItem(DirectoryItem newItem);
 
     void removeItem(QString path);
 
 signals:
     void stateChanged();
 private:
+
+    bool isDuplicate(QString path);
+
     QList<DirectoryItem>items;
 };
 

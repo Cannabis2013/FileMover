@@ -30,6 +30,16 @@ DirectoryItem FileInformationManager::item(QString p)
     throw QString("Item not found");
 }
 
+DirectoryItem FileInformationManager::itemRef(QString p)
+{
+    for (int i = 0;i < items.count();i++) {
+        DirectoryItem item = items.at(i);
+        if(item.path == p)
+            return items.at(i);
+    }
+    return DirectoryItem();
+}
+
 QList<QTreeWidgetItem*> FileInformationManager::allTreeItems()
 {
     QList<QTreeWidgetItem*> resultingList;
@@ -55,7 +65,7 @@ void FileInformationManager::updateAllFileInfo(QList<DirectoryItem> list)
     items.append(list);
 }
 
-void FileInformationManager::flushAll()
+void FileInformationManager::flush()
 {
     items.clear();
 }
@@ -137,14 +147,37 @@ QString FileInformationManager::createTextBrowserHtml(QString path)
 
 void FileInformationManager::insertItem(DirectoryItem item)
 {
-    items << item;
+    if(isDuplicate(item.path))
+        replaceItem(item);
+    else
+        items << item;
+
     emit stateChanged();
 }
 
-void FileInformationManager::insertItems(QList<DirectoryItem> items)
+void FileInformationManager::insertItems(QList<DirectoryItem> dirItems)
 {
-    this->items << items;
+    for (DirectoryItem dirItem : dirItems)
+    {
+        if(isDuplicate(dirItem.path))
+            replaceItem(dirItem);
+        else
+            items << dirItem;
+    }
     emit stateChanged();
+}
+
+void FileInformationManager::replaceItem(DirectoryItem newItem)
+{
+    for (int i = 0;i < items.count();i++)
+    {
+        DirectoryItem item = items.at(i);
+        if(item.path == newItem.path)
+        {
+            items.replace(i,newItem);
+            return;
+        }
+    }
 }
 
 void FileInformationManager::removeItem(QString path)
@@ -159,6 +192,17 @@ void FileInformationManager::removeItem(QString path)
             return;
         }
     }
+}
+
+bool FileInformationManager::isDuplicate(QString path)
+{
+    for(DirectoryItem item : items)
+    {
+        if(item.path == path)
+            return true;
+    }
+
+    return false;
 }
 
 QList<QTreeWidgetItem *> DirectoryItem::suffixItems() const

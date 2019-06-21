@@ -1,7 +1,6 @@
 #include "fileworker.h"
 
-FileWorker::FileWorker(ProcessManager *pRef, QObject *parent):
-    Worker (parent)
+FileWorker::FileWorker(ProcessManager *pRef)
 {
     pControllerReference = pRef;
     busyMessage = "Luke Fileworker is busy. Patience my young padawan.";
@@ -197,9 +196,12 @@ void FileWorker::beginProcess()
     bool isDone = true;
     while(!pControllerReference->queueIsEmpty())
     {
-        ProcessItems item = pControllerReference->takeItem();
+        ProcessEntity item = pControllerReference->takeItem();
         if(item.ruleMode == rD::Delete || item.ruleMode == rD::none)
+        {
             isDone = removeFileItems(item.list) ? isDone : false;
+            reProcessFileInformations(item.directoryPaths);
+        }
         else if(item.ruleMode == rD::Move)
             isDone = moveEntities(item.list,item.destinations) ? isDone : false;
         else if(item.ruleMode == rD::Copy)
@@ -685,3 +687,39 @@ void FileWorker::processFileInformations(QStringList paths)
     }
     emit multipleProcessFinished(directories);
 }
+
+void FileWorker::reProcessFileInformation(const QString path)
+{
+
+    QString denotation;
+    DirectoryItem item;
+    item.path = path;
+    double directorySize = convertSizeToAppropriateUnits(folderSize(path),denotation);
+    item.dirSize = QString::number(directorySize) + " " + denotation;
+    item.numberOfDirectories = folderCount(path);
+    item.numberOfFiles = fileCount(path);
+    item.directoryContent = scanDir(path);
+    item.sufList = getListOfSuffixOccuriencies(path);
+
+    emit processFinished(item);
+}
+
+void FileWorker::reProcessFileInformations(const QStringList paths)
+{
+    QList<DirectoryItem>directories;
+    for(QString p: paths)
+    {
+        QString denotation;
+        DirectoryItem item;
+        item.path = p;
+        double directorySize = convertSizeToAppropriateUnits(folderSize(p),denotation);
+        item.dirSize = QString::number(directorySize) + " " + denotation;
+        item.numberOfDirectories = folderCount(p);
+        item.numberOfFiles = fileCount(p);
+        item.directoryContent = scanDir(p);
+        item.sufList = getListOfSuffixOccuriencies(p);
+        directories << item;
+    }
+    emit multipleProcessFinished(directories);
+}
+

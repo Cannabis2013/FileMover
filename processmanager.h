@@ -16,6 +16,7 @@ struct DirectoryObject
 };
 struct ProcessEntity
 {
+    QStringList directoryPaths;
     QFileInfoList list;
     rD::fileActionRule ruleMode = rD::none;
     QStringList destinations = QStringList();
@@ -48,7 +49,7 @@ private:
         if(processQeue.isEmpty())
             return ProcessEntity();
         else
-            return processQeue.takeFirst();
+            return  processQeue.takeFirst();
     }
     bool queueIsEmpty(){return processQeue.isEmpty();}
 

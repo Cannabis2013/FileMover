@@ -41,12 +41,6 @@ QString Worker::directoryName(QString path)
     return result;
 }
 
-Worker::Worker(QObject *parent):
-    QObject(parent)
-{
-
-}
-
 double Worker::convertSizeToAppropriateUnits(long long numb, QString &denote, int dec)
 {
     long long d = 1,

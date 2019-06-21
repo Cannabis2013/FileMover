@@ -69,6 +69,7 @@ private slots:
 
     void setStatusText(QString txt);
 
+    // Observer/observable pattern related
     void updateView();
 
     // Buttons..

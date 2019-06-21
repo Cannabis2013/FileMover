@@ -6,12 +6,13 @@
 #include <QTreeWidgetItem>
 #include "qlist.h"
 #include "abstractpersistence.h"
-#include "iconscanner.h"
+#include "myIcon.h"
+#include <qdir.h>
+#include <qdiriterator.h>
 #include "settingsdelegate.h"
 
 
 class settingsManager : public QObject,
-        private IconScanner,
         public AbstractPersistence
 {
     Q_OBJECT
@@ -63,7 +64,7 @@ signals:
     void removeItem(QString path);
 
 private:
-
+    QList<MyIcon> scanForIcons(QString path);
     QStringList mainFolderPaths;
     QString ressourceFolder = "Ressources";
     QString fileIconPath = "fileIcons";

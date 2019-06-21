@@ -12,8 +12,6 @@
 class Worker : public QObject
 {
 public:
-    Worker(QObject *parent = nullptr);
-
     virtual ~Worker();
 
     // Rules related..

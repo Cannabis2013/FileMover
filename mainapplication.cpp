@@ -6,7 +6,7 @@ MainApplication::MainApplication(QString appName, QString orgName)
     sManager = new settingsManager(appName,orgName);
     pManager = new ProcessManager();
     fManager = new FileInformationManager(appName,orgName);
-    fWorker = new FileWorker();
+    fWorker = new FileWorker(pManager);
     fileWorkerThread = new QThread();
 
     fWorker->moveToThread(fileWorkerThread);
@@ -36,10 +36,13 @@ MainApplication::MainApplication(QString appName, QString orgName)
     connect(rManager,&rulesManager::stateChanged,this,&MainApplication::stateChanged);
     connect(fManager,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);
 
+    connect(pManager,&ProcessManager::wakeUpProcess,fWorker,&FileWorker::handleProcessRequest);
+
+    connect(fWorker,&fW::jobDone,this,&AbstractCoreApplication::stateChanged);
+
     fileWorkerThread->start();
 
     emit sManager->processPaths(watchFolders());
-
 }
 
 MainApplication::~MainApplication()
@@ -51,11 +54,12 @@ MainApplication::~MainApplication()
 
 void MainApplication::clearFolders(QStringList paths)
 {
-
     QFileInfoList allFiles = fW::generateFilesList(QString(),paths,false);
     ProcessEntity entity;
+    entity.directoryPaths = paths;
     entity.list = allFiles;
     pManager->addToQueue(entity);
+
 }
 
 void MainApplication::clearFoldersAccordingToRules(QStringList paths)
@@ -70,12 +74,12 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         // Implementer fileworker operation..
 
         ProcessEntity entity;
+        entity.directoryPaths = paths;
         entity.destinations = r.destinationPath;
         entity.list = allFiles;
         entity.ruleMode = r.actionRule;
         pManager->addToQueue(entity);
     }
-
 }
 
 void MainApplication::addWatchFolders(QStringList paths)

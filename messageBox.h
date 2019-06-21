@@ -2,8 +2,10 @@
 #define MESSAGEBOX_H
 
 #include <qmessagebox.h>
+#include <qpushbutton.h>
+#include <qlabel.h>
 
-class messageBx
+class messageBox
 {
 public:
     static bool customBox(QWidget *parent,
@@ -18,18 +20,8 @@ public:
         QMessageBox box;
         box.setWindowTitle(title);
         box.setText(text);
-        box.setWindowFlag(Qt::FramelessWindowHint);
 
         box.setStyleSheet("QMessageBox{background-color: black;border:5px solid black;border-radius:5px;} QLabel{color:white;}");
-
-        QRect pGeo = parent->geometry();
-
-        int nH = pGeo.height() /2,
-            nW = pGeo.width() /2,
-            nX = pGeo.x(),
-            nY = pGeo.y();
-
-        box.move(nX + nW,nY + nH);
 
         QPushButton *b1 = box.addButton(but1,rol1);
 
@@ -37,8 +29,19 @@ public:
         if(but2 != QString())
             b2 = box.addButton(but2,rol2);
 
+        QRect pGeo = parent->geometry();
+
+        double parentHeight = pGeo.height() / 2,
+            parentWidth = pGeo.width() / 2,
+            parentX = pGeo.x(),
+            parentY = pGeo.y(),
+            width = box.width();
+
+
+
         box.exec();
 
+        box.setGeometry(parentX + parentWidth - width/2,parentY + parentHeight,width,box.height());
 
         if(reinterpret_cast<QPushButton*>(box.clickedButton()) == b1)
         {

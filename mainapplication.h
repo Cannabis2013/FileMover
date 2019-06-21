@@ -6,6 +6,7 @@
 #include "settingsmanager.h"
 #include "fileinformationmanager.h"
 #include "abstractcoreapplication.h"
+#include <qfilesystemwatcher.h>
 
 class MainApplication : public AbstractCoreApplication
 {
@@ -25,6 +26,10 @@ public:
 
     QList<QTreeWidgetItem*> suffixList(QString path){return fManager->item(path).suffixItems();}
 
+    /*
+     * Rules related
+     */
+
     Rule ruleAt(int index) {return rManager->rule(index);}
     Rule rule(QString title){return rManager->rule(title);}
     QList<QTreeWidgetItem*> ruleItemModels(){return rManager->ruleItems();}
@@ -41,6 +46,7 @@ public:
 
     void beginCalcSize(QString path){fWorker->calcSize(path);}
     void beginCalcSizes(QStringList paths){fWorker->calcSize(paths);}
+
 
 public slots:
     void clearFolders(QStringList paths);
@@ -61,6 +67,7 @@ private:
     settingsManager *sManager;
     FileInformationManager *fManager;
     QThread *fileWorkerThread;
+
 };
 
 #endif // MAINAPPLICATION_H

@@ -60,6 +60,7 @@ public slots:
     void replaceRule(Rule newRule, QString title){rManager->replaceRule(newRule,title);}
     void removeRuleAt(int index){rManager->removeRuleAt(index);}
     void removeRule(QString title){rManager->removeRule(title);}
+
 private:
     FileWorker *fWorker;
     ProcessManager *pManager;
@@ -67,7 +68,6 @@ private:
     settingsManager *sManager;
     FileInformationManager *fManager;
     QThread *fileWorkerThread;
-
 };
 
 #endif // MAINAPPLICATION_H

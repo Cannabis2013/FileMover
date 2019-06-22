@@ -6,3 +6,4 @@ fileMover.pro.user.d132a5e
 fileMover_resource.rc
 fileMover.rc
 fileMover.exe.manifest
+*.autosave

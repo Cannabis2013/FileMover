@@ -37,8 +37,6 @@ public:
             parentY = pGeo.y(),
             width = box.width();
 
-
-
         box.exec();
 
         box.setGeometry(parentX + parentWidth - width/2,parentY + parentHeight,width,box.height());

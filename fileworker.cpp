@@ -194,18 +194,29 @@ void FileWorker::beginProcess()
 {
     isBusy = true;
     bool isDone = true;
-    while(!pControllerReference->fileActionEntityQueue())
+    while(!pControllerReference->isQueueEmpty())
     {
-        FileActionEntity item = pControllerReference->takeFileActionEntity();
-        if(item.fileActionRule() == rD::Delete || item.fileActionRule() == rD::none)
+        FileActionEntity *item = static_cast<FileActionEntity*>
+                (pControllerReference->takeNextEntity(entityType::FileAction));
+
+        if(item == nullptr)
         {
-            isDone = removeFileItems(item.directoryFileList()) ? isDone : false;
-            reProcessFileInformations(item.directoryPaths());
+            isBusy = false;
+            isDone = false;
+            return;
         }
-        else if(item.fileActionRule() == rD::Move)
-            isDone = moveEntities(item.directoryFileList(),item.fileActionDestinations()) ? isDone : false;
-        else if(item.fileActionRule() == rD::Copy)
-            isDone = copyEntities(item.directoryFileList(),item.fileActionDestinations()) ? isDone : false;
+
+        if(item->fileActionRule() == rD::Delete || item->fileActionRule() == rD::none)
+        {
+            isDone = removeFileItems(item->directoryFileList()) ? isDone : false;
+            reProcessFileInformations(item->directoryPaths());
+        }
+        else if(item->fileActionRule() == rD::Move)
+            isDone = moveEntities(item->directoryFileList(),item->fileActionDestinations()) ? isDone : false;
+        else if(item->fileActionRule() == rD::Copy)
+            isDone = copyEntities(item->directoryFileList(),item->fileActionDestinations()) ? isDone : false;
+
+        item = nullptr;
     }
     isBusy = false;
     emit jobDone(isDone);

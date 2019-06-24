@@ -15,4 +15,6 @@ private:
     typeMode type;
 };
 
+typedef EntityModel::typeMode entityType;
+
 #endif // ENTITYMODEL_H

@@ -56,10 +56,10 @@ MainApplication::~MainApplication()
 void MainApplication::clearFolders(QStringList paths)
 {
     QFileInfoList allFiles = fW::generateFilesList(QString(),paths,false);
-    FileActionEntity entity;
-    entity.setDirectoryPaths(paths);
-    entity.setDirectoryFileContent(allFiles);
-    pManager->addFileActionEntityToQueue(entity);
+    FileActionEntity *entity = new FileActionEntity();
+    entity->setDirectoryPaths(paths);
+    entity->setDirectoryFileContent(allFiles);
+    pManager->addEntity(entity);
 }
 
 void MainApplication::clearFoldersAccordingToRules(QStringList paths)
@@ -73,12 +73,12 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
 
         // Implementer fileworker operation..
 
-        FileActionEntity entity;
-        entity.setDirectoryPaths(paths);
-        entity.setFileActionDestinations(r.destinationPath);
-        entity.setDirectoryFileContent(allFiles);
-        entity.setFileActionRule(r.actionRule);
-        pManager->addFileActionEntityToQueue(entity);
+        FileActionEntity *entity = new FileActionEntity;
+        entity->setDirectoryPaths(paths);
+        entity->setFileActionDestinations(r.destinationPath);
+        entity->setDirectoryFileContent(allFiles);
+        entity->setFileActionRule(r.actionRule);
+        pManager->addEntity(entity);
     }
 }
 

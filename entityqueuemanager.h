@@ -28,6 +28,10 @@ private:
 class FileActionEntity : public EntityModel
 {
 public:
+    FileActionEntity()
+    {
+        setType(entityType::FileAction);
+    }
     void setDirectoryPaths(QStringList paths){dirPaths = paths;}
     void setDirectoryFileContent(QFileInfoList list){this->list = list;}
     void setFileActionRule(rD::fileActionRule aRule){ruleMode = aRule;}
@@ -55,11 +59,24 @@ public:
         delete this;
     }
 
-    void addFileActionEntityToQueue(FileActionEntity fA)
+    void addEntity(EntityModel *entity)
     {
-        fileActionQueue.append(fA);
+        entityQueue << entity;
         emit wakeUpProcess();
     }
+
+    EntityModel *takeNextEntity(entityType tp)
+    {
+        for (int i = 0;i < entityQueue.count();i++)
+        {
+            EntityModel *model = entityQueue.at(i);
+            if(model->entityType() == tp)
+                return entityQueue.takeAt(i);
+        }
+        return nullptr;
+    }
+
+    bool isQueueEmpty(){return entityQueue.isEmpty();}
 
 signals:
     void wakeUpProcess();
@@ -67,17 +84,9 @@ signals:
 
 
 private:
-    FileActionEntity takeFileActionEntity()
-    {
-        if(fileActionQueue.isEmpty())
-            return FileActionEntity();
-        else
-            return  fileActionQueue.takeFirst();
-    }
-    bool fileActionEntityQueue(){return fileActionQueue.isEmpty();}
 
-    QList<FileActionEntity>fileActionQueue;
 
+    QList<EntityModel*>entityQueue;
 
     friend class FileWorker;
 };

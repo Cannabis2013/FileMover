@@ -2,6 +2,7 @@
 #define FILEWORKEROPERATOR_H
 
 #include "rules.h"
+#include <QRunnable>
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
@@ -10,7 +11,7 @@ class FileWorker : public Worker
     Q_OBJECT
 
 public:
-    FileWorker(ProcessManager *pRef);
+    FileWorker(EntityQueueManager *pRef);
 
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
@@ -36,8 +37,8 @@ public slots:
 signals:
     void itemText(QString iT);
     void fileCount(long antal);
-    void sendFolderSizeEntity(DirectoryObject fObj);
-    void sendFolderSizeEntities(QList<DirectoryObject> s);
+    void sendFolderSizeEntity(DirectoryEntity fObj);
+    void sendFolderSizeEntities(QList<DirectoryEntity> s);
 
     void clearFinished(bool a);
 
@@ -59,8 +60,8 @@ private:
      * Methods related to calc size of folders and the numbers of them
      */
 
-    DirectoryObject folderContentSize(QString p);
-    QList<DirectoryObject> foldersContentSize(QStringList l);
+    DirectoryEntity folderContentSize(QString p);
+    QList<DirectoryEntity> foldersContentSize(QStringList l);
 
     // Methods to count files and number of contents in folders
     int folderCount(QString p);
@@ -89,7 +90,7 @@ private:
     void beginProcess();
 
     QString busyMessage;
-    ProcessManager *pControllerReference;
+    EntityQueueManager *pControllerReference;
 };
 
 typedef FileWorker fW;

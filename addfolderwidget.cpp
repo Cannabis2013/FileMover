@@ -10,7 +10,6 @@ AddFolderWidget::AddFolderWidget() :
     pathWidget = ui->widget_2;
     vLayout = ui->verticalLayout;
 
-
     setResizeable(false);
 }
 

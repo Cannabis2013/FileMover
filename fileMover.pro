@@ -46,6 +46,7 @@ SOURCES += main.cpp\
     customdialog.cpp \
     customsplitter.cpp \
     customsplitterhandle.cpp \
+    entitymodel.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
     filepathdialogwidget.cpp \
@@ -79,6 +80,8 @@ HEADERS  += mainwindow.h \
     customdialog.h \
     customsplitter.h \
     customsplitterhandle.h \
+    entitymodel.h \
+    entityqueuemanager.h \
     fileinformationmanager.h \
     filepathdialogwidget.h \
     fileworker.h \
@@ -87,7 +90,6 @@ HEADERS  += mainwindow.h \
     messageBox.h \
     myIcon.h \
     myIcon.h \
-    processmanager.h \
     rulesmanager.h \
     myscreendimensions.h \
     mydatetime.h \

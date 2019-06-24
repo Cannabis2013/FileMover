@@ -1,7 +1,7 @@
 #ifndef RULES_H
 #define RULES_H
 #include "worker.h"
-#include "processmanager.h"
+#include "entityqueuemanager.h"
 #include <QPair>
 #include <QStringList>
 #include "mydatetime.h"

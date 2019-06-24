@@ -1,6 +1,6 @@
 #include "fileworker.h"
 
-FileWorker::FileWorker(ProcessManager *pRef)
+FileWorker::FileWorker(EntityQueueManager *pRef)
 {
     pControllerReference = pRef;
     busyMessage = "Luke Fileworker is busy. Patience my young padawan.";
@@ -72,32 +72,32 @@ bool FileWorker::copyEntities(const QFileInfoList files, const QStringList desti
     return result;
 }
 
-DirectoryObject FileWorker::folderContentSize(QString p)
+DirectoryEntity FileWorker::folderContentSize(QString p)
 {
     isBusy = true;
 
     QFileInfo fInfo = p;
 
-    DirectoryObject fObject;
-    fObject.path = fInfo.absoluteFilePath();
-    fObject.sz = folderSize(fInfo.absoluteFilePath());
-    fObject.dirName = fInfo.fileName();
+    DirectoryEntity fObject;
+    fObject.setDirectoryPath(fInfo.absoluteFilePath());
+    fObject.setContentSize(folderSize(fInfo.absoluteFilePath()));
+    fObject.setDirectoryName(fInfo.fileName());
     isBusy = false;
     return fObject;
 }
 
-QList<DirectoryObject> FileWorker::foldersContentSize(QStringList l)
+QList<DirectoryEntity> FileWorker::foldersContentSize(QStringList l)
 {
-    QList<DirectoryObject>resultingList;
+    QList<DirectoryEntity>resultingList;
     isBusy = true;
 
     for(QString path : l)
     {
         QFileInfo fInfo = path;
-        DirectoryObject fObject;
-        fObject.path = fInfo.absoluteFilePath();
-        fObject.sz = folderSize(fInfo.absoluteFilePath());
-        fObject.dirName = fInfo.fileName();
+        DirectoryEntity fObject;
+        fObject.setDirectoryPath(fInfo.absoluteFilePath());
+        fObject.setContentSize(folderSize(fInfo.absoluteFilePath()));
+        fObject.setDirectoryName(fInfo.fileName());
         resultingList << fObject;
     }
     isBusy = false;
@@ -194,18 +194,18 @@ void FileWorker::beginProcess()
 {
     isBusy = true;
     bool isDone = true;
-    while(!pControllerReference->queueIsEmpty())
+    while(!pControllerReference->fileActionEntityQueue())
     {
-        ProcessEntity item = pControllerReference->takeItem();
-        if(item.ruleMode == rD::Delete || item.ruleMode == rD::none)
+        FileActionEntity item = pControllerReference->takeFileActionEntity();
+        if(item.fileActionRule() == rD::Delete || item.fileActionRule() == rD::none)
         {
-            isDone = removeFileItems(item.list) ? isDone : false;
-            reProcessFileInformations(item.directoryPaths);
+            isDone = removeFileItems(item.directoryFileList()) ? isDone : false;
+            reProcessFileInformations(item.directoryPaths());
         }
-        else if(item.ruleMode == rD::Move)
-            isDone = moveEntities(item.list,item.destinations) ? isDone : false;
-        else if(item.ruleMode == rD::Copy)
-            isDone = copyEntities(item.list,item.destinations) ? isDone : false;
+        else if(item.fileActionRule() == rD::Move)
+            isDone = moveEntities(item.directoryFileList(),item.fileActionDestinations()) ? isDone : false;
+        else if(item.fileActionRule() == rD::Copy)
+            isDone = copyEntities(item.directoryFileList(),item.fileActionDestinations()) ? isDone : false;
     }
     isBusy = false;
     emit jobDone(isDone);
@@ -602,7 +602,7 @@ void FileWorker::calcSize(QStringList l)
         emit itemText("Patience my young padawan.");
         return;
     }
-    QList<DirectoryObject> resultingList = foldersContentSize(l);
+    QList<DirectoryEntity> resultingList = foldersContentSize(l);
     emit sendFolderSizeEntities(resultingList);
 }
 
@@ -651,6 +651,7 @@ void FileWorker::processFileInformation(QString path)
         emit itemText("Fileworker har travlt");
         return;
     }
+
     QString denotation;
     DirectoryItem item;
     item.path = path;

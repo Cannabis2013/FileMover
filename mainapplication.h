@@ -63,10 +63,11 @@ public slots:
 
 private:
     FileWorker *fWorker;
-    ProcessManager *pManager;
+    EntityQueueManager *pManager;
     rulesManager *rManager;
     settingsManager *sManager;
     FileInformationManager *fManager;
+    QFileSystemWatcher *fileSystemWatcher;
     QThread *fileWorkerThread;
 };
 

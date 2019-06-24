@@ -65,8 +65,8 @@ signals:
 
     // FileWorker
 
-    void sendFolderSize(DirectoryObject fObject);
-    void sendFolderSizes(QList<DirectoryObject> fObjects);
+    void sendFolderSize(DirectoryEntity fObject);
+    void sendFolderSizes(QList<DirectoryEntity> fObjects);
 
     void sendFilePath(QString filePath);
 

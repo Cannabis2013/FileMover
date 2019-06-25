@@ -79,10 +79,12 @@ private:
     bool copyRecursively(QString path,
                          QString destination);
 
+
+    // Start/wake-up entity file operations
     void beginProcessEntities();
 
     QString busyMessage;
-    EntityQueueManager *pControllerReference;
+    EntityQueueManager *entityManagerReference;
 };
 
 typedef FileWorker fW;

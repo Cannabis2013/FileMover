@@ -22,15 +22,13 @@ MainApplication::MainApplication(QString appName, QString orgName)
 
     // Detailed directory information
     connect(sManager,&settingsManager::processPath,entityManager,&EntityQueueManager::addEntity);
-
     connect(sManager,&settingsManager::removeItem,fManager,&FileInformationManager::removeItem);
 
     connect(fWorker,&fW::processFinished,fManager,&FileInformationManager::insertItems);
-
     connect(fWorker,&FileWorker::sendFolderSizeEntity,this,&MainApplication::sendFolderSize);
-
     connect(fWorker,&FileWorker::itemText,this,&MainApplication::sendFilePath);
 
+    // Observer/observable related
     connect(sManager,&settingsManager::stateChanged,this,&MainApplication::stateChanged);
     connect(rManager,&rulesManager::stateChanged,this,&MainApplication::stateChanged);
     connect(fManager,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);

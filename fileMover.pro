@@ -51,7 +51,6 @@ SOURCES += main.cpp\
     fileinformationview.cpp \
     filepathdialogwidget.cpp \
     fileworker.cpp \
-    iconscanner.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
     rulesmanager.cpp \
@@ -85,7 +84,6 @@ HEADERS  += mainwindow.h \
     fileinformationmanager.h \
     filepathdialogwidget.h \
     fileworker.h \
-    iconscanner.h \
     mainapplication.h \
     messageBox.h \
     myIcon.h \

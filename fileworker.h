@@ -2,7 +2,7 @@
 #define FILEWORKEROPERATOR_H
 
 #include "rules.h"
-#include <QRunnable>
+#include "entityqueuemanager.h"
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 

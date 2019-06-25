@@ -16,11 +16,6 @@ private slots:
     void on_addButton_clicked();
     void on_addSubRule_clicked();
     void on_removeSubRule_clicked();
-protected:
-
-private:
-
-
 };
 
 #endif // ADDRULEDIALOG_H

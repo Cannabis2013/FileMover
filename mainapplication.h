@@ -37,13 +37,14 @@ public:
 
     QList<MyIcon> icons(){return sManager->allIcons();}
 
+    // Basic settings and persistence related
+
     SettingsDelegate settingsState();
     void setSettings(SettingsDelegate s);
 
     bool closeOnExit(){return sManager->closeOnQuit();}
 
     void readPersistence();
-
 
     // File/folder operations
 
@@ -52,7 +53,6 @@ public:
 
     void clearFolders(QStringList paths);
     void clearFoldersAccordingToRules(QStringList paths);
-
 
 public slots:
 

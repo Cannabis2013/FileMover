@@ -34,8 +34,9 @@ public:
 
     virtual bool closeOnExit() = 0;
 
-    virtual void beginCalcSize(QString path) = 0;
-    virtual void beginCalcSizes(QStringList paths) = 0;
+    virtual void calculateFolderSize(QString path) = 0;
+    virtual void calculateFolderSizes(QStringList paths) = 0;
+
 
 public slots:
     virtual void clearFolders(QStringList paths) = 0;
@@ -58,26 +59,10 @@ signals:
 
     void stateChanged();
 
-    // FileInformation..
-
-    void processDirectory(DirectoryItem item);
-    void processDirectories(QStringList paths);
-
     // FileWorker
 
-    void sendFolderSize(DirectoryEntity fObject);
-    void sendFolderSizes(QList<DirectoryEntity> fObjects);
-
+    void sendFolderSize(DirectoryCountEntity *fObject);
     void sendFilePath(QString filePath);
-
-    /*
-     * DetailedFolderView related..
-     * Connected to "FileWorker::processFileInformation/FileWorker::processFileInformations"..
-     * Is then returned to "mainWindow::recieveDirectoryItem/mainWindow::recieveDirectoryItems"..
-     */
-
-    void processPath(QString path);
-    void processPaths(QStringList paths);
 };
 
 #endif // ABSTRACTCOREAPPLICATION_H

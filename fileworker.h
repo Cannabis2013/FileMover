@@ -19,8 +19,6 @@ public:
     static QFileInfoList generateFilesList(QString rPath, QStringList paths,bool recursive = false);
 
 public slots:
-    void calcSize(QString path);
-    void calcSize(QStringList l);
 
     void countNumberOfFolderItems(QString path,
                     QDir::Filters f = QDir::NoFilter,
@@ -29,39 +27,33 @@ public slots:
 
     void handleProcessRequest();
 
-    void processFileInformation(QString path);
-    void processFileInformations(QStringList paths);
-    void reProcessFileInformation(const QString path);
-    void reProcessFileInformations(const QStringList paths);
-
 signals:
     void itemText(QString iT);
     void fileCount(long antal);
-    void sendFolderSizeEntity(DirectoryEntity fObj);
-    void sendFolderSizeEntities(QList<DirectoryEntity> s);
+    void sendFolderSizeEntity(DirectoryCountEntity *fObj);
+    void sendFolderSizeEntities(QList<DirectoryCountEntity> s);
 
     void clearFinished(bool a);
 
     // Queue related..
     void infoReport(const QString &error);
-    void processFinished(DirectoryItem item);
-    void multipleProcessFinished(QList<DirectoryItem>items);
+    void processFinished(QList<DirectoryItem>items);
     void jobDone(bool status);
 
 private:
+
+    // File object entity operations
+
+    bool processFileActionEntity(EntityModel *entity);
+    void processFileInformationEntity(EntityModel *entity);
+    void reProcessFileInformationEntity(const QStringList paths);
+    void processDirectoryCountEntity(EntityModel *entity);
 
 
     // Fileoperation from QFileinfoList..
     bool removeFileItems(const QFileInfoList filePaths);
     bool moveEntities(const QFileInfoList files, const QStringList destinations);
     bool copyEntities(const QFileInfoList files, const QStringList destinations);
-
-    /*
-     * Methods related to calc size of folders and the numbers of them
-     */
-
-    DirectoryEntity folderContentSize(QString p);
-    QList<DirectoryEntity> foldersContentSize(QStringList l);
 
     // Methods to count files and number of contents in folders
     int folderCount(QString p);
@@ -87,7 +79,7 @@ private:
     bool copyRecursively(QString path,
                          QString destination);
 
-    void beginProcess();
+    void beginProcessEntities();
 
     QString busyMessage;
     EntityQueueManager *pControllerReference;

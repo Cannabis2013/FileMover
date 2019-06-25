@@ -44,13 +44,17 @@ public:
 
     void readPersistence();
 
-    void beginCalcSize(QString path){fWorker->calcSize(path);}
-    void beginCalcSizes(QStringList paths){fWorker->calcSize(paths);}
+
+    // File/folder operations
+
+    void calculateFolderSize(QString path);
+    void calculateFolderSizes(QStringList paths);
+
+    void clearFolders(QStringList paths);
+    void clearFoldersAccordingToRules(QStringList paths);
 
 
 public slots:
-    void clearFolders(QStringList paths);
-    void clearFoldersAccordingToRules(QStringList paths);
 
     void addWatchFolder(QString path){sManager->insertPath(path);}
     void removeWatchFolderAt(int index);
@@ -63,12 +67,13 @@ public slots:
 
 private:
     FileWorker *fWorker;
-    EntityQueueManager *pManager;
+    EntityQueueManager *entityManager;
     rulesManager *rManager;
     settingsManager *sManager;
     FileInformationManager *fManager;
     QFileSystemWatcher *fileSystemWatcher;
     QThread *fileWorkerThread;
+
 };
 
 #endif // MAINAPPLICATION_H

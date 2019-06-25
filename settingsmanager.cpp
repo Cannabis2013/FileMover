@@ -34,14 +34,15 @@ settingsManager::~settingsManager()
 void settingsManager::insertPath(QString path)
 {
     mainFolderPaths << path;
-    emit processPath(path);
+
+    emit processPath(new fileInformationEntity(path));
     emit stateChanged();
 }
 
-void settingsManager::insertPaths(QStringList paths)
+void settingsManager::insertPath(QStringList paths)
 {
     mainFolderPaths << paths;
-    emit processPaths(paths);
+    emit processPath(new fileInformationEntity(paths));
     emit stateChanged();
 }
 
@@ -56,6 +57,11 @@ void settingsManager::removePathAt(int index)
 {
     mainFolderPaths.removeAt(index);
     emit stateChanged();
+}
+
+void settingsManager::requestProcess()
+{
+
 }
 
 QList<QTreeWidgetItem *> settingsManager::pathItems()
@@ -117,7 +123,7 @@ void settingsManager::readSettings()
         persistenceSettings->setArrayIndex(i);
     }
 
-    insertPaths(folders);
+    insertPath(folders);
     persistenceSettings->endArray();
 }
 

@@ -135,7 +135,7 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
 
     // Fileworker Related..
 
-    qRegisterMetaType<QList<DirectoryEntity>>("QList<fileObject>");
+    qRegisterMetaType<QList<DirectoryCountEntity>>("QList<fileObject>");
 
     /*
      * Setup connections
@@ -291,7 +291,7 @@ void mainWindow::tMenuClicked(QAction *a)
 void mainWindow::countMenuTriggered(QAction *cAction)
 {
     QString fPath = cAction->text();
-    coreApplication->beginCalcSize(fPath);
+    coreApplication->calculateFolderSize(fPath);
 }
 
 void mainWindow::clearMenuTriggered(QAction *clAction)
@@ -394,14 +394,15 @@ void mainWindow::clearCompleted(bool a)
     tray->showMessage("Removal",msg);
 }
 
-void mainWindow::folderContentRecieved(DirectoryEntity fObject)
+void mainWindow::folderContentRecieved(DirectoryCountEntity *fObject)
 {
     QString sizeNotation;
-    double scaledAndRoundedSize = fW::convertSizeToAppropriateUnits(fObject.size(),sizeNotation,2);
-    QString folderName = fObject.directoryPath(),
+    double scaledAndRoundedSize = fW::convertSizeToAppropriateUnits(fObject->size(),sizeNotation,2);
+    QString folderName = fObject->directoryPath(),
             folderSize = QString::number(scaledAndRoundedSize),
             message = QString("Size of folder content is %1 %2").arg(folderSize).arg(sizeNotation);
     showSystemMessage(message,folderName);
+    fObject = nullptr;
 }
 
 void mainWindow::contextMenuCalled(QPoint p)
@@ -764,7 +765,7 @@ void mainWindow::on_addBut_clicked()
 void mainWindow::on_countButt_clicked()
 {
     QString path = watchFolderView->currentItem()->text(0);
-    coreApplication->beginCalcSize(path);
+    coreApplication->calculateFolderSize(path);
 }
 
 void mainWindow::on_actionOpen_current_directory_triggered()

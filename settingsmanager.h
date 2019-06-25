@@ -10,6 +10,7 @@
 #include <qdir.h>
 #include <qdiriterator.h>
 #include "settingsdelegate.h"
+#include "entitymodel.h"
 
 
 class settingsManager : public QObject,
@@ -40,10 +41,14 @@ public:
     // Path Related..
 
     void insertPath(QString path);
-    void insertPaths(QStringList paths);
+    void insertPath(QStringList paths);
 
     void removePath(QString path);
     void removePathAt(int index);
+
+    // Request file object processing
+
+    void requestProcess();
 
     QStringList paths() {return mainFolderPaths;}
     QList<QTreeWidgetItem*> pathItems();
@@ -58,8 +63,7 @@ public:
 
 signals:
     void stateChanged();
-    void processPath(QString path);
-    void processPaths(QStringList paths);
+    void processPath(EntityModel *entity);
 
     void removeItem(QString path);
 

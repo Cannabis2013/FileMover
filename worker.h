@@ -1,7 +1,7 @@
 #ifndef WORKER_H
 #define WORKER_H
 
-#include <qfileinfo.h>
+#include <QFileInfoList>
 #include <QDir>
 #include <qdiriterator.h>
 #include <QTreeWidgetItem>

@@ -2,12 +2,13 @@
 #define ABSTRACTCOREAPPLICATION_H
 
 #include <qstring.h>
-#include "fileworker.h"
+#include "fileoperationsworker.h"
 #include "myIcon.h"
 #include "rulesmanager.h"
 #include "settingsdelegate.h"
+#include "myobject.h"
 
-class AbstractCoreApplication : public QObject
+class AbstractCoreApplication : public MyObject
 {
     Q_OBJECT
 public:
@@ -35,8 +36,6 @@ public:
     virtual bool closeOnExit() = 0;
 
     virtual void calculateFolderSize(QString path) = 0;
-    virtual void calculateFolderSizes(QStringList paths) = 0;
-
 
 public slots:
     virtual void clearFolders(QStringList paths) = 0;
@@ -54,10 +53,6 @@ public slots:
     virtual void removeRule(QString title) = 0;
 
 signals:
-
-    // Notify observers
-
-    void stateChanged();
 
     // FileWorker
 

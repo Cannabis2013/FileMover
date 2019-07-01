@@ -1,5 +1,5 @@
-﻿#ifndef MYSPLITTERHANDLE_H
-#define MYSPLITTERHANDLE_H
+﻿#ifndef CUSTOMSPLITTERHANDLE_H
+#define CUSTOMSPLITTERHANDLE_H
 
 #include <QWidget>
 #include <QSplitterHandle>
@@ -8,7 +8,6 @@
 #include <iostream>
 #include <qlist.h>
 #include <qsplitter.h>
-#include <customsplitter.h>
 #include <qlabel.h>
 #include <qpen.h>
 
@@ -26,4 +25,4 @@ private:
     QString handleLabel;
 };
 
-#endif // MYSPLITTERHANDLE_H
+#endif // CUSTOMSPLITTERHANDLE_H

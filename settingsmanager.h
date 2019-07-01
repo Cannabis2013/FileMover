@@ -11,9 +11,9 @@
 #include <qdiriterator.h>
 #include "settingsdelegate.h"
 #include "entitymodel.h"
+#include "myobject.h"
 
-
-class settingsManager : public QObject,
+class settingsManager : public MyObject,
         public AbstractPersistence
 {
     Q_OBJECT
@@ -62,7 +62,6 @@ public:
     QList<MyIcon>allIcons() const {return trayIconList;}
 
 signals:
-    void stateChanged();
     void processPath(EntityModel *entity);
 
     void removeItem(QString path);

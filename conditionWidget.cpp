@@ -49,7 +49,7 @@ void conditionWidget::setKeyWords(QString kW)
     ui->keyWordSelector->setText(kW);
 }
 
-void conditionWidget::setConditionalFixedSize(QPair<int, QString> fSize, ruleDefinitions::compareMode cMode)
+void conditionWidget::setConditionalFixedSize(QPair<int, QString> fSize, ruleDefinitions::fileComparison cMode)
 {
     rD rDefs;
     ui->modeSelector->setCurrentText(rDefs.intervalConditionalList.at(0));
@@ -74,9 +74,9 @@ void conditionWidget::setConditionalIntervalSize(QPair<QPair<int, QString>, QPai
     ui->sizeIntervalMaxUnit->setCurrentText(maxSize.second);
 }
 
-void conditionWidget::setFixedDate(QPair<ruleDefinitions::compareMode, myDateTime> dt)
+void conditionWidget::setFixedDate(QPair<ruleDefinitions::fileComparison, myDateTime> dt)
 {
-    rD::compareMode cM = dt.first;
+    rD::fileComparison cM = dt.first;
     myDateTime dateTime = dt.second;
 
     rD rDefs;
@@ -117,7 +117,7 @@ void conditionWidget::setTypeValues(Worker::iteratorMode tMode)
 void conditionWidget::setCurrentView(QString txt)
 {
     rD rDefs;
-    rD::fileFieldCondition conMode = rDefs.fieldConditionFromString(txt);
+    rD::fileCondition conMode = rDefs.fieldConditionFromString(txt);
     currentFileModeRule = conMode;
     mainModeSelector->show();
 
@@ -142,7 +142,7 @@ void conditionWidget::setCurrentView(int index)
     mainModeView->setCurrentIndex(index);
 }
 
-void conditionWidget::setCompareView(ruleDefinitions::compareMode compare)
+void conditionWidget::setCompareView(ruleDefinitions::fileComparison compare)
 {
     rD rDefs;
     if(currentFileModeRule == rD::filepathMode || currentFileModeRule == rD::extensionMode)
@@ -231,7 +231,7 @@ void conditionWidget::setMode(QString condition)
         mainModeSelector->addItem(condition);
 }
 
-ruleDefinitions::compareMode conditionWidget::currentCompareMode()
+ruleDefinitions::fileComparison conditionWidget::currentCompareMode()
 {
     rD rDefs;
     QString modeText = mainModeSelector->currentText();
@@ -296,12 +296,12 @@ QPair<QPair<int, QString>, QPair<int, QString> > conditionWidget::intervalSizeVa
     return result;
 }
 
-QPair<ruleDefinitions::compareMode, myDateTime> conditionWidget::fixedConditionalDate() const
+QPair<ruleDefinitions::fileComparison, myDateTime> conditionWidget::fixedConditionalDate() const
 {
     rD rDefs;
-    QPair<ruleDefinitions::compareMode, myDateTime> result;
+    QPair<ruleDefinitions::fileComparison, myDateTime> result;
     QString dateOperator = dateOperatorSelector->currentText();
-    rD::compareMode compareOperator = rDefs.compareFromString(dateOperator);
+    rD::fileComparison compareOperator = rDefs.compareFromString(dateOperator);
 
     QDateTime dt = ui->dateFixedSelector->dateTime();
     myDateTime mDate(dt);

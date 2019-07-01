@@ -6,12 +6,12 @@
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
-class FileWorker : public Worker
+class FileOperationsWorker : public Worker
 {
     Q_OBJECT
 
 public:
-    FileWorker(EntityQueueManager *pRef);
+    FileOperationsWorker(QObject *pRef);
 
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
@@ -52,8 +52,8 @@ private:
 
     // Fileoperation from QFileinfoList..
     bool removeFileItems(const QFileInfoList filePaths);
-    bool moveEntities(const QFileInfoList files, const QStringList destinations);
-    bool copyEntities(const QFileInfoList files, const QStringList destinations);
+    bool moveFileItems(const QFileInfoList files, const QStringList destinations);
+    bool copyFileItems(const QFileInfoList files, const QStringList destinations);
 
     // Methods to count files and number of contents in folders
     int folderCount(QString p);
@@ -68,7 +68,11 @@ private:
 
     // Create a list of treeWidgetItem
 
-    QTreeWidgetItem *scanDir(QString p);
+    QTreeWidgetItem *assembleItemModelsFromPath(QString p);
+
+    // Create a QFileInfoList of files and folders within a given path..
+
+    QFileInfoList assembleEntryList(QString path);
 
     // Protected member variables;
     bool isBusy;
@@ -87,6 +91,6 @@ private:
     EntityQueueManager *entityManagerReference;
 };
 
-typedef FileWorker fW;
+typedef FileOperationsWorker fW;
 
 #endif // FILEWORKEROPERATOR_H

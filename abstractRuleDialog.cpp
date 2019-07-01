@@ -66,8 +66,8 @@ void AbstractRuleDialog::resetAllForm()
 
 void AbstractRuleDialog::updateConditionView(SubRule &sR)
 {
-    rD::fileFieldCondition cond = sR.fieldCondition;
-    rD::compareMode comp = sR.fileCompareMode;
+    rD::fileCondition cond = sR.fieldCondition;
+    rD::fileComparison comp = sR.fileCompareMode;
     if(cond == rD::filepathMode || cond == rD::extensionMode)
     {
         condWidget->setKeyWords(rulesManager::ruleKeyWordToString(sR));
@@ -115,12 +115,13 @@ void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 
 void AbstractRuleDialog::closeEvent(QCloseEvent *event)
 {
+    Q_UNUSED(event);
     emit destroyed();
 }
 
 void AbstractRuleDialog::resizeEvent(QSize newSize)
 {
-
+    Q_UNUSED(newSize);
 }
 
 
@@ -133,7 +134,7 @@ void AbstractRuleDialog::updateView()
     {
         QStringList headerData;
         SubRule sRule = subRules.at(i);
-        rD::fileFieldCondition condition = sRule.fieldCondition;
+        rD::fileCondition condition = sRule.fieldCondition;
 
         headerData << rDefs.fieldConditionToString(condition);
         headerData << rDefs.compareToString(sRule.fileCompareMode);

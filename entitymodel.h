@@ -49,18 +49,18 @@ public:
     }
     void setDirectoryPaths(QStringList paths){dirPaths = paths;}
     void setDirectoryFileContent(QFileInfoList list){this->list = list;}
-    void setFileActionRule(rD::fileActionRule aRule){ruleMode = aRule;}
+    void setFileActionRule(rD::fileAction aRule){ruleMode = aRule;}
     void setFileActionDestinations(QStringList paths){destinations = paths;}
 
     QStringList directoryPaths(){return dirPaths;}
     QFileInfoList directoryFileList(){return list;}
-    rD::fileActionRule fileActionRule(){return ruleMode;}
+    rD::fileAction fileActionRule(){return ruleMode;}
     QStringList fileActionDestinations(){return destinations;}
 
 private:
     QStringList dirPaths;
     QFileInfoList list;
-    rD::fileActionRule ruleMode = rD::none;
+    rD::fileAction ruleMode = rD::none;
     QStringList destinations = QStringList();
 };
 

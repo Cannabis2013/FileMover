@@ -21,6 +21,7 @@
 #include <math.h>
 #include <qstackedwidget.h>
 #include <QSystemTrayIcon>
+#include <iostream>
 
 
 #include "messageBox.h"

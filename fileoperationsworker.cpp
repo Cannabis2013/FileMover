@@ -1,14 +1,14 @@
-#include "fileworker.h"
+#include "fileoperationsworker.h"
 
-FileWorker::FileWorker(EntityQueueManager *pRef)
+FileOperationsWorker::FileOperationsWorker(QObject *pRef)
 {
-    entityManagerReference = pRef;
+    entityManagerReference = dynamic_cast<EntityQueueManager*>(pRef);
     busyMessage = "Luke Fileworker is busy. Patience my young padawan.";
     isBusy = false;
     qt_ntfs_permission_lookup++;
 }
 
-bool FileWorker::removeFileItems(const QFileInfoList filePaths)
+bool FileOperationsWorker::removeFileItems(const QFileInfoList filePaths)
 {
     if(filePaths.isEmpty())
         return false;
@@ -40,7 +40,7 @@ bool FileWorker::removeFileItems(const QFileInfoList filePaths)
     return true;
 }
 
-bool FileWorker::moveEntities(const QFileInfoList files, const QStringList destinations)
+bool FileOperationsWorker::moveEntities(const QFileInfoList files, const QStringList destinations)
 {
     bool result = true;
     for(QString destPath : destinations)
@@ -56,7 +56,7 @@ bool FileWorker::moveEntities(const QFileInfoList files, const QStringList desti
     return result;
 }
 
-bool FileWorker::copyEntities(const QFileInfoList files, const QStringList destinations)
+bool FileOperationsWorker::copyEntities(const QFileInfoList files, const QStringList destinations)
 {
     bool result = true;
     for(QString destPath : destinations)
@@ -72,7 +72,7 @@ bool FileWorker::copyEntities(const QFileInfoList files, const QStringList desti
     return result;
 }
 
-void FileWorker::processDirectoryCountEntity(EntityModel *entity)
+void FileOperationsWorker::processDirectoryCountEntity(EntityModel *entity)
 {
     DirectoryCountEntity *fObject = static_cast<DirectoryCountEntity*>(entity);
     QFileInfo fInfo = fObject->directoryPath();
@@ -82,7 +82,7 @@ void FileWorker::processDirectoryCountEntity(EntityModel *entity)
     emit sendFolderSizeEntity(fObject);
 }
 
-void FileWorker::removeDir(QString &dirName, QStringList &errs)
+void FileOperationsWorker::removeDir(QString &dirName, QStringList &errs)
 {
     QDir dir(dirName);
 
@@ -112,7 +112,7 @@ void FileWorker::removeDir(QString &dirName, QStringList &errs)
     dir.rmdir(dirName);
 }
 
-bool FileWorker::moveRecursively(QString path, QString destination)
+bool FileOperationsWorker::moveRecursively(QString path, QString destination)
 {
     bool result = true;
     QDirIterator iT(path,QDir::NoDotAndDotDot | QDir::AllEntries);
@@ -148,7 +148,7 @@ bool FileWorker::moveRecursively(QString path, QString destination)
     return result;
 }
 
-bool FileWorker::copyRecursively(QString path, QString destination)
+bool FileOperationsWorker::copyRecursively(QString path, QString destination)
 {
     bool result = true;
     QDirIterator iT(path,QDir::NoDotAndDotDot | QDir::AllEntries);
@@ -168,7 +168,7 @@ bool FileWorker::copyRecursively(QString path, QString destination)
     return result;
 }
 
-void FileWorker::beginProcessEntities()
+void FileOperationsWorker::beginProcessEntities()
 {
     isBusy = true;
     bool isDone = true;
@@ -196,7 +196,7 @@ void FileWorker::beginProcessEntities()
     emit jobDone(isDone);
 }
 
-int FileWorker::folderCount(QString p)
+int FileOperationsWorker::folderCount(QString p)
 {
     QFileInfo info = p;
     QDirIterator ite(info.absoluteFilePath(),
@@ -214,7 +214,7 @@ int FileWorker::folderCount(QString p)
     return taeller;
 }
 
-int FileWorker::fileCount(QString p)
+int FileOperationsWorker::fileCount(QString p)
 {
     QFileInfo info = p;
     QDirIterator ite(info.absoluteFilePath(),
@@ -231,7 +231,7 @@ int FileWorker::fileCount(QString p)
     return taeller;
 }
 
-QList<QPair<QString, int> > FileWorker::getListOfSuffixOccuriencies(QString p)
+QList<QPair<QString, int> > FileOperationsWorker::getListOfSuffixOccuriencies(QString p)
 {
     QList<QPair<QString, int> > resultingList;
     QStringList allSufs,tempSufs;
@@ -270,7 +270,7 @@ QList<QPair<QString, int> > FileWorker::getListOfSuffixOccuriencies(QString p)
     return resultingList;
 }
 
-long long FileWorker::folderSize(QString pf)
+long long FileOperationsWorker::folderSize(QString pf)
 {
     long long sZ = 0;
 
@@ -295,7 +295,7 @@ long long FileWorker::folderSize(QString pf)
     return sZ;
 }
 
-QTreeWidgetItem *FileWorker::scanDir(QString p)
+QTreeWidgetItem *FileOperationsWorker::assembleItemModelsFromPath(QString p)
 {
     QFileInfo info(p);
     if(!info.isDir() && !info.isFile())
@@ -308,7 +308,7 @@ QTreeWidgetItem *FileWorker::scanDir(QString p)
 
         if(fInfo.isDir())
         {
-            QTreeWidgetItem *dirItem = scanDir(fInfo.absoluteFilePath());
+            QTreeWidgetItem *dirItem = assembleItemModelsFromPath(fInfo.absoluteFilePath());
             result->addChild(dirItem);
         }
         else if(fInfo.isFile())
@@ -319,7 +319,17 @@ QTreeWidgetItem *FileWorker::scanDir(QString p)
     return result;
 }
 
-QStringList FileWorker::createHeader(QFileInfo fi)
+QFileInfoList FileOperationsWorker::assembleEntryList(QString path)
+{
+    if(path == QString())
+        return QFileInfoList();
+
+    QDir directory(path);
+
+    return directory.entryInfoList(QDir::AllEntries | QDir::System | QDir::Hidden);
+}
+
+QStringList FileOperationsWorker::createHeader(QFileInfo fi)
 {
     // Filename/dirname - Filepath - file extension - file type - Filesize - lastModified - Last read
     QStringList headers;
@@ -371,7 +381,7 @@ QStringList FileWorker::createHeader(QFileInfo fi)
     return headers;
 }
 
-QFileInfoList FileWorker::processList(QFileInfoList files, SubRule rule)
+QFileInfoList FileOperationsWorker::processList(QFileInfoList files, SubRule rule)
 {
     bool condition = false;
 
@@ -530,7 +540,7 @@ QFileInfoList FileWorker::processList(QFileInfoList files, SubRule rule)
     return filesToProcess;
 }
 
-QFileInfoList FileWorker::generateFilesList(QString rPath, QStringList paths, bool recursive)
+QFileInfoList FileOperationsWorker::generateFilesList(QString rPath, QStringList paths, bool recursive)
 {
     QStringList rPaths;
     if(rPath != QString() && rPath != "Alle")
@@ -569,7 +579,7 @@ QFileInfoList FileWorker::generateFilesList(QString rPath, QStringList paths, bo
     return allFiles;
 }
 
-void FileWorker::countNumberOfFolderItems(QString path, QDir::Filters f, QDirIterator::IteratorFlags i)
+void FileOperationsWorker::countNumberOfFolderItems(QString path, QDir::Filters f, QDirIterator::IteratorFlags i)
 {
     if(isBusy)
     {
@@ -589,7 +599,7 @@ void FileWorker::countNumberOfFolderItems(QString path, QDir::Filters f, QDirIte
     isBusy = false;
 }
 
-void FileWorker::countFolders(QStringList Path)
+void FileOperationsWorker::countFolders(QStringList Path)
 {
     long taeller = 0;
     for (QString p : Path)
@@ -599,7 +609,7 @@ void FileWorker::countFolders(QStringList Path)
     emit fileCount(taeller);
 }
 
-void FileWorker::handleProcessRequest()
+void FileOperationsWorker::handleProcessRequest()
 {
     if(isBusy)
         return;
@@ -607,7 +617,7 @@ void FileWorker::handleProcessRequest()
         beginProcessEntities();
 }
 
-void FileWorker::processFileInformationEntity(EntityModel * entity)
+void FileOperationsWorker::processFileInformationEntity(EntityModel * entity)
 {
     fileInformationEntity *itemModel = static_cast<fileInformationEntity*>(entity);
 
@@ -622,7 +632,8 @@ void FileWorker::processFileInformationEntity(EntityModel * entity)
         item.dirSize = QString::number(directorySize) + " " + denotation;
         item.numberOfDirectories = folderCount(path);
         item.numberOfFiles = fileCount(path);
-        item.directoryContent = scanDir(path);
+        item.directoryContent = assembleEntryList(path);
+        item.directoryItemModels = assembleItemModelsFromPath(path);
         item.sufList = getListOfSuffixOccuriencies(path);
         directories << item;
     }
@@ -630,7 +641,7 @@ void FileWorker::processFileInformationEntity(EntityModel * entity)
     emit processFinished(directories);
 }
 
-void FileWorker::reProcessFileInformationEntity(const QStringList paths)
+void FileOperationsWorker::reProcessFileInformationEntity(const QStringList paths)
 {
     QList<DirectoryItem>directories;
     for(QString p: paths)
@@ -642,14 +653,14 @@ void FileWorker::reProcessFileInformationEntity(const QStringList paths)
         item.dirSize = QString::number(directorySize) + " " + denotation;
         item.numberOfDirectories = folderCount(p);
         item.numberOfFiles = fileCount(p);
-        item.directoryContent = scanDir(p);
+        item.directoryItemModels = assembleItemModelsFromPath(p);
         item.sufList = getListOfSuffixOccuriencies(p);
         directories << item;
     }
     emit processFinished(directories);
 }
 
-bool FileWorker::processFileActionEntity(EntityModel *entity)
+bool FileOperationsWorker::processFileActionEntity(EntityModel *entity)
 {
     bool result = true;
     FileActionEntity *item = static_cast<FileActionEntity*>(entity);

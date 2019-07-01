@@ -6,7 +6,7 @@ MainApplication::MainApplication(QString appName, QString orgName)
     sManager = new settingsManager(appName,orgName);
     entityManager = new EntityQueueManager();
     fManager = new FileInformationManager(appName,orgName);
-    fWorker = new FileWorker(entityManager);
+    fWorker = new FileOperationsWorker(entityManager);
     fileSystemWatcher = new QFileSystemWatcher(sManager->paths());
     fileWorkerThread = new QThread();
 
@@ -25,15 +25,15 @@ MainApplication::MainApplication(QString appName, QString orgName)
     connect(sManager,&settingsManager::removeItem,fManager,&FileInformationManager::removeItem);
 
     connect(fWorker,&fW::processFinished,fManager,&FileInformationManager::insertItems);
-    connect(fWorker,&FileWorker::sendFolderSizeEntity,this,&MainApplication::sendFolderSize);
-    connect(fWorker,&FileWorker::itemText,this,&MainApplication::sendFilePath);
+    connect(fWorker,&FileOperationsWorker::sendFolderSizeEntity,this,&MainApplication::sendFolderSize);
+    connect(fWorker,&FileOperationsWorker::itemText,this,&MainApplication::sendFilePath);
 
     // Observer/observable related
     connect(sManager,&settingsManager::stateChanged,this,&MainApplication::stateChanged);
     connect(rManager,&rulesManager::stateChanged,this,&MainApplication::stateChanged);
     connect(fManager,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);
 
-    connect(entityManager,&EntityQueueManager::wakeUpProcess,fWorker,&FileWorker::handleProcessRequest);
+    connect(entityManager,&EntityQueueManager::wakeUpProcess,fWorker,&FileOperationsWorker::handleProcessRequest);
 
     connect(fWorker,&fW::jobDone,this,&AbstractCoreApplication::stateChanged);
 
@@ -113,20 +113,6 @@ void MainApplication::calculateFolderSize(QString path)
     fObject->setDirectoryName(fInfo.fileName());
 
     entityManager->addEntity(fObject);
-}
-
-void MainApplication::calculateFolderSizes(QStringList paths)
-{
-    for (QString path : paths)
-    {
-        QFileInfo fInfo(path);
-        DirectoryCountEntity *fObject = new DirectoryCountEntity();
-
-        fObject->setDirectoryPath(fInfo.absoluteFilePath());
-        fObject->setDirectoryName(fInfo.fileName());
-
-        entityManager->addEntity(fObject);
-    }
 }
 
 void MainApplication::removeWatchFolderAt(int index)

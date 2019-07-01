@@ -3,9 +3,9 @@
 
 #include <qwidget.h>
 #include <QMouseEvent>
+#include "mywidget.h"
 
-
-class AbstractFrameImplementable : public QWidget
+class AbstractFrameImplementable : public MyWidget
 {
     Q_OBJECT
 public:
@@ -22,7 +22,6 @@ signals:
     void sizeChanged(QSize newSize);
 
 protected:
-
     void closeEvent(QCloseEvent *event);
     virtual void resizeEvent(QSize newSize) = 0;
 

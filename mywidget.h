@@ -22,6 +22,7 @@ public:
     void print(QStringList textList, listMode breakBetweenElemenets = listMode::noBreak ,printMode mode = printMode::lineBreak);
 
 signals:
+    void stateChanged();
 
 public slots:
 

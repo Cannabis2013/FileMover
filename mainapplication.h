@@ -2,7 +2,7 @@
 #define MAINAPPLICATION_H
 
 #include <qthread.h>
-#include "fileworker.h"
+#include "fileoperationsworker.h"
 #include "settingsmanager.h"
 #include "fileinformationmanager.h"
 #include "abstractcoreapplication.h"
@@ -49,7 +49,6 @@ public:
     // File/folder operations
 
     void calculateFolderSize(QString path);
-    void calculateFolderSizes(QStringList paths);
 
     void clearFolders(QStringList paths);
     void clearFoldersAccordingToRules(QStringList paths);
@@ -66,7 +65,7 @@ public slots:
     void removeRule(QString title){rManager->removeRule(title);}
 
 private:
-    FileWorker *fWorker;
+    FileOperationsWorker *fWorker;
     EntityQueueManager *entityManager;
     rulesManager *rManager;
     settingsManager *sManager;

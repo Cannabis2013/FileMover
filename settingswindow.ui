@@ -175,7 +175,7 @@ background-color:transparent;</string>
            <x>0</x>
            <y>0</y>
            <width>900</width>
-           <height>458</height>
+           <height>460</height>
           </rect>
          </property>
          <property name="mouseTracking">
@@ -707,6 +707,12 @@ QPushButton::hover
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>10</number>
+        </property>
         <item>
          <spacer name="horizontalSpacer_4">
           <property name="orientation">
@@ -734,7 +740,7 @@ QPushButton::hover
           <property name="minimumSize">
            <size>
             <width>128</width>
-            <height>40</height>
+            <height>20</height>
            </size>
           </property>
           <property name="font">

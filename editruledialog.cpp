@@ -37,9 +37,9 @@ void EditRuleDialog::on_addSubRule_clicked()
     rD rDefs;
     SubRule sRule;
     QString currentCondition = conditionBox->currentText();
-    rD::fileFieldCondition conMode = rDefs.fieldConditionFromString(currentCondition);
+    rD::fileCondition conMode = rDefs.fieldConditionFromString(currentCondition);
     sRule.fieldCondition = conMode;
-    rD::compareMode currentCompareMode = condWidget->currentCompareMode();
+    rD::fileComparison currentCompareMode = condWidget->currentCompareMode();
     sRule.fileCompareMode = currentCompareMode;
     if(conMode == rD::filepathMode|| conMode == rD::extensionMode)
     {

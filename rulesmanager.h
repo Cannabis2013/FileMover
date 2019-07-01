@@ -17,16 +17,23 @@ public:
     rulesManager(QString appName, QString orgName);
     ~rulesManager();
 
+
+    // Persistence
     void readSettings();
     void writeSettings();
 
+    // String manipulations
     static QString mergeStringList(const QStringList strings);
     static QStringList splitString(const QString split);
 
+    // Rule operations
     static QString ruleKeyWordToString(SubRule sRule);
     static QString ruleSizeLimitsToString(SubRule sRule);
     static QString ruleDateLimitsToString(SubRule sRule);
 
+
+
+    // Rule item model
     QList<QTreeWidgetItem*>ruleItems() const;
 
 signals:

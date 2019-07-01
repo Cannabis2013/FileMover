@@ -38,9 +38,9 @@ private:
     // Editrule related..
 
     void setKeyWords(QString kW);
-    void setConditionalFixedSize(QPair<int,QString>fSize, rD::compareMode cMode);
+    void setConditionalFixedSize(QPair<int,QString>fSize, rD::fileComparison cMode);
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
-    void setFixedDate(QPair<rD::compareMode,myDateTime> dt);
+    void setFixedDate(QPair<rD::fileComparison,myDateTime> dt);
     void setIntervalDate(QPair<myDateTime,myDateTime> iDate);
     void setTypeValues(Worker::iteratorMode tMode);
 
@@ -58,7 +58,7 @@ private:
     // Set the index of QStackWidget prior to the argument.
     void setCurrentView(int index);
 
-    void setCompareView(rD::compareMode compare);
+    void setCompareView(rD::fileComparison compare);
 
     // General values and other..
     void initDefaultOperators();
@@ -68,7 +68,7 @@ private:
 
     // non-void members..
     //  Comparemode
-    rD::compareMode currentCompareMode();
+    rD::fileComparison currentCompareMode();
     QString currentMode() const {return mainModeSelector->currentText();}
 
 
@@ -80,7 +80,7 @@ private:
     QPair<int,QString> fixedSizeValues() const;
     QPair<QPair<int,QString>,QPair<int,QString>> intervalSizeValues() const;
     // Get Date values..
-    QPair<rD::compareMode,myDateTime>fixedConditionalDate() const;
+    QPair<rD::fileComparison,myDateTime>fixedConditionalDate() const;
     QPair<myDateTime,myDateTime>intervalDates() const;
     // Get type values..
     Worker::iteratorMode typeMode() const;
@@ -97,7 +97,7 @@ private:
     QPair<int,int>indexRange;
     QSpinBox *fixedSizeSelector,*minIntervalSizeSelector,*maxIntervalSizeSelector;
     QStackedWidget *mainModeView;
-    rD::fileFieldCondition currentFileModeRule;
+    rD::fileCondition currentFileModeRule;
     Ui::conditionWidget *ui;
 
     friend class AbstractRuleDialog;

@@ -14,7 +14,7 @@
 #include <qscreen.h>
 
 #include "ui_customdialog.h"
-
+#include "mywidget.h"
 #include "abstractframeimplementable.h"
 
 using namespace std;
@@ -23,7 +23,7 @@ namespace Ui {
     class CustomDialog;
 }
 
-class CustomDialog : public QWidget
+class CustomDialog : public MyWidget
 {
     Q_OBJECT
 

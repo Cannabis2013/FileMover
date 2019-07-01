@@ -614,11 +614,12 @@ QFileInfoList mainWindow::fileItemList(const QStringList paths) const
 
 QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QTreeWidget *sTree, const int column, Qt::SortOrder sortMode) const
 {
-    uint total = static_cast<uint>(sTree->topLevelItemCount());
+    int total = sTree->topLevelItemCount();
     QHeaderView *sufHeader = sTree->header();
     QTreeWidgetItem* unSortetItems = new QTreeWidgetItem[total],
             *sortetItems = new QTreeWidgetItem[total];
-    for (int var = 0; var < static_cast<int>(total); ++var)
+    // Initializing the unsortet array
+    for (int var = 0; var < total; ++var)
     {
         QTreeWidgetItem *sItem = sTree->topLevelItem(var);
         QTreeWidgetItem nItem;
@@ -627,12 +628,12 @@ QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QTreeWidget *sTree, const int 
         unSortetItems[var] = nItem;
     }
     sTree->clear();
-    for (int var = 0; var < static_cast<int>(total); ++var)
+    for (int var = 0; var < total; ++var)
     {
         QTreeWidgetItem item = unSortetItems[var];
         int index = 0,
             value = item.text(column).toInt();
-        for (int i = 0; i < static_cast<int>(total); i++)
+        for (int i = 0; i < total; i++)
         {
             int compareValue = unSortetItems[i].text(column).toInt();
             if(sortMode != Qt::AscendingOrder)
@@ -660,8 +661,9 @@ QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QTreeWidget *sTree, const int 
                 index++;
         }
     }
+
     QList<QTreeWidgetItem*>resultingSuffixes;
-    for (int var = 0; var < static_cast<int>(total); ++var)
+    for (int var = 0; var < total; ++var)
     {
         QTreeWidgetItem item = sortetItems[var];
         QTreeWidgetItem *dupeItem = new QTreeWidgetItem;

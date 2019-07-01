@@ -44,7 +44,7 @@ QList<QTreeWidgetItem*> FileInformationManager::allTreeItems()
 {
     QList<QTreeWidgetItem*> resultingList;
     for (DirectoryItem item : items)
-        resultingList.append(assembleTreeItems(item.directoryContent));
+        resultingList.append(assembleTreeItems(item.directoryItemModels));
 
     return resultingList;
 }
@@ -189,6 +189,18 @@ void FileInformationManager::removeItem(QString path)
         {
             items.removeAt(i);
             emit stateChanged();
+            return;
+        }
+    }
+}
+
+void FileInformationManager::requestItem(QString path)
+{
+    for (DirectoryItem item : items)
+    {
+        if(item.path == path)
+        {
+            emit sendItem(item);
             return;
         }
     }

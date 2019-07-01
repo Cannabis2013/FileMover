@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 QT       += core gui
-QT       += testlib
 
 windows {
     *-g++* {
@@ -28,7 +27,6 @@ macx
 CONFIG   += C++11
 }
 
-QT += testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -49,8 +47,8 @@ SOURCES += main.cpp\
     entitymodel.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
+    fileoperationsworker.cpp \
     filepathdialogwidget.cpp \
-    fileworker.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
     rulesmanager.cpp \
@@ -82,12 +80,13 @@ HEADERS  += mainwindow.h \
     entitymodel.h \
     entityqueuemanager.h \
     fileinformationmanager.h \
+    fileoperationsworker.h \
     filepathdialogwidget.h \
-    fileworker.h \
     mainapplication.h \
     messageBox.h \
     myIcon.h \
     myIcon.h \
+    myobject.h \
     rulesmanager.h \
     myscreendimensions.h \
     mydatetime.h \
@@ -125,5 +124,3 @@ DISTFILES += \
 
 RESOURCES += \
     myressource.qrc
-
-TEST += \

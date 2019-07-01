@@ -8,6 +8,7 @@
 #include <qpair.h>
 #include <memory>
 #include <QTreeWidgetItem>
+#include "myobject.h"
 
 #include "abstractpersistence.h"
 
@@ -24,16 +25,17 @@ using namespace std;
 
 struct DirectoryItem
 {
+    QFileInfoList directoryContent;
     QString dirSize = nullptr;
     int numberOfDirectories;
     long numberOfFiles;
     QString path = "Not defined";
     QList<QPair<QString,int> > sufList;
     QList<QTreeWidgetItem*> suffixItems() const;
-    QTreeWidgetItem *directoryContent;
+    QTreeWidgetItem *directoryItemModels;
 };
 
-class FileInformationManager : public QObject, public AbstractPersistence
+class FileInformationManager : public MyObject, public AbstractPersistence
 {
     Q_OBJECT
 public:
@@ -67,8 +69,10 @@ public slots:
 
     void removeItem(QString path);
 
+    void requestItem(QString path);
+
 signals:
-    void stateChanged();
+    void sendItem(DirectoryItem item);
 private:
 
     bool isDuplicate(QString path);

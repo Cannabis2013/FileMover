@@ -72,6 +72,7 @@ private:
     rulesManager *rManager;
     settingsManager *sManager;
     FileInformationManager *fManager;
+    FileSystemWatcher *fWatcher;
     QThread *fileWorkerThread;
 
 };

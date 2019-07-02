@@ -2,10 +2,11 @@
 #define FILESYSTEMWATCHER_H
 
 #include <qfilesystemwatcher.h>
-#include <entitymodel.h>
+#include "fileoperationsworker.h"
 
 class FileSystemWatcher : public QFileSystemWatcher
 {
+    Q_OBJECT
 public:
     FileSystemWatcher(QStringList paths):
         QFileSystemWatcher(paths)

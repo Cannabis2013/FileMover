@@ -82,6 +82,7 @@ HEADERS  += mainwindow.h \
     fileinformationmanager.h \
     fileoperationsworker.h \
     filepathdialogwidget.h \
+    filesystemwatcher.h \
     mainapplication.h \
     messageBox.h \
     myIcon.h \

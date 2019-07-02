@@ -7,7 +7,6 @@ MainApplication::MainApplication(QString appName, QString orgName)
     entityManager = new EntityQueueManager();
     fManager = new FileInformationManager(appName,orgName);
     fWorker = new FileOperationsWorker(entityManager);
-    fileSystemWatcher = new QFileSystemWatcher(sManager->paths());
     fileWorkerThread = new QThread();
 
     fWorker->moveToThread(fileWorkerThread);

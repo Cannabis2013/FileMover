@@ -2,11 +2,10 @@
 #define MAINAPPLICATION_H
 
 #include <qthread.h>
-#include "fileoperationsworker.h"
 #include "settingsmanager.h"
 #include "fileinformationmanager.h"
 #include "abstractcoreapplication.h"
-#include <qfilesystemwatcher.h>
+#include "filesystemwatcher.h"
 
 class MainApplication : public AbstractCoreApplication
 {
@@ -64,13 +63,15 @@ public slots:
     void removeRuleAt(int index){rManager->removeRuleAt(index);}
     void removeRule(QString title){rManager->removeRule(title);}
 
+private slots:
+
+
 private:
     FileOperationsWorker *fWorker;
     EntityQueueManager *entityManager;
     rulesManager *rManager;
     settingsManager *sManager;
     FileInformationManager *fManager;
-    QFileSystemWatcher *fileSystemWatcher;
     QThread *fileWorkerThread;
 
 };

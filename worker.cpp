@@ -1,10 +1,5 @@
 #include "Worker.h"
 
-void Worker::checkAndCorrectForBackslash(QString *path)
-{
-    if(!path->endsWith("\\"))
-        path->append("\\");
-}
 
 QString Worker::checkAndCorrectForBackslash(QString path)
 {

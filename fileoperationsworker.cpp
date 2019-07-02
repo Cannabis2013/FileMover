@@ -40,7 +40,7 @@ bool FileOperationsWorker::removeFileItems(const QFileInfoList filePaths)
     return true;
 }
 
-bool FileOperationsWorker::moveEntities(const QFileInfoList files, const QStringList destinations)
+bool FileOperationsWorker::moveFileItems(const QFileInfoList files, const QStringList destinations)
 {
     bool result = true;
     for(QString destPath : destinations)
@@ -56,7 +56,7 @@ bool FileOperationsWorker::moveEntities(const QFileInfoList files, const QString
     return result;
 }
 
-bool FileOperationsWorker::copyEntities(const QFileInfoList files, const QStringList destinations)
+bool FileOperationsWorker::copyFileItems(const QFileInfoList files, const QStringList destinations)
 {
     bool result = true;
     for(QString destPath : destinations)
@@ -671,11 +671,11 @@ bool FileOperationsWorker::processFileActionEntity(EntityModel *entity)
     }
     else if(item->fileActionRule() == rD::Move)
     {
-        result = moveEntities(item->directoryFileList(),item->fileActionDestinations()) ? result : false;
+        result = moveFileItems(item->directoryFileList(),item->fileActionDestinations()) ? result : false;
         processFileInformationEntity(new fileInformationEntity(item->directoryPaths()));
     }
     else if(item->fileActionRule() == rD::Copy)
-        result = copyEntities(item->directoryFileList(),item->fileActionDestinations()) ? result : false;
+        result = copyFileItems(item->directoryFileList(),item->fileActionDestinations()) ? result : false;
 
     item = nullptr;
 

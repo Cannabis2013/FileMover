@@ -22,14 +22,12 @@ public:
     static double convertSizeToAppropriateUnits(long long numb, QString &denote, int dec = 2);
     static qint64 byteConvert(int unit, QString fromUnit);
 
-
     // Basic stringlist operations..
     static QString mergeStringList(const QStringList strings);
     static QStringList splitString(const QString split);
 
 
     // Basic string operations..
-    void checkAndCorrectForBackslash(QString *path);
     QString checkAndCorrectForBackslash(QString path);
 
     // Filename operations

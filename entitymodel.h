@@ -47,6 +47,20 @@ public:
     {
         setType(entityType::FileAction);
     }
+
+    FileActionEntity(QString path)
+    {
+        setType(entityType::FileAction);
+        dirPaths = QStringList(path);
+    }
+
+    FileActionEntity(QStringList paths)
+    {
+        setType(entityType::FileAction);
+        dirPaths = paths;
+    }
+
+    void setDirectoryPath(QString path){dirPaths = QStringList(path);}
     void setDirectoryPaths(QStringList paths){dirPaths = paths;}
     void setDirectoryFileContent(QFileInfoList list){this->list = list;}
     void setFileActionRule(rD::fileAction aRule){ruleMode = aRule;}

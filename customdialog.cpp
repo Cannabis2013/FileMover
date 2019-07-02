@@ -1,6 +1,5 @@
 #include "customdialog.h"
 
-
 CustomDialog::CustomDialog(AbstractFrameImplementable *implementable, bool applicationModal, widget_Location location, QWidget *parent) :
     MyWidget(parent),
     ui(new Ui::CustomDialog)

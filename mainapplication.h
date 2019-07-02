@@ -53,7 +53,6 @@ public:
     void clearFoldersAccordingToRules(QStringList paths);
 
 public slots:
-
     void addWatchFolder(QString path){sManager->insertPath(path);}
     void removeWatchFolderAt(int index);
     void removeWatchFolder(QString path);

@@ -23,6 +23,7 @@ MainApplication::MainApplication(QString appName, QString orgName)
     // Detailed directory information..
     connect(sManager,&settingsManager::processPath,entityManager,&EntityQueueManager::addEntity);
     connect(fWatcher,&FileSystemWatcher::folderChanged,entityManager,&EntityQueueManager::addEntity);
+    connect(fWatcher,&FileSystemWatcher::notifyChange,this,&MainApplication::sendFilePath);
     connect(sManager,&settingsManager::removeItem,fManager,&FileInformationManager::removeItem);
 
     connect(fWorker,&fW::processFinished,fManager,&FileInformationManager::insertItems);
@@ -83,7 +84,6 @@ void MainApplication::addWatchFolders(QStringList paths)
 {
     sManager->insertPath(paths);
 }
-
 
 QString MainApplication::watchFolder(int index) const
 {

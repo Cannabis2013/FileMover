@@ -43,8 +43,6 @@ public:
 
     bool closeOnExit(){return sManager->closeOnQuit();}
 
-    void readPersistence();
-
     // File/folder operations
 
     void calculateFolderSize(QString path);

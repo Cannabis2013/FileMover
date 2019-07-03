@@ -9,7 +9,7 @@
 #include "rules.h"
 
 class rulesManager : public QObject,
-        public AbstractPersistence
+        private AbstractPersistence
 {
 
     Q_OBJECT

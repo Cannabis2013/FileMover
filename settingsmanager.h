@@ -14,7 +14,7 @@
 #include "myobject.h"
 
 class settingsManager : public MyObject,
-        public AbstractPersistence
+        private AbstractPersistence
 {
     Q_OBJECT
 public:

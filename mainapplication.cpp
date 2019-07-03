@@ -6,7 +6,7 @@ MainApplication::MainApplication(QString appName, QString orgName)
     sManager = new settingsManager(appName,orgName);
     entityManager = new EntityQueueManager();
     fManager = new FileInformationManager(appName,orgName);
-    fWorker = new FileOperationsWorker(entityManager);
+    fWorker = new FileOperationsWorker();
     fWatcher = new FileSystemWatcher(sManager->paths());
     fileWorkerThread = new QThread();
 
@@ -19,7 +19,6 @@ MainApplication::MainApplication(QString appName, QString orgName)
 
     qRegisterMetaType<EntityModel>("EntityModel");
     qRegisterMetaType<DirectoryCountEntity>("DirectoryCountEntity");
-
 
     /*
      *  Connnections

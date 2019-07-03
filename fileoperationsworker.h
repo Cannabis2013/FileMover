@@ -11,7 +11,7 @@ class FileOperationsWorker : public Worker
     Q_OBJECT
 
 public:
-    FileOperationsWorker(QObject *pRef);
+    FileOperationsWorker();
 
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
@@ -87,11 +87,7 @@ private:
     bool copyRecursively(QString path,
                          QString destination);
 
-
-
-
     QString busyMessage;
-    EntityQueueManager *entityManagerReference;
 };
 
 typedef FileOperationsWorker fW;

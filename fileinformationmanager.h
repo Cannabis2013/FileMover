@@ -35,7 +35,8 @@ struct DirectoryItem
     QTreeWidgetItem *directoryItemModels;
 };
 
-class FileInformationManager : public MyObject, public AbstractPersistence
+class FileInformationManager : public MyObject,
+        private AbstractPersistence
 {
     Q_OBJECT
 public:

@@ -1,8 +1,7 @@
 #include "fileoperationsworker.h"
 
-FileOperationsWorker::FileOperationsWorker(QObject *pRef)
+FileOperationsWorker::FileOperationsWorker()
 {
-    entityManagerReference = dynamic_cast<EntityQueueManager*>(pRef);
     busyMessage = "Luke Fileworker is busy. Patience my young padawan.";
     isBusy = false;
     qt_ntfs_permission_lookup++;

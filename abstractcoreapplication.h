@@ -52,11 +52,12 @@ public slots:
     virtual void removeRuleAt(int index) = 0;
     virtual void removeRule(QString title) = 0;
 
-Q_SIGNALS:
+signals:
     // FileWorker
 
     void sendFolderSize(DirectoryCountEntity *fObject);
-    void sendFilePath(const QString &filePath);
+    void sendStatusMessage(const QString &filePath);
+    void sendSystemTrayMessage(const QString &title, const QString &msg);
 
 signals:
 

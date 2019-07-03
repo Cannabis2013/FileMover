@@ -168,32 +168,27 @@ bool FileOperationsWorker::copyRecursively(QString path, QString destination)
     return result;
 }
 
-void FileOperationsWorker::beginProcessEntities()
+void FileOperationsWorker::processEntity(EntityModel *entity)
 {
     isBusy = true;
-    bool isDone = true;
-    while(!entityManagerReference->isQueueEmpty())
+    if(entity->entityType() == entityType::nullAction)
     {
-        EntityModel *item = entityManagerReference->nextEntity();
-
-        if(item == nullptr)
-        {
-            isBusy = false;
-            isDone = false;
-            return;
-        }
-
-        if(item->entityType() == entityType::FileAction)
-            isDone = processFileActionEntity(item);
-        else if(item->entityType() == entityType::informationAction)
-            processFileInformationEntity(item);
-        else if(item->entityType() == entityType::directoryCountAction)
-            processDirectoryCountEntity(item);
-
-        item = nullptr;
+        emit jobDone(true);
+        isBusy = false;
+        return;
     }
+
+    if(entity->entityType() == entityType::FileAction)
+        processFileActionEntity(entity);
+    else if(entity->entityType() == entityType::informationAction)
+        processFileInformationEntity(entity);
+    else if(entity->entityType() == entityType::directoryCountAction)
+        processDirectoryCountEntity(entity);
+
+    entity = nullptr;
     isBusy = false;
-    emit jobDone(isDone);
+
+    emit requestNextEntity();
 }
 
 int FileOperationsWorker::folderCount(QString p)
@@ -208,7 +203,7 @@ int FileOperationsWorker::folderCount(QString p)
     {
         QFileInfo i = ite.fileInfo();
         taeller = i.isDir() ? ++taeller : taeller;
-        emit itemText(QString("%1 folders").arg(QString::number(taeller)));
+        emit sendStatusLineMessage(QString("%1 folders").arg(QString::number(taeller)));
         ite.next();
     }
     return taeller;
@@ -226,7 +221,7 @@ int FileOperationsWorker::fileCount(QString p)
     {
         QFileInfo i = ite.next();
         taeller = i.isFile() ? ++taeller : taeller;
-        emit itemText(QString("%1 files").arg(QString::number(taeller)));
+        emit sendStatusLineMessage(QString("%1 files").arg(QString::number(taeller)));
     }
     return taeller;
 }
@@ -288,7 +283,7 @@ long long FileOperationsWorker::folderSize(QString pf)
          if(f.open(QIODevice::ReadOnly))
          {
             sZ += f.size();
-            emit itemText( "Calculating folder size: " + f.fileName());
+            emit sendStatusLineMessage( "Calculating folder size: " + f.fileName());
          }
          f.close();
      }
@@ -614,7 +609,7 @@ void FileOperationsWorker::handleProcessRequest()
     if(isBusy)
         return;
     else
-        beginProcessEntities();
+        emit requestNextEntity();
 }
 
 void FileOperationsWorker::processFileInformationEntity(EntityModel * entity)
@@ -660,25 +655,22 @@ void FileOperationsWorker::reProcessFileInformationEntity(const QStringList path
     emit processFinished(directories);
 }
 
-bool FileOperationsWorker::processFileActionEntity(EntityModel *entity)
+void FileOperationsWorker::processFileActionEntity(EntityModel *entity)
 {
-    bool result = true;
     FileActionEntity *item = static_cast<FileActionEntity*>(entity);
     if(item->fileActionRule() == rD::Delete || item->fileActionRule() == rD::none)
     {
-        result = removeFileItems(item->directoryFileList()) ? result : false;
+        removeFileItems(item->directoryFileList());
         processFileInformationEntity(new fileInformationEntity(item->directoryPaths()));
     }
     else if(item->fileActionRule() == rD::Move)
     {
-        result = moveFileItems(item->directoryFileList(),item->fileActionDestinations()) ? result : false;
+        moveFileItems(item->directoryFileList(),item->fileActionDestinations());
         processFileInformationEntity(new fileInformationEntity(item->directoryPaths()));
     }
     else if(item->fileActionRule() == rD::Copy)
-        result = copyFileItems(item->directoryFileList(),item->fileActionDestinations()) ? result : false;
+        copyFileItems(item->directoryFileList(),item->fileActionDestinations());
 
     item = nullptr;
-
-    return result;
 }
 

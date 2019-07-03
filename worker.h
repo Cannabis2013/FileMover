@@ -8,8 +8,9 @@
 #include <qdatetime.h>
 #include <qpair.h>
 #include <math.h>
+#include "myobject.h"
 
-class Worker : public QObject
+class Worker : public MyObject
 {
 public:
     virtual ~Worker();

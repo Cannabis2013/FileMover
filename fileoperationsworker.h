@@ -27,8 +27,10 @@ public slots:
 
     void handleProcessRequest();
 
+    // Start/wake-up entity file operations
+    void processEntity(EntityModel *entity);
+
 signals:
-    void itemText(QString iT);
     void fileCount(long antal);
     void sendFolderSizeEntity(DirectoryCountEntity *fObj);
     void sendFolderSizeEntities(QList<DirectoryCountEntity> s);
@@ -36,15 +38,17 @@ signals:
     void clearFinished(bool a);
 
     // Queue related..
+    void requestNextEntity();
     void infoReport(const QString &error);
     void processFinished(QList<DirectoryItem>items);
     void jobDone(bool status);
+
 
 private:
 
     // File object entity operations
 
-    bool processFileActionEntity(EntityModel *entity);
+    void processFileActionEntity(EntityModel *entity);
     void processFileInformationEntity(EntityModel *entity);
     void reProcessFileInformationEntity(const QStringList paths);
     void processDirectoryCountEntity(EntityModel *entity);
@@ -84,8 +88,7 @@ private:
                          QString destination);
 
 
-    // Start/wake-up entity file operations
-    void beginProcessEntities();
+
 
     QString busyMessage;
     EntityQueueManager *entityManagerReference;

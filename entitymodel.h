@@ -6,14 +6,22 @@
 class EntityModel
 {
 public:
-    EntityModel();
-    enum typeMode {informationAction,FileAction,directoryCountAction};
+    EntityModel()
+    {}
+    EntityModel(const QString &msg):err_msg(msg)
+    {}
+
+    enum typeMode {nullAction,informationAction,FileAction,directoryCountAction};
 
     void setType(typeMode type){this->type = type;}
     typeMode entityType(){return type;}
 
+    void setErrorMessage(const QString &msg ){err_msg = msg;}
+    const QString errorMessage(){return err_msg;}
+
 private:
-    typeMode type;
+    typeMode type = nullAction;
+    QString err_msg = "No error";
 };
 
 typedef EntityModel::typeMode entityType;

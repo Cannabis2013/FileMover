@@ -20,15 +20,25 @@ MainApplication::MainApplication(QString appName, QString orgName)
     qRegisterMetaType<EntityModel>("EntityModel");
     qRegisterMetaType<DirectoryCountEntity>("DirectoryCountEntity");
 
+
+    /*
+     *  Connnections
+     */
+
+    // Entity queue related..
+
+    connect(fWorker,&fW::requestNextEntity,entityManager,&EntityQueueManager::sendNextEntity);
+    connect(entityManager,&EntityQueueManager::sendEntity,fWorker,&fW::processEntity);
+
     // Detailed directory information..
     connect(sManager,&settingsManager::processPath,entityManager,&EntityQueueManager::addEntity);
     connect(fWatcher,&FileSystemWatcher::folderChanged,entityManager,&EntityQueueManager::addEntity);
-    connect(fWatcher,&FileSystemWatcher::notifyChange,this,&MainApplication::sendFilePath);
+    connect(fWatcher,&FileSystemWatcher::sendSystemTrayMessage,this,&MainApplication::sendSystemTrayMessage);
     connect(sManager,&settingsManager::removeItem,fManager,&FileInformationManager::removeItem);
 
     connect(fWorker,&fW::processFinished,fManager,&FileInformationManager::insertItems);
     connect(fWorker,&FileOperationsWorker::sendFolderSizeEntity,this,&MainApplication::sendFolderSize);
-    connect(fWorker,&FileOperationsWorker::itemText,this,&MainApplication::sendFilePath);
+    connect(fWorker,&FileOperationsWorker::sendStatusLineMessage,this,&MainApplication::sendStatusMessage);
 
     // Notify observers related..
     connect(sManager,&settingsManager::stateChanged,this,&MainApplication::stateChanged);

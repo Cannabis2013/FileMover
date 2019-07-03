@@ -19,26 +19,32 @@ public:
         delete this;
     }
 
-    EntityModel *nextEntity()
-    {
-        if(entityQueue.isEmpty())
-            return nullptr;
-        else
-            return entityQueue.takeFirst();
-    }
-
     bool isQueueEmpty(){return entityQueue.isEmpty();}
 
 public slots:
+
     void addEntity(EntityModel *entity)
     {
         entityQueue << entity;
         emit wakeUpProcess();
     }
 
+    void sendNextEntity()
+    {
+        if(entityQueue.isEmpty())
+        {
+            emit sendEntity(new EntityModel("Queue is empty"));
+            return;
+        }
+
+        emit sendEntity(entityQueue.takeFirst());
+    }
+
 signals:
     void wakeUpProcess();
     void processFinished();
+
+    void sendEntity(EntityModel *entity);
 
 
 private:

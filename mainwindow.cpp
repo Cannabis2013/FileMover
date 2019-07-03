@@ -155,9 +155,10 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
             this,SLOT(tMenuClicked(QAction*)));
     connect(folderTrayMenu,SIGNAL(triggered(QAction*)),
             this,SLOT(explorerMenuTriggered(QAction*)));
+    connect(coreApplication,&AbstractCoreApplication::sendSystemTrayMessage,this,&mainWindow::showSystemMessage);
 
     connect(coreApplication,&AbstractCoreApplication::sendFolderSize,this,&mainWindow::folderContentRecieved);
-    connect(coreApplication,&AbstractCoreApplication::sendFilePath,this,&mainWindow::setStatusText);
+    connect(coreApplication,&AbstractCoreApplication::sendStatusMessage,this,&mainWindow::setStatusText);
 
     connect(clearStatusTextTimer,&QTimer::timeout,this,&mainWindow::clearStatusLine);
 
@@ -401,7 +402,7 @@ void mainWindow::folderContentRecieved(DirectoryCountEntity *fObject)
     QString folderName = fObject->directoryPath(),
             folderSize = QString::number(scaledAndRoundedSize),
             message = QString("Size of folder content is %1 %2").arg(folderSize).arg(sizeNotation);
-    showSystemMessage(message,folderName);
+    showSystemMessage(folderName,message);
     fObject = nullptr;
 }
 
@@ -466,7 +467,7 @@ void mainWindow::readSettings()
     persistenceSettings->endGroup();
 }
 
-void mainWindow::showSystemMessage(const QString msg, const QString title)
+void mainWindow::showSystemMessage(const QString &title,const QString &msg)
 {
     tray->showMessage(title,msg);
 }

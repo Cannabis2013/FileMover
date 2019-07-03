@@ -109,8 +109,6 @@ private slots:
     // settingsWindow related..
     void iconSelected(QIcon ico);
 
-    // Rules related..
-
     // statusLine related..
 
     void clearStatusLine();
@@ -121,6 +119,7 @@ private slots:
     void explorerMenuTriggered(QAction *xAction);    
 
     // Systemtray Related..
+    void showSystemMessage(const QString &title, const QString &msg);
     void tMenuClicked(QAction *a);
     void trayClicked(QSystemTrayIcon::ActivationReason res);
     void trayMsgClicked();
@@ -135,9 +134,6 @@ private:
 
     // Menu..
     void updateSubTrayMenus();
-
-    // Systemtray related..
-    void showSystemMessage(const QString msg,const QString title = "Info");
 
     //detailedFolderView related..
     void updateDetaileditems();

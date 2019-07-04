@@ -12,13 +12,17 @@
 #include "settingsdelegate.h"
 #include "entitymodel.h"
 #include "myobject.h"
+#include <qdatastream.h>
+#include <iostream>
+
+using namespace std;
 
 class settingsManager : public MyObject,
         private AbstractPersistence
 {
     Q_OBJECT
 public:
-    settingsManager(QString appName, QString orgName);
+    settingsManager(const QString &appName, const QString &orgName);
     ~settingsManager();
 
     // Persistence

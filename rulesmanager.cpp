@@ -1,6 +1,6 @@
 #include "rulesmanager.h"
 
-rulesManager::rulesManager(QString appName, QString orgName):
+rulesManager::rulesManager(const QString &appName, const QString &orgName):
     AbstractPersistence (appName,orgName)
 {
     readSettings();

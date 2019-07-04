@@ -17,6 +17,9 @@ public:
     virtual void readSettings() = 0;
     virtual void writeSettings() = 0;
 
+    virtual void serialize(){}
+    virtual void deserialize(){}
+
     QSettings *persistenceSettings;
 
 private:

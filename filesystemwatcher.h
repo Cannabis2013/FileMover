@@ -8,7 +8,7 @@ class FileSystemWatcher : public MyObject
 {
     Q_OBJECT
 public:
-    FileSystemWatcher(QStringList paths):
+    FileSystemWatcher(const QStringList &paths):
         fWatcher(new QFileSystemWatcher(paths))
     {
         connect(fWatcher,&QFileSystemWatcher::directoryChanged,this,&FileSystemWatcher::_folderChanged);

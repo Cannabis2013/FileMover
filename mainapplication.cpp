@@ -1,6 +1,6 @@
 #include "mainapplication.h"
 
-MainApplication::MainApplication(QString appName, QString orgName)
+MainApplication::MainApplication(const QString &appName, const QString &orgName)
 {
     rManager = new rulesManager(appName,orgName);
     sManager = new settingsManager(appName,orgName);

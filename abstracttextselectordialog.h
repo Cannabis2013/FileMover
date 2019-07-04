@@ -18,38 +18,35 @@ using namespace std;
 #include <qtoolbutton.h>
 
 namespace Ui {
-class TextPathEdit;
+class AbstractTextSelectorDialog;
 }
 
 // Base class..
 
-class TextPathEdit : public MyWidget
+class AbstractTextSelectorDialog : public MyWidget
 {
     Q_OBJECT
 
 public:
-    explicit TextPathEdit(QWidget *parent = nullptr,QString txt = QString());
-    ~TextPathEdit();
-
-    void setLineText(QString txt);
+    explicit AbstractTextSelectorDialog(QWidget *parent = nullptr,QString txt = QString());
+    ~AbstractTextSelectorDialog();
     QString text();
     void clear();
 
-signals:
+public slots:
+    void setCurrentFilePath(const QString &fp);
 
-protected:
-    void addWidgetToLayout(QWidget *w);
-    QVBoxLayout *verticalLayot();
-    QLineEdit *pathSelector;
-    QToolButton *toolButton;
-    Ui::TextPathEdit *ui;
+
+signals:
+    void sendCurrentFilePath(QString txt);
 
 protected slots:
     void insertChosenPath(QString p);
-    virtual void on_toolButton_clicked();
+    virtual void on_toolButton_clicked()=0;
 
 private:
-
+    QLineEdit *pathSelector;
+    Ui::AbstractTextSelectorDialog *ui;
 };
 
 #endif // TEXTPATHEDIT_H

@@ -1,7 +1,7 @@
 #include "rulepathselector.h"
 
 rulePathSelector::rulePathSelector(QWidget *parent):
-    TextPathEdit(parent)
+    AbstractTextSelectorDialog(parent)
 {
     pDialog = new filepathDialogWidget(Qt::ApplicationModal);
     pDialog->setWindowFlag(Qt::FramelessWindowHint);

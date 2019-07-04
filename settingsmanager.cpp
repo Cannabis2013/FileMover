@@ -1,6 +1,6 @@
 #include "settingsmanager.h"
 
-settingsManager::settingsManager(QString appName, QString orgName):
+settingsManager::settingsManager(const QString &appName, const QString &orgName):
     AbstractPersistence (appName,orgName)
 {
     QList<MyIcon> trayIconList = scanForIcons(ressourceFolder);
@@ -24,11 +24,13 @@ settingsManager::settingsManager(QString appName, QString orgName):
         fileIconStandard = fileIconList.last();
 
     readSettings();
+    deserialize();
 }
 
 settingsManager::~settingsManager()
 {
     writeSettings();
+    serialize();
 }
 
 void settingsManager::insertPath(QString path)

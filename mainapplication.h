@@ -11,7 +11,7 @@ class MainApplication : public AbstractCoreApplication
 {
     Q_OBJECT
 public:
-    MainApplication(QString appName, QString orgName);
+    MainApplication(const QString &appName, const QString &orgName);
 
     ~MainApplication();
 
@@ -71,7 +71,6 @@ private:
     FileInformationManager *fManager;
     FileSystemWatcher *fWatcher;
     QThread *fileWorkerThread;
-
 };
 
 #endif // MAINAPPLICATION_H

@@ -1,14 +1,13 @@
-﻿#include "textpathedit.h"
+﻿#include "abstracttextselectordialog.h"
 #include "ui_textpathedit.h"
 
-TextPathEdit::TextPathEdit(QWidget *parent, QString txt) :
+AbstractTextSelectorDialog::AbstractTextSelectorDialog(QWidget *parent, QString txt) :
     MyWidget(parent),
-    ui(new Ui::TextPathEdit)
+    ui(new Ui::AbstractTextSelectorDialog)
 {
     ui->setupUi(this);
 
     pathSelector = ui->pathSelector;
-    toolButton = ui->toolButton;
 
     if(txt != QString())
         pathSelector->setText(txt);
@@ -18,39 +17,31 @@ TextPathEdit::TextPathEdit(QWidget *parent, QString txt) :
 
     pathSelector->setCompleter(completer);
     installEventFilter(this);
+
+    connect(pathSelector,&QLineEdit::textChanged,this,&AbstractTextSelectorDialog::sendCurrentFilePath);
 }
 
-TextPathEdit::~TextPathEdit()
+AbstractTextSelectorDialog::~AbstractTextSelectorDialog()
 {
     delete ui;
 }
 
-void TextPathEdit::setLineText(QString txt)
+void AbstractTextSelectorDialog::setCurrentFilePath(const QString &fp)
 {
-    pathSelector->setText(txt);
+    pathSelector->setText(fp);
 }
 
-QString TextPathEdit::text()
+QString AbstractTextSelectorDialog::text()
 {    
     return pathSelector->text();
 }
 
-void TextPathEdit::clear()
+void AbstractTextSelectorDialog::clear()
 {
     pathSelector->clear();
 }
 
-void TextPathEdit::addWidgetToLayout(QWidget *w)
-{
-    ui->verticalLayout->addWidget(w);
-}
-
-QVBoxLayout *TextPathEdit::verticalLayot()
-{
-    return ui->verticalLayout;
-}
-
-void TextPathEdit::insertChosenPath(QString p)
+void AbstractTextSelectorDialog::insertChosenPath(QString p)
 {
     QString currentText = pathSelector->text();
     if(currentText.isEmpty())
@@ -61,10 +52,12 @@ void TextPathEdit::insertChosenPath(QString p)
     pathSelector->setText(currentText);
 }
 
+/*
 void TextPathEdit::on_toolButton_clicked()
 {
     filepathDialogWidget *chooseFilePathDialog = new filepathDialogWidget();
     connect(chooseFilePathDialog,&filepathDialogWidget::chosenPath,this,&TextPathEdit::insertChosenPath);
     chooseFilePathDialog->show();
 }
+*/
 

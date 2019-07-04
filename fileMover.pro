@@ -41,6 +41,7 @@ SOURCES += main.cpp\
     abstractcoreapplication.cpp \
     abstractframeimplementable.cpp \
     abstractpersistence.cpp \
+    abstracttextselectordialog.cpp \
     customdialog.cpp \
     customsplitter.cpp \
     customsplitterhandle.cpp \
@@ -55,7 +56,6 @@ SOURCES += main.cpp\
     mydatetime.cpp \
     settingsmanager.cpp \
     settingswindow.cpp \
-    textpathedit.cpp \
     addfolderwidget.cpp \
     addfiledialog.cpp \
     pathline.cpp \
@@ -73,6 +73,7 @@ HEADERS  += mainwindow.h \
     abstractcoreapplication.h \
     abstractframeimplementable.h \
     abstractpersistence.h \
+    abstracttextselectordialog.h \
     customcombobox.h \
     customdialog.h \
     customsplitter.h \
@@ -94,7 +95,6 @@ HEADERS  += mainwindow.h \
     settingsdelegate.h \
     settingsmanager.h \
     settingswindow.h \
-    textpathedit.h \
     fileinformationview.h \
     addfolderwidget.h \
     addfiledialog.h \

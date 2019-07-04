@@ -46,7 +46,6 @@ signals:
 
     void sendEntity(EntityModel *entity);
 
-
 private:
     QList<EntityModel*>entityQueue;
 };

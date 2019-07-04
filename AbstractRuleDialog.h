@@ -17,7 +17,7 @@
 #include <QFocusEvent>
 #include <qdialog.h>
 
-#include "textpathedit.h"
+#include "abstracttextselectordialog.h"
 #include "rulepathselector.h"
 #include "conditionWidget.h"
 #include "abstractcoreapplication.h"

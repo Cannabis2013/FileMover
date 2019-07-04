@@ -14,7 +14,7 @@ class rulesManager : public QObject,
 
     Q_OBJECT
 public:
-    rulesManager(QString appName, QString orgName);
+    rulesManager(const QString &appName, const QString &orgName);
     ~rulesManager();
 
 

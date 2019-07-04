@@ -2,7 +2,7 @@
 #define RULEPATHSELECTOR_H
 
 #include <QWidget>
-#include "textpathedit.h"
+#include "abstracttextselectordialog.h"
 #include <iostream>
 #include <qmenu.h>
 #include <QEvent>
@@ -10,13 +10,13 @@
 
 using namespace std;
 
-class rulePathSelector : public TextPathEdit
+class rulePathSelector : public AbstractTextSelectorDialog
 {
 public:
     rulePathSelector(QWidget *parent = nullptr);
 
 protected slots:
-    void on_toolButton_clicked() override;
+    void on_toolButton_clicked();
 
 private:
     filepathDialogWidget*pDialog;

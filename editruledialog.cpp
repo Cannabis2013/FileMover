@@ -8,7 +8,7 @@ EditRuleDialog::EditRuleDialog(Rule editRule, QStringList watchFolders):
     actionBox->setCurrentText(ruleDefs.actionToString(tempRule.actionRule));
     titleSelector->setText(tempRule.title);
     applySelector->setCurrentText(tempRule.appliesToPath);
-    pathSelector->setLineText(Worker::mergeStringList(tempRule.destinationPath));
+    pathSelector->setCurrentFilePath(Worker::mergeStringList(tempRule.destinationPath));
     deepScanRadio->setChecked(tempRule.deepScanMode);
 
     subRules = tempRule.subRules;

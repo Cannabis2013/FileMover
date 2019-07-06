@@ -52,6 +52,8 @@ public slots:
     virtual void removeRuleAt(int index) = 0;
     virtual void removeRule(QString title) = 0;
 
+    virtual bool isTestSession(){return false;}
+
 signals:
     // FileWorker
 

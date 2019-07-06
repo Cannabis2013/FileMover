@@ -1,6 +1,8 @@
 #include "mainapplication.h"
 
-MainApplication::MainApplication(const QString &appName, const QString &orgName)
+MainApplication::MainApplication(const QString &appName,
+                                 const QString &orgName,
+                                 const bool &testSession)
 {
     rManager = new rulesManager(appName,orgName);
     sManager = new settingsManager(appName,orgName);
@@ -9,6 +11,7 @@ MainApplication::MainApplication(const QString &appName, const QString &orgName)
     fWorker = new FileOperationsWorker();
     fWatcher = new FileSystemWatcher(sManager->paths());
     fileWorkerThread = new QThread();
+    testMode = testSession;
 
     fWorker->moveToThread(fileWorkerThread);
 
@@ -62,16 +65,42 @@ MainApplication::~MainApplication()
 
 void MainApplication::clearFolders(QStringList paths)
 {
-    QFileInfoList allFiles = fW::generateFilesList(QString(),paths,false);
-    FileActionEntity *entity = new FileActionEntity();
-    entity->setDirectoryPaths(paths);
-    entity->setDirectoryFileContent(allFiles);
-    entityManager->addEntity(entity);
+    if(!isTestSession())
+    {
+        QFileInfoList allFiles = fW::generateFilesList(QString(),paths,false);
+        FileActionEntity *entity = new FileActionEntity();
+        entity->setDirectoryPaths(paths);
+        entity->setDirectoryFileContent(allFiles);
+        entityManager->addEntity(entity);
+    }
+    else
+    {
+        print("Non recursive method:");
+        QFileInfoList allFiles = fW::generateFilesList(QString(),paths,false);
+        for (QFileInfo fInfo : allFiles)
+        {
+            print("Filepath: " + fInfo.filePath(),printMode::noLineBreak);
+            print(" |  Filename: " + fInfo.fileName());
+        }
+
+        print("Recursive method:");
+
+        allFiles = fW::generateFilesList(QString(),paths,true);
+
+        for (QFileInfo fInfo : allFiles)
+        {
+            print("Filepath: " + fInfo.filePath(),printMode::noLineBreak);
+            print(" | Filename: " + fInfo.fileName());
+        }
+    }
 }
 
 void MainApplication::clearFoldersAccordingToRules(QStringList paths)
 {
     QList<Rule>rules = rManager->ruleslist();
+    if(rules.isEmpty())
+        clearFolders(paths);
+
     for(Rule r : rules)
     {
         QFileInfoList allFiles = fW::generateFilesList(r.appliesToPath,paths,r.deepScanMode);
@@ -80,12 +109,20 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
 
         // Implementer fileworker operation..
 
-        FileActionEntity *entity = new FileActionEntity;
-        entity->setDirectoryPaths(paths);
-        entity->setFileActionDestinations(r.destinationPath);
-        entity->setDirectoryFileContent(allFiles);
-        entity->setFileActionRule(r.actionRule);
-        entityManager->addEntity(entity);
+        if(!isTestSession())
+        {
+            FileActionEntity *entity = new FileActionEntity;
+            entity->setDirectoryPaths(paths);
+            entity->setFileActionDestinations(r.destinationPath);
+            entity->setDirectoryFileContent(allFiles);
+            entity->setFileActionRule(r.actionRule);
+            entityManager->addEntity(entity);
+        }
+        else
+        {
+
+        }
+
     }
 }
 

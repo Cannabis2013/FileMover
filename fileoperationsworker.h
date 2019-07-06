@@ -3,6 +3,7 @@
 
 #include "rules.h"
 #include "entityqueuemanager.h"
+#include "fileobject.h"
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
@@ -15,7 +16,8 @@ public:
 
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
-    static QFileInfoList processList(QFileInfoList files, SubRule rule);
+    static QFileInfoList processList(QFileInfoList fileObjects, SubRule rule);
+    static FileObjectList processListAlternative(FileObjectList &files, const SubRule &rule);
     static QFileInfoList generateFilesList(QString rPath, QStringList paths,bool recursive = false);
 
 public slots:

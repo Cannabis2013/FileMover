@@ -11,7 +11,9 @@ class MainApplication : public AbstractCoreApplication
 {
     Q_OBJECT
 public:
-    MainApplication(const QString &appName, const QString &orgName);
+    MainApplication(const QString &appName,
+                    const QString &orgName,
+                    const bool &testSession = false);
 
     ~MainApplication();
 
@@ -50,6 +52,8 @@ public:
     void clearFolders(QStringList paths);
     void clearFoldersAccordingToRules(QStringList paths);
 
+    bool isTestSession(){return testMode;}
+
 public slots:
     void addWatchFolder(QString path){sManager->insertPath(path);}
     void removeWatchFolderAt(int index);
@@ -60,10 +64,8 @@ public slots:
     void removeRuleAt(int index){rManager->removeRuleAt(index);}
     void removeRule(QString title){rManager->removeRule(title);}
 
-private slots:
-
-
 private:
+    bool testMode = false;
     FileOperationsWorker *fWorker;
     EntityQueueManager *entityManager;
     rulesManager *rManager;

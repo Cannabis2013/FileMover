@@ -48,6 +48,7 @@ SOURCES += main.cpp\
     entitymodel.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
+    fileobject.cpp \
     fileoperationsworker.cpp \
     filepathdialogwidget.cpp \
     mainapplication.cpp \
@@ -81,6 +82,7 @@ HEADERS  += mainwindow.h \
     entitymodel.h \
     entityqueuemanager.h \
     fileinformationmanager.h \
+    fileobject.h \
     fileoperationsworker.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \

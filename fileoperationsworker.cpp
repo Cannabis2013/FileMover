@@ -382,7 +382,6 @@ QFileInfoList FileOperationsWorker::processList(QFileInfoList files, SubRule rul
     QFileInfoList filesToProcess;
     for(QFileInfo file : files)
     {
-
         // Evaluating filename patterns
         if(rule.fieldCondition == rD::filepathMode)
         {
@@ -516,7 +515,6 @@ QFileInfoList FileOperationsWorker::processList(QFileInfoList files, SubRule rul
                     filesToProcess << file;
             }
         }
-        //
         else if(rule.fieldCondition == rD::typeMode)
         {
             if(rule.typeMode == fW::folderOnly && file.isDir())
@@ -544,8 +542,8 @@ QFileInfoList FileOperationsWorker::generateFilesList(QString rPath, QStringList
 
     QFileInfoList allFiles;
     if(!recursive)
-    /*Add items to a "QFileInfoList" in a non-recursive manner,
-     * which means that directories, excluding their content, will be added
+    /* Add items to a "QFileInfoList" in a non-recursive manner,
+     * which means that directories, excluding their content, is added to the list of QFileInfo objects.
      */
     {
         for(QString path : rPaths)
@@ -554,7 +552,7 @@ QFileInfoList FileOperationsWorker::generateFilesList(QString rPath, QStringList
             allFiles += dirContent.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System);
         }
     }
-    // Add files to a QFileInfoList in a recursive manner, but excludes directories
+    // Add QFileInfo objects to a QFileInfoList in a recursive manner, but excludes directories.
     else
     {
         for(QString path : paths)

@@ -34,8 +34,6 @@ public:
     explicit AbstractRuleDialog(QStringList watchFolders);
     ~AbstractRuleDialog();
 
-    rD ruleDefs;
-
 signals:
     void sendRule(Rule R);
     void replaceRule(Rule rule, QString title);

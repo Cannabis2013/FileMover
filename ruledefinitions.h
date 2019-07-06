@@ -7,41 +7,38 @@
 
 /*
  * Mappings:
- *      actionMappings
- *      conditionMappings
- *      compareMappings
+ *      actionMappings<QString,enum>
+ *      conditionMappings<QString,enum>
+ *      compareMappings<QString,enum>
  */
 
 /*
- *  Modes using 'keywords':
- *      containSuffix
- *      dontContainSuffix
- *      matchSuffix
- *      dontMatchSuffix
- *      containWords
- *      dontContainWords
- *      matchWords
- *      dontMatchWords
- *  Modes using 'widgets'
- *      dateCreatedMode
- *      dateModifiedMode
- *      sizeMode
- *      typeMode
+ * RuleEntity:
+ *      fileActionRuleEntity
+ *      fileConditionRuleEntity
+ *      fileCompareRuleEntity
  */
 
 /*
- *  Fieldconditions
+ * fileActionRuleEntity:
+ *      Move
+ *      Delete
+ *      Copy
+ *      None
+ */
+
+/*
+ *  fileConditionRuleEntities
  *      notDefined
- *      filepatMode
+ *      filepathMode
  *      extensionMode
  *      sizeMode
  *      dateCreatedMode
- *      typeMode
  *      nonConditionalMode
  */
 
 /*
- *  Comparemodes:
+ *  fileCompareRuleEntity:
  *      Size:
  *          lesser
  *          lesserOrequal
@@ -56,11 +53,27 @@
  *          olderThan
  *          interval
  */
+
+/*
+ *  fileCompareRuleEntities using 'keywords':
+ *      containSuffix
+ *      dontContainSuffix
+ *      matchSuffix
+ *      dontMatchSuffix
+ *      containWords
+ *      dontContainWords
+ *      matchWords
+ *      dontMatchWords
+ *  fileConditionRuleEntities using 'widgets'
+ *      dateCreatedMode
+ *      dateModifiedMode
+ *      sizeMode
+ *      typeMode
+ */
 struct ruleDefinitions
 {
     // Enumerated variables..
-    enum typeProperty {actionProperty,conditionProperty, compareProperty, everyProperty};
-    enum copyMode{move,copy,noMode};
+    enum conditionEntityType {actionProperty,conditionProperty, compareProperty, everyProperty};
     enum fileAction{Move,Delete,Copy,none};
     enum fileCondition{notDefined,
                       filepathMode,
@@ -68,7 +81,6 @@ struct ruleDefinitions
                       sizeMode,
                       dateCreatedMode,
                       dateModifiedMode,
-                      typeMode,
                       nonConditionalMode};
 
     enum fileComparison{match,
@@ -87,11 +99,23 @@ struct ruleDefinitions
                      noDateSet,
                      noCompareModeSet};
 
+    enum fileTypeFilter {Folder, File, Both,unresolved};
+    enum copyMode{move,copy,noMode};
+
     QString nonIntervalString = "Enkel grænse", intervalString = "Interval grænse";
     QStringList intervalConditionalList {"Enkel grænse","Interval grænse"};
 
     // List variables..
     static QStringList sizeUnits(){return QStringList{"b","kb","mb","gb"};}
+
+
+    /*
+     * Mappings
+     *      - actionMappings
+     *      - conditionMappings
+     *      - compareMappings
+     *      - fileTypeFilterMappings
+     */
 
     const QList<QPair<QString,fileAction> > actionMappings {
         QPair<QString,fileAction>("Flytte indhold",fileAction::Move),
@@ -105,7 +129,6 @@ struct ruleDefinitions
                 QPair<QString,fileCondition>("Størrelse",fileCondition::sizeMode),
                 QPair<QString,fileCondition>("Dato oprettet",fileCondition::dateCreatedMode),
                 QPair<QString,fileCondition>("Dato redigeret",fileCondition::dateModifiedMode),
-                QPair<QString,fileCondition>("Type",fileCondition::typeMode),
                 QPair<QString,fileCondition>("Ingen betingelser",fileCondition::nonConditionalMode)};
 
     const QList<QPair<QString,fileComparison> > compareMappings {
@@ -122,22 +145,30 @@ struct ruleDefinitions
                 QPair<QString,fileComparison>("Præcis dato",fileComparison::exactDate),
                 QPair<QString,fileComparison>("Yngre end",fileComparison::youngerThan)};
 
+    const QList<QPair<QString,fileTypeFilter> > fileTypeFilterMappings
+    {
+        QPair<QString,fileTypeFilter>("Filer", fileTypeFilter::File),
+                QPair<QString,fileTypeFilter>("Mapper", fileTypeFilter::Folder),
+                QPair<QString,fileTypeFilter>("Begge", fileTypeFilter::Both),
+                QPair<QString,fileTypeFilter>("Uafklaret", fileTypeFilter::unresolved)
+    };
+
     // Retrieve list methods
 
-    const QStringList propertyListToStrings(typeProperty property = typeProperty::everyProperty)
+    const QStringList propertyListToStrings(conditionEntityType property = conditionEntityType::everyProperty)
     {
         QStringList resultingList;
-        if(property == typeProperty::actionProperty || property == typeProperty::everyProperty)
+        if(property == conditionEntityType::actionProperty || property == conditionEntityType::everyProperty)
         {
             for ( QPair<QString,fileAction> actionMapping : actionMappings)
                 resultingList << actionMapping.first;
         }
-        if(property == typeProperty::conditionProperty || property == typeProperty::everyProperty)
+        if(property == conditionEntityType::conditionProperty || property == conditionEntityType::everyProperty)
         {
             for ( QPair<QString,fileCondition> pair : conditionMappings)
                 resultingList << pair.first;
         }
-        if(property == typeProperty::compareProperty || property == typeProperty::everyProperty)
+        if(property == conditionEntityType::compareProperty || property == conditionEntityType::everyProperty)
         {
             for ( QPair<QString,fileComparison> pair : compareMappings)
                 resultingList << pair.first;
@@ -193,7 +224,27 @@ struct ruleDefinitions
         return resultingList;
     }
 
+    const QStringList fullTypeFilterPropertyList()
+    {
+        QStringList resultingList;
+
+        for (QPair<QString,fileTypeFilter> pair : fileTypeFilterMappings)
+            resultingList << pair.first;
+
+        return resultingList;
+    }
+
     // From type1 to type2 methods
+
+    QString actionToString(const fileAction mode)
+    {
+        for(QPair<QString,fileAction> pair : actionMappings)
+        {
+            if(pair.second == mode)
+                return pair.first;
+        }
+        return QString();
+    }
 
     fileAction actionFromString(const QString mode)
     {
@@ -203,15 +254,6 @@ struct ruleDefinitions
                 return pair.second;
         }
         return fileAction::none;
-    }
-    QString actionToString(const fileAction mode)
-    {
-        for(QPair<QString,fileAction> pair : actionMappings)
-        {
-            if(pair.second == mode)
-                return pair.first;
-        }
-        return QString();
     }
 
     QString fieldConditionToString(const fileCondition mode)
@@ -254,37 +296,26 @@ struct ruleDefinitions
         return fileComparison::noCompareModeSet;
     }
 
-    static QStringList typeList()
+    QString fileTypeToString(fileTypeFilter type)
     {
-        return QStringList {"Mapper",
-            "Filer"};
-    }
-    QString typeFromIndex(int index)
-    {
-        return typeList().at(index);
-    }
-    static QString typeFromEnum(Worker::iteratorMode tMode)
-    {
-        if(tMode == Worker::folderOnly)
-            return "Mapper";
-        else if(tMode == Worker::filesOnly)
-            return "Filer";
-        else if(tMode == Worker::allEntries)
-            return "Begge";
-        else if(tMode == Worker::noTypeSet)
-            return "none";
-        else
-            return "error";
+        for (QPair<QString,fileTypeFilter> pair : fileTypeFilterMappings)
+        {
+            if(pair.second == type)
+                return pair.first;
+        }
+
+        return QString();
     }
 
-    static Worker::iteratorMode typeModeFromString(const QString str)
+    fileTypeFilter fileTypeFromString(QString string)
     {
-        if(str == "Mapper")
-            return Worker::folderOnly;
-        else if(str == "Filer")
-            return Worker::filesOnly;
-        else
-            return Worker::allEntries;
+        for (QPair<QString,fileTypeFilter> pair : fileTypeFilterMappings)
+        {
+            if(pair.first == string)
+                return pair.second;
+        }
+
+        return fileTypeFilter::unresolved;
     }
 };
 typedef ruleDefinitions rD;

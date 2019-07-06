@@ -25,6 +25,7 @@ struct SubRule
 struct Rule
 {
     QString identification,title = "title";
+    rD::fileTypeFilter typeFilter = rD::Both;
     rD::fileAction actionRule;
     QStringList destinationPath;
     QString appliesToPath = "Alle";

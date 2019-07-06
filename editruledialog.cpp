@@ -3,13 +3,16 @@
 EditRuleDialog::EditRuleDialog(Rule editRule, QStringList watchFolders):
     AbstractRuleDialog(watchFolders)
 {
+    rD rDefs;
     originalRuleTitle = editRule.title;
     tempRule = editRule;
-    actionBox->setCurrentText(ruleDefs.actionToString(tempRule.actionRule));
+    actionBox->setCurrentText(rDefs.actionToString(tempRule.actionRule));
     titleSelector->setText(tempRule.title);
     applySelector->setCurrentText(tempRule.appliesToPath);
     pathSelector->setCurrentFilePath(Worker::mergeStringList(tempRule.destinationPath));
     deepScanRadio->setChecked(tempRule.deepScanMode);
+    fileTypeSelector->addItems(rDefs.fullTypeFilterPropertyList());
+    fileTypeSelector->setCurrentText(rDefs.fileTypeToString(tempRule.typeFilter));
 
     subRules = tempRule.subRules;
 
@@ -26,6 +29,7 @@ void EditRuleDialog::on_addButton_clicked()
     tempRule.destinationPath = Worker::splitString(pathSelector->text());
     tempRule.subRules = subRules;
     tempRule.deepScanMode = deepScanRadio->isChecked();
+    tempRule.typeFilter = rDefs.fileTypeFromString(fileTypeSelector->currentText());
 
     emit replaceRule(tempRule,originalRuleTitle);
 
@@ -67,10 +71,6 @@ void EditRuleDialog::on_addSubRule_clicked()
             currentCompareMode == rD::interval)
     {
         sRule.intervalDate = condWidget->intervalDates();
-    }
-    else if(conMode == rD::typeMode)
-    {
-        sRule.typeMode = condWidget->typeMode();
     }
     subRules << sRule;
     updateView();

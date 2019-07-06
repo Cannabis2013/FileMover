@@ -515,15 +515,6 @@ QFileInfoList FileOperationsWorker::processList(QFileInfoList files, SubRule rul
                     filesToProcess << file;
             }
         }
-        else if(rule.fieldCondition == rD::typeMode)
-        {
-            if(rule.typeMode == fW::folderOnly && file.isDir())
-                filesToProcess << file;
-            else if(rule.typeMode == fW::filesOnly && file.isFile())
-                filesToProcess << file;
-            else if(rule.typeMode == fW::allEntries)
-                filesToProcess << file;
-        }
         else if(rule.fieldCondition == rD::nonConditionalMode)
         {
             filesToProcess << file;

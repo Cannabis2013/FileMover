@@ -128,8 +128,6 @@ void conditionWidget::setCurrentView(QString txt)
     else if(conMode == rD::dateCreatedMode ||
             conMode == rD::dateModifiedMode)
         mainModeView->setCurrentIndex(2);
-    else if(conMode == rD::typeMode)
-        mainModeView->setCurrentIndex(3);
     else
     {
         mainModeSelector->hide();
@@ -227,8 +225,6 @@ void conditionWidget::setMode(QString condition)
     {
         mainModeSelector->addItems(rDefs.intervalConditionalList);
     }
-    else if(currentFileModeRule == rD::typeMode)
-        mainModeSelector->addItem(condition);
 }
 
 ruleDefinitions::fileComparison conditionWidget::currentCompareMode()

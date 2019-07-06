@@ -57,8 +57,6 @@ QString rulesManager::ruleKeyWordToString(SubRule sRule)
     else if((sRule.fieldCondition == rD::dateCreatedMode || sRule.fieldCondition == rD::dateModifiedMode) &&
             sRule.fileCompareMode == rD::interval)
         return rulesManager::ruleDateLimitsToString(sRule);
-    else if(sRule.fieldCondition == rD::typeMode)
-        return rD::typeFromEnum(sRule.typeMode);
     else
         return Worker::mergeStringList(sRule.keyWords);
 }

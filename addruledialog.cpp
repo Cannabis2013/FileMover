@@ -51,10 +51,6 @@ void AddRuleDialog::on_addSubRule_clicked()
     {
         sRule.intervalDate = condWidget->intervalDates();
     }
-    else if(conMode == rD::typeMode)
-    {
-        sRule.typeMode = condWidget->typeMode();
-    }
     subRules << sRule;
     updateView();
 }
@@ -75,6 +71,7 @@ void AddRuleDialog::on_addButton_clicked()
     r.appliesToPath = applySelector->currentText();
     r.actionRule = rDefs.actionFromString(actionBox->currentText());
     r.destinationPath = Worker::splitString(pathSelector->text());
+    r.typeFilter = rDefs.fileTypeFromString(fileTypeSelector->currentText());
     r.deepScanMode = deepScanRadio->isChecked();
 
     r.subRules = subRules;

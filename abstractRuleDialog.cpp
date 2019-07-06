@@ -12,11 +12,14 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
     applySelector = ui->appliesSelector;
     conditionBox = ui->conditionComboBox;
     destinationFrame= ui->DestinationFrame;
+    fileTypeSelector = ui->typeFilterSelector;
     pathSelector = ui->textPathEdit;
     subRuleView = ui->treeWidget;
     titleSelector = ui->titleBox;
     deepScanRadio = ui->deepScanRadioButton;
     condWidget = ui->conditionView;
+
+    rD ruleDefs;
 
     QStringList actionList = ruleDefs.propertyListToStrings(rD::actionProperty),
             conditionList = ruleDefs.propertyListToStrings(rD::conditionProperty),
@@ -31,6 +34,8 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
 
     conditionBox->setCurrentText("Ingen betingelser");
     conditionBox->currentIndexChanged("Ingen betingelser");
+
+    fileTypeSelector->addItems(ruleDefs.fullTypeFilterPropertyList());
 
     qRegisterMetaType<Rule>("Rule");
 
@@ -90,10 +95,6 @@ void AbstractRuleDialog::updateConditionView(SubRule &sR)
             comp == rD::interval)
     {
         condWidget->setIntervalDate(sR.intervalDate);
-    }
-    else if(cond == rD::typeMode)
-    {
-        condWidget->setTypeValues(sR.typeMode);
     }
 }
 
@@ -158,10 +159,6 @@ void AbstractRuleDialog::updateView()
                 sRule.fileCompareMode == rD::interval)
         {
             headerData << rulesManager::ruleSizeLimitsToString(sRule);
-        }
-        else if(condition == rD::typeMode)
-        {
-            headerData << rulesManager::ruleKeyWordToString(sRule);
         }
         else
         {

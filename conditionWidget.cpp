@@ -166,8 +166,8 @@ void conditionWidget::initDefaultOperators()
 
     rD rDefs;
 
-    fixedSizeModeSelector->addItems(rDefs.compareOperatorsToStringList(rD::sizeMode));
-    dateOperatorSelector->addItems(rDefs.compareOperatorsToStringList(rD::dateCreatedMode));
+    fixedSizeModeSelector->addItems(rDefs.allCompareStringEntities(rD::sizeMode));
+    dateOperatorSelector->addItems(rDefs.allCompareStringEntities(rD::dateCreatedMode));
 }
 
 void conditionWidget::initDefaultUnits()
@@ -212,7 +212,7 @@ void conditionWidget::setMode(QString condition)
 
     if(currentFileModeRule == rD::filepathMode || currentFileModeRule == rD::extensionMode)
     {
-        mainModeSelector->addItems(rDefs.compareOperatorsToStringList(rD::filepathMode));
+        mainModeSelector->addItems(rDefs.allCompareStringEntities(rD::filepathMode));
     }
     else if(currentFileModeRule == rD::sizeMode)
     {

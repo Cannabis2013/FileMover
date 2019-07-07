@@ -100,14 +100,13 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
     QList<Rule>rules = rManager->ruleslist();
     if(rules.isEmpty())
         clearFolders(paths);
-
     for(Rule r : rules)
     {
-        QFileInfoList allFiles = fW::generateFilesList(r.appliesToPath,paths,r.deepScanMode);
+        FileObjectList allFiles = fW::generateFileObjects(paths,r.appliesToPath,r.typeFilter);
         for(SubRule sR : r.subRules)
-            allFiles = fWorker->processList(allFiles,sR);
+            allFiles = fWorker->processFileObjects(allFiles,sR);
 
-        // Implementer fileworker operation..
+        /*
 
         if(!isTestSession())
         {
@@ -122,6 +121,7 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         {
 
         }
+        */
 
     }
 }

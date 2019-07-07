@@ -17,9 +17,11 @@ public:
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
     static QFileInfoList processList(QFileInfoList fileObjects, SubRule rule);
-
+    static FileObjectList processFileObjects(FileObjectList fileObjects,SubRule rule);
     static QFileInfoList generateFilesList(QStringList paths,QString rPath = QString(),bool recursive = false);
-    static FileObjectList generateFileObjects(const QStringList &paths, const QString &rPath = QString());
+    static FileObjectList generateFileObjects(const QStringList &paths,
+                                              const QString &rPath = QString(),
+                                              rD::fileTypeRuleEntity filter = rD::File);
 
 public slots:
 

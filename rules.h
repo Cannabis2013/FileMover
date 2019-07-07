@@ -25,8 +25,8 @@ struct SubRule
 struct Rule
 {
     QString identification,title = "title";
-    rD::fileTypeRuleEntity typeFilter = rD::Both;
-    rD::fileActionRuleEntity actionRule;
+    rD::fileTypeRuleEntity typeFilter = rD::File;
+    rD::fileActionRuleEntity actionRuleEntity;
     QStringList destinationPath;
     QString appliesToPath = "Alle";
     bool deepScanMode = false;

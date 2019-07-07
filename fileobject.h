@@ -12,8 +12,8 @@ public:
 
     FileObject(const QString &filePath);
 
-    FileObject *getParent() const;
-    void setParent(FileObject *const &newParent);
+    FileObject *parentFolderObject() const;
+    void setParentFolderObject(FileObject *const &newParent);
 
     QList<FileObject*> getChildren() const;
     void setChildren(const QList<FileObject *> &value);

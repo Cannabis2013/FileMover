@@ -5,12 +5,12 @@ FileObject::FileObject(const QString &filePath):
 {
 }
 
-FileObject *FileObject::getParent() const
+FileObject *FileObject::parentFolderObject() const
 {
     return parent;
 }
 
-void FileObject::setParent(FileObject * const &newParent)
+void FileObject::setParentFolderObject(FileObject * const &newParent)
 {
     parent = newParent;
 }
@@ -27,6 +27,6 @@ void FileObject::setChildren(const QList<FileObject *> &value)
 
 void FileObject::appendChild(FileObject *const &object)
 {
-    object->setParent(this);
+    object->setParentFolderObject(this);
     children.append(object);
 }

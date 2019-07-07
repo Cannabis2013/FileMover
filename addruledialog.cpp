@@ -69,7 +69,7 @@ void AddRuleDialog::on_addButton_clicked()
     Rule r;
     r.title = titleSelector->text();
     r.appliesToPath = applySelector->currentText();
-    r.actionRule = rDefs.actionFromString(actionBox->currentText());
+    r.actionRuleEntity = rDefs.actionFromString(actionBox->currentText());
     r.destinationPath = Worker::splitString(pathSelector->text());
     r.typeFilter = rDefs.fileTypeFromString(fileTypeSelector->currentText());
     r.deepScanMode = deepScanRadio->isChecked();

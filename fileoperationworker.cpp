@@ -523,6 +523,193 @@ QFileInfoList FileOperationWorker::processList(QFileInfoList files, SubRule rule
     return filesToProcess;
 }
 
+FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObjects, SubRule rule)
+{
+    FileObjectList filesToProcess;
+    for(FileObject* fObject : fileObjects)
+    {
+        bool condition = false;
+        // Evaluating filename patterns
+        if(rule.fieldCondition == rD::filepathMode)
+        {
+            if(rule.fileCompareMode == rD::contains)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->fileName().contains(kWord))
+                        condition = true;
+                if(condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::dontContain)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->fileName().contains(kWord))
+                        condition = true;
+                if(!condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::match)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->fileName() == kWord)
+                        condition = true;
+                if(condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::dontMatch)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->fileName() == kWord)
+                        condition = true;
+                if(!condition)
+                    filesToProcess << fObject;
+            }
+        }
+
+        // Evaluating file extension related patterns
+        else if(rule.fieldCondition == rD::extensionMode && fObject->isFile())
+        {
+            if(rule.fileCompareMode == rD::contains)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->suffix().contains(kWord))
+                        condition = true;
+
+                if(condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::dontContain)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->suffix().contains(kWord))
+                        condition = true;
+                if(!condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::match)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->suffix() == kWord)
+                        condition = true;
+                if(condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::dontMatch)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->suffix() == kWord)
+                        condition = true;
+                if(!condition)
+                    filesToProcess << fObject;
+            }
+        }
+        /*
+         * Check if parent folder name meets the criterias set
+         */
+
+        else if(rule.fieldCondition == rD::parentFolderMode)
+        {
+            if(rule.fileCompareMode == rD::contains)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->parentFolderObject()->fileName().contains(kWord))
+                        condition = true;
+
+                if(condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::dontContain)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->parentFolderObject()->fileName().contains(kWord))
+                        condition = true;
+                if(!condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::match)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->parentFolderObject()->fileName() == kWord)
+                        condition = true;
+                if(condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::dontMatch)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->parentFolderObject()->fileName() == kWord)
+                        condition = true;
+                if(!condition)
+                    filesToProcess << fObject;
+            }
+        }
+        else if(rule.fieldCondition == rD::sizeMode)
+        {
+            if(rule.fileCompareMode != rD::interval)
+            {
+                if(rule.fileCompareMode == rD::lesser && fObject->size() < fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << fObject;
+                else if(rule.fileCompareMode == rD::lesserOrEqual &&
+                        fObject->size() <= fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << fObject;
+                else if(rule.fileCompareMode == rD::equal &&
+                        fObject->size() == fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << fObject;
+                else if(rule.fileCompareMode == rD::biggerOrEqual &&
+                        fObject->size() >= fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << fObject;
+                else if(rule.fileCompareMode == rD::bigger &&
+                        fObject->size() > fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::interval &&
+                    fObject->size() >= fW::byteConvert(rule.sizeIntervalLimits.first.first,rule.sizeIntervalLimits.first.second) &&
+                    fObject->size() <= fW::byteConvert(rule.sizeIntervalLimits.second.first,rule.sizeIntervalLimits.second.second))
+                filesToProcess << fObject;
+        }
+        else if(rule.fieldCondition == rD::dateCreatedMode)
+        {
+            if(rule.fileCompareMode == rD::interval)
+            {
+                if(rule.intervalDate.first > fObject->created() && rule.intervalDate.second < fObject->created())
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode != rD::interval)
+            {
+                if(rule.fileCompareMode == rD::youngerThan && rule.fixedDate.second > fObject->created())
+                    filesToProcess << fObject;
+                else if(rule.fileCompareMode == rD::exactDate && rule.fixedDate.second== fObject->created())
+                    filesToProcess << fObject;
+                else if(rule.fileCompareMode == rD::olderThan && rule.fixedDate.second < fObject->created())
+                    filesToProcess << fObject;
+            }
+
+        }
+        else if(rule.fieldCondition == rD::dateModifiedMode)
+        {
+            if(rule.fileCompareMode == rD::interval)
+            {
+                if(rule.intervalDate.first > fObject->lastModified() && rule.intervalDate.second < fObject->lastModified())
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode != rD::interval)
+            {
+                if(rule.fileCompareMode == rD::youngerThan && rule.fixedDate.second > fObject->lastModified())
+                    filesToProcess << fObject;
+                else if(rule.fileCompareMode == rD::exactDate && rule.fixedDate.second == fObject->lastModified())
+                    filesToProcess << fObject;
+                else if(rule.fileCompareMode == rD::olderThan && rule.fixedDate.second < fObject->lastModified())
+                    filesToProcess << fObject;
+            }
+        }
+        else if(rule.fieldCondition == rD::nonConditionalMode)
+        {
+            filesToProcess << fObject;
+        }
+    }
+    return filesToProcess;
+}
+
 QFileInfoList FileOperationWorker::generateFilesList(QStringList paths, QString rPath, bool recursive)
 {
     QStringList rPaths;
@@ -562,7 +749,7 @@ QFileInfoList FileOperationWorker::generateFilesList(QStringList paths, QString 
     return allFiles;
 }
 
-FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths, const QString &rPath)
+FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths, const QString &rPath, ruleDefinitions::fileTypeRuleEntity filter)
 {
     FileObjectList resultingList;
 
@@ -578,9 +765,9 @@ FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths
         while(it.hasNext())
         {
             FileObject* fObject = new FileObject(it.next());
-            if(fObject->isFile())
+            if(fObject->isFile() && filter == rD::File)
                 resultingList << fObject;
-            else if(fObject->isDir())
+            else if(fObject->isDir() && filter == rD::Folder)
             {
                 fObject->setChildren(generateFileObjects(paths,fObject->absoluteFilePath()));
                 resultingList << fObject;
@@ -589,6 +776,7 @@ FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths
     }
     return resultingList;
 }
+
 
 void FileOperationWorker::countNumberOfFolderItems(QString path, QDir::Filters f, QDirIterator::IteratorFlags i)
 {

@@ -21,8 +21,8 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
 
     rD ruleDefs;
 
-    QStringList actionList = ruleDefs.propertyListToStrings(rD::actionProperty),
-            conditionList = ruleDefs.propertyListToStrings(rD::conditionProperty),
+    QStringList actionList = ruleDefs.allRuleStringEntities(rD::actionProperty),
+            conditionList = ruleDefs.allRuleStringEntities(rD::conditionProperty),
             unitList = ruleDefs.sizeUnits();
 
     actionBox->addItems(actionList);

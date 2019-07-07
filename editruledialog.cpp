@@ -6,7 +6,7 @@ EditRuleDialog::EditRuleDialog(Rule editRule, QStringList watchFolders):
     rD rDefs;
     originalRuleTitle = editRule.title;
     tempRule = editRule;
-    actionBox->setCurrentText(rDefs.actionToString(tempRule.actionRule));
+    actionBox->setCurrentText(rDefs.actionToString(tempRule.actionRuleEntity));
     titleSelector->setText(tempRule.title);
     applySelector->setCurrentText(tempRule.appliesToPath);
     pathSelector->setCurrentFilePath(Worker::mergeStringList(tempRule.destinationPath));
@@ -25,7 +25,7 @@ void EditRuleDialog::on_addButton_clicked()
     rD rDefs;
     tempRule.title = titleSelector->text();
     tempRule.appliesToPath = applySelector->currentText();
-    tempRule.actionRule = rDefs.actionFromString(actionBox->currentText());
+    tempRule.actionRuleEntity = rDefs.actionFromString(actionBox->currentText());
     tempRule.destinationPath = Worker::splitString(pathSelector->text());
     tempRule.subRules = subRules;
     tempRule.deepScanMode = deepScanRadio->isChecked();

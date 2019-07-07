@@ -29,6 +29,7 @@
  *      notDefined
  *      filepathMode
  *      extensionMode
+ *      parentFolderMode
  *      sizeMode
  *      dateCreatedMode
  *      nonConditionalMode
@@ -36,6 +37,20 @@
 
 /*
  *  fileCompareRuleEntity:
+ *      Date:
+ *          youngerThan
+ *          exactDate
+ *          olderThan
+ *          interval
+ *      Keyword:
+ *          containSuffix
+ *          dontContainSuffix
+ *          matchSuffix
+ *          dontMatchSuffix
+ *          containWords
+ *          dontContainWords
+ *          matchWords
+ *          dontMatchWords
  *      Size:
  *          lesser
  *          lesserOrequal
@@ -44,11 +59,7 @@
  *          bigger
  *          sizeInterval
  *          interval
- *      Date:
- *          youngerThan
- *          exactDate
- *          olderThan
- *          interval
+ *
  */
 
 /*
@@ -73,12 +84,13 @@ struct ruleDefinitions
     enum ruleEntityType {actionProperty,conditionProperty, compareProperty, everyProperty};
     enum fileActionRuleEntity{Move,Delete,Copy,none};
     enum fileConditionRuleEntity{notDefined,
-                      filepathMode,
-                      extensionMode,
-                      sizeMode,
-                      dateCreatedMode,
-                      dateModifiedMode,
-                      nonConditionalMode};
+                                 filepathMode,
+                                 extensionMode,
+                                 sizeMode,
+                                 parentFolderMode,
+                                 dateCreatedMode,
+                                 dateModifiedMode,
+                                 nonConditionalMode};
 
     enum fileCompareRuleEntity{match,
                      dontMatch,
@@ -96,7 +108,8 @@ struct ruleDefinitions
                      noDateSet,
                      noCompareModeSet};
 
-    enum fileTypeRuleEntity {Folder, File, Both,unresolved};
+    enum fileTypeRuleEntity {Folder, File, unresolved};
+
     enum copyMode{move,copy,noMode};
 
     QString nonIntervalString = "Enkel grænse", intervalString = "Interval grænse";
@@ -124,6 +137,7 @@ struct ruleDefinitions
         QPair<QString,fileConditionRuleEntity>("Filnavn",fileConditionRuleEntity::filepathMode),
                 QPair<QString,fileConditionRuleEntity>("Filendelse",fileConditionRuleEntity::extensionMode),
                 QPair<QString,fileConditionRuleEntity>("Størrelse",fileConditionRuleEntity::sizeMode),
+                QPair<QString,fileConditionRuleEntity>("I mappen",fileConditionRuleEntity::parentFolderMode),
                 QPair<QString,fileConditionRuleEntity>("Dato oprettet",fileConditionRuleEntity::dateCreatedMode),
                 QPair<QString,fileConditionRuleEntity>("Dato redigeret",fileConditionRuleEntity::dateModifiedMode),
                 QPair<QString,fileConditionRuleEntity>("Ingen betingelser",fileConditionRuleEntity::nonConditionalMode)};
@@ -146,13 +160,12 @@ struct ruleDefinitions
     {
         QPair<QString,fileTypeRuleEntity>("Filer", fileTypeRuleEntity::File),
                 QPair<QString,fileTypeRuleEntity>("Mapper", fileTypeRuleEntity::Folder),
-                QPair<QString,fileTypeRuleEntity>("Begge", fileTypeRuleEntity::Both),
                 QPair<QString,fileTypeRuleEntity>("Uafklaret", fileTypeRuleEntity::unresolved)
     };
 
     // Retrieve list methods
 
-    const QStringList propertyListToStrings(ruleEntityType property = ruleEntityType::everyProperty)
+    const QStringList allRuleStringEntities(ruleEntityType property = ruleEntityType::everyProperty)
     {
         QStringList resultingList;
         if(property == ruleEntityType::actionProperty || property == ruleEntityType::everyProperty)
@@ -174,7 +187,7 @@ struct ruleDefinitions
         return resultingList;
     }
 
-    const QStringList compareOperatorsToStringList(fileConditionRuleEntity condition)
+    const QStringList allCompareStringEntities(fileConditionRuleEntity condition)
     {
         QStringList resultingList;
         if(condition == fileConditionRuleEntity::filepathMode ||

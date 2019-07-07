@@ -8,7 +8,7 @@ MainApplication::MainApplication(const QString &appName,
     sManager = new settingsManager(appName,orgName);
     entityManager = new EntityQueueManager();
     fManager = new FileInformationManager(appName,orgName);
-    fWorker = new FileOperationsWorker();
+    fWorker = new FileOperationWorker();
     fWatcher = new FileSystemWatcher(sManager->paths());
     fileWorkerThread = new QThread();
     testMode = testSession;
@@ -39,15 +39,15 @@ MainApplication::MainApplication(const QString &appName,
     connect(sManager,&settingsManager::removeItem,fManager,&FileInformationManager::removeItem);
 
     connect(fWorker,&fW::processFinished,fManager,&FileInformationManager::insertItems);
-    connect(fWorker,&FileOperationsWorker::sendFolderSizeEntity,this,&MainApplication::sendFolderSize);
-    connect(fWorker,&FileOperationsWorker::sendStatusLineMessage,this,&MainApplication::sendStatusMessage);
+    connect(fWorker,&FileOperationWorker::sendFolderSizeEntity,this,&MainApplication::sendFolderSize);
+    connect(fWorker,&FileOperationWorker::sendStatusLineMessage,this,&MainApplication::sendStatusMessage);
 
     // Notify observers related..
     connect(sManager,&settingsManager::stateChanged,this,&MainApplication::stateChanged);
     connect(rManager,&rulesManager::stateChanged,this,&MainApplication::stateChanged);
     connect(fManager,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);
 
-    connect(entityManager,&EntityQueueManager::wakeUpProcess,fWorker,&FileOperationsWorker::handleProcessRequest);
+    connect(entityManager,&EntityQueueManager::wakeUpProcess,fWorker,&FileOperationWorker::handleProcessRequest);
 
     connect(fWorker,&fW::jobDone,this,&AbstractCoreApplication::stateChanged);
 
@@ -67,7 +67,7 @@ void MainApplication::clearFolders(QStringList paths)
 {
     if(!isTestSession())
     {
-        QFileInfoList allFiles = fW::generateFilesList(QString(),paths,false);
+        QFileInfoList allFiles = fW::generateFilesList(paths);
         FileActionEntity *entity = new FileActionEntity();
         entity->setDirectoryPaths(paths);
         entity->setDirectoryFileContent(allFiles);
@@ -76,7 +76,7 @@ void MainApplication::clearFolders(QStringList paths)
     else
     {
         print("Non recursive method:");
-        QFileInfoList allFiles = fW::generateFilesList(QString(),paths,false);
+        QFileInfoList allFiles = fW::generateFilesList(paths);
         for (QFileInfo fInfo : allFiles)
         {
             print("Filepath: " + fInfo.filePath(),printMode::noLineBreak);
@@ -85,7 +85,7 @@ void MainApplication::clearFolders(QStringList paths)
 
         print("Recursive method:");
 
-        allFiles = fW::generateFilesList(QString(),paths,true);
+        allFiles = fW::generateFilesList(paths);
 
         for (QFileInfo fInfo : allFiles)
         {

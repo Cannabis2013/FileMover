@@ -71,8 +71,8 @@ void AbstractRuleDialog::resetAllForm()
 
 void AbstractRuleDialog::updateConditionView(SubRule &sR)
 {
-    rD::fileCondition cond = sR.fieldCondition;
-    rD::fileComparison comp = sR.fileCompareMode;
+    rD::fileConditionRuleEntity cond = sR.fieldCondition;
+    rD::fileCompareRuleEntity comp = sR.fileCompareMode;
     if(cond == rD::filepathMode || cond == rD::extensionMode)
     {
         condWidget->setKeyWords(rulesManager::ruleKeyWordToString(sR));
@@ -135,7 +135,7 @@ void AbstractRuleDialog::updateView()
     {
         QStringList headerData;
         SubRule sRule = subRules.at(i);
-        rD::fileCondition condition = sRule.fieldCondition;
+        rD::fileConditionRuleEntity condition = sRule.fieldCondition;
 
         headerData << rDefs.fieldConditionToString(condition);
         headerData << rDefs.compareToString(sRule.fileCompareMode);

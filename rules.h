@@ -10,13 +10,13 @@ struct SubRule
 {
     // Enumerated values..
     rD::copyMode copymode = rD::noMode;
-    rD::fileComparison fileCompareMode = rD::noCompareModeSet;
+    rD::fileCompareRuleEntity fileCompareMode = rD::noCompareModeSet;
     Worker::iteratorMode typeMode = Worker::noTypeSet;
-    rD::fileCondition fieldCondition = rD::nonConditionalMode;
+    rD::fileConditionRuleEntity fieldCondition = rD::nonConditionalMode;
 
     QPair<int,QString>sizeLimit;
     QPair<QPair<int,QString>,QPair<int,QString>> sizeIntervalLimits;
-    QPair<rD::fileComparison,myDateTime>fixedDate;
+    QPair<rD::fileCompareRuleEntity,myDateTime>fixedDate;
     QPair<myDateTime,myDateTime>intervalDate;
     bool matchWholeWords = false;
     QStringList keyWords;
@@ -25,8 +25,8 @@ struct SubRule
 struct Rule
 {
     QString identification,title = "title";
-    rD::fileTypeFilter typeFilter = rD::Both;
-    rD::fileAction actionRule;
+    rD::fileTypeRuleEntity typeFilter = rD::Both;
+    rD::fileActionRuleEntity actionRule;
     QStringList destinationPath;
     QString appliesToPath = "Alle";
     bool deepScanMode = false;

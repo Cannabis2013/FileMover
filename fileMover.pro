@@ -49,7 +49,7 @@ SOURCES += main.cpp\
     fileinformationmanager.cpp \
     fileinformationview.cpp \
     fileobject.cpp \
-    fileoperationsworker.cpp \
+    fileoperationworker.cpp \
     filepathdialogwidget.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
@@ -83,7 +83,7 @@ HEADERS  += mainwindow.h \
     entityqueuemanager.h \
     fileinformationmanager.h \
     fileobject.h \
-    fileoperationsworker.h \
+    fileoperationworker.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
     mainapplication.h \

@@ -154,7 +154,7 @@ void rulesManager::readSettings()
         Rule r;
         persistenceSettings->setArrayIndex(i);
         r.title = persistenceSettings->value("Title","Title").toString();
-        r.actionRule = static_cast<rD::fileAction>(persistenceSettings->value("Action","").toInt());
+        r.actionRule = static_cast<rD::fileActionRuleEntity>(persistenceSettings->value("Action","").toInt());
         r.appliesToPath = persistenceSettings->value("ApplyPath","Alle").toString();
         r.destinationPath = Worker::splitString(persistenceSettings->value("Destination paths","").toString());
         r.deepScanMode = persistenceSettings->value("Scan Mode",false).toBool();
@@ -165,8 +165,8 @@ void rulesManager::readSettings()
             persistenceSettings->setArrayIndex(n);
 
             sRule.copymode = static_cast<rD::copyMode>(persistenceSettings->value("Copymode",0).toInt());
-            sRule.fieldCondition = static_cast<rD::fileCondition>(persistenceSettings->value("Condition","").toInt());
-            sRule.fileCompareMode = static_cast<rD::fileComparison>(persistenceSettings->value("Comparemode",0).toInt());
+            sRule.fieldCondition = static_cast<rD::fileConditionRuleEntity>(persistenceSettings->value("Condition","").toInt());
+            sRule.fileCompareMode = static_cast<rD::fileCompareRuleEntity>(persistenceSettings->value("Comparemode",0).toInt());
 
             sRule.matchWholeWords = persistenceSettings->value("Matchwholewords",false).toBool();
             sRule.keyWords = Worker::splitString(persistenceSettings->value("Keywords","").toString());
@@ -181,7 +181,7 @@ void rulesManager::readSettings()
             sRule.sizeIntervalLimits.second.second = persistenceSettings->value("Maxsizeunitinterval","kb").toString();
             persistenceSettings->endGroup();
 
-            sRule.fixedDate.first = static_cast<rD::fileComparison>(persistenceSettings->value("Comparemode",0).toInt());
+            sRule.fixedDate.first = static_cast<rD::fileCompareRuleEntity>(persistenceSettings->value("Comparemode",0).toInt());
             sRule.fixedDate.second = QDateTime::fromString(persistenceSettings->value("Datetime","").toString(),"dd.MM.yyyy");
 
             persistenceSettings->beginGroup("Datelimits");

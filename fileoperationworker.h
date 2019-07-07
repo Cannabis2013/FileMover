@@ -7,18 +7,19 @@
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
-class FileOperationsWorker : public Worker
+class FileOperationWorker : public Worker
 {
     Q_OBJECT
 
 public:
-    FileOperationsWorker();
+    FileOperationWorker();
 
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
     static QFileInfoList processList(QFileInfoList fileObjects, SubRule rule);
-    static FileObjectList processListAlternative(FileObjectList &files, const SubRule &rule);
-    static QFileInfoList generateFilesList(QString rPath, QStringList paths,bool recursive = false);
+
+    static QFileInfoList generateFilesList(QStringList paths,QString rPath = QString(),bool recursive = false);
+    static FileObjectList generateFileObjects(const QStringList &paths, const QString &rPath = QString());
 
 public slots:
 
@@ -54,7 +55,6 @@ private:
     void processFileInformationEntity(EntityModel *entity);
     void reProcessFileInformationEntity(const QStringList paths);
     void processDirectoryCountEntity(EntityModel *entity);
-
 
     // Fileoperation from QFileinfoList..
     bool removeFileItems(const QFileInfoList filePaths);
@@ -92,6 +92,6 @@ private:
     QString busyMessage;
 };
 
-typedef FileOperationsWorker fW;
+typedef FileOperationWorker fW;
 
 #endif // FILEWORKEROPERATOR_H

@@ -66,7 +66,7 @@ public slots:
 
 private:
     bool testMode = false;
-    FileOperationsWorker *fWorker;
+    FileOperationWorker *fWorker;
     EntityQueueManager *entityManager;
     rulesManager *rManager;
     settingsManager *sManager;

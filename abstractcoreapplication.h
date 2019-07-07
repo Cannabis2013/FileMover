@@ -2,7 +2,7 @@
 #define ABSTRACTCOREAPPLICATION_H
 
 #include <qstring.h>
-#include "fileoperationsworker.h"
+#include "fileoperationworker.h"
 #include "myIcon.h"
 #include "rulesmanager.h"
 #include "settingsdelegate.h"

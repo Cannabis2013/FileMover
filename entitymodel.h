@@ -2,6 +2,7 @@
 #define ENTITYMODEL_H
 
 #include "ruledefinitions.h"
+#include <QFileInfoList>
 
 class EntityModel
 {
@@ -71,18 +72,18 @@ public:
     void setDirectoryPath(QString path){dirPaths = QStringList(path);}
     void setDirectoryPaths(QStringList paths){dirPaths = paths;}
     void setDirectoryFileContent(QFileInfoList list){this->list = list;}
-    void setFileActionRule(rD::fileAction aRule){ruleMode = aRule;}
+    void setFileActionRule(rD::fileActionRuleEntity aRule){ruleMode = aRule;}
     void setFileActionDestinations(QStringList paths){destinations = paths;}
 
     QStringList directoryPaths(){return dirPaths;}
     QFileInfoList directoryFileList(){return list;}
-    rD::fileAction fileActionRule(){return ruleMode;}
+    rD::fileActionRuleEntity fileActionRule(){return ruleMode;}
     QStringList fileActionDestinations(){return destinations;}
 
 private:
     QStringList dirPaths;
     QFileInfoList list;
-    rD::fileAction ruleMode = rD::none;
+    rD::fileActionRuleEntity ruleMode = rD::none;
     QStringList destinations = QStringList();
 };
 

@@ -20,8 +20,8 @@ void AddRuleDialog::on_addSubRule_clicked()
     SubRule sRule;
     rD rDefs;
     QString cText = conditionBox->currentText();
-    rD::fileCondition conMode = rDefs.fieldConditionFromString(cText);
-    rD::fileComparison currentCompareMode = condWidget->currentCompareMode();
+    rD::fileConditionRuleEntity conMode = rDefs.fieldConditionFromString(cText);
+    rD::fileCompareRuleEntity currentCompareMode = condWidget->currentCompareMode();
     sRule.fieldCondition = rDefs.fieldConditionFromString(cText);
     sRule.fileCompareMode = condWidget->currentCompareMode();
     if(conMode == rD::filepathMode|| conMode == rD::extensionMode)

@@ -2,7 +2,7 @@
 #define FILESYSTEMWATCHER_H
 
 #include <qfilesystemwatcher.h>
-#include "fileoperationsworker.h"
+#include "fileoperationworker.h"
 
 class FileSystemWatcher : public MyObject
 {

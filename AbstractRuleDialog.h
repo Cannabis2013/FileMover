@@ -83,7 +83,6 @@ protected:
         *destinationPathSelector;
     QList<SubRule> subRules;
     QPushButton *addBut;
-    QRadioButton *deepScanRadio;
     QSpinBox *minSizeSelector,
         *maxSizeSelector,
         *fixedSizeSelector;

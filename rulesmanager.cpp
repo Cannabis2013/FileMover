@@ -156,8 +156,8 @@ void rulesManager::readSettings()
         r.title = persistenceSettings->value("Title","Title").toString();
         r.actionRuleEntity = static_cast<rD::fileActionEntity>(persistenceSettings->value("Action","").toInt());
         r.appliesToPath = persistenceSettings->value("ApplyPath","Alle").toString();
+        r.typeFilter = static_cast<rD::fileTypeEntity>(persistenceSettings->value("Scan type filter","").toInt());
         r.destinationPath = Worker::splitString(persistenceSettings->value("Destination paths","").toString());
-        r.deepScanMode = persistenceSettings->value("Scan Mode",false).toBool();
         int count = persistenceSettings->beginReadArray("Subrules");
         for (int n = 0; n < count; ++n)
         {
@@ -189,8 +189,6 @@ void rulesManager::readSettings()
             sRule.intervalDate.second = myDateTime::fromString(persistenceSettings->value("Enddate","01.01.2000").toString());
             persistenceSettings->endGroup();
 
-            sRule.typeMode = static_cast<Worker::iteratorMode>(persistenceSettings->value("Iteratormode",0).toInt());
-
             r.subRules.append(sRule);
         }
         persistenceSettings->endArray();
@@ -212,6 +210,7 @@ void rulesManager::writeSettings()
         Rule r = rules.at(i);
         persistenceSettings->setValue("Title",r.title);
         persistenceSettings->setValue("Action",r.actionRuleEntity);
+        persistenceSettings->setValue("Scan type filter",r.typeFilter);
         persistenceSettings->setValue("ApplyPath",r.appliesToPath);
         persistenceSettings->setValue("Destination paths",
                    mergeStringList(r.destinationPath));
@@ -247,8 +246,6 @@ void rulesManager::writeSettings()
             persistenceSettings->setValue("Startdate",sRule.intervalDate.first.toString("dd.MM.yyyy"));
             persistenceSettings->setValue("Enddate",sRule.intervalDate.second.toString("dd.MM.yyyy"));
             persistenceSettings->endGroup();
-
-            persistenceSettings->setValue("Iteratormode",sRule.typeMode);
         }
         persistenceSettings->endArray();
     }

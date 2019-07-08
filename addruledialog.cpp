@@ -72,7 +72,6 @@ void AddRuleDialog::on_addButton_clicked()
     r.actionRuleEntity = rDefs.fileActionEntityFromString(actionBox->currentText());
     r.destinationPath = Worker::splitString(pathSelector->text());
     r.typeFilter = rDefs.fileTypeEntityFromString(fileTypeSelector->currentText());
-    r.deepScanMode = deepScanRadio->isChecked();
 
     r.subRules = subRules;
     emit sendRule(r);

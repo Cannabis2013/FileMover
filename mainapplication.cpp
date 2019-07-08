@@ -76,13 +76,16 @@ void MainApplication::clearFolders(QStringList paths)
     else
     {
         print("File objects to process:");
-        FileObjectList allFiles = fW::generateFileObjects(paths);
+        FileObjectList allFiles = fW::generateFileObjects(paths,QString(),rD::File);
         for (FileObject* fObject : allFiles)
         {
-            print("Filepath: " + fObject->filePath(),printMode::noLineBreak);
-            print(" |  Filename: " + fObject->fileName());
+            addEntry(QString("Filepath: ") + fObject->filePath() +
+                     QString(" | Filename: ") + fObject->fileName() +
+                     QString("| Parent folder name: ") + fObject->parentFolderName());
         }
     }
+    if(isTestSession())
+        extractEntries();
 }
 
 void MainApplication::clearFoldersAccordingToRules(QStringList paths)
@@ -107,9 +110,12 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         }
         else
         {
-
+            for (FileObject* item : allFiles)
+                addEntry(item->filePath());
         }
     }
+    if(isTestSession())
+        extractEntries();
 }
 
 void MainApplication::addWatchFolders(QStringList paths)

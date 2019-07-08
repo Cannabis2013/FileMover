@@ -16,7 +16,6 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
     pathSelector = ui->textPathEdit;
     subRuleView = ui->treeWidget;
     titleSelector = ui->titleBox;
-    deepScanRadio = ui->deepScanRadioButton;
     condWidget = ui->conditionView;
 
     rD ruleDefs;

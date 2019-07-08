@@ -48,11 +48,30 @@ public:
             cout << endl;
     }
 
+    void addEntry(const QString &entry)
+    {
+        entries << entry;
+    }
+    void extractEntries()
+    {
+        print("###Extracting string entries###");
+        for (QString entry : entries)
+        {
+            print(entry);
+        }
+        print("###Done extracting###");
+
+        entries.clear();
+    }
+
 signals:
     void stateChanged();
 
     void sendSystemTrayMessage(const QString &title,const QString &msg);
     void sendStatusLineMessage(const QString &msg);
+
+private:
+    QStringList entries;
 
 };
 

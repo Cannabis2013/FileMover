@@ -566,12 +566,21 @@ FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths
         while(it.hasNext())
         {
             FileObject* fObject = new FileObject(it.next());
+            fObject->setParentFolderObject(new FileObject(path));
             if(fObject->isFile() && filter == rD::File)
                 resultingList << fObject;
-            else if(fObject->isDir() && filter == rD::Folder)
+            else if(fObject->isDir())
             {
-                fObject->setChildren(generateFileObjects(paths,fObject->absoluteFilePath()));
-                resultingList << fObject;
+                FileObjectList list = generateFileObjects(paths,fObject->absoluteFilePath());
+                if(filter == rD::Folder)
+                {
+                    fObject->setChildren(list);
+                    resultingList << fObject;
+                }
+                else
+                {
+                    resultingList << list;
+                }
             }
         }
     }

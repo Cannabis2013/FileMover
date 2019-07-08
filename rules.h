@@ -11,7 +11,6 @@ struct SubRule
     // Enumerated values..
     rD::copyMode copymode = rD::noMode;
     rD::fileCompareEntity fileCompareMode = rD::noCompareModeSet;
-    Worker::iteratorMode typeMode = Worker::noTypeSet;
     rD::fileConditionEntity fieldCondition = rD::nonConditionalMode;
 
     QPair<int,QString>sizeLimit;

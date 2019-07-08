@@ -16,8 +16,11 @@ public:
 
     QList<FileObject*> getChildren() const;
     void setChildren(const QList<FileObject *> &value);
+    void setShadowChildren(QList<FileObject *> &value);
     void appendChild(FileObject * const &object);
     bool hasChildren(){return !children.isEmpty();}
+
+    const QString parentFolderName();
 
     QString getFileName() const;
 private:

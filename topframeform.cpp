@@ -31,6 +31,7 @@ void TopFrameForm::mouseMoveEvent(QMouseEvent *event)
 
 void TopFrameForm::mouseReleaseEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event);
     isMousePressed = false;
 }
 

@@ -67,7 +67,7 @@ void MainApplication::clearFolders(QStringList paths)
 {
     if(!isTestSession())
     {
-        QFileInfoList allFiles = fW::generateFilesList(paths);
+        FileObjectList allFiles = fW::generateFileObjects(paths);
         FileActionEntity *entity = new FileActionEntity();
         entity->setDirectoryPaths(paths);
         entity->setDirectoryFileContent(allFiles);
@@ -75,22 +75,12 @@ void MainApplication::clearFolders(QStringList paths)
     }
     else
     {
-        print("Non recursive method:");
-        QFileInfoList allFiles = fW::generateFilesList(paths);
-        for (QFileInfo fInfo : allFiles)
+        print("File objects to process:");
+        FileObjectList allFiles = fW::generateFileObjects(paths);
+        for (FileObject* fObject : allFiles)
         {
-            print("Filepath: " + fInfo.filePath(),printMode::noLineBreak);
-            print(" |  Filename: " + fInfo.fileName());
-        }
-
-        print("Recursive method:");
-
-        allFiles = fW::generateFilesList(paths);
-
-        for (QFileInfo fInfo : allFiles)
-        {
-            print("Filepath: " + fInfo.filePath(),printMode::noLineBreak);
-            print(" | Filename: " + fInfo.fileName());
+            print("Filepath: " + fObject->filePath(),printMode::noLineBreak);
+            print(" |  Filename: " + fObject->fileName());
         }
     }
 }
@@ -106,23 +96,19 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         for(SubRule sR : r.subRules)
             allFiles = fWorker->processFileObjects(allFiles,sR);
 
-        /*
-
         if(!isTestSession())
         {
             FileActionEntity *entity = new FileActionEntity;
             entity->setDirectoryPaths(paths);
             entity->setFileActionDestinations(r.destinationPath);
             entity->setDirectoryFileContent(allFiles);
-            entity->setFileActionRule(r.actionRule);
+            entity->setFileActionRule(r.actionRuleEntity);
             entityManager->addEntity(entity);
         }
         else
         {
 
         }
-        */
-
     }
 }
 

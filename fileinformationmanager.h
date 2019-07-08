@@ -4,7 +4,6 @@
 #include <QStringList>
 #include <QFileInfo>
 #include <qlist.h>
-#include <iostream>
 #include <qpair.h>
 #include <memory>
 #include <QTreeWidgetItem>

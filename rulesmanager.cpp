@@ -85,15 +85,15 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     QList<QTreeWidgetItem*>resultingList;
     for(Rule r : rules)
     {
-        QStringList headerData {r.title,rDefs.actionToString(r.actionRuleEntity),Worker::mergeStringList(r.destinationPath)};
+        QStringList headerData {r.title,rDefs.fileActionEntityToString(r.actionRuleEntity),Worker::mergeStringList(r.destinationPath)};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         QIcon itemIcon = QIcon(":/My Images/Ressources/rule_icon.png");
         pItem->setIcon(0,itemIcon);
         for(SubRule sRule : r.subRules)
         {
             QStringList hData;
-            hData << rDefs.fieldConditionToString(sRule.fieldCondition) <<
-                     rDefs.compareToString(sRule.fileCompareMode) <<
+            hData << rDefs.fileConditionEntityToString(sRule.fieldCondition) <<
+                     rDefs.fileCompareEntityToString(sRule.fileCompareMode) <<
                      rulesManager::ruleKeyWordToString(sRule);
 
             QTreeWidgetItem *cItem = new QTreeWidgetItem(hData);
@@ -154,7 +154,7 @@ void rulesManager::readSettings()
         Rule r;
         persistenceSettings->setArrayIndex(i);
         r.title = persistenceSettings->value("Title","Title").toString();
-        r.actionRuleEntity = static_cast<rD::fileActionRuleEntity>(persistenceSettings->value("Action","").toInt());
+        r.actionRuleEntity = static_cast<rD::fileActionEntity>(persistenceSettings->value("Action","").toInt());
         r.appliesToPath = persistenceSettings->value("ApplyPath","Alle").toString();
         r.destinationPath = Worker::splitString(persistenceSettings->value("Destination paths","").toString());
         r.deepScanMode = persistenceSettings->value("Scan Mode",false).toBool();
@@ -165,8 +165,8 @@ void rulesManager::readSettings()
             persistenceSettings->setArrayIndex(n);
 
             sRule.copymode = static_cast<rD::copyMode>(persistenceSettings->value("Copymode",0).toInt());
-            sRule.fieldCondition = static_cast<rD::fileConditionRuleEntity>(persistenceSettings->value("Condition","").toInt());
-            sRule.fileCompareMode = static_cast<rD::fileCompareRuleEntity>(persistenceSettings->value("Comparemode",0).toInt());
+            sRule.fieldCondition = static_cast<rD::fileConditionEntity>(persistenceSettings->value("Condition","").toInt());
+            sRule.fileCompareMode = static_cast<rD::fileCompareEntity>(persistenceSettings->value("Comparemode",0).toInt());
 
             sRule.matchWholeWords = persistenceSettings->value("Matchwholewords",false).toBool();
             sRule.keyWords = Worker::splitString(persistenceSettings->value("Keywords","").toString());
@@ -181,7 +181,7 @@ void rulesManager::readSettings()
             sRule.sizeIntervalLimits.second.second = persistenceSettings->value("Maxsizeunitinterval","kb").toString();
             persistenceSettings->endGroup();
 
-            sRule.fixedDate.first = static_cast<rD::fileCompareRuleEntity>(persistenceSettings->value("Comparemode",0).toInt());
+            sRule.fixedDate.first = static_cast<rD::fileCompareEntity>(persistenceSettings->value("Comparemode",0).toInt());
             sRule.fixedDate.second = QDateTime::fromString(persistenceSettings->value("Datetime","").toString(),"dd.MM.yyyy");
 
             persistenceSettings->beginGroup("Datelimits");

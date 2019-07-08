@@ -140,8 +140,6 @@ private:
     void updateWatchFolderView();
 
     // General..
-    int fromSecondsToMilliseconds(int seconds){return seconds *1000;}
-    int fromMinutesToMilliseconds(int minutes){return minutes *1000*60;}
     QFont createFont(fontType ft = fontType::standardFont, QString family = "Times New Roman",bool bold = false,bool italic = false, int staticSize = -1);
     QString modifyPath(QString s,QString S) const;
     QString currentMainFolderPath() const;

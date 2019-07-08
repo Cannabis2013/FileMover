@@ -27,7 +27,6 @@ public:
     static QString mergeStringList(const QStringList strings);
     static QStringList splitString(const QString split);
 
-
     // Basic string operations..
     QString checkAndCorrectForBackslash(QString path);
 

@@ -44,7 +44,11 @@ protected slots:
     void on_actionComboBox_currentIndexChanged(const QString &arg1);
     void on_conditionComboBox_currentIndexChanged(const QString &arg1);
 
-    // Add rule..
+    /*
+     * The following methods is pure virtual and needs to be implemented by its subclasses.
+     */
+
+    // Add rule button..
     virtual void on_addButton_clicked()=0;
     // Add subrule..
     virtual void on_addSubRule_clicked()=0;

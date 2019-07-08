@@ -7,26 +7,26 @@ FileOperationWorker::FileOperationWorker()
     qt_ntfs_permission_lookup++;
 }
 
-bool FileOperationWorker::removeFileItems(const QFileInfoList filePaths)
+bool FileOperationWorker::removeFileItems(const FileObjectList filePaths)
 {
     if(filePaths.isEmpty())
         return false;
 
     QStringList errs;
 
-    for(QFileInfo fItem: filePaths)
+    for(FileObject* fObject: filePaths)
     {
-        QString absoluteFilePath = fItem.absoluteFilePath();
-        if(fItem.isFile())
+        QString absoluteFilePath = fObject->absoluteFilePath();
+        if(fObject->isFile())
         {
-            QFile fileItem(fItem.absoluteFilePath());
+            QFile fileItem(fObject->absoluteFilePath());
             if(!fileItem.remove())
             {
-                errs << "Operation on: " + fItem.fileName() + " in: " +
-                    fItem.absolutePath() + " returned: " + fileItem.errorString();
+                errs << "Operation on: " + fObject->fileName() + " in: " +
+                    fObject->absolutePath() + " returned: " + fileItem.errorString();
             }
         }
-        else if(fItem.isDir())
+        else if(fObject->isDir())
         {
             removeDir(absoluteFilePath,errs);
         }
@@ -39,14 +39,14 @@ bool FileOperationWorker::removeFileItems(const QFileInfoList filePaths)
     return true;
 }
 
-bool FileOperationWorker::moveFileItems(const QFileInfoList files, const QStringList destinations)
+bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const QStringList destinations)
 {
     bool result = true;
     for(QString destPath : destinations)
     {
-        for(QFileInfo file : files)
+        for(FileObject* fObject : fileObjects)
         {
-            if(!moveRecursively(file.filePath(),destPath))
+            if(!moveRecursively(fObject->filePath(),destPath))
                 result = false;
             else
                 result = false;
@@ -55,14 +55,14 @@ bool FileOperationWorker::moveFileItems(const QFileInfoList files, const QString
     return result;
 }
 
-bool FileOperationWorker::copyFileItems(const QFileInfoList files, const QStringList destinations)
+bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const QStringList destinations)
 {
     bool result = true;
     for(QString destPath : destinations)
     {
-        for(QFileInfo file : files)
+        for(FileObject* fObject : fileObjects)
         {
-            if(!copyRecursively(file.filePath(),destPath))
+            if(!copyRecursively(fObject->filePath(),destPath))
                 result = false;
             else
                 result = false;
@@ -200,8 +200,8 @@ int FileOperationWorker::folderCount(QString p)
     int taeller = 0;
     while(ite.hasNext())
     {
-        QFileInfo i = ite.fileInfo();
-        taeller = i.isDir() ? ++taeller : taeller;
+        if(QFileInfo(ite.fileInfo()).isDir())
+            taeller++;
         emit sendStatusLineMessage(QString("%1 folders").arg(QString::number(taeller)));
         ite.next();
     }
@@ -210,16 +210,15 @@ int FileOperationWorker::folderCount(QString p)
 
 int FileOperationWorker::fileCount(QString p)
 {
-    QFileInfo info = p;
-    QDirIterator ite(info.absoluteFilePath(),
+    QDirIterator ite(QFileInfo(p).absoluteFilePath(),
                      QDir::NoDotAndDotDot |
                      QDir::NoDot | QDir::Files,
                      QDirIterator::Subdirectories);
     int taeller = 0;
     while(ite.hasNext())
     {
-        QFileInfo i = ite.next();
-        taeller = i.isFile() ? ++taeller : taeller;
+        if(QFileInfo(ite.next()).isFile())
+            taeller++;
         emit sendStatusLineMessage(QString("%1 files").arg(QString::number(taeller)));
     }
     return taeller;
@@ -268,8 +267,7 @@ long long FileOperationWorker::folderSize(QString pf)
 {
     long long sZ = 0;
 
-    QFileInfo p = pf;
-    QDirIterator iT(p.absoluteFilePath(),
+    QDirIterator iT(QFileInfo(pf).absoluteFilePath(),
                     QDir::NoDotAndDotDot |
                     QDir::Files | QDir::System |
                     QDir::Hidden,
@@ -291,9 +289,9 @@ long long FileOperationWorker::folderSize(QString pf)
 
 QTreeWidgetItem *FileOperationWorker::assembleItemModelsFromPath(QString p)
 {
-    QFileInfo info(p);
-    if(!info.isDir() && !info.isFile())
+    if(!QFileInfo(p).isDir() && !QFileInfo(p).exists())
         return nullptr;
+
     QTreeWidgetItem *result = new QTreeWidgetItem(createHeader(p));
     QDirIterator ite(p,QDir::NoDotAndDotDot | QDir::AllEntries);
     while(ite.hasNext())
@@ -311,16 +309,6 @@ QTreeWidgetItem *FileOperationWorker::assembleItemModelsFromPath(QString p)
         }
     }
     return result;
-}
-
-QFileInfoList FileOperationWorker::assembleEntryList(QString path)
-{
-    if(path == QString())
-        return QFileInfoList();
-
-    QDir directory(path);
-
-    return directory.entryInfoList(QDir::AllEntries | QDir::System | QDir::Hidden);
 }
 
 QStringList FileOperationWorker::createHeader(QFileInfo fi)
@@ -373,154 +361,6 @@ QStringList FileOperationWorker::createHeader(QFileInfo fi)
         headers << "Filename" << "Filepath" << "Suffix"<< "Type" << "Size" << "Last modified" << "Last read";
     }
     return headers;
-}
-
-QFileInfoList FileOperationWorker::processList(QFileInfoList files, SubRule rule)
-{
-    bool condition = false;
-
-    QFileInfoList filesToProcess;
-    for(QFileInfo file : files)
-    {
-        // Evaluating filename patterns
-        if(rule.fieldCondition == rD::filepathMode)
-        {
-            if(rule.fileCompareMode == rD::contains)
-            {
-                for(QString kWord : rule.keyWords)
-                    if(file.fileName().contains(kWord))
-                        condition = true;
-                if(condition)
-                    filesToProcess << file;
-            }
-            else if(rule.fileCompareMode == rD::dontContain)
-            {
-                for(QString kWord : rule.keyWords)
-                    if(file.fileName().contains(kWord))
-                        condition = true;
-                if(!condition)
-                    filesToProcess << file;
-            }
-            else if(rule.fileCompareMode == rD::match)
-            {
-                for(QString kWord : rule.keyWords)
-                    if(file.fileName() == kWord)
-                        condition = true;
-                if(condition)
-                    filesToProcess << file;
-            }
-            else if(rule.fileCompareMode == rD::dontMatch)
-            {
-                for(QString kWord : rule.keyWords)
-                    if(file.fileName() == kWord)
-                        condition = true;
-                if(!condition)
-                    filesToProcess << file;
-            }
-        }
-
-        // Evaluating file extension related patterns
-        else if(rule.fieldCondition == rD::extensionMode && file.isFile())
-        {
-            if(rule.fileCompareMode == rD::contains)
-            {
-                for(QString kWord : rule.keyWords)
-                    if(file.suffix().contains(kWord))
-                        condition = true;
-                if(condition)
-                    filesToProcess << file;
-            }
-            else if(rule.fileCompareMode == rD::dontContain)
-            {
-                for(QString kWord : rule.keyWords)
-                    if(file.suffix().contains(kWord))
-                        condition = true;
-                if(!condition)
-                    filesToProcess << file;
-            }
-            else if(rule.fileCompareMode == rD::match)
-            {
-                for(QString kWord : rule.keyWords)
-                    if(file.suffix() == kWord)
-                        condition = true;
-                if(condition)
-                    filesToProcess << file;
-            }
-            else if(rule.fileCompareMode == rD::dontMatch)
-            {
-                for(QString kWord : rule.keyWords)
-                    if(file.suffix() == kWord)
-                        condition = true;
-                if(!condition)
-                    filesToProcess << file;
-            }
-        }
-        else if(rule.fieldCondition == rD::sizeMode)
-        {
-            if(rule.fileCompareMode != rD::interval)
-            {
-                if(rule.fileCompareMode == rD::lesser && file.size() < fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
-                    filesToProcess << file;
-                else if(rule.fileCompareMode == rD::lesserOrEqual &&
-                        file.size() <= fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
-                    filesToProcess << file;
-                else if(rule.fileCompareMode == rD::equal &&
-                        file.size() == fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
-                    filesToProcess << file;
-                else if(rule.fileCompareMode == rD::biggerOrEqual &&
-                        file.size() >= fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
-                    filesToProcess << file;
-                else if(rule.fileCompareMode == rD::bigger &&
-                        file.size() > fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
-                    filesToProcess << file;
-            }
-            else if(rule.fileCompareMode == rD::interval &&
-                    file.size() >= fW::byteConvert(rule.sizeIntervalLimits.first.first,rule.sizeIntervalLimits.first.second) &&
-                    file.size() <= fW::byteConvert(rule.sizeIntervalLimits.second.first,rule.sizeIntervalLimits.second.second))
-                filesToProcess << file;
-
-        }
-        else if(rule.fieldCondition == rD::dateCreatedMode)
-        {
-            if(rule.fileCompareMode == rD::interval)
-            {
-                if(rule.intervalDate.first > file.created() && rule.intervalDate.second < file.created())
-                    filesToProcess << file;
-            }
-            else if(rule.fileCompareMode != rD::interval)
-            {
-                if(rule.fileCompareMode == rD::youngerThan && rule.fixedDate.second > file.created())
-                    filesToProcess << file;
-                else if(rule.fileCompareMode == rD::exactDate && rule.fixedDate.second== file.created())
-                    filesToProcess << file;
-                else if(rule.fileCompareMode == rD::olderThan && rule.fixedDate.second < file.created())
-                    filesToProcess << file;
-            }
-
-        }
-        else if(rule.fieldCondition == rD::dateModifiedMode)
-        {
-            if(rule.fileCompareMode == rD::interval)
-            {
-                if(rule.intervalDate.first > file.lastModified() && rule.intervalDate.second < file.lastModified())
-                    filesToProcess << file;
-            }
-            else if(rule.fileCompareMode != rD::interval)
-            {
-                if(rule.fileCompareMode == rD::youngerThan && rule.fixedDate.second > file.lastModified())
-                    filesToProcess << file;
-                else if(rule.fileCompareMode == rD::exactDate && rule.fixedDate.second == file.lastModified())
-                    filesToProcess << file;
-                else if(rule.fileCompareMode == rD::olderThan && rule.fixedDate.second < file.lastModified())
-                    filesToProcess << file;
-            }
-        }
-        else if(rule.fieldCondition == rD::nonConditionalMode)
-        {
-            filesToProcess << file;
-        }
-    }
-    return filesToProcess;
 }
 
 FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObjects, SubRule rule)
@@ -710,46 +550,7 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
     return filesToProcess;
 }
 
-QFileInfoList FileOperationWorker::generateFilesList(QStringList paths, QString rPath, bool recursive)
-{
-    QStringList rPaths;
-    if(rPath != QString() && rPath != "Alle")
-        rPaths = QStringList(rPath);
-    else
-        rPaths = paths;
-
-    QFileInfoList allFiles;
-    if(!recursive)
-    /* Add items to a "QFileInfoList" in a non-recursive manner,
-     * which means that directories, excluding their content, is added to the list of QFileInfo objects.
-     */
-    {
-        for(QString path : rPaths)
-        {
-            QDir dirContent(path);
-            allFiles += dirContent.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System);
-        }
-    }
-    // Add QFileInfo objects to a QFileInfoList in a recursive manner, but excludes directories.
-    else
-    {
-        for(QString path : paths)
-        {
-            QDirIterator it(path,
-                            QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System,
-                            QDirIterator::Subdirectories);
-            while(it.hasNext())
-            {
-                QFileInfo fileItem = it.next();
-                if(!fileItem.isDir())
-                    allFiles.append(fileItem);
-            }
-        }
-    }
-    return allFiles;
-}
-
-FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths, const QString &rPath, ruleDefinitions::fileTypeRuleEntity filter)
+FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths, const QString &rPath, ruleDefinitions::fileTypeEntity filter)
 {
     FileObjectList resultingList;
 
@@ -831,7 +632,9 @@ void FileOperationWorker::processFileInformationEntity(EntityModel * entity)
         item.dirSize = QString::number(directorySize) + " " + denotation;
         item.numberOfDirectories = folderCount(path);
         item.numberOfFiles = fileCount(path);
-        item.directoryContent = assembleEntryList(path);
+        item.directoryContent = QDir(path).entryInfoList(QDir::AllEntries |
+                                                         QDir::System |
+                                                         QDir::Hidden);
         item.directoryItemModels = assembleItemModelsFromPath(path);
         item.sufList = getListOfSuffixOccuriencies(path);
         directories << item;

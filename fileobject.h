@@ -9,7 +9,6 @@ class FileObject : public QFileInfo
 {
 
 public:
-
     FileObject(const QString &filePath);
 
     FileObject *parentFolderObject() const;

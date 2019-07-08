@@ -3,7 +3,6 @@
 
 #include "rules.h"
 #include "entityqueuemanager.h"
-#include "fileobject.h"
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
@@ -16,12 +15,11 @@ public:
 
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
-    static QFileInfoList processList(QFileInfoList fileObjects, SubRule rule);
     static FileObjectList processFileObjects(FileObjectList fileObjects,SubRule rule);
-    static QFileInfoList generateFilesList(QStringList paths,QString rPath = QString(),bool recursive = false);
+
     static FileObjectList generateFileObjects(const QStringList &paths,
                                               const QString &rPath = QString(),
-                                              rD::fileTypeRuleEntity filter = rD::File);
+                                              rD::fileTypeEntity filter = rD::File);
 
 public slots:
 
@@ -59,9 +57,9 @@ private:
     void processDirectoryCountEntity(EntityModel *entity);
 
     // Fileoperation from QFileinfoList..
-    bool removeFileItems(const QFileInfoList filePaths);
-    bool moveFileItems(const QFileInfoList files, const QStringList destinations);
-    bool copyFileItems(const QFileInfoList files, const QStringList destinations);
+    bool removeFileItems(const FileObjectList filePaths);
+    bool moveFileItems(const FileObjectList fileObjects, const QStringList destinations);
+    bool copyFileItems(const FileObjectList fileObjects, const QStringList destinations);
 
     // Methods to count files and number of contents in folders
     int folderCount(QString p);
@@ -78,12 +76,6 @@ private:
 
     QTreeWidgetItem *assembleItemModelsFromPath(QString p);
 
-    // Create a QFileInfoList of files and folders within a given path..
-
-    QFileInfoList assembleEntryList(QString path);
-
-    // Protected member variables;
-    bool isBusy;
 
     void removeDir(QString &dirName, QStringList &errs);
     bool moveRecursively(QString path,
@@ -91,6 +83,7 @@ private:
     bool copyRecursively(QString path,
                          QString destination);
 
+    bool isBusy;
     QString busyMessage;
 };
 

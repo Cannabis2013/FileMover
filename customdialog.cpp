@@ -82,6 +82,7 @@ void CustomDialog::mousePressEvent(QMouseEvent *event)
 
 void CustomDialog::mouseReleaseEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event);
     isMouseButtonPressed = false;
 }
 

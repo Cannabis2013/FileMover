@@ -6,13 +6,13 @@ EditRuleDialog::EditRuleDialog(Rule editRule, QStringList watchFolders):
     rD rDefs;
     originalRuleTitle = editRule.title;
     tempRule = editRule;
-    actionBox->setCurrentText(rDefs.actionToString(tempRule.actionRuleEntity));
+    actionBox->setCurrentText(rDefs.fileActionEntityToString(tempRule.actionRuleEntity));
     titleSelector->setText(tempRule.title);
     applySelector->setCurrentText(tempRule.appliesToPath);
     pathSelector->setCurrentFilePath(Worker::mergeStringList(tempRule.destinationPath));
     deepScanRadio->setChecked(tempRule.deepScanMode);
-    fileTypeSelector->addItems(rDefs.fullTypeFilterPropertyList());
-    fileTypeSelector->setCurrentText(rDefs.fileTypeToString(tempRule.typeFilter));
+    fileTypeSelector->addItems(rDefs.allFileTypeEntitiesToStrings());
+    fileTypeSelector->setCurrentText(rDefs.fileTypeEntityToString(tempRule.typeFilter));
 
     subRules = tempRule.subRules;
 
@@ -25,11 +25,11 @@ void EditRuleDialog::on_addButton_clicked()
     rD rDefs;
     tempRule.title = titleSelector->text();
     tempRule.appliesToPath = applySelector->currentText();
-    tempRule.actionRuleEntity = rDefs.actionFromString(actionBox->currentText());
+    tempRule.actionRuleEntity = rDefs.fileActionEntityFromString(actionBox->currentText());
     tempRule.destinationPath = Worker::splitString(pathSelector->text());
     tempRule.subRules = subRules;
     tempRule.deepScanMode = deepScanRadio->isChecked();
-    tempRule.typeFilter = rDefs.fileTypeFromString(fileTypeSelector->currentText());
+    tempRule.typeFilter = rDefs.fileTypeEntityFromString(fileTypeSelector->currentText());
 
     emit replaceRule(tempRule,originalRuleTitle);
 
@@ -41,9 +41,9 @@ void EditRuleDialog::on_addSubRule_clicked()
     rD rDefs;
     SubRule sRule;
     QString currentCondition = conditionBox->currentText();
-    rD::fileConditionRuleEntity conMode = rDefs.fieldConditionFromString(currentCondition);
+    rD::fileConditionEntity conMode = rDefs.fileConditionEntityFromString(currentCondition);
     sRule.fieldCondition = conMode;
-    rD::fileCompareRuleEntity currentCompareMode = condWidget->currentCompareMode();
+    rD::fileCompareEntity currentCompareMode = condWidget->currentCompareMode();
     sRule.fileCompareMode = currentCompareMode;
     if(conMode == rD::filepathMode|| conMode == rD::extensionMode)
     {

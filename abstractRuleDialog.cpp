@@ -21,8 +21,8 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
 
     rD ruleDefs;
 
-    QStringList actionList = ruleDefs.allRuleStringEntities(rD::actionProperty),
-            conditionList = ruleDefs.allRuleStringEntities(rD::conditionProperty),
+    QStringList actionList = ruleDefs.allEntitiesToStrings(rD::actionProperty),
+            conditionList = ruleDefs.allEntitiesToStrings(rD::conditionProperty),
             unitList = ruleDefs.sizeUnits();
 
     actionBox->addItems(actionList);
@@ -35,7 +35,7 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
     conditionBox->setCurrentText("Ingen betingelser");
     conditionBox->currentIndexChanged("Ingen betingelser");
 
-    fileTypeSelector->addItems(ruleDefs.fullTypeFilterPropertyList());
+    fileTypeSelector->addItems(ruleDefs.allFileTypeEntitiesToStrings());
 
     qRegisterMetaType<Rule>("Rule");
 
@@ -71,14 +71,10 @@ void AbstractRuleDialog::resetAllForm()
 
 void AbstractRuleDialog::updateConditionView(SubRule &sR)
 {
-    rD::fileConditionRuleEntity cond = sR.fieldCondition;
-    rD::fileCompareRuleEntity comp = sR.fileCompareMode;
-    if(cond == rD::filepathMode || cond == rD::extensionMode)
-    {
-        condWidget->setKeyWords(rulesManager::ruleKeyWordToString(sR));
-        condWidget->setCompareView(sR.fileCompareMode);
-    }
-    else if(cond == rD::sizeMode && comp != rD::interval)
+    rD::fileConditionEntity cond = sR.fieldCondition;
+    rD::fileCompareEntity comp = sR.fileCompareMode;
+
+    if(cond == rD::sizeMode && comp != rD::interval)
     {
         condWidget->setConditionalFixedSize(sR.sizeLimit,sR.fileCompareMode);
     }
@@ -96,6 +92,11 @@ void AbstractRuleDialog::updateConditionView(SubRule &sR)
     {
         condWidget->setIntervalDate(sR.intervalDate);
     }
+    else
+    {
+        condWidget->setKeyWords(rulesManager::ruleKeyWordToString(sR));
+        condWidget->setCompareView(sR.fileCompareMode);
+    }
 }
 
 void AbstractRuleDialog::on_conditionComboBox_currentIndexChanged(const QString &arg1)
@@ -108,8 +109,8 @@ void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
     int rowIndex = index.row();
     rD rDefs;
     SubRule clickedSubRule = subRules.at(rowIndex);
-    conditionBox->setCurrentText(rDefs.fieldConditionToString(clickedSubRule.fieldCondition));
-    conditionBox->currentIndexChanged(rDefs.fieldConditionToString( clickedSubRule.fieldCondition));
+    conditionBox->setCurrentText(rDefs.fileConditionEntityToString(clickedSubRule.fieldCondition));
+    conditionBox->currentIndexChanged(rDefs.fileConditionEntityToString( clickedSubRule.fieldCondition));
 
     updateConditionView(clickedSubRule);
 }
@@ -135,10 +136,10 @@ void AbstractRuleDialog::updateView()
     {
         QStringList headerData;
         SubRule sRule = subRules.at(i);
-        rD::fileConditionRuleEntity condition = sRule.fieldCondition;
+        rD::fileConditionEntity condition = sRule.fieldCondition;
 
-        headerData << rDefs.fieldConditionToString(condition);
-        headerData << rDefs.compareToString(sRule.fileCompareMode);
+        headerData << rDefs.fileConditionEntityToString(condition);
+        headerData << rDefs.fileCompareEntityToString(sRule.fileCompareMode);
 
         if((condition == rD::dateCreatedMode || condition == rD::dateModifiedMode) &&
                 sRule.fileCompareMode != rD::interval)
@@ -172,7 +173,7 @@ void AbstractRuleDialog::updateView()
 void AbstractRuleDialog::on_actionComboBox_currentIndexChanged(const QString &arg1)
 {
     rD rDefs;
-    (rDefs.actionFromString(arg1) == rD::Delete) ?
+    (rDefs.fileActionEntityFromString(arg1) == rD::Delete) ?
                 destinationFrame->hide() :
                 destinationFrame->show();
 }

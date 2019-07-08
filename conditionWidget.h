@@ -38,18 +38,19 @@ private:
     // Editrule related..
 
     void setKeyWords(QString kW);
-    void setConditionalFixedSize(QPair<int,QString>fSize, rD::fileCompareRuleEntity cMode);
+    void setConditionalFixedSize(QPair<int,QString>fSize, rD::fileCompareEntity cMode);
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
-    void setFixedDate(QPair<rD::fileCompareRuleEntity,myDateTime> dt);
+    void setFixedDate(QPair<rD::fileCompareEntity,myDateTime> dt);
     void setIntervalDate(QPair<myDateTime,myDateTime> iDate);
     void setTypeValues(Worker::iteratorMode tMode);
 
     /*
      * General view related..
-     * The following methods is called when selecting conditions and view needs to be updated
+     * The following methods is called whenever a condition is selected and widgets needs to be updated.
      * When that situation occurs, setMode() is called which calls setCurrentView(QString).
      * Setmode initializes the combobox with the necessary content based on the selected condition.
-     * setCurrentView(QString) changes the index of the QStackedWidget and may hides widgets unsuited for the current view.
+     * setCurrentView(QString) changes the index of the QStackedWidget and may hide widgets
+     * unsuited for the current view.
     */
 
     void setMode(QString condition);
@@ -58,7 +59,7 @@ private:
     // Set the index of QStackWidget prior to the argument.
     void setCurrentView(int index);
 
-    void setCompareView(rD::fileCompareRuleEntity compare);
+    void setCompareView(rD::fileCompareEntity compare);
 
     // General values and other..
     void initDefaultOperators();
@@ -68,7 +69,7 @@ private:
 
     // non-void members..
     //  Comparemode
-    rD::fileCompareRuleEntity currentCompareMode();
+    rD::fileCompareEntity currentCompareMode();
     QString currentMode() const {return mainModeSelector->currentText();}
 
 
@@ -80,7 +81,7 @@ private:
     QPair<int,QString> fixedSizeValues() const;
     QPair<QPair<int,QString>,QPair<int,QString>> intervalSizeValues() const;
     // Get Date values..
-    QPair<rD::fileCompareRuleEntity,myDateTime>fixedConditionalDate() const;
+    QPair<rD::fileCompareEntity,myDateTime>fixedConditionalDate() const;
     QPair<myDateTime,myDateTime>intervalDates() const;
     // Get type values..
     Worker::iteratorMode typeMode() const;
@@ -97,7 +98,7 @@ private:
     QPair<int,int>indexRange;
     QSpinBox *fixedSizeSelector,*minIntervalSizeSelector,*maxIntervalSizeSelector;
     QStackedWidget *mainModeView;
-    rD::fileConditionRuleEntity currentFileModeRule;
+    rD::fileConditionEntity currentFileModeRule;
     Ui::conditionWidget *ui;
 
     friend class AbstractRuleDialog;

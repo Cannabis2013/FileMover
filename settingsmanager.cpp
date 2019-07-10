@@ -121,8 +121,8 @@ void settingsManager::readSettings()
     QStringList folders;
     for (int i = 0;i < count;i++)
     {
-        folders << persistenceSettings->value(QString("Folder (%1)").arg(i)).toString();
         persistenceSettings->setArrayIndex(i);
+        folders << persistenceSettings->value(QString("Folder (%1)").arg(i)).toString();
     }
 
     insertPath(folders);
@@ -132,21 +132,20 @@ void settingsManager::readSettings()
 void settingsManager::writeSettings()
 {
     persistenceSettings->beginGroup("Settings");
-
+    persistenceSettings->clear();
     persistenceSettings->setValue("Close on exit", closeOnExit);
     persistenceSettings->setValue("Count timer interval", timerMsec);
     persistenceSettings->setValue("Rules enabled", rulesEnabled);
 
     persistenceSettings->endGroup();
-
     persistenceSettings->beginWriteArray("Watchfolders", mainFolderPaths.count());
 
     for(int i = 0;i < mainFolderPaths.count();i++)
     {
+        persistenceSettings->setArrayIndex(i);
         QString path = mainFolderPaths.at(i);
         QString keyVal = QString("Folder (%1)").arg(i);
         persistenceSettings->setValue(keyVal,path);
-        persistenceSettings->setArrayIndex(i);
     }
     persistenceSettings->endArray();
 }

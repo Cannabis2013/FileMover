@@ -642,11 +642,11 @@ QGroupBox::title
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
+         <item alignment="Qt::AlignHCenter">
           <widget class="QFrame" name="conditionalFrame">
            <property name="minimumSize">
             <size>
-             <width>0</width>
+             <width>384</width>
              <height>0</height>
             </size>
            </property>
@@ -727,7 +727,7 @@ QGroupBox::title
               </property>
               <property name="minimumSize">
                <size>
-                <width>128</width>
+                <width>0</width>
                 <height>0</height>
                </size>
               </property>
@@ -739,11 +739,11 @@ QGroupBox::title
            </layout>
           </widget>
          </item>
-         <item>
+         <item alignment="Qt::AlignHCenter">
           <widget class="QFrame" name="conditionFrame">
            <property name="minimumSize">
             <size>
-             <width>0</width>
+             <width>384</width>
              <height>0</height>
             </size>
            </property>

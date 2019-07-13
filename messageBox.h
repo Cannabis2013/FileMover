@@ -22,7 +22,6 @@ public:
         box.setText(text);
 
         box.setStyleSheet("QMessageBox{background-color: black;border:5px solid black;border-radius:5px;} QLabel{color:white;}");
-
         QPushButton *b1 = box.addButton(but1,rol1);
 
         QPushButton *b2 = nullptr;

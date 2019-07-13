@@ -2,6 +2,8 @@
 #define ADDRULEDIALOG_H
 
 #include "AbstractRuleDialog.h"
+#include "messageBox.h"
+#include <QTranslator>
 
 class AddRuleDialog : public AbstractRuleDialog
 {
@@ -16,6 +18,8 @@ private slots:
     void on_addButton_clicked();
     void on_addSubRule_clicked();
     void on_removeSubRule_clicked();
+
+private:
 };
 
 #endif // ADDRULEDIALOG_H

@@ -75,7 +75,7 @@ QWidget#conditionWidget
      </property>
      <property name="minimumSize">
       <size>
-       <width>128</width>
+       <width>0</width>
        <height>0</height>
       </size>
      </property>

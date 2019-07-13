@@ -543,7 +543,7 @@ void mainWindow::on_delButt_clicked()
     QModelIndex index = watchFolderView->currentIndex();
     if(!index.isValid())
         return;
-    if(messageBox::customBox(this,"Sikker","Er du sikker på du vil slette posten?","Ja","Nej"))
+    if(messageBox::customBox(this,tr("Sikker"),tr("Er du sikker på du vil slette posten DIT KLAMME SVIN?"),tr("Ja"),tr("Nej")))
     {
         QTreeWidgetItem *item = watchFolderView->takeTopLevelItem(index.row());
         QString path = item->text(0);

@@ -23,7 +23,6 @@
 #include <QSystemTrayIcon>
 #include <iostream>
 
-
 #include "messageBox.h"
 #include "myscreendimensions.h"
 #include "fileinformationview.h"

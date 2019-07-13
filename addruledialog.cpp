@@ -65,6 +65,14 @@ void AddRuleDialog::on_removeSubRule_clicked()
 
 void AddRuleDialog::on_addButton_clicked()
 {
+    if(subRuleView->topLevelItemCount() < 1)
+    {
+        if(messageBox::customBox(this,tr("Advarsel"),tr("Du skal opstille nogle betingelser DIN STORE NAR!")))
+        {
+            return;
+        }
+    }
+
     rD rDefs;
     Rule r;
     r.title = titleSelector->text();

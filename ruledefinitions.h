@@ -2,29 +2,23 @@
 #define RULEDEFINITIONS_H
 
 #include <qobject.h>
+
 /*
  * Mappings:
  *      actionMappings<QString,enum>
  *      conditionMappings<QString,enum>
  *      compareMappings<QString,enum>
- */
-
-/*
+ *
  * RuleEntity types:
  *      fileActionEntity
  *      fileConditionEntity
  *      fileCompareEntity
- */
-
-/*
  * fileActionEntity:
  *      Move
  *      Delete
  *      Copy
  *      None
- */
-
-/*
+ *
  *  fileConditionEntities
  *      notDefined
  *      filepathMode
@@ -33,9 +27,7 @@
  *      sizeMode
  *      dateCreatedMode
  *      nonConditionalMode
- */
-
-/*
+ *
  *  fileCompareEntity types categorized:
  *      Date:
  *          youngerThan
@@ -60,9 +52,6 @@
  *          sizeInterval
  *          interval
  *
- */
-
-/*
  *  fileCompareEntities using QLineEdit widgets:
  *      containSuffix
  *      dontContainSuffix
@@ -78,6 +67,7 @@
  *      sizeMode
  *      typeMode
  */
+
 struct ruleDefinitions
 {
     // Enumerated variables..
@@ -146,7 +136,7 @@ struct ruleDefinitions
         QPair<QString,fileCompareEntity>("Indeholder følgende",fileCompareEntity::contains),
                 QPair<QString,fileCompareEntity>("Indeholder ikke følgende",fileCompareEntity::dontMatch),
                 QPair<QString,fileCompareEntity>("Matcher følgende",fileCompareEntity::match),
-                QPair<QString,fileCompareEntity>("Mathcer ikke følgende",fileCompareEntity::dontMatch),
+                QPair<QString,fileCompareEntity>("Matcher ikke følgende",fileCompareEntity::dontMatch),
                 QPair<QString,fileCompareEntity>("Større end",fileCompareEntity::bigger),
                 QPair<QString,fileCompareEntity>("Større eller lig med",fileCompareEntity::biggerOrEqual),
                 QPair<QString,fileCompareEntity>("Lig med",fileCompareEntity::equal),

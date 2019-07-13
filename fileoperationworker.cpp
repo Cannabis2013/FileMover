@@ -511,16 +511,16 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         {
             if(rule.fileCompareMode == rD::interval)
             {
-                if(rule.intervalDate.first > fObject->created() && rule.intervalDate.second < fObject->created())
+                if(rule.intervalDate.first > fObject->birthTime() && rule.intervalDate.second < fObject->birthTime())
                     filesToProcess << fObject;
             }
             else if(rule.fileCompareMode != rD::interval)
             {
-                if(rule.fileCompareMode == rD::youngerThan && rule.fixedDate.second > fObject->created())
+                if(rule.fileCompareMode == rD::youngerThan && rule.fixedDate.second > fObject->birthTime())
                     filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::exactDate && rule.fixedDate.second== fObject->created())
+                else if(rule.fileCompareMode == rD::exactDate && rule.fixedDate.second== fObject->birthTime())
                     filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::olderThan && rule.fixedDate.second < fObject->created())
+                else if(rule.fileCompareMode == rD::olderThan && rule.fixedDate.second < fObject->birthTime())
                     filesToProcess << fObject;
             }
 

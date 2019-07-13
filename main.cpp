@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
 
     processArguments(arguments,argVals);
 
-
     MainApplication *mainApplicaton = new MainApplication(argVals.appName,
                                                           argVals.orgName,
                                                           argVals.testSession);

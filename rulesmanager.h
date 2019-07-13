@@ -40,8 +40,6 @@ signals:
     void stateChanged();
 
 private:
-    void writeRulesToReg();
-
     QList<Rule> ruleslist(){return rules;}
 
     void addRule(const Rule r);

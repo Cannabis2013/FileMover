@@ -32,7 +32,7 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
     applySelector->setCurrentText("Alle");
 
     conditionBox->setCurrentText("Ingen betingelser");
-    conditionBox->currentIndexChanged("Ingen betingelser");
+    conditionBox->currentTextChanged("Ingen betingelser");
 
     fileTypeSelector->addItems(ruleDefs.allFileTypeEntitiesToStrings());
 
@@ -109,7 +109,7 @@ void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
     rD rDefs;
     SubRule clickedSubRule = subRules.at(rowIndex);
     conditionBox->setCurrentText(rDefs.fileConditionEntityToString(clickedSubRule.fieldCondition));
-    conditionBox->currentIndexChanged(rDefs.fileConditionEntityToString( clickedSubRule.fieldCondition));
+    conditionBox->currentTextChanged(rDefs.fileConditionEntityToString( clickedSubRule.fieldCondition));
 
     updateConditionView(clickedSubRule);
 }

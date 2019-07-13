@@ -159,10 +159,10 @@ void rulesManager::readSettings()
         r.typeFilter = static_cast<rD::fileTypeEntity>(persistenceSettings->value("Scan type filter","").toInt());
         r.destinationPath = Worker::splitString(persistenceSettings->value("Destination paths","").toString());
         int count = persistenceSettings->beginReadArray("Subrules");
-        for (int n = 0; n < count; ++n)
+        for (int j = 0; j < count; ++j)
         {
             SubRule sRule;
-            persistenceSettings->setArrayIndex(n);
+            persistenceSettings->setArrayIndex(j);
 
             sRule.copymode = static_cast<rD::copyMode>(persistenceSettings->value("Copymode",0).toInt());
             sRule.fieldCondition = static_cast<rD::fileConditionEntity>(persistenceSettings->value("Condition","").toInt());
@@ -218,10 +218,10 @@ void rulesManager::writeSettings()
         QList<SubRule>sRules = r.subRules;
         int total = sRules.count();
         persistenceSettings->beginWriteArray("Subrules",total);
-        for (int n = 0; n < total; ++n)
+        for (int j = 0; j < total; ++j)
         {
-            SubRule sRule = sRules.at(n);
-            persistenceSettings->setArrayIndex(n);
+            SubRule sRule = sRules.at(j);
+            persistenceSettings->setArrayIndex(j);
 
             persistenceSettings->setValue("Copymode",sRule.copymode);
             persistenceSettings->setValue("Condition",sRule.fieldCondition);
@@ -252,11 +252,6 @@ void rulesManager::writeSettings()
     persistenceSettings->endArray();
 }
 
-void rulesManager::writeRulesToReg()
-{
-
-}
-
 void rulesManager::replaceRule(const Rule r, int index)
 {
     rules.replace(index,r);
@@ -284,7 +279,7 @@ void rulesManager::swapRule(int i, int j)
     if(i < 0 || j < 0)
         throw std::out_of_range("Index out of range");
 
-    rules.swap(i,j);
+    rules.swapItemsAt(i,j);
 
     emit stateChanged();
 }

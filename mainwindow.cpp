@@ -30,7 +30,7 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
     laptopScreenSize = myScreenDimension(0,0,1280,800);
     watchFolderView = ui->WatchFolderView;
     normalListFontSize = 16;
-    screenSize = myScreenDimension(QApplication::desktop()->screenGeometry());
+    screenSize = myScreenDimension(QGuiApplication::screens().at(0)->geometry());
     statusLine = ui->statusLineEdit;
     suffixTree = ui->suffixTree;
     suffixHeader = suffixTree->header();

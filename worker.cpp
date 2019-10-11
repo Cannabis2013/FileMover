@@ -1,4 +1,4 @@
-#include "Worker.h"
+#include "worker.h"
 
 
 QString Worker::checkAndCorrectForBackslash(QString path)

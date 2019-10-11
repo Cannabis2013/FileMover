@@ -4,7 +4,9 @@ FileOperationWorker::FileOperationWorker()
 {
     busyMessage = "Luke Fileworker is busy. Patience my young padawan.";
     isBusy = false;
-    qt_ntfs_permission_lookup++;
+    #ifdef defined (__WIN32__ || __WIN64__)
+        qt_ntfs_permission_lookup++;
+    #endif
 }
 
 bool FileOperationWorker::removeFileItems(const FileObjectList filePaths)

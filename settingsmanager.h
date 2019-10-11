@@ -6,7 +6,7 @@
 #include <QTreeWidgetItem>
 #include "qlist.h"
 #include "abstractpersistence.h"
-#include "myIcon.h"
+#include "myicon.h"
 #include <qdir.h>
 #include <qdiriterator.h>
 #include "settingsdelegate.h"

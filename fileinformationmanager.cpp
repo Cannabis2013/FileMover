@@ -107,7 +107,7 @@ QString FileInformationManager::createTextBrowserHtml(QString path)
                                 "</td>"
                             "</table>"
                         "</body>").arg(fC,dC,tempSize);
-#elif(__MINGW32__)
+#elif(__MINGW32__ || __MINGW64__ || __GNUC__)
     QString pth = dirItem.path != "Not defined" ? dirItem.path : "Ikke defineret",
             textColor = "color:white;",
             resultingHtml = QString(

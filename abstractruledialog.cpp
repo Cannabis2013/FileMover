@@ -1,5 +1,5 @@
-#include "AbstractRuleDialog.h"
-#include "ui_abstractRuledialog.h"
+#include "abstractruledialog.h"
+#include "ui_abstractruledialog.h"
 
 AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
     AbstractFrameImplementable(),

@@ -219,10 +219,13 @@ void mainWindow::explorerMenuTriggered(QAction *xAction)
     if(xAction->text() != "Alle mapper")
     {
         QString txt = xAction->text(),
-        #ifdef Q_OS_WIN32
+        #ifdef defined (Q_OS_WIN32 || __WIN64__)
                 ex = ePath + modifyPath(txt,"\\");
-        #elif defined Q_OS_MAC
+        #elif defined (Q_OS_MAC)
                 ex = ePath + getItemFromList(txt);
+        #elif __GNUC__
+                ex = "";
+                throw "Functionality is limited in linux";
         #else
                 return;
         #endif

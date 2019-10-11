@@ -21,7 +21,7 @@
 #include "customcombobox.h"
 #include "addruledialog.h"
 #include "editruledialog.h"
-#include "myIcon.h"
+#include "myicon.h"
 #include "mainapplication.h"
 #include "customdialog.h"
 

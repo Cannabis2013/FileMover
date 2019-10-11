@@ -3,7 +3,7 @@
 
 #include <qstring.h>
 #include "fileoperationworker.h"
-#include "myIcon.h"
+#include "myicon.h"
 #include "rulesmanager.h"
 #include "settingsdelegate.h"
 #include "myobject.h"

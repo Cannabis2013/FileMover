@@ -37,11 +37,12 @@ TEMPLATE = app
 RC_ICONS = xIcon.ico
 
 SOURCES += main.cpp\
-    AbstractRuleDialog.cpp \
+    abstractruledialog.cpp \
     abstractcoreapplication.cpp \
     abstractframeimplementable.cpp \
     abstractpersistence.cpp \
     abstracttextselectordialog.cpp \
+    conditionwidget.cpp \
     customdialog.cpp \
     customsplitter.cpp \
     customsplitterhandle.cpp \
@@ -63,18 +64,17 @@ SOURCES += main.cpp\
     rulepathselector.cpp \
     addruledialog.cpp \
     editruledialog.cpp \
-    conditionWidget.cpp \
     worker.cpp \
     mywidget.cpp \
     topframeform.cpp
 
 HEADERS  += mainwindow.h \
-    AbstractRuleDialog.h \
-    MyIcon.h \
+    abstractruledialog.h \
     abstractcoreapplication.h \
     abstractframeimplementable.h \
     abstractpersistence.h \
     abstracttextselectordialog.h \
+    conditionwidget.h \
     customcombobox.h \
     customdialog.h \
     customsplitter.h \
@@ -88,8 +88,9 @@ HEADERS  += mainwindow.h \
     filesystemwatcher.h \
     mainapplication.h \
     messageBox.h \
-    myIcon.h \
-    myIcon.h \
+    myicon.h \
+    myicon.h \
+    myicon.h \
     myobject.h \
     rulesmanager.h \
     myscreendimensions.h \
@@ -104,7 +105,6 @@ HEADERS  += mainwindow.h \
     rulepathselector.h \
     addruledialog.h \
     editruledialog.h \
-    conditionWidget.h \
     ruledefinitions.h \
     rules.h \
     worker.h \
@@ -112,13 +112,13 @@ HEADERS  += mainwindow.h \
     topframeform.h
 
 FORMS    += mainwindow.ui \
+    conditionwidget.ui \
     customdialog.ui \
     logger.ui \
     settingswindow.ui \
     textpathedit.ui \
     addfolderwidget.ui \
-    abstractRuledialog.ui \
-    conditionWidget.ui \
+    abstractruledialog.ui \
     filepathselectordialog.ui \
     topframeform.ui
 

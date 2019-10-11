@@ -1,5 +1,5 @@
-#include "conditionWidget.h"
-#include "ui_conditionWidget.h"
+#include "conditionwidget.h"
+#include "ui_conditionwidget.h"
 
 conditionWidget::conditionWidget(QWidget *parent) :
     QWidget(parent),

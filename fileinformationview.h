@@ -55,7 +55,7 @@ private:
     QWebEngineView *view;
     QThread *wThread;
 };
-#elif(__MINGW32__)
+#elif(__MINGW32__ || __MINGW64__ || __GNUC__)
 #include <qtextbrowser.h>
 class fileInformationView : public QWidget
 {

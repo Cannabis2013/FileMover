@@ -1,7 +1,7 @@
 #ifndef ADDRULEDIALOG_H
 #define ADDRULEDIALOG_H
 
-#include "AbstractRuleDialog.h"
+#include "abstractruledialog.h"
 #include "messageBox.h"
 #include <QTranslator>
 

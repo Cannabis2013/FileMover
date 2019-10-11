@@ -1,5 +1,5 @@
 ﻿#include "settingswindow.h"
-#include "ui_settingsWindow.h"
+#include "ui_settingswindow.h"
 
 SettingsWindow::SettingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent):
     AbstractFrameImplementable(parent),

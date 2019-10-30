@@ -1,5 +1,7 @@
 #include "mainapplication.h"
 
+
+
 MainApplication::MainApplication(const QString &appName,
                                  const QString &orgName,
                                  const bool &testSession)
@@ -90,7 +92,7 @@ void MainApplication::clearFolders(QStringList paths)
 
 void MainApplication::clearFoldersAccordingToRules(QStringList paths)
 {
-    QList<Rule>rules = rManager->ruleslist();
+    const QList<Rule>rules = rManager->ruleslist();
     if(rules.isEmpty())
         clearFolders(paths);
     for(Rule r : rules)

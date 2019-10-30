@@ -7,6 +7,8 @@
 #include "abstractcoreapplication.h"
 #include "filesystemwatcher.h"
 
+#define TEST_MODE
+
 class MainApplication : public AbstractCoreApplication
 {
     Q_OBJECT
@@ -73,6 +75,8 @@ private:
     FileInformationManager *fManager;
     FileSystemWatcher *fWatcher;
     QThread *fileWorkerThread;
+
+    friend class Core_functionality;
 };
 
 #endif // MAINAPPLICATION_H

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui testlib
 
 windows {
     *-g++* {
@@ -64,6 +64,7 @@ SOURCES += main.cpp\
     rulepathselector.cpp \
     addruledialog.cpp \
     editruledialog.cpp \
+    tst_core_functionality.cpp \
     worker.cpp \
     mywidget.cpp \
     topframeform.cpp

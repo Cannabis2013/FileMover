@@ -134,7 +134,7 @@ void rulesManager::removeRule(const QString title)
     throw QString("Item not found.");
 }
 
-Rule rulesManager::rule(QString title)
+const Rule rulesManager::rule(QString title)
 {
     for(Rule rule : rules)
     {

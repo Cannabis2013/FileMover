@@ -57,6 +57,7 @@ private:
 };
 #elif(__MINGW32__ || __MINGW64__ || __GNUC__)
 #include <qtextbrowser.h>
+
 class fileInformationView : public QWidget
 {
 public:

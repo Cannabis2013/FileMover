@@ -7,24 +7,22 @@
 
 class FileObject : public QFileInfo
 {
-
 public:
     FileObject(const QString &filePath);
 
     FileObject *parentFolderObject() const;
     void setParentFolderObject(FileObject *const &newParent);
 
-    QList<FileObject*> getChildren() const;
+    QList<FileObject*> children() const;
     void setChildren(const QList<FileObject *> &value);
     void appendChild(FileObject * const &object);
-    bool hasChildren(){return !children.isEmpty();}
+    bool hasChildren(){return !_children.isEmpty();}
 
     const QString parentFolderName();
 
-    QString getFileName() const;
 private:
-    FileObject *parent = nullptr;
-    QList<FileObject*>children;
+    FileObject *_parent = nullptr;
+    QList<FileObject*>_children;
 };
 
 typedef QList<FileObject*> FileObjectList;

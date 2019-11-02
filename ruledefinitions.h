@@ -1,7 +1,7 @@
 #ifndef RULEDEFINITIONS_H
 #define RULEDEFINITIONS_H
 
-#include <QTranslator>
+#include <qlist.h>
 
 /*
  * Mappings:

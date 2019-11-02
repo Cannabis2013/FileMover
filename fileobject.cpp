@@ -7,36 +7,36 @@ FileObject::FileObject(const QString &filePath):
 
 FileObject *FileObject::parentFolderObject() const
 {
-    return parent;
+    return _parent;
 }
 
 void FileObject::setParentFolderObject(FileObject * const &newParent)
 {
-    parent = newParent;
+    _parent = newParent;
 }
 
 
-QList<FileObject *> FileObject::getChildren() const
+QList<FileObject *> FileObject::children() const
 {
-    return children;
+    return _children;
 }
 
 void FileObject::setChildren(const QList<FileObject *> &value)
 {
 
-    children = value;
+    _children = value;
 }
 
 void FileObject::appendChild(FileObject *const &object)
 {
     object->setParentFolderObject(this);
-    children.append(object);
+    _children.append(object);
 }
 
 const QString FileObject::parentFolderName()
 {
-    if(parent != nullptr)
-        return parent->fileName();
+    if(_parent != nullptr)
+        return _parent->fileName();
     else
         return QString();
 }

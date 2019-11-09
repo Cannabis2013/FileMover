@@ -7,7 +7,7 @@
 #include "abstractcoreapplication.h"
 #include "filesystemwatcher.h"
 
-//#define TEST_MODE
+#define TEST_MODE
 
 class MainApplication : public AbstractCoreApplication
 {

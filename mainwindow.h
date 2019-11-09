@@ -30,6 +30,8 @@
 #include "settingswindow.h"
 #include "customdialog.h"
 
+#define TEST_MODE
+
 
 namespace Ui {
 class mainWindow;

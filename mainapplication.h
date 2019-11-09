@@ -75,8 +75,6 @@ private:
     FileInformationManager *fManager;
     FileSystemWatcher *fWatcher;
     QThread *fileWorkerThread;
-
-    friend class Core_functionality;
 };
 
 #endif // MAINAPPLICATION_H

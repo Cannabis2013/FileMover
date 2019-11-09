@@ -4,12 +4,12 @@
 #include <qthread.h>
 #include "settingsmanager.h"
 #include "fileinformationmanager.h"
-#include "abstractcoreapplication.h"
+#include "icoreapplication.h"
 #include "filesystemwatcher.h"
 
 #define TEST_MODE
 
-class MainApplication : public AbstractCoreApplication
+class MainApplication : public ICoreApplication
 {
     Q_OBJECT
 public:

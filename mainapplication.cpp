@@ -51,7 +51,7 @@ MainApplication::MainApplication(const QString &appName,
 
     connect(entityManager,&EntityQueueManager::wakeUpProcess,fWorker,&FileOperationWorker::handleProcessRequest);
 
-    connect(fWorker,&fW::jobDone,this,&AbstractCoreApplication::stateChanged);
+    connect(fWorker,&fW::jobDone,this,&ICoreApplication::stateChanged);
 
     fileWorkerThread->start();
 

@@ -12,6 +12,12 @@ public:
     ~Core_functionality();
 
 private slots:
+
+    // Settings and persistence related
+    void persistence_SettingsManager_Success_1();
+    void persistence_SettingsManager_Success_2();
+
+    // Rule related
     void insert_rule_success_1();
     void insert_rule_fail_1();
     void insert_rule_fail_2();
@@ -33,6 +39,64 @@ Core_functionality::~Core_functionality()
 {
 
 }
+
+void Core_functionality::persistence_SettingsManager_Success_1()
+{
+    // Pre state variables
+    SettingsDelegate preSettings;
+
+    preSettings.closeOnExit = true;
+    preSettings.rulesEnabled = false;
+    preSettings.ruleCountInterval = 15;
+    preSettings.ruleTimerEnabled = true;
+
+    mApp->setSettings(preSettings);
+    delete mApp;
+
+    mApp = new MainApplication("MHTest","MH");
+
+    SettingsDelegate postSettings = mApp->settingsState();
+
+    bool isTrue = true;
+
+    if(preSettings.closeOnExit != postSettings.closeOnExit ||
+            preSettings.rulesEnabled != postSettings.rulesEnabled ||
+            preSettings.ruleTimerEnabled != postSettings.ruleTimerEnabled ||
+            preSettings.ruleCountInterval != postSettings.ruleCountInterval)
+        isTrue = false;
+
+    QVERIFY(isTrue);
+}
+
+void Core_functionality::persistence_SettingsManager_Success_2()
+{
+    // Pre state variables
+    SettingsDelegate preSettings;
+
+    preSettings.closeOnExit = true;
+    preSettings.rulesEnabled = true;
+    preSettings.ruleTimerEnabled = false;
+    preSettings.ruleCountInterval = 0;
+
+    mApp->setSettings(preSettings);
+    delete mApp;
+
+    mApp = new MainApplication("MHTest","MH");
+
+    SettingsDelegate postSettings = mApp->settingsState();
+
+    bool isTrue = true;
+
+    if(preSettings.closeOnExit != postSettings.closeOnExit ||
+            preSettings.rulesEnabled != postSettings.rulesEnabled ||
+            preSettings.ruleTimerEnabled != postSettings.ruleTimerEnabled ||
+            preSettings.ruleCountInterval != postSettings.ruleCountInterval)
+        isTrue = false;
+
+    QVERIFY(isTrue);
+}
+
+
 
 void Core_functionality::insert_rule_success_1()
 {

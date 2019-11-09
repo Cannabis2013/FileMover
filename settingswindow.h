@@ -37,7 +37,7 @@ class SettingsWindow : public AbstractFrameImplementable
     Q_OBJECT
 
 public:
-    explicit SettingsWindow(AbstractCoreApplication *coreApplication, QWidget *parent = nullptr);
+    explicit SettingsWindow(ICoreApplication *coreApplication, QWidget *parent = nullptr);
     SettingsWindow();
     ~SettingsWindow();
 
@@ -119,7 +119,7 @@ private:
     QTreeWidget *rulesView;
     QList<Rule>rules;
     QWidget *mView;
-    AbstractCoreApplication *coreApplication;
+    ICoreApplication *coreApplication;
 
 };
 

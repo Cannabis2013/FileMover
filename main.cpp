@@ -39,9 +39,7 @@ using namespace std;
                                                               argVals.orgName,
                                                               argVals.testSession);
 
-        mainWindow *w = new mainWindow(mainApplicaton,
-                                       argVals.appName,
-                                       argVals.orgName);
+        mainWindow *w = new mainWindow(mainApplicaton);
         w->show();
 
         return a.exec();

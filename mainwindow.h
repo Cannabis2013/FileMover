@@ -35,13 +35,12 @@ namespace Ui {
 class mainWindow;
 }
 
-class mainWindow : public QMainWindow,
-        private AbstractPersistence
+class mainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit mainWindow(AbstractCoreApplication *coreApplication, QString appName, QString orgName);
+    explicit mainWindow(ICoreApplication *coreApplication);
     ~mainWindow();
 
     enum fontType{listFont,detailedList,labelFont,standardFont};
@@ -157,7 +156,7 @@ private:
     // Member variables..
     Ui::mainWindow *ui;
 
-    AbstractCoreApplication *coreApplication;
+    ICoreApplication *coreApplication;
 
     bool countTimerStatus;
     fileInformationView *fileInfoBrowser;

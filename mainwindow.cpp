@@ -1,10 +1,8 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
-                       QString orgName) :
+mainWindow::mainWindow(ICoreApplication *coreApplication) :
     QMainWindow(),
-    AbstractPersistence(appName,orgName),
     ui(new Ui::mainWindow)
 {
     ui->setupUi(this);
@@ -155,14 +153,14 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication,QString appName,
             this,SLOT(tMenuClicked(QAction*)));
     connect(folderTrayMenu,SIGNAL(triggered(QAction*)),
             this,SLOT(explorerMenuTriggered(QAction*)));
-    connect(coreApplication,&AbstractCoreApplication::sendSystemTrayMessage,this,&mainWindow::showSystemMessage);
+    connect(coreApplication,&ICoreApplication::sendSystemTrayMessage,this,&mainWindow::showSystemMessage);
 
-    connect(coreApplication,&AbstractCoreApplication::sendFolderSize,this,&mainWindow::folderContentRecieved);
-    connect(coreApplication,&AbstractCoreApplication::sendStatusMessage,this,&mainWindow::setStatusText);
+    connect(coreApplication,&ICoreApplication::sendFolderSize,this,&mainWindow::folderContentRecieved);
+    connect(coreApplication,&ICoreApplication::sendStatusMessage,this,&mainWindow::setStatusText);
 
     connect(clearStatusTextTimer,&QTimer::timeout,this,&mainWindow::clearStatusLine);
 
-    connect(coreApplication,&AbstractCoreApplication::stateChanged,this,&mainWindow::updateView);
+    connect(coreApplication,&ICoreApplication::stateChanged,this,&mainWindow::updateView);
 
     tray->show();
 
@@ -454,20 +452,14 @@ QString mainWindow::currentMainFolderPath() const
 
 void mainWindow::writeSettings()
 {
-    persistenceSettings->beginGroup("Basic window settings");
-
-    persistenceSettings->setValue("Window geometry",geometry());
-
-    persistenceSettings->endGroup();
+    SettingsDelegate sDelegate = this->coreApplication->settingsState();
+    sDelegate.mainGuiGeometry = geometry();
 }
 
 void mainWindow::readSettings()
 {
-    persistenceSettings->beginGroup("Basic window settings");
-
-    setGeometry(persistenceSettings->value("Window geometry").toRect());
-
-    persistenceSettings->endGroup();
+    SettingsDelegate sDelegate = this->coreApplication->settingsState();
+    setGeometry(sDelegate.mainGuiGeometry);
 }
 
 void mainWindow::showSystemMessage(const QString &title,const QString &msg)
@@ -748,7 +740,7 @@ void mainWindow::on_actionIndstillinger_triggered()
     QPointer<SettingsWindow> sWidget = new SettingsWindow(coreApplication);
     sWidget->setWidgetTitle("Settings and rules");
     QPointer<CustomDialog> dialog = new CustomDialog(sWidget, true);
-    connect(coreApplication,&AbstractCoreApplication::stateChanged,sWidget,&SettingsWindow::updateView);
+    connect(coreApplication,&ICoreApplication::stateChanged,sWidget,&SettingsWindow::updateView);
 
     dialog->show();
 }
@@ -763,7 +755,7 @@ void mainWindow::on_addBut_clicked()
 {
     AddFolderWidget *folderWidget = new AddFolderWidget();
     folderWidget->setWidgetTitle("Add folder dialog");
-    connect(folderWidget,&AddFolderWidget::sendPath,coreApplication,&AbstractCoreApplication::addWatchFolder);
+    connect(folderWidget,&AddFolderWidget::sendPath,coreApplication,&ICoreApplication::addWatchFolder);
     CustomDialog *dialog = new CustomDialog(folderWidget,true);
     dialog->show();
 }

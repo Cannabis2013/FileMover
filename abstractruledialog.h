@@ -20,7 +20,7 @@
 #include "abstracttextselectordialog.h"
 #include "rulepathselector.h"
 #include "conditionwidget.h"
-#include "abstractcoreapplication.h"
+#include "icoreapplication.h"
 #include "abstractframeimplementable.h"
 
 namespace Ui {

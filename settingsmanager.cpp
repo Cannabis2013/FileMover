@@ -5,6 +5,8 @@ settingsManager::settingsManager(const QString &appName, const QString &orgName)
 {
     QList<MyIcon> trayIconList = scanForIcons(ressourceFolder);
 
+    _settings = new SettingsDelegate;
+
     QDir dir;
     if(!dir.exists(ressourceFolder))
         dir.mkdir(ressourceFolder);
@@ -109,11 +111,13 @@ QList<MyIcon> settingsManager::scanForIcons(QString path)
 
 void settingsManager::readSettings()
 {
-    persistenceSettings->beginGroup("Settings");
+    persistenceSettings->beginGroup("Basic settings");
 
-    closeOnExit = persistenceSettings->value("Close on exit",true).toBool();
-    timerMsec = persistenceSettings->value("Count timer interval", 2000).toInt();
-    rulesEnabled = persistenceSettings->value("Rules enabled", false).toBool();
+    _settings->closeOnExit = persistenceSettings->value("Close on exit",true).toBool();
+    _settings->ruleCountInterval = persistenceSettings->value("Count timer interval", 2000).toInt();
+    _settings->rulesEnabled = persistenceSettings->value("Rules enabled", false).toBool();
+    _settings->ruleTimerEnabled = persistenceSettings->value("Timer enabled",false).toBool();
+    _settings->mainGuiGeometry = persistenceSettings->value("Main gui geometry",QRect()).toRect();
 
     persistenceSettings->endGroup();
 
@@ -131,12 +135,13 @@ void settingsManager::readSettings()
 
 void settingsManager::writeSettings()
 {
-    persistenceSettings->beginGroup("Settings");
+    persistenceSettings->beginGroup("Basic settings");
     persistenceSettings->clear();
-    persistenceSettings->setValue("Close on exit", closeOnExit);
-    persistenceSettings->setValue("Count timer interval", timerMsec);
-    persistenceSettings->setValue("Rules enabled", rulesEnabled);
-
+    persistenceSettings->setValue("Close on exit", _settings->closeOnExit);
+    persistenceSettings->setValue("Count timer interval", _settings->ruleCountInterval);
+    persistenceSettings->setValue("Rules enabled", _settings->rulesEnabled);
+    persistenceSettings->setValue("Timer enabled",_settings->ruleTimerEnabled);
+    persistenceSettings->setValue("Main gui geometry",_settings->mainGuiGeometry);
     persistenceSettings->endGroup();
     persistenceSettings->beginWriteArray("Watchfolders", mainFolderPaths.count());
 
@@ -150,21 +155,32 @@ void settingsManager::writeSettings()
     persistenceSettings->endArray();
 }
 
+void settingsManager::setCloseOnExit(bool enable)
+{
+    _settings->closeOnExit = enable;
+}
+
+void settingsManager::setRulesEnabled(bool enable)
+{
+    _settings->rulesEnabled = enable;
+}
+
+void settingsManager::setTimerEnabled(bool enable)
+{
+    _settings->ruleTimerEnabled = enable;
+}
+
+void settingsManager::setTimerInterval(int msec)
+{
+    _settings->ruleCountInterval = msec;
+}
+
 SettingsDelegate settingsManager::settingsState()
 {
-    SettingsDelegate s;
-    s.closeOnExit = closeOnExit;
-    s.ruleTimerEnabled = timerEnabled;
-    s.ruleTimerEnabled = timerMsec;
-    s.rulesEnabled = rulesEnabled;
-
-    return s;
+    return *_settings;
 }
 
 void settingsManager::setSettings(SettingsDelegate s)
 {
-    closeOnExit = s.closeOnExit;
-    timerEnabled = s.ruleTimerEnabled;
-    timerMsec = s.ruleCountInterval;
-    rulesEnabled = s.rulesEnabled;
+    *_settings = s;
 }

@@ -38,7 +38,6 @@ RC_ICONS = xIcon.ico
 
 SOURCES += main.cpp\
     abstractruledialog.cpp \
-    abstractcoreapplication.cpp \
     abstractframeimplementable.cpp \
     abstractpersistence.cpp \
     abstracttextselectordialog.cpp \
@@ -52,6 +51,7 @@ SOURCES += main.cpp\
     fileobject.cpp \
     fileoperationworker.cpp \
     filepathdialogwidget.cpp \
+    icoreapplication.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
     rulesmanager.cpp \
@@ -71,7 +71,6 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     abstractruledialog.h \
-    abstractcoreapplication.h \
     abstractframeimplementable.h \
     abstractpersistence.h \
     abstracttextselectordialog.h \
@@ -87,6 +86,7 @@ HEADERS  += mainwindow.h \
     fileoperationworker.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
+    icoreapplication.h \
     mainapplication.h \
     messageBox.h \
     myicon.h \

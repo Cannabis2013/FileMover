@@ -8,11 +8,11 @@
 #include "settingsdelegate.h"
 #include "myobject.h"
 
-class AbstractCoreApplication : public MyObject
+class ICoreApplication : public MyObject
 {
     Q_OBJECT
 public:
-    virtual ~AbstractCoreApplication();
+    virtual ~ICoreApplication();
 
     virtual QString watchFolder(int index) const = 0;
     virtual QStringList watchFolders() = 0;

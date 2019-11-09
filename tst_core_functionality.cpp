@@ -19,14 +19,11 @@ private slots:
 
 private:
     MainApplication *mApp;
-    settingsManager *sMng;
-
 };
 
 Core_functionality::Core_functionality()
 {
     mApp = new MainApplication("MHTest","MH");
-    sMng = mApp->sManager;
 }
 
 Core_functionality::~Core_functionality()

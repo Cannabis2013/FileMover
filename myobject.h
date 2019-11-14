@@ -52,6 +52,7 @@ public:
     {
         entries << entry;
     }
+
     void extractEntries()
     {
         print("###Extracting string entries###");

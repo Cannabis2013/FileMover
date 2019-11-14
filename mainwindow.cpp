@@ -216,8 +216,9 @@ void mainWindow::explorerMenuTriggered(QAction *xAction)
     QStringList arg;
     if(xAction->text() != "Alle mapper")
     {
+
         QString txt = xAction->text(),
-        #ifdef defined (Q_OS_WIN32 || __WIN64__)
+        #ifdef defined (Q_OS_WIN32 || __WIN64__ || __MINGW64__)
                 ex = ePath + modifyPath(txt,"\\");
         #elif defined (Q_OS_MAC)
                 ex = ePath + getItemFromList(txt);
@@ -454,6 +455,7 @@ void mainWindow::writeSettings()
 {
     SettingsDelegate sDelegate = this->coreApplication->settingsState();
     sDelegate.mainGuiGeometry = geometry();
+    this->coreApplication->setSettings(sDelegate);
 }
 
 void mainWindow::readSettings()

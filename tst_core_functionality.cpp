@@ -3,6 +3,7 @@
 
 #include "mainapplication.h"
 
+#ifdef TEST_MODE
 class Core_functionality : public QObject
 {
     Q_OBJECT
@@ -239,8 +240,9 @@ void Core_functionality::insert_rule_fail_2()
     QVERIFY(!test_state);
 }
 
-#ifdef TEST_MODE
+
     QTEST_MAIN(Core_functionality)
-#endif
 
 #include "tst_core_functionality.moc"
+#endif
+

@@ -238,7 +238,7 @@ QList<QPair<QString, int> > FileOperationWorker::getListOfSuffixOccuriencies(QSt
                      QDirIterator::Subdirectories);
     while(ite.hasNext())
     {
-        QFileInfo i = ite.next();;
+        QFileInfo i = ite.next();
         if(i.isFile())
         {
             if(i.suffix() == "")

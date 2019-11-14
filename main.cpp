@@ -2,6 +2,7 @@
 #include <qapplication.h>
 #include <iostream>
 
+
 using namespace std;
 
 #ifndef TEST_MODE

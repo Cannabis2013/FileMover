@@ -1,7 +1,5 @@
 #include "mainapplication.h"
 
-
-
 MainApplication::MainApplication(const QString &appName,
                                  const QString &orgName,
                                  const bool &testSession)
@@ -85,9 +83,8 @@ void MainApplication::clearFolders(QStringList paths)
                      QString(" | Filename: ") + fObject->fileName() +
                      QString("| Parent folder name: ") + fObject->parentFolderName());
         }
-    }
-    if(isTestSession())
         extractEntries();
+    }
 }
 
 void MainApplication::clearFoldersAccordingToRules(QStringList paths)

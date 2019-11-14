@@ -24,7 +24,7 @@ QMAKE_CXXFLAGS += -std=c++17
 }
 macx
 {
-CONFIG   += C++11
+CONFIG   += C++17
 }
 
 

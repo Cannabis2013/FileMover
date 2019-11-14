@@ -9,12 +9,10 @@ FileOperationWorker::FileOperationWorker()
     #endif
 }
 
-bool FileOperationWorker::removeFileItems(const FileObjectList filePaths)
+bool FileOperationWorker::removeFileItems(const FileObjectList filePaths, QStringList *const err)
 {
     if(filePaths.isEmpty())
-        return false;
-
-    QStringList errs;
+        return true;
 
     for(FileObject* fObject: filePaths)
     {
@@ -24,50 +22,80 @@ bool FileOperationWorker::removeFileItems(const FileObjectList filePaths)
             QFile fileItem(fObject->absoluteFilePath());
             if(!fileItem.remove())
             {
-                errs << "Operation on: " + fObject->fileName() + " in: " +
+                *err << "Operation on: " + fObject->fileName() + " in: " +
                     fObject->absolutePath() + " returned: " + fileItem.errorString();
             }
         }
         else if(fObject->isDir())
         {
-            removeDir(absoluteFilePath,errs);
+            removeFileItems(fObject->children(),err);
+            QDir dir(absoluteFilePath);
+            dir.rmdir(absoluteFilePath);
         }
     }
 
-    if(!errs.isEmpty())
-    {
-        //Do some error handling here!
-    }
     return true;
 }
 
-bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const QStringList destinations)
+bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err)
 {
+
+    // TODO: Implement some error handling when something goes wrong
     bool result = true;
     for(QString destPath : destinations)
     {
+        QDir dir(destPath);
+        if(!dir.exists())
+            dir.mkdir(destPath);
+
         for(FileObject* fObject : fileObjects)
         {
-            if(!moveRecursively(fObject->filePath(),destPath))
-                result = false;
-            else
-                result = false;
+            bool noErrors = true;
+            QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + fObject->fileName();
+            if(fObject->isDir())
+            {
+                noErrors = moveFileItems(fObject->children(),QStringList() << AbsoluteFilePath);
+                result = noErrors ? result : false;
+            }
+            else if(fObject->isFile())
+            {
+                noErrors = QFile::copy(fObject->absoluteFilePath(),AbsoluteFilePath);
+                result = noErrors ? result : false;
+            }
+            else if(!fObject->exists())
+                continue;
+            if(noErrors)
+                removeFileItems(FileObjectList() << fObject);
         }
     }
     return result;
 }
 
-bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const QStringList destinations)
+bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err)
 {
     bool result = true;
     for(QString destPath : destinations)
     {
+        QDir dir(destPath);
+        if(!dir.exists())
+            dir.mkdir(destPath);
+
         for(FileObject* fObject : fileObjects)
         {
-            if(!copyRecursively(fObject->filePath(),destPath))
-                result = false;
-            else
-                result = false;
+            bool noErrors = true;
+            QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + fObject->fileName();
+            if(fObject->isDir())
+            {
+                noErrors = copyFileItems(fObject->children(),QStringList() << AbsoluteFilePath);
+                result = noErrors ? result : false;
+            }
+            else if(fObject->isFile())
+            {
+                noErrors = QFile::copy(fObject->absoluteFilePath(),AbsoluteFilePath);
+                result = noErrors ? result : false;
+            }
+            else if(!fObject->exists())
+                continue;
         }
     }
     return result;
@@ -81,92 +109,6 @@ void FileOperationWorker::processDirectoryCountEntity(EntityModel *entity)
     fObject->setContentSize(folderSize(fInfo.absoluteFilePath()));
 
     emit sendFolderSizeEntity(fObject);
-}
-
-void FileOperationWorker::removeDir(QString &dirName, QStringList &errs)
-{
-    QDir dir(dirName);
-
-    QDirIterator it(dirName,QDir::NoDotAndDotDot |
-                    QDir::System |
-                    QDir::Hidden |
-                    QDir::AllEntries,
-                    QDirIterator::Subdirectories);
-    while(it.hasNext())
-    {
-        QFileInfo fileObject = it.next();
-        if(fileObject.isFile())
-        {
-            QFile file(fileObject.absoluteFilePath());
-            if(!file.remove())
-            {
-                errs << "Operation on: " + file.fileName() + " in: " +
-                    fileObject.absolutePath() + " returned: " + file.errorString();
-            }
-        }
-        else if(fileObject.isDir())
-        {
-            QString filePath = fileObject.absoluteFilePath();
-            removeDir(filePath,errs);
-        }
-    }
-    dir.rmdir(dirName);
-}
-
-bool FileOperationWorker::moveRecursively(QString path, QString destination)
-{
-    bool result = true;
-    QDirIterator iT(path,QDir::NoDotAndDotDot | QDir::AllEntries);
-    QDir dir(destination);
-    if(dir.exists())
-        dir.mkdir(destination);
-    while(iT.hasNext())
-    {
-        bool success = false;
-        QFileInfo fileInfo = iT.next();
-        QString entryName = fileInfo.fileName();
-        QString tempDest = checkAndCorrectForBackslash(destination) + entryName;
-        if(fileInfo.isDir())
-        {
-            QDir iDir = fileInfo.absoluteDir();
-            if(moveRecursively(fileInfo.absoluteFilePath(),tempDest))
-            {
-                iDir.removeRecursively();
-                success = true;
-            }
-            result = success ? result : success;
-        }
-        else if(fileInfo.isFile())
-        {
-            if(QFile::copy(fileInfo.absoluteFilePath(),tempDest))
-            {
-                if(QFile::remove(fileInfo.absoluteFilePath()))
-                    success = true;
-            }
-        }
-        result = success ? result : success;
-    }
-    return result;
-}
-
-bool FileOperationWorker::copyRecursively(QString path, QString destination)
-{
-    bool result = true;
-    QDirIterator iT(path,QDir::NoDotAndDotDot | QDir::AllEntries);
-    QDir dir(destination);
-    if(dir.exists())
-        dir.mkdir(destination);
-    while(iT.hasNext())
-    {
-        QFileInfo fileInfo = iT.next();
-        QString entryName = fileInfo.fileName();
-        QString tempDest = checkAndCorrectForBackslash(destination) + entryName;
-        if(fileInfo.isDir())
-            result = copyRecursively(fileInfo.absoluteFilePath(),tempDest) ? result : false;
-        else if(fileInfo.isFile())
-            result =QFile::copy(fileInfo.absoluteFilePath(),tempDest) ? result : false;
-    }
-    return result;
 }
 
 void FileOperationWorker::processEntity(EntityModel *entity)
@@ -678,6 +620,7 @@ void FileOperationWorker::processFileActionEntity(EntityModel *entity)
     FileActionEntity *item = static_cast<FileActionEntity*>(entity);
     if(item->fileActionRule() == rD::Delete || item->fileActionRule() == rD::none)
     {
+        // TODO: You have to pass an error related stringlist in order to be able to display errors
         removeFileItems(item->directoryFileList());
         processFileInformationEntity(new fileInformationEntity(item->directoryPaths()));
     }
@@ -691,4 +634,3 @@ void FileOperationWorker::processFileActionEntity(EntityModel *entity)
 
     item = nullptr;
 }
-

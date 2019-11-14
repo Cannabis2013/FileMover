@@ -57,9 +57,9 @@ private:
     void processDirectoryCountEntity(EntityModel *entity);
 
     // Fileoperation from QFileinfoList..
-    bool removeFileItems(const FileObjectList filePaths);
-    bool moveFileItems(const FileObjectList fileObjects, const QStringList destinations);
-    bool copyFileItems(const FileObjectList fileObjects, const QStringList destinations);
+    bool removeFileItems(const FileObjectList filePaths, QStringList * const err = nullptr);
+    bool copyFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
+    bool moveFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
 
     // Methods to count files and number of contents in folders
     int folderCount(QString p);
@@ -75,13 +75,6 @@ private:
     // Create a list of treeWidgetItem
 
     QTreeWidgetItem *assembleItemModelsFromPath(QString p);
-
-
-    void removeDir(QString &dirName, QStringList &errs);
-    bool moveRecursively(QString path,
-                         QString destination);
-    bool copyRecursively(QString path,
-                         QString destination);
 
     bool isBusy;
     QString busyMessage;

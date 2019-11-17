@@ -5,6 +5,12 @@
 #include <QDateEdit>
 #include <QDate>
 
+/*
+ * Compare operators related:
+ *  - Bigger is older
+ *  - Lesser is younger
+ */
+
 class myDateTime : public QDateTime
 {
 public:

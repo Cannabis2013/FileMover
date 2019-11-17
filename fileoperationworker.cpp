@@ -4,7 +4,9 @@ FileOperationWorker::FileOperationWorker()
 {
     busyMessage = "Luke Fileworker is busy. Patience my young padawan.";
     isBusy = false;
-    #ifdef defined (__WIN32__ || __WIN64__)
+    #ifdef __WIN32__
+        qt_ntfs_permission_lookup++;
+    #elif __WIN64__
         qt_ntfs_permission_lookup++;
     #endif
 }
@@ -54,18 +56,25 @@ bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const 
             QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + fObject->fileName();
             if(fObject->isDir())
             {
-                noErrors = moveFileItems(fObject->children(),QStringList() << AbsoluteFilePath);
+                noErrors = moveFileItems(fObject->children(),QStringList() << AbsoluteFilePath,err);
                 result = noErrors ? result : false;
             }
             else if(fObject->isFile())
             {
-                noErrors = QFile::copy(fObject->absoluteFilePath(),AbsoluteFilePath);
+                QFile file(fObject->absoluteFilePath());
+                QString errString;
+                noErrors = file.copy(AbsoluteFilePath);
                 result = noErrors ? result : false;
+                if(!noErrors)
+                {
+                    *err << QString("Failed to delete file '%1'. Error provided: %2")
+                            .arg(fObject->fileName()).arg(file.errorString());
+                }
             }
             else if(!fObject->exists())
                 continue;
             if(noErrors)
-                removeFileItems(FileObjectList() << fObject);
+                removeFileItems(FileObjectList() << fObject,err);
         }
     }
     return result;
@@ -73,6 +82,7 @@ bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const 
 
 bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err)
 {
+    // TODO: Implement some error handling when something goes wrong
     bool result = true;
     for(QString destPath : destinations)
     {
@@ -267,10 +277,12 @@ QStringList FileOperationWorker::createHeader(QFileInfo fi)
         QDirIterator i(fi.filePath(),QDirIterator::Subdirectories);
         while(i.hasNext())
             sz += QFile(i.next()).size();
-        headers << directoryName(fi.absoluteFilePath());
-        headers << fi.absoluteFilePath();
-        headers << "";
-        headers << "Mappe";
+
+        headers << directoryName(fi.absoluteFilePath())
+                << fi.absoluteFilePath()
+                << ""
+                << "Mappe";
+
         if(sz <=mp)
             headers << QString::number(fi.size()) + " b";
         else if(sz > mp && sz <mp*mp)
@@ -279,15 +291,17 @@ QStringList FileOperationWorker::createHeader(QFileInfo fi)
             headers << QString::number(sz/(mp*mp)) + " mb";
         else
             headers << QString::number(sz/(mp*mp*mp)) + " gb";
-        headers << fi.lastModified().toString();
-        headers << fi.lastRead().toString();
+
+        headers << fi.lastModified().toString()
+                << fi.lastRead().toString();
     }
     else if(fi.isFile())
     {
-        headers << fi.fileName();
-        headers << fi.absoluteFilePath();
-        headers << fi.suffix();
-        headers << "Fil";
+        headers << fi.fileName()
+                << fi.absoluteFilePath()
+                << fi.suffix()
+                << "Fil";
+
         if(fi.size() <=mp)
             headers << QString::number(fi.size()) + " b";
         else if(fi.size() > mp && fi.size() <mp*mp)
@@ -296,13 +310,20 @@ QStringList FileOperationWorker::createHeader(QFileInfo fi)
             headers << QString::number(fi.size()/(mp*mp)) + " mb";
         else
             headers << QString::number(fi.size()/(mp*mp*mp)) + " gb";
-        headers << fi.lastModified().toString();
-        headers << fi.lastRead().toString();
+
+        headers << fi.lastModified().toString()
+                << fi.lastRead().toString();
     }
     else
     {
 
-        headers << "Filename" << "Filepath" << "Suffix"<< "Type" << "Size" << "Last modified" << "Last read";
+        headers << "Filename"
+                << "Filepath"
+                << "Suffix"
+                << "Type"
+                << "Size"
+                << "Last modified"
+                << "Last read";
     }
     return headers;
 }

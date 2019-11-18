@@ -3,7 +3,6 @@
 
 #include "mainapplication.h"
 
-
 #ifdef TEST_MODE
 class HelperFunctions
 {
@@ -25,11 +24,11 @@ public:
             return false;
         }
 
-        QPair<int,QString> sIntFirst1 = compOne.sizeIntervalLimits.first;
-        QPair<int,QString> sIntSecond1 = compOne.sizeIntervalLimits.second;
+        QPair<int,QString> sIntFirst1 = compOne.sizeInterval.first;
+        QPair<int,QString> sIntSecond1 = compOne.sizeInterval.second;
 
-        QPair<int,QString> sIntFirst2 = compTwo.sizeIntervalLimits.first;
-        QPair<int,QString> sIntSecond2 = compTwo.sizeIntervalLimits.second;
+        QPair<int,QString> sIntFirst2 = compTwo.sizeInterval.first;
+        QPair<int,QString> sIntSecond2 = compTwo.sizeInterval.second;
 
         if(sIntFirst1.first != sIntFirst2.first ||
                 sIntFirst1.second != sIntFirst2.second)
@@ -49,8 +48,8 @@ public:
             return false;
         }
 
-        if(compOne.intervalDate.first != compTwo.intervalDate.first ||
-                compOne.intervalDate.second != compTwo.intervalDate.second)
+        if(compOne.dateInterval.first != compTwo.dateInterval.first ||
+                compOne.dateInterval.second != compTwo.dateInterval.second)
         {
             return false;
         }
@@ -446,7 +445,7 @@ void Core_functionality::insert_rule_sizeinterval_success_1()
     sR.fileCompareMode = rD::interval;
 
     SizeOperand minSize(244,"kb"),maxSize(512,"kb");
-    sR.sizeIntervalLimits = SizeInterval(minSize,maxSize);
+    sR.sizeInterval = SizeInterval(minSize,maxSize);
 
     preRule.subRules << sR;
 
@@ -478,8 +477,8 @@ void Core_functionality::insert_rule_sizeinterval_fail_1()
 
     SizeOperand minSize1(244,"kb"),maxSize1(512,"kb");
     SizeOperand minSize2(384,"kb"),maxSize2(768,"kb");
-    sR1.sizeIntervalLimits = SizeInterval(minSize1,maxSize1);
-    sR2.sizeIntervalLimits = SizeInterval(minSize2,maxSize2);
+    sR1.sizeInterval = SizeInterval(minSize1,maxSize1);
+    sR2.sizeInterval = SizeInterval(minSize2,maxSize2);
 
     preRule.subRules << sR1;
     compareRule.subRules << sR2;

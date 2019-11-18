@@ -79,7 +79,7 @@ void AbstractRuleDialog::updateConditionView(SubRule &sR)
     }
     else if(cond == rD::sizeMode && comp== rD::interval)
     {
-        condWidget->setConditionalIntervalSize(sR.sizeIntervalLimits);
+        condWidget->setConditionalIntervalSize(sR.sizeInterval);
     }
     else if((cond == rD::dateCreatedMode || cond == rD::dateModifiedMode) &&
             comp != rD::interval)
@@ -89,7 +89,7 @@ void AbstractRuleDialog::updateConditionView(SubRule &sR)
     else if((cond == rD::dateCreatedMode || cond == rD::dateModifiedMode) &&
             comp == rD::interval)
     {
-        condWidget->setIntervalDate(sR.intervalDate);
+        condWidget->setIntervalDate(sR.dateInterval);
     }
     else
     {

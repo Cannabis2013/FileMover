@@ -468,15 +468,15 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                     filesToProcess << fObject;
             }
             else if(rule.fileCompareMode == rD::interval &&
-                    fObject->size() >= fW::byteConvert(rule.sizeIntervalLimits.first.first,rule.sizeIntervalLimits.first.second) &&
-                    fObject->size() <= fW::byteConvert(rule.sizeIntervalLimits.second.first,rule.sizeIntervalLimits.second.second))
+                    fObject->size() >= fW::byteConvert(rule.sizeInterval.first.first,rule.sizeInterval.first.second) &&
+                    fObject->size() <= fW::byteConvert(rule.sizeInterval.second.first,rule.sizeInterval.second.second))
                 filesToProcess << fObject;
         }
         else if(rule.fieldCondition == rD::dateCreatedMode)
         {
             if(rule.fileCompareMode == rD::interval)
             {
-                if(rule.intervalDate.first > fObject->birthTime() && rule.intervalDate.second < fObject->birthTime())
+                if(rule.dateInterval.first > fObject->birthTime() && rule.dateInterval.second < fObject->birthTime())
                     filesToProcess << fObject;
             }
             else if(rule.fileCompareMode != rD::interval)
@@ -494,7 +494,7 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         {
             if(rule.fileCompareMode == rD::interval)
             {
-                if(rule.intervalDate.first > fObject->lastModified() && rule.intervalDate.second < fObject->lastModified())
+                if(rule.dateInterval.first > fObject->lastModified() && rule.dateInterval.second < fObject->lastModified())
                     filesToProcess << fObject;
             }
             else if(rule.fileCompareMode != rD::interval)

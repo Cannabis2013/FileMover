@@ -14,9 +14,9 @@ struct SubRule
     rD::fileConditionEntity fieldCondition = rD::nonConditionalMode;
 
     QPair<int,QString>sizeLimit;
-    QPair<QPair<int,QString>,QPair<int,QString>> sizeIntervalLimits;
+    QPair<QPair<int,QString>,QPair<int,QString>> sizeInterval;
     QPair<rD::fileCompareEntity,myDateTime>fixedDate;
-    QPair<myDateTime,myDateTime>intervalDate;
+    QPair<myDateTime,myDateTime>dateInterval;
     bool matchWholeWords = false;
     QStringList keyWords;
 };

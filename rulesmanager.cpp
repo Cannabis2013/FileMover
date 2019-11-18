@@ -64,18 +64,18 @@ QString rulesManager::ruleKeyWordToString(SubRule sRule)
 
 QString rulesManager::ruleSizeLimitsToString(SubRule sRule)
 {
-    QString minSize = QString::number(sRule.sizeIntervalLimits.first.first),
-            maxSize = QString::number(sRule.sizeIntervalLimits.second.first);
-    QString sizeUnitMin = sRule.sizeIntervalLimits.first.second,
-            sizeUnitMax = sRule.sizeIntervalLimits.second.second;
+    QString minSize = QString::number(sRule.sizeInterval.first.first),
+            maxSize = QString::number(sRule.sizeInterval.second.first);
+    QString sizeUnitMin = sRule.sizeInterval.first.second,
+            sizeUnitMax = sRule.sizeInterval.second.second;
     return "Min: " + minSize + " " + sizeUnitMin
             + " " + "max: " + maxSize + " " + sizeUnitMax;
 }
 
 QString rulesManager::ruleDateLimitsToString(SubRule sRule)
 {
-    QString startDate = sRule.intervalDate.first.date().toString("dd.MM.yyyy"),
-            endDate = sRule.intervalDate.second.date().toString("dd.MM.yyyy");
+    QString startDate = sRule.dateInterval.first.date().toString("dd.MM.yyyy"),
+            endDate = sRule.dateInterval.second.date().toString("dd.MM.yyyy");
     return "Start dato: " + startDate + " slut dato: " + endDate;
 }
 
@@ -175,18 +175,18 @@ void rulesManager::readSettings()
             sRule.sizeLimit.second = persistenceSettings->value("Sizelimitunit","kb").toString();
 
             persistenceSettings->beginGroup("Sizelimits");
-            sRule.sizeIntervalLimits.first.first = persistenceSettings->value("Minsizeinterval",0).toInt();
-            sRule.sizeIntervalLimits.first.second = persistenceSettings->value("Minsizeunitinterval","kb").toString();
-            sRule.sizeIntervalLimits.second.first = persistenceSettings->value("Maxsizeinterval",0).toInt();
-            sRule.sizeIntervalLimits.second.second = persistenceSettings->value("Maxsizeunitinterval","kb").toString();
+            sRule.sizeInterval.first.first = persistenceSettings->value("Minsizeinterval",0).toInt();
+            sRule.sizeInterval.first.second = persistenceSettings->value("Minsizeunitinterval","kb").toString();
+            sRule.sizeInterval.second.first = persistenceSettings->value("Maxsizeinterval",0).toInt();
+            sRule.sizeInterval.second.second = persistenceSettings->value("Maxsizeunitinterval","kb").toString();
             persistenceSettings->endGroup();
 
             sRule.fixedDate.first = static_cast<rD::fileCompareEntity>(persistenceSettings->value("Comparemode",0).toInt());
             sRule.fixedDate.second = QDateTime::fromString(persistenceSettings->value("Datetime","").toString(),"dd.MM.yyyy");
 
             persistenceSettings->beginGroup("Datelimits");
-            sRule.intervalDate.first = myDateTime::fromString(persistenceSettings->value("Startdate","01.01.2000").toString());
-            sRule.intervalDate.second = myDateTime::fromString(persistenceSettings->value("Enddate","01.01.2000").toString());
+            sRule.dateInterval.first = myDateTime::fromString(persistenceSettings->value("Startdate","01.01.2000").toString());
+            sRule.dateInterval.second = myDateTime::fromString(persistenceSettings->value("Enddate","01.01.2000").toString());
             persistenceSettings->endGroup();
 
             r.subRules.append(sRule);
@@ -234,17 +234,17 @@ void rulesManager::writeSettings()
             persistenceSettings->setValue("Sizelimitunit",sRule.sizeLimit.second);
 
             persistenceSettings->beginGroup("Sizelimits");
-            persistenceSettings->setValue("Minsizeinterval",sRule.sizeIntervalLimits.first.first);
-            persistenceSettings->setValue("Minsizeunitinterval",sRule.sizeIntervalLimits.first.second);
-            persistenceSettings->setValue("Maxsizeinterval",sRule.sizeIntervalLimits.second.first);
-            persistenceSettings->setValue("Maxsizeunitinterval",sRule.sizeIntervalLimits.second.second);
+            persistenceSettings->setValue("Minsizeinterval",sRule.sizeInterval.first.first);
+            persistenceSettings->setValue("Minsizeunitinterval",sRule.sizeInterval.first.second);
+            persistenceSettings->setValue("Maxsizeinterval",sRule.sizeInterval.second.first);
+            persistenceSettings->setValue("Maxsizeunitinterval",sRule.sizeInterval.second.second);
             persistenceSettings->endGroup();
 
             persistenceSettings->setValue("Datetime",sRule.fixedDate.second.toString("dd.MM.yyyy"));
 
             persistenceSettings->beginGroup("Datelimits");
-            persistenceSettings->setValue("Startdate",sRule.intervalDate.first.toString("dd.MM.yyyy"));
-            persistenceSettings->setValue("Enddate",sRule.intervalDate.second.toString("dd.MM.yyyy"));
+            persistenceSettings->setValue("Startdate",sRule.dateInterval.first.toString("dd.MM.yyyy"));
+            persistenceSettings->setValue("Enddate",sRule.dateInterval.second.toString("dd.MM.yyyy"));
             persistenceSettings->endGroup();
         }
         persistenceSettings->endArray();

@@ -37,7 +37,7 @@ void AddRuleDialog::on_addSubRule_clicked()
     else if(conMode == rD::sizeMode &&
             currentCompareMode == rD::interval)
     {
-        sRule.sizeIntervalLimits = condWidget->intervalSizeValues();
+        sRule.sizeInterval = condWidget->intervalSizeValues();
     }
     else if((conMode == rD::dateCreatedMode ||
              conMode == rD::dateModifiedMode) &&
@@ -49,7 +49,7 @@ void AddRuleDialog::on_addSubRule_clicked()
              conMode == rD::dateModifiedMode) &&
             currentCompareMode == rD::interval)
     {
-        sRule.intervalDate = condWidget->intervalDates();
+        sRule.dateInterval = condWidget->intervalDates();
     }
     subRules << sRule;
     updateView();

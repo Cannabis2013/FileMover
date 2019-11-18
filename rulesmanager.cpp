@@ -53,7 +53,7 @@ QString rulesManager::ruleKeyWordToString(SubRule sRule)
         return rulesManager::ruleSizeLimitsToString(sRule);
     else if((sRule.fieldCondition == rD::dateCreatedMode || sRule.fieldCondition == rD::dateModifiedMode) &&
             sRule.fileCompareMode != rD::interval)
-        return sRule.fixedDate.second.toString("dd.MM.yyyy");
+        return sRule.date.toString("dd.MM.yyyy");
     else if((sRule.fieldCondition == rD::dateCreatedMode || sRule.fieldCondition == rD::dateModifiedMode) &&
             sRule.fileCompareMode == rD::interval)
         return rulesManager::ruleDateLimitsToString(sRule);
@@ -74,8 +74,8 @@ QString rulesManager::ruleSizeLimitsToString(SubRule sRule)
 
 QString rulesManager::ruleDateLimitsToString(SubRule sRule)
 {
-    QString startDate = sRule.dateInterval.first.date().toString("dd.MM.yyyy"),
-            endDate = sRule.dateInterval.second.date().toString("dd.MM.yyyy");
+    QString startDate = sRule.dateIntervals.first.date().toString("dd.MM.yyyy"),
+            endDate = sRule.dateIntervals.second.date().toString("dd.MM.yyyy");
     return "Start dato: " + startDate + " slut dato: " + endDate;
 }
 
@@ -181,12 +181,11 @@ void rulesManager::readSettings()
             sRule.sizeInterval.second.second = persistenceSettings->value("Maxsizeunitinterval","kb").toString();
             persistenceSettings->endGroup();
 
-            sRule.fixedDate.first = static_cast<rD::fileCompareEntity>(persistenceSettings->value("Comparemode",0).toInt());
-            sRule.fixedDate.second = QDateTime::fromString(persistenceSettings->value("Datetime","").toString(),"dd.MM.yyyy");
+            sRule.date = QDateTime::fromString(persistenceSettings->value("Datetime","").toString(),"dd.MM.yyyy");
 
             persistenceSettings->beginGroup("Datelimits");
-            sRule.dateInterval.first = myDateTime::fromString(persistenceSettings->value("Startdate","01.01.2000").toString());
-            sRule.dateInterval.second = myDateTime::fromString(persistenceSettings->value("Enddate","01.01.2000").toString());
+            sRule.dateIntervals.first = myDateTime::fromString(persistenceSettings->value("Startdate","01.01.2000").toString());
+            sRule.dateIntervals.second = myDateTime::fromString(persistenceSettings->value("Enddate","01.01.2000").toString());
             persistenceSettings->endGroup();
 
             r.subRules.append(sRule);
@@ -240,11 +239,11 @@ void rulesManager::writeSettings()
             persistenceSettings->setValue("Maxsizeunitinterval",sRule.sizeInterval.second.second);
             persistenceSettings->endGroup();
 
-            persistenceSettings->setValue("Datetime",sRule.fixedDate.second.toString("dd.MM.yyyy"));
+            persistenceSettings->setValue("Datetime",sRule.date.toString("dd.MM.yyyy"));
 
             persistenceSettings->beginGroup("Datelimits");
-            persistenceSettings->setValue("Startdate",sRule.dateInterval.first.toString("dd.MM.yyyy"));
-            persistenceSettings->setValue("Enddate",sRule.dateInterval.second.toString("dd.MM.yyyy"));
+            persistenceSettings->setValue("Startdate",sRule.dateIntervals.first.toString("dd.MM.yyyy"));
+            persistenceSettings->setValue("Enddate",sRule.dateIntervals.second.toString("dd.MM.yyyy"));
             persistenceSettings->endGroup();
         }
         persistenceSettings->endArray();

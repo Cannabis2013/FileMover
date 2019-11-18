@@ -194,7 +194,7 @@ void mainWindow::keyPressEvent(QKeyEvent *kE)
 
 void mainWindow::keyReleaseEvent(QKeyEvent *kR)
 {
-    Q_UNUSED(kR);
+    Q_UNUSED(kR)
     tempKey = 0;
 }
 
@@ -218,7 +218,7 @@ void mainWindow::explorerMenuTriggered(QAction *xAction)
     {
 
         QString txt = xAction->text(),
-        #ifdef Q_OS_WIN32 || __WIN64__ || __MINGW64__
+        #ifdef __MINGW64__
                 ex = ePath + modifyPath(txt,"\\");
         #elif Q_OS_MAC
                 ex = ePath + getItemFromList(txt);
@@ -311,7 +311,7 @@ void mainWindow::clearMenuTriggered(QAction *clAction)
 
 void mainWindow::explorerFolder(bool ok)
 {
-    Q_UNUSED(ok);
+    Q_UNUSED(ok)
     int r = watchFolderView->currentIndex().row();
     QStringList list = coreApplication->watchFolders();
 #ifdef Q_OS_MAC
@@ -334,7 +334,7 @@ void mainWindow::explorerFolder(bool ok)
 
 void mainWindow::actionCountFolder(bool f)
 {
-    Q_UNUSED(f);
+    Q_UNUSED(f)
     if(watchFolderView->topLevelItemCount() == 0)
         return;
     QStringList list {currentMainFolderPath()};
@@ -361,7 +361,7 @@ void mainWindow::detailedFolderMenuCalled(QPoint p)
 
 void mainWindow::openFolder(bool ok)
 {
-    Q_UNUSED(ok);
+    Q_UNUSED(ok)
 
     auto g = [](QString a)->QString
     {
@@ -612,26 +612,26 @@ QFileInfoList mainWindow::fileItemList(const QStringList paths) const
 
 QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QTreeWidget *sTree, const int column, Qt::SortOrder sortMode) const
 {
-    int total = sTree->topLevelItemCount();
+    unsigned long long total = static_cast<unsigned long long>(sTree->topLevelItemCount());
     QHeaderView *sufHeader = sTree->header();
     QTreeWidgetItem* unSortetItems = new QTreeWidgetItem[total],
             *sortetItems = new QTreeWidgetItem[total];
     // Initializing the unsortet array
-    for (int var = 0; var < total; ++var)
+    for (unsigned long long var = 0; var < total; ++var)
     {
-        QTreeWidgetItem *sItem = sTree->topLevelItem(var);
+        QTreeWidgetItem *sItem = sTree->topLevelItem(static_cast<int>(var));
         QTreeWidgetItem nItem;
         nItem.setText(0,sItem->text(0));
         nItem.setText(1,sItem->text(1));
         unSortetItems[var] = nItem;
     }
     sTree->clear();
-    for (int var = 0; var < total; ++var)
+    for (unsigned long long var = 0; var < total; ++var)
     {
         QTreeWidgetItem item = unSortetItems[var];
         int index = 0,
             value = item.text(column).toInt();
-        for (int i = 0; i < total; i++)
+        for (unsigned long long i = 0; i < total; i++)
         {
             int compareValue = unSortetItems[i].text(column).toInt();
             if(sortMode != Qt::AscendingOrder)
@@ -661,7 +661,7 @@ QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QTreeWidget *sTree, const int 
     }
 
     QList<QTreeWidgetItem*>resultingSuffixes;
-    for (int var = 0; var < total; ++var)
+    for (unsigned long long var = 0; var < total; ++var)
     {
         QTreeWidgetItem item = sortetItems[var];
         QTreeWidgetItem *dupeItem = new QTreeWidgetItem;
@@ -786,7 +786,7 @@ void mainWindow::updateView()
 
 void mainWindow::on_detailView_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
-    Q_UNUSED(column);
+    Q_UNUSED(column)
     if(item->childCount() >0)
         return;
 

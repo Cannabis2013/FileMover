@@ -476,16 +476,16 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         {
             if(rule.fileCompareMode == rD::interval)
             {
-                if(rule.dateInterval.first > fObject->birthTime() && rule.dateInterval.second < fObject->birthTime())
+                if(rule.dateIntervals.first > fObject->birthTime() && rule.dateIntervals.second < fObject->birthTime())
                     filesToProcess << fObject;
             }
             else if(rule.fileCompareMode != rD::interval)
             {
-                if(rule.fileCompareMode == rD::youngerThan && rule.fixedDate.second > fObject->birthTime())
+                if(rule.fileCompareMode == rD::youngerThan && rule.date > fObject->birthTime())
                     filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::exactDate && rule.fixedDate.second== fObject->birthTime())
+                else if(rule.fileCompareMode == rD::exactDate && rule.date == fObject->birthTime())
                     filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::olderThan && rule.fixedDate.second < fObject->birthTime())
+                else if(rule.fileCompareMode == rD::olderThan && rule.date < fObject->birthTime())
                     filesToProcess << fObject;
             }
 
@@ -494,16 +494,16 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         {
             if(rule.fileCompareMode == rD::interval)
             {
-                if(rule.dateInterval.first > fObject->lastModified() && rule.dateInterval.second < fObject->lastModified())
+                if(rule.dateIntervals.first > fObject->lastModified() && rule.dateIntervals.second < fObject->lastModified())
                     filesToProcess << fObject;
             }
             else if(rule.fileCompareMode != rD::interval)
             {
-                if(rule.fileCompareMode == rD::youngerThan && rule.fixedDate.second > fObject->lastModified())
+                if(rule.fileCompareMode == rD::youngerThan && rule.date > fObject->lastModified())
                     filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::exactDate && rule.fixedDate.second == fObject->lastModified())
+                else if(rule.fileCompareMode == rD::exactDate && rule.date == fObject->lastModified())
                     filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::olderThan && rule.fixedDate.second < fObject->lastModified())
+                else if(rule.fileCompareMode == rD::olderThan && rule.date < fObject->lastModified())
                     filesToProcess << fObject;
             }
         }

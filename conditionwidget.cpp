@@ -74,16 +74,11 @@ void conditionWidget::setConditionalIntervalSize(QPair<QPair<int, QString>, QPai
     ui->sizeIntervalMaxUnit->setCurrentText(maxSize.second);
 }
 
-void conditionWidget::setFixedDate(QPair<ruleDefinitions::fileCompareEntity, myDateTime> dt)
+void conditionWidget::setFixedDate(myDateTime &dateTime)
 {
-    rD::fileCompareEntity cM = dt.first;
-    myDateTime dateTime = dt.second;
-
     rD rDefs;
     ui->modeSelector->setCurrentText(rDefs.intervalConditionalList.at(0));
-
     ui->dateFixedSelector->setDate(dateTime.date());
-    dateOperatorSelector->setCurrentText(rDefs.fileCompareEntityToString(cM));
 }
 
 void conditionWidget::setIntervalDate(QPair<myDateTime, myDateTime> iDate)
@@ -299,19 +294,10 @@ QPair<QPair<int, QString>, QPair<int, QString> > conditionWidget::intervalSizeVa
     return result;
 }
 
-QPair<ruleDefinitions::fileCompareEntity, myDateTime> conditionWidget::fixedConditionalDate() const
+myDateTime conditionWidget::fixedConditionalDate() const
 {
-    rD rDefs;
-    QPair<ruleDefinitions::fileCompareEntity, myDateTime> result;
-    QString dateOperator = dateOperatorSelector->currentText();
-    rD::fileCompareEntity compareOperator = rDefs.fileCompareEntityFromString(dateOperator);
-
     QDateTime dt = ui->dateFixedSelector->dateTime();
-    myDateTime mDate(dt);
-    result.first = compareOperator;
-    result.second = mDate;
-
-    return result;
+    return myDateTime(dt);
 }
 
 QPair<myDateTime, myDateTime> conditionWidget::intervalDates() const

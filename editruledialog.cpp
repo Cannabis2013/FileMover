@@ -62,13 +62,13 @@ void EditRuleDialog::on_addSubRule_clicked()
              conMode == rD::dateModifiedMode) &&
             currentCompareMode != rD::interval)
     {
-        sRule.fixedDate = condWidget->fixedConditionalDate();
+        sRule.date = condWidget->fixedConditionalDate();
     }
     else if((conMode == rD::dateCreatedMode ||
              conMode == rD::dateModifiedMode) &&
             currentCompareMode == rD::interval)
     {
-        sRule.dateInterval = condWidget->intervalDates();
+        sRule.dateIntervals = condWidget->intervalDates();
     }
     subRules << sRule;
     updateView();

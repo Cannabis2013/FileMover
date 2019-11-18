@@ -84,12 +84,13 @@ void AbstractRuleDialog::updateConditionView(SubRule &sR)
     else if((cond == rD::dateCreatedMode || cond == rD::dateModifiedMode) &&
             comp != rD::interval)
     {
-        condWidget->setFixedDate(sR.fixedDate);
+        condWidget->setFixedDate(sR.date);
+        condWidget->setCompareView(sR.fileCompareMode);
     }
     else if((cond == rD::dateCreatedMode || cond == rD::dateModifiedMode) &&
             comp == rD::interval)
     {
-        condWidget->setIntervalDate(sR.dateInterval);
+        condWidget->setIntervalDate(sR.dateIntervals);
     }
     else
     {
@@ -116,13 +117,13 @@ void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 
 void AbstractRuleDialog::closeEvent(QCloseEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
     emit destroyed();
 }
 
 void AbstractRuleDialog::resizeEvent(QSize newSize)
 {
-    Q_UNUSED(newSize);
+    Q_UNUSED(newSize)
 }
 
 

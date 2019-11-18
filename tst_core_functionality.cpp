@@ -42,14 +42,13 @@ public:
             return false;
         }
 
-        if(compOne.fixedDate.first != compTwo.fixedDate.first ||
-                compOne.fixedDate.second != compTwo.fixedDate.second)
+        if(compOne.date != compTwo.date)
         {
             return false;
         }
 
-        if(compOne.dateInterval.first != compTwo.dateInterval.first ||
-                compOne.dateInterval.second != compTwo.dateInterval.second)
+        if(compOne.dateIntervals.first != compTwo.dateIntervals.first ||
+                compOne.dateIntervals.second != compTwo.dateIntervals.second)
         {
             return false;
         }
@@ -323,7 +322,7 @@ void Core_functionality::insert_rule_datecreated_before_succes1()
 
     sR.fieldCondition = rD::dateCreatedMode;
     sR.fileCompareMode = rD::olderThan;
-    sR.fixedDate = QPair<rD::fileCompareEntity,myDateTime>(rD::olderThan,mDate);
+    sR.date = mDate;
 
     preRule.subRules << sR;
 
@@ -349,7 +348,7 @@ void Core_functionality::insert_rule_datecreated_after_succes1()
 
     sR.fieldCondition = rD::dateCreatedMode;
     sR.fileCompareMode = rD::youngerThan;
-    sR.fixedDate = QPair<rD::fileCompareEntity,myDateTime>(rD::youngerThan,mDate);
+    sR.date = mDate;
 
     preRule.subRules << sR;
 
@@ -378,13 +377,13 @@ void Core_functionality::insert_rule_datecreated_before_fail1()
 
     sR1.fieldCondition = rD::dateCreatedMode;
     sR1.fileCompareMode = rD::olderThan;
-    sR1.fixedDate = QPair<rD::fileCompareEntity,myDateTime>(rD::olderThan,originalDate);
+    sR1.date = originalDate;
 
     preRule.subRules << sR1;
 
     sR2.fieldCondition = rD::dateCreatedMode;
     sR2.fileCompareMode = rD::olderThan;
-    sR2.fixedDate = QPair<rD::fileCompareEntity,myDateTime>(rD::olderThan,compareDate);
+    sR2.date = compareDate;
 
     compareRule.subRules << sR2;
 
@@ -413,13 +412,13 @@ void Core_functionality::insert_rule_datecreated_before_fail2()
 
     sR1.fieldCondition = rD::dateCreatedMode;
     sR1.fileCompareMode = rD::olderThan;
-    sR1.fixedDate = QPair<rD::fileCompareEntity,myDateTime>(rD::olderThan,originalDate);
+    sR1.date = originalDate;
 
     preRule.subRules << sR1;
 
     sR2.fieldCondition = rD::dateCreatedMode;
     sR2.fileCompareMode = rD::youngerThan;
-    sR2.fixedDate = QPair<rD::fileCompareEntity,myDateTime>(rD::olderThan,originalDate);
+    sR2.date = originalDate;
 
     compareRule.subRules << sR2;
 

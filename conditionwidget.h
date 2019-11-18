@@ -40,7 +40,7 @@ private:
     void setKeyWords(QString kW);
     void setConditionalFixedSize(QPair<int,QString>fSize, rD::fileCompareEntity cMode);
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
-    void setFixedDate(QPair<rD::fileCompareEntity,myDateTime> dt);
+    void setFixedDate(myDateTime &dateTime);
     void setIntervalDate(QPair<myDateTime,myDateTime> iDate);
     void setTypeValues(Worker::iteratorMode tMode);
 
@@ -81,7 +81,7 @@ private:
     QPair<int,QString> fixedSizeValues() const;
     QPair<QPair<int,QString>,QPair<int,QString>> intervalSizeValues() const;
     // Get Date values..
-    QPair<rD::fileCompareEntity,myDateTime>fixedConditionalDate() const;
+    myDateTime fixedConditionalDate() const;
     QPair<myDateTime,myDateTime>intervalDates() const;
     // Get type values..
     Worker::iteratorMode typeMode() const;

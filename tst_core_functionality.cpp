@@ -3,7 +3,88 @@
 
 #include "mainapplication.h"
 
+
 #ifdef TEST_MODE
+class HelperFunctions
+{
+public:
+    static bool SubRuleEquals(const SubRule &compOne, const SubRule &compTwo)
+    {
+        if(compOne.copymode != compTwo.copymode ||
+                compOne.fileCompareMode != compTwo.fileCompareMode ||
+                compOne.fieldCondition != compTwo.fieldCondition ||
+                compOne.matchWholeWords != compTwo.matchWholeWords ||
+                compOne.keyWords != compTwo.keyWords)
+        {
+            return false;
+        }
+
+        if(compOne.sizeLimit.first != compTwo.sizeLimit.first ||
+                compOne.sizeLimit.second != compTwo.sizeLimit.second)
+        {
+            return false;
+        }
+
+        QPair<int,QString> sIntFirst1 = compOne.sizeIntervalLimits.first;
+        QPair<int,QString> sIntSecond1 = compOne.sizeIntervalLimits.second;
+
+        QPair<int,QString> sIntFirst2 = compTwo.sizeIntervalLimits.first;
+        QPair<int,QString> sIntSecond2 = compTwo.sizeIntervalLimits.second;
+
+        if(sIntFirst1.first != sIntFirst2.first ||
+                sIntFirst1.second != sIntFirst2.second)
+        {
+            return false;
+        }
+
+        if(sIntSecond1.first != sIntSecond2.first ||
+                sIntSecond1.second != sIntSecond2.second)
+        {
+            return false;
+        }
+
+        if(compOne.fixedDate.first != compTwo.fixedDate.first ||
+                compOne.fixedDate.second != compTwo.fixedDate.second)
+        {
+            return false;
+        }
+
+        if(compOne.intervalDate.first != compTwo.intervalDate.first ||
+                compOne.intervalDate.second != compTwo.intervalDate.second)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    static bool SubRuleNotEqual(const SubRule &compOne, const SubRule &compTwo)
+    {
+        return !SubRuleEquals(compOne,compTwo);
+    }
+
+    static bool RuleEquals(const Rule &compOne, const Rule &compTwo)
+    {
+        if(compOne.title != compTwo.title ||
+                compOne.typeFilter != compTwo.typeFilter ||
+                compOne.actionRuleEntity != compTwo.actionRuleEntity ||
+                compOne.destinationPath != compTwo.destinationPath ||
+                compOne.appliesToPath != compTwo.appliesToPath ||
+                compOne.deepScanMode != compTwo.deepScanMode)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < compOne.subRules.count(); ++i) {
+            SubRule sR1 = compOne.subRules.at(i), sR2 = compTwo.subRules.at(i);
+
+            if(!SubRuleEquals(sR1,sR2))
+                return false;
+        }
+        return true;
+    }
+};
+
 class Core_functionality : public QObject
 {
     Q_OBJECT
@@ -29,6 +110,8 @@ private slots:
     void insert_rule_datecreated_after_succes1();
     void insert_rule_datecreated_before_fail1();
     void insert_rule_datecreated_before_fail2();
+    void insert_rule_sizeinterval_success_1();
+    void insert_rule_sizeinterval_fail_1();
 
 private:
     MainApplication *mApp;
@@ -106,59 +189,58 @@ void Core_functionality::insert_rule_filepath_match_success_1()
 {
     // Pre-state variables
 
-    QString preAPath = "/testpath", preTitle = "Test";
+    QString preAPath = "/testpath", preTitle = "Test1";
     QStringList prekWrds = QStringList() << "T1" << "T2";
     rD::fileConditionEntity preCond = rD::filepathMode;
     rD::fileCompareEntity preComp = rD::match;
-    Rule r;
+    Rule preRule;
 
     // Initialize pre-state
 
-    r.title = preTitle;
+    preRule.title = preTitle;
     SubRule sR;
-    r.appliesToPath = preAPath;
+    preRule.appliesToPath = preAPath;
     sR.keyWords = prekWrds;
     sR.fieldCondition = preCond;
     sR.fileCompareMode = preComp;
 
-    r.subRules << sR;
+    preRule.subRules << sR;
 
-    mApp->insertRule(r);
+    mApp->insertRule(preRule);
 
     // Post section
 
 
-    Rule tR = mApp->rule(preTitle);
-
-    QVERIFY(r == tR);
+    Rule postRule = mApp->rule(preTitle);
+    QVERIFY(HelperFunctions::RuleEquals(preRule,postRule));
 }
 
 void Core_functionality::insert_rule_filepath_match_fail_1()
 {
     // Pre-state variables
 
-    QString preAPath = "/testpath", preTitle = "Test";
+    QString preAPath = "/testpath", preTitle = "Test2";
     QStringList prekWrds = QStringList() << "T1" << "T2";
     rD::fileConditionEntity preCond = rD::filepathMode;
     rD::fileCompareEntity preComp = rD::match;
-    Rule r;
+    Rule preRule;
 
     // Initialize pre-state
     SubRule sR;
 
-    r.title = preTitle;
-    r.appliesToPath = preAPath;
+    preRule.title = preTitle;
+    preRule.appliesToPath = preAPath;
     sR.keyWords = prekWrds;
     sR.fieldCondition = preCond;
     sR.fileCompareMode = preComp;
 
-    r.subRules << sR;
+    preRule.subRules << sR;
 
-    mApp->insertRule(r);
+    mApp->insertRule(preRule);
 
     // Post section
 
-    QString postAPath = "/testpath", postTitle = "NotTest";
+    QString postAPath = "/testpath", postTitle = "NotInTest";
     QStringList postkWrds = QStringList() << "T1" << "T2";
     rD::fileConditionEntity postCond = rD::filepathMode;
     rD::fileCompareEntity postComp = rD::match;
@@ -175,37 +257,37 @@ void Core_functionality::insert_rule_filepath_match_fail_1()
 
     compareRule.subRules << cSR;
 
-    Rule tR = mApp->rule(preTitle);
+    Rule postRule = mApp->rule(preTitle);
 
-    QVERIFY(!(tR == compareRule));
+    QVERIFY(!HelperFunctions::RuleEquals(compareRule,postRule));
 }
 
 void Core_functionality::insert_rule_filepath_match_fail_2()
 {
     // Pre-state variables
 
-    QString preAPath = "/testpath", preTitle = "Test";
+    QString preAPath = "/testpath", preTitle = "Test3";
     QStringList prekWrds = QStringList() << "T1" << "T2";
     rD::fileConditionEntity preCond = rD::filepathMode;
     rD::fileCompareEntity preComp = rD::match;
-    Rule r;
+    Rule preRule;
 
     // Initialize pre-state
 
-    r.title = preTitle;
+    preRule.title = preTitle;
     SubRule sR;
-    r.appliesToPath = preAPath;
+    preRule.appliesToPath = preAPath;
     sR.keyWords = prekWrds;
     sR.fieldCondition = preCond;
     sR.fileCompareMode = preComp;
 
-    r.subRules << sR;
+    preRule.subRules << sR;
 
-    mApp->insertRule(r);
+    mApp->insertRule(preRule);
 
     // Post section
 
-    QString postAPath = "/testpath", postTitle = "Test";
+    QString postAPath = "/testpath", postTitle = "Test3";
     QStringList postkWrds = QStringList() << "T1" << "T2";
     rD::fileConditionEntity postCond = rD::extensionMode;
     rD::fileCompareEntity postComp = rD::match;
@@ -222,9 +304,9 @@ void Core_functionality::insert_rule_filepath_match_fail_2()
 
     compareRule.subRules << cSR;
 
-    Rule tR = mApp->rule(preTitle);
+    Rule postRule = mApp->rule(preTitle);
 
-    QVERIFY(!(tR == compareRule));
+    QVERIFY(!HelperFunctions::RuleEquals(compareRule,postRule));
 }
 
 void Core_functionality::insert_rule_datecreated_before_succes1()
@@ -250,7 +332,7 @@ void Core_functionality::insert_rule_datecreated_before_succes1()
 
     Rule postRule = mApp->rule(title);
 
-    QVERIFY(preRule == postRule);
+    QVERIFY(HelperFunctions::RuleEquals(preRule,postRule));
 }
 
 void Core_functionality::insert_rule_datecreated_after_succes1()
@@ -276,7 +358,7 @@ void Core_functionality::insert_rule_datecreated_after_succes1()
 
     Rule postRule = mApp->rule(title);
 
-    QVERIFY(preRule == postRule);
+    QVERIFY(HelperFunctions::RuleEquals(preRule,postRule));
 }
 
 void Core_functionality::insert_rule_datecreated_before_fail1()
@@ -312,7 +394,7 @@ void Core_functionality::insert_rule_datecreated_before_fail1()
 
     Rule postRule = mApp->rule(title);
 
-    QVERIFY(!(compareRule == postRule));
+    QVERIFY(!HelperFunctions::RuleEquals(compareRule,postRule));
 }
 
 void Core_functionality::insert_rule_datecreated_before_fail2()
@@ -347,9 +429,67 @@ void Core_functionality::insert_rule_datecreated_before_fail2()
 
     Rule postRule = mApp->rule(title);
 
-    QVERIFY(!(compareRule == postRule));
+    QVERIFY(!HelperFunctions::RuleEquals(compareRule,postRule));
 }
 
+void Core_functionality::insert_rule_sizeinterval_success_1()
+{
+    // Pre state variables
+    QString title = "Size interval rule 1";
+    Rule preRule;
+    preRule.title = title;
+    preRule.actionRuleEntity = rD::Delete;
+
+    SubRule sR;
+
+    sR.fieldCondition = rD::sizeMode;
+    sR.fileCompareMode = rD::interval;
+
+    SizeOperand minSize(244,"kb"),maxSize(512,"kb");
+    sR.sizeIntervalLimits = SizeInterval(minSize,maxSize);
+
+    preRule.subRules << sR;
+
+    mApp->insertRule(preRule);
+
+    Rule postRule = mApp->rule(title);
+
+    QVERIFY(HelperFunctions::RuleEquals(preRule,postRule));
+}
+
+void Core_functionality::insert_rule_sizeinterval_fail_1()
+{
+    // Pre state variables
+    QString title = "Size interval rule 2";
+    Rule preRule, compareRule;
+    preRule.title = title;
+    preRule.actionRuleEntity = rD::Delete;
+
+    compareRule = preRule;
+
+    SubRule sR1,sR2;
+
+    sR1.fieldCondition = rD::sizeMode;
+    sR1.fileCompareMode = rD::interval;
+
+    sR2.fieldCondition = rD::sizeMode;
+    sR2.fileCompareMode = rD::interval;
+
+
+    SizeOperand minSize1(244,"kb"),maxSize1(512,"kb");
+    SizeOperand minSize2(384,"kb"),maxSize2(768,"kb");
+    sR1.sizeIntervalLimits = SizeInterval(minSize1,maxSize1);
+    sR2.sizeIntervalLimits = SizeInterval(minSize2,maxSize2);
+
+    preRule.subRules << sR1;
+    compareRule.subRules << sR2;
+
+    mApp->insertRule(preRule);
+
+    Rule postRule = mApp->rule(title);
+
+    QVERIFY(!HelperFunctions::RuleEquals(compareRule,postRule));
+}
 
     QTEST_MAIN(Core_functionality)
 

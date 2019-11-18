@@ -31,7 +31,6 @@ public:
     QString checkAndCorrectForBackslash(QString path);
 
     // Filename operations
-
     static bool containsTrailingBackslash(QString path);
     static QString directoryName(QString path);
     };

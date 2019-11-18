@@ -218,9 +218,9 @@ void mainWindow::explorerMenuTriggered(QAction *xAction)
     {
 
         QString txt = xAction->text(),
-        #ifdef defined (Q_OS_WIN32 || __WIN64__ || __MINGW64__)
+        #ifdef Q_OS_WIN32 || __WIN64__ || __MINGW64__
                 ex = ePath + modifyPath(txt,"\\");
-        #elif defined (Q_OS_MAC)
+        #elif Q_OS_MAC
                 ex = ePath + getItemFromList(txt);
         #elif __GNUC__
                 ex = "";

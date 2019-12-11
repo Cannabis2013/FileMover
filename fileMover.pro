@@ -64,6 +64,7 @@ SOURCES += main.cpp\
     rulepathselector.cpp \
     addruledialog.cpp \
     editruledialog.cpp \
+    testfilecreator.cpp \
     tst_core_functionality.cpp \
     worker.cpp \
     mywidget.cpp \
@@ -108,6 +109,7 @@ HEADERS  += mainwindow.h \
     editruledialog.h \
     ruledefinitions.h \
     rules.h \
+    testfilecreator.h \
     worker.h \
     mywidget.h \
     topframeform.h

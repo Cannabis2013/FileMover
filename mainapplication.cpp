@@ -28,7 +28,7 @@ MainApplication::MainApplication(const QString &appName,
      */
 
     // Entity queue related..
-
+    connect(fWorker,SIGNAL(requestNextEntity),entityManager,SLOT(sendNextEntity));
     connect(fWorker,&fW::requestNextEntity,entityManager,&EntityQueueManager::sendNextEntity);
     connect(entityManager,&EntityQueueManager::sendEntity,fWorker,&fW::processEntity);
 

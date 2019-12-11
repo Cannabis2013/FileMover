@@ -4,6 +4,12 @@
 #include "mainapplication.h"
 
 #ifdef TEST_MODE
+
+
+/*
+ * TODO: Implement test functionality that tests the fileoperations done by FileWorker
+ */
+
 class HelperFunctions
 {
 public:
@@ -118,6 +124,8 @@ private:
 Core_functionality::Core_functionality()
 {
     mApp = new MainApplication("MHTest","MH");
+
+
 }
 
 Core_functionality::~Core_functionality()
@@ -157,7 +165,6 @@ void Core_functionality::persistence_SettingsManager_Success_2()
 {
     // Pre state variables
     SettingsDelegate preSettings;
-
     preSettings.closeOnExit = true;
     preSettings.rulesEnabled = true;
     preSettings.ruleTimerEnabled = false;

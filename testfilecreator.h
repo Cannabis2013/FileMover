@@ -9,6 +9,8 @@
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
+const QString dummyContent = "This is a testfile containing only dummy content\n";
+
 class TestFileCreator
 {
 public:

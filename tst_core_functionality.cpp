@@ -146,11 +146,8 @@ private:
 
 Core_functionality::Core_functionality()
 {
-
     // Setup the core module
     mApp = new MainApplication("MHTest","MH");
-
-
 }
 
 Core_functionality::~Core_functionality()
@@ -529,6 +526,12 @@ void Core_functionality::operation_file_set_one_delete_success()
      * Create dummy files in folder 'test_folder'
      */
 
+
+    /*
+     * TODO: Implement remove files section
+     * TODO: Implement check to ensure the files intented to be removed has actually been removed. And only them.
+     */
+
     TestFileCreator *f_creator;
     try {
         f_creator = new  TestFileCreator(workingPath,test_file_set_1 ,true);
@@ -544,7 +547,7 @@ void Core_functionality::operation_file_set_one_delete_success()
 
     QString preAPath = workingPath, preTitle = "Test1";
     QStringList prekWrds = QStringList() << "Notes" << "FCK";
-    rD::fileActionEntity action = rD::Delete;
+    rD::fileActionEntity preAction = rD::Delete;
     rD::fileConditionEntity preCond = rD::filepathMode;
     rD::fileCompareEntity preComp = rD::match;
     Rule preRule;

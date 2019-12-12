@@ -34,7 +34,9 @@ TestFileCreator::TestFileCreator(const QString &filePath,
         if(!file.open(QIODevice::WriteOnly))
             continue;
 
-        file.write("This is a testfile containing only dummy content");
+        int count = qrand() % 4096 + 1; // Ensure each file size is within the range 49 - 200.704 bytes
+        for (int i = 0; i < count; ++i)
+            file.write(dummyContent.toLocal8Bit());
 
         file.close();
 

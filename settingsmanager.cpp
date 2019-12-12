@@ -59,8 +59,16 @@ void settingsManager::removePath(QString path)
 
 void settingsManager::removePathAt(int index)
 {
+    // TODO: Implement some 'out of range' check
+    // NOTE: Should throw something
     mainFolderPaths.removeAt(index);
     emit stateChanged();
+}
+
+void settingsManager::clearPaths()
+{
+    for (int i = 0; i < mainFolderPaths.count(); ++i)
+        removePathAt(i);
 }
 
 void settingsManager::requestProcess()

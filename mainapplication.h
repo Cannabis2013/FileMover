@@ -1,13 +1,13 @@
 #ifndef MAINAPPLICATION_H
 #define MAINAPPLICATION_H
 
+#define TEST_MODE
 #include <qthread.h>
 #include "settingsmanager.h"
 #include "fileinformationmanager.h"
 #include "icoreapplication.h"
 #include "filesystemwatcher.h"
 
-#define TEST_MODE
 
 class MainApplication : public ICoreApplication
 {
@@ -22,6 +22,7 @@ public:
     QString directoryInformationHtml(QString path){return fManager->createTextBrowserHtml(path);}
 
     void addWatchFolders(QStringList paths);
+    void clearWatchFolders();
     QString watchFolder(int index) const;
     QStringList watchFolders();
     QList<QTreeWidgetItem *> watchFolderItems(){return sManager->pathItems();}

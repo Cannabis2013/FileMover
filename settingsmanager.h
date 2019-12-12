@@ -49,6 +49,7 @@ public:
 
     void removePath(QString path);
     void removePathAt(int index);
+    void clearPaths();
 
     // Request file object processing
 

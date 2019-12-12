@@ -15,6 +15,7 @@ public:
     virtual ~ICoreApplication();
 
     virtual QString watchFolder(int index) const = 0;
+    virtual void clearWatchFolders() = 0;
     virtual QStringList watchFolders() = 0;
     virtual QList<QTreeWidgetItem*> watchFolderItems() = 0;
     virtual QList<QTreeWidgetItem*> detailedWatchFolderItems() = 0;

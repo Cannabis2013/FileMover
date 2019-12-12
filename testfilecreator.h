@@ -4,6 +4,8 @@
 #include <qfile.h>
 #include <qlist.h>
 #include <qfileinfo.h>
+#include <qdir.h>
+#include <qdiriterator.h>
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
@@ -14,10 +16,15 @@ public:
 
     QStringList fileNames() const;
 
-private:
-    QStringList _fileNames;
-    bool isPersisted = false;
+    bool emptyTestFolder(QString dirPath = QString());
 
+private:
+
+    void pertainFileList(const QString &directory);
+
+    QStringList _initial_fileNames;
+    const QString currentWorkingPath;
+    const bool isPersisted;
 
 };
 

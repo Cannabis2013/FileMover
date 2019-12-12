@@ -2,13 +2,14 @@
 #include <QCoreApplication>
 
 #include "mainapplication.h"
+#include "testfilecreator.h"
 
 #ifdef TEST_MODE
 
-
 /*
- * TODO: Implement test functionality that tests the fileoperations done by FileWorker
+  * TODO: Implement test functionality that tests the fileoperations done by FileWorker
  */
+
 
 class HelperFunctions
 {
@@ -89,6 +90,22 @@ public:
     }
 };
 
+const QString workingPath = "d:/Test_folder/";
+const QStringList test_file_set_1 = {"test.fdl",
+                               "Notes.txt",
+                               "hello.cpp",
+                               "hello.h",
+                               "trance2019.pls",
+                               "DTU_Mat1_Enotes.pdf",
+                               "README.txt",
+                               "DJ Crack - Elmers song.mp3",
+                               "FCK.jpg",
+                               "Blomst.jpg",
+                               "Mithjem.png",
+                               "MyClass.jar",
+                               "FileHandler.jar",
+                               "MyPage.cshtml"};
+
 class Core_functionality : public QObject
 {
     Q_OBJECT
@@ -117,12 +134,20 @@ private slots:
     void insert_rule_sizeinterval_success_1();
     void insert_rule_sizeinterval_fail_1();
 
+    /*
+     * FileOperations section
+     */
+
+    void operation_file_set_one_delete_success();
+
 private:
     MainApplication *mApp;
 };
 
 Core_functionality::Core_functionality()
 {
+
+    // Setup the core module
     mApp = new MainApplication("MHTest","MH");
 
 
@@ -130,6 +155,9 @@ Core_functionality::Core_functionality()
 
 Core_functionality::~Core_functionality()
 {
+    // Clear the registry
+    QSettings s("MH","MHTest");
+    s.clear();
 
 }
 
@@ -214,7 +242,6 @@ void Core_functionality::insert_rule_filepath_match_success_1()
     mApp->insertRule(preRule);
 
     // Post section
-
 
     Rule postRule = mApp->rule(preTitle);
     QVERIFY(HelperFunctions::RuleEquals(preRule,postRule));
@@ -494,6 +521,64 @@ void Core_functionality::insert_rule_sizeinterval_fail_1()
     Rule postRule = mApp->rule(title);
 
     QVERIFY(!HelperFunctions::RuleEquals(compareRule,postRule));
+}
+
+void Core_functionality::operation_file_set_one_delete_success()
+{
+    /*
+     * Create dummy files in folder 'test_folder'
+     */
+
+    TestFileCreator *f_creator;
+    try {
+        f_creator = new  TestFileCreator(workingPath,test_file_set_1 ,true);
+    } catch (char *msg) {
+        printf("%s\n",msg);
+        QVERIFY(false);
+        return;
+    }
+
+    mApp->addWatchFolder(workingPath);
+
+    // Pre-state variables
+
+    QString preAPath = workingPath, preTitle = "Test1";
+    QStringList prekWrds = QStringList() << "Notes" << "FCK";
+    rD::fileActionEntity action = rD::Delete;
+    rD::fileConditionEntity preCond = rD::filepathMode;
+    rD::fileCompareEntity preComp = rD::match;
+    Rule preRule;
+
+    // Initialize pre-state
+
+    preRule.title = preTitle;
+
+    SubRule sR;
+    preRule.appliesToPath = preAPath;
+    sR.keyWords = prekWrds;
+    sR.fieldCondition = preCond;
+    sR.fileCompareMode = preComp;
+
+    preRule.subRules << sR;
+
+    mApp->insertRule(preRule);
+
+
+    /*
+     * Clear test folder
+     */
+
+    try {
+        f_creator->emptyTestFolder();
+    } catch (char *msg) {
+        printf("%s\n",msg);
+        QVERIFY(false);
+        return;
+    }
+
+
+
+
 }
 
     QTEST_MAIN(Core_functionality)

@@ -122,6 +122,12 @@ void MainApplication::addWatchFolders(QStringList paths)
     sManager->insertPath(paths);
 }
 
+void MainApplication::clearWatchFolders()
+{
+    sManager->clearPaths();
+
+}
+
 QString MainApplication::watchFolder(int index) const
 {
     return sManager->paths().value(index);

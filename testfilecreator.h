@@ -10,6 +10,7 @@
 #include <qmap.h>
 #include "mainapplication.h"
 #include <QFileInfoList>
+#include <iterator>
 
 
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
@@ -25,24 +26,42 @@ struct VIRTUAL_FILE_OBJECT
 
 };
 
+class VirtualObjects
+{
+public:
+    explicit VirtualObjects();
+    const VIRTUAL_FILE_OBJECT value(const QString &path);
+
+    void operator<<(const VIRTUAL_FILE_OBJECT &obj);
+    bool operator==(VirtualObjects objects);
+    VIRTUAL_FILE_OBJECT operator[](int a);
+
+    inline int count(){return _objects.count();}
+
+private:
+    QList<VIRTUAL_FILE_OBJECT> _objects;
+};
+
 const QString dummyContent = "This is a testfile containing only dummy content\n";
 
 class TestFileCreator
 {
 public:
-    TestFileCreator(const QString &filePath,const QStringList &fileNames, const bool &persist);
-    bool emptyTestFolder(QString dirPath = QString());
+    TestFileCreator();
+
+    void createFiles(const QString &directory, const QStringList &fileNames);
+    VirtualObjects getVirtualFiles(const QString &filePath);
+    bool emptyTestFolder(const QString &dirPath);
+
+    VirtualObjects virtualObjects() const;
 
 private:
     // Private member methods
     void fillDateMappings();
     void appendVirtualFileObject(const QFileInfo &file);
-
     // Member variables
     QMap<int,myDateTime> dateMappings;
-    QList<VIRTUAL_FILE_OBJECT> f_objects;
-    const QString currentWorkingPath;
-    const bool isPersisted;
+    VirtualObjects _virtualObjects;
 };
 
 #endif // TESTFILECREATOR_H

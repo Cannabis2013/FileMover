@@ -6,9 +6,18 @@ myDateTime::myDateTime(QDateTime dTime)
     setTime(dTime.time());
 }
 
+myDateTime::myDateTime(int day, int month, int year, int hour, int minute, int seconds)
+{
+    QDate date(year,month,day);
+    QTime time;
+    time.setHMS(hour,minute,seconds);
+
+    setDate(date);
+    setTime(time);
+}
+
 myDateTime::myDateTime()
 {
-
 }
 
 bool myDateTime::operator <(myDateTime compared)

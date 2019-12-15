@@ -1,7 +1,6 @@
 #include <QtTest>
 #include <QCoreApplication>
 
-#include "mainapplication.h"
 #include "testfilecreator.h"
 
 #ifdef TEST_MODE
@@ -523,14 +522,15 @@ void Core_functionality::insert_rule_sizeinterval_fail_1()
 void Core_functionality::operation_file_set_one_delete_success()
 {
     /*
-     * Create dummy files in folder 'test_folder'
-     */
-
-
-    /*
      * TODO: Implement remove files section
      * TODO: Implement check to ensure the files intented to be removed has actually been removed. And only them.
      */
+
+    /*
+     * INITIAL STATE:
+     *  - Create dummy files in folder 'test_folder'
+     */
+
 
     TestFileCreator *f_creator;
     try {
@@ -555,6 +555,7 @@ void Core_functionality::operation_file_set_one_delete_success()
     // Initialize pre-state
 
     preRule.title = preTitle;
+    preRule.actionRuleEntity = preAction;
 
     SubRule sR;
     preRule.appliesToPath = preAPath;
@@ -567,8 +568,10 @@ void Core_functionality::operation_file_set_one_delete_success()
     mApp->insertRule(preRule);
 
 
+
     /*
-     * Clear test folder
+     * END STATE:
+     *  - Clear test folder
      */
 
     try {
@@ -578,10 +581,6 @@ void Core_functionality::operation_file_set_one_delete_success()
         QVERIFY(false);
         return;
     }
-
-
-
-
 }
 
     QTEST_MAIN(Core_functionality)

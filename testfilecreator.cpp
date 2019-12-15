@@ -5,13 +5,6 @@ TestFileCreator::TestFileCreator(const QString &filePath,
                                  const bool &persist):
     currentWorkingPath(filePath),isPersisted(persist)
 {
-
-    if(!persist)
-    {
-        _initial_fileNames = fileNames;
-        return;
-    }
-
     QString fPath = filePath;
 
     if(filePath.lastIndexOf('/') != filePath.count() - 1)
@@ -40,13 +33,8 @@ TestFileCreator::TestFileCreator(const QString &filePath,
 
         file.close();
 
-        _initial_fileNames << fp;
+        appendVirtualFileObject(QFileInfo(file));
     }
-}
-
-QStringList TestFileCreator::fileNames() const
-{
-    return _initial_fileNames;
 }
 
 bool TestFileCreator::emptyTestFolder(QString dirPath)
@@ -85,16 +73,33 @@ bool TestFileCreator::emptyTestFolder(QString dirPath)
 
 }
 
-void TestFileCreator::pertainFileList(const QString &directory)
+void TestFileCreator::fillDateMappings()
 {
-    QDir dir(directory);
-    if(!dir.exists())
-        throw "Directory doesn't exist";
+    int minYear = 2000;
+    for (int i = 0; i < NUMBER_OF_MAPPINGS; ++i)
+    {
+        int year = qrand() % (QDate::currentDate().year() % 1000) + minYear;
+        int month = qrand() % 12 + 1;
+        int day = 1;
+        if(month == 2)
+            day = qrand() % 29 + 1;
+        else if(month % 2 != 0 || month == 8)
+            day = qrand() % 31 + 1;
+        else
+            day = qrand() % 30 + 1;
 
-    QDirIterator it(directory,
-                    QDir::AllEntries | QDir::Hidden | QDir::NoDotAndDotDot,
-                    QDirIterator::Subdirectories);
+        dateMappings[i] = myDateTime(day,month,year);
+    }
+}
 
-    QStringList resultingList;
+void TestFileCreator::appendVirtualFileObject(const QFileInfo &file)
+{
+    int index = qrand() % NUMBER_OF_MAPPINGS + 1;
 
+    VIRTUAL_FILE_OBJECT f_obj;
+    f_obj.filePath = file.absoluteFilePath();
+    f_obj.dateCreated = dateMappings[index];
+    f_obj.additionalInformation = file;
+
+    f_objects << f_obj;
 }

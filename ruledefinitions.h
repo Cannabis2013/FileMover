@@ -61,7 +61,7 @@
  *      dontContainWords
  *      matchWords
  *      dontMatchWords
- *  fileConditionRuleEntities using custom widgets
+ *  fileConditionRuleEntities using custom widgets:
  *      dateCreatedMode
  *      dateModifiedMode
  *      sizeMode

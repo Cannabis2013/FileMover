@@ -18,6 +18,12 @@ public:
     // Constructor..
 
     myDateTime(QDateTime dTime);
+    myDateTime(int day,
+               int month,
+               int year,
+               int hour = 0,
+               int minute = 0,
+               int seconds = 0);
     myDateTime();
     //  Operators..
     bool operator <(myDateTime compared);

@@ -13,7 +13,9 @@
 #include <iterator>
 
 
-extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
+#ifdef __MINGW64__
+    extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
+#endif
 
 #define NUMBER_OF_MAPPINGS 50
 
@@ -30,26 +32,25 @@ class VirtualObjects
 {
 public:
     explicit VirtualObjects();
-    const VIRTUAL_FILE_OBJECT value(const QString &path);
-
+    VIRTUAL_FILE_OBJECT value(const QString &path) const;
+    VIRTUAL_FILE_OBJECT value(const int &index) const;
     void operator<<(const VIRTUAL_FILE_OBJECT &obj);
-    bool operator==(VirtualObjects objects);
-    VIRTUAL_FILE_OBJECT operator[](int a);
+    bool operator==(VirtualObjects objects) const;
 
-    inline int count(){return _objects.count();}
+    inline int count() const{return _objects.count();}
 
 private:
     QList<VIRTUAL_FILE_OBJECT> _objects;
 };
 
-const QString dummyContent = "This is a testfile containing only dummy content\n";
+#define DUMMY_CONTENT "This is a testfile containing only dummy content\n"
 
 class TestFileCreator
 {
 public:
     TestFileCreator();
 
-    void createFiles(const QString &directory, const QStringList &fileNames);
+    const VirtualObjects *createFiles(const QString &directory, const QStringList &fileNames);
     VirtualObjects getVirtualFiles(const QString &filePath);
     bool emptyTestFolder(const QString &dirPath);
 

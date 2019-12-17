@@ -4,8 +4,9 @@
 #include "rules.h"
 #include "entityqueuemanager.h"
 
+#ifdef __MINGW64__
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
-
+#endif
 class FileOperationWorker : public Worker
 {
     Q_OBJECT
@@ -76,8 +77,8 @@ private:
 
     QTreeWidgetItem *assembleItemModelsFromPath(QString p);
 
-    bool isBusy;
     QString busyMessage;
+    bool isBusy;
 };
 
 typedef FileOperationWorker fW;

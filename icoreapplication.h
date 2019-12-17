@@ -24,6 +24,7 @@ public:
     virtual Rule rule(QString title) = 0;
     virtual QList<QTreeWidgetItem*> ruleItemModels() = 0;
     virtual void swapRule(int i, int j) = 0;
+    virtual void clearRules() const = 0;
 
     virtual QString directoryInformationHtml(QString path) = 0;
 
@@ -52,8 +53,6 @@ public slots:
     virtual void replaceRule(Rule newRule, QString title) = 0;
     virtual void removeRuleAt(int index) = 0;
     virtual void removeRule(QString title) = 0;
-
-    virtual bool isTestSession(){return false;}
 
 signals:
     // FileWorker

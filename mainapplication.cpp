@@ -1,8 +1,7 @@
 #include "mainapplication.h"
 
 MainApplication::MainApplication(const QString &appName,
-                                 const QString &orgName,
-                                 const bool &testSession)
+                                 const QString &orgName)
 {
     rManager = new rulesManager(appName,orgName);
     sManager = new settingsManager(appName,orgName);
@@ -11,7 +10,6 @@ MainApplication::MainApplication(const QString &appName,
     fWorker = new FileOperationWorker();
     fWatcher = new FileSystemWatcher(sManager->paths());
     fileWorkerThread = new QThread();
-    testMode = testSession;
 
     fWorker->moveToThread(fileWorkerThread);
 
@@ -28,7 +26,6 @@ MainApplication::MainApplication(const QString &appName,
      */
 
     // Entity queue related..
-    connect(fWorker,SIGNAL(requestNextEntity),entityManager,SLOT(sendNextEntity));
     connect(fWorker,&fW::requestNextEntity,entityManager,&EntityQueueManager::sendNextEntity);
     connect(entityManager,&EntityQueueManager::sendEntity,fWorker,&fW::processEntity);
 
@@ -65,26 +62,11 @@ MainApplication::~MainApplication()
 
 void MainApplication::clearFolders(QStringList paths)
 {
-    if(!isTestSession())
-    {
-        FileObjectList allFiles = fW::generateFileObjects(paths);
-        FileActionEntity *entity = new FileActionEntity();
-        entity->setDirectoryPaths(paths);
-        entity->setDirectoryFileContent(allFiles);
-        entityManager->addEntity(entity);
-    }
-    else
-    {
-        print("File objects to process:");
-        FileObjectList allFiles = fW::generateFileObjects(paths,QString(),rD::File);
-        for (FileObject* fObject : allFiles)
-        {
-            addEntry(QString("Filepath: ") + fObject->filePath() +
-                     QString(" | Filename: ") + fObject->fileName() +
-                     QString("| Parent folder name: ") + fObject->parentFolderName());
-        }
-        extractEntries();
-    }
+    FileObjectList allFiles = fW::generateFileObjects(paths);
+    FileActionEntity *entity = new FileActionEntity();
+    entity->setDirectoryPaths(paths);
+    entity->setDirectoryFileContent(allFiles);
+    entityManager->addEntity(entity);
 }
 
 void MainApplication::clearFoldersAccordingToRules(QStringList paths)
@@ -98,23 +80,13 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         for(SubRule sR : r.subRules)
             allFiles = fWorker->processFileObjects(allFiles,sR);
 
-        if(!isTestSession())
-        {
-            FileActionEntity *entity = new FileActionEntity;
-            entity->setDirectoryPaths(paths);
-            entity->setFileActionDestinations(r.destinationPath);
-            entity->setDirectoryFileContent(allFiles);
-            entity->setFileActionRule(r.actionRuleEntity);
-            entityManager->addEntity(entity);
-        }
-        else
-        {
-            for (FileObject* item : allFiles)
-                addEntry(item->filePath());
-        }
+        FileActionEntity *entity = new FileActionEntity;
+        entity->setDirectoryPaths(paths);
+        entity->setFileActionDestinations(r.destinationPath);
+        entity->setDirectoryFileContent(allFiles);
+        entity->setFileActionRule(r.actionRuleEntity);
+        entityManager->addEntity(entity);
     }
-    if(isTestSession())
-        extractEntries();
 }
 
 void MainApplication::addWatchFolders(QStringList paths)
@@ -136,6 +108,12 @@ QString MainApplication::watchFolder(int index) const
 QStringList MainApplication::watchFolders()
 {
     return sManager->paths();
+}
+
+void MainApplication::clearRules() const
+{
+    for (int i = 0; i < rManager->ruleCount(); ++i)
+        rManager->removeRuleAt(i);
 }
 
 SettingsDelegate MainApplication::settingsState()

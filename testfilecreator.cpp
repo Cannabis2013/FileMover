@@ -31,25 +31,32 @@ bool TestFileCreator::emptyTestFolder(const QString &dirPath)
             if(operation_succeded)
                 result = dir.rmdir(fInfo.absoluteFilePath()) ? result : false;
             else
-                result = dir.removeRecursively() ? result : false;
+                result = false;
         }
     }
-    return true;
+    return result;
 
 }
 
-void TestFileCreator::createFiles(const QString &directory, const QStringList &fileNames)
+const VirtualObjects *TestFileCreator::createFiles(const QString &directory, const QStringList &fileNames)
 {
     QString fPath = directory;
 
+#ifdef __WIN64__
     if(directory.lastIndexOf('/') != directory.count() - 1)
         fPath += '/';
     if(fPath == "c:/" || fPath.contains("c:/Windows"))
         throw  "Root or system folder not allowed";
-
+#elif __GNUC__
+    if(directory.lastIndexOf('/') != directory.count() - 1)
+        fPath += '/';
+    if(fPath == '/')
+        throw  "Root or system folders not allowed";
+#endif
     QDir dir(directory);
     if(!dir.exists())
         dir.mkdir(directory);
+
 
 
     for(QString fileName : fileNames)
@@ -64,29 +71,31 @@ void TestFileCreator::createFiles(const QString &directory, const QStringList &f
 
         int count = qrand() % 4096 + 1; // Ensure each file size is within the range 49 - 200.704 bytes
         for (int i = 0; i < count; ++i)
-            file.write(dummyContent.toLocal8Bit());
+            file.write(DUMMY_CONTENT);
 
         file.close();
 
         appendVirtualFileObject(QFileInfo(file));
     }
+
+    return  &_virtualObjects;
 }
 
 VirtualObjects TestFileCreator::getVirtualFiles(const QString &directory)
 {
     /*
-     * Retrieve a list of virtual file objects conditioned upon they exists in list
+     * Retrieve a list of virtual file objects conditioned upon their existance in the list
      */
-
 
     VirtualObjects resultingList;
     QDirIterator it(directory,QDir::AllEntries, QDirIterator::Subdirectories);
-    for (QFileInfo file = it.next(); it.hasNext();file = it.next())
-    {
+    while (it.hasNext()) {
+        QFileInfo file = it.next();
         try {
             resultingList << _virtualObjects.value(file.absoluteFilePath());
-        }  catch (char *msg) {
+        }  catch (const char *msg) {
             cout << msg << endl;
+            continue;
         }
     }
 
@@ -134,7 +143,7 @@ VirtualObjects::VirtualObjects()
 
 }
 
-const   VIRTUAL_FILE_OBJECT VirtualObjects::value(const QString &path)
+VIRTUAL_FILE_OBJECT VirtualObjects::value(const QString &path) const
 {
     VIRTUAL_FILE_OBJECT item;
     for (int i = 0; i < _objects.count(); ++i) {
@@ -146,13 +155,24 @@ const   VIRTUAL_FILE_OBJECT VirtualObjects::value(const QString &path)
     throw "Not found";
 }
 
+VIRTUAL_FILE_OBJECT VirtualObjects::value(const int &index) const
+{
+    if(index < 0 || index >= _objects.count())
+        throw std::out_of_range("OUT_OF_RANGE");
+
+    return _objects.value(index);
+}
+
 void VirtualObjects::operator<<(const VIRTUAL_FILE_OBJECT &obj)
 {
     _objects << obj;
 }
 
-bool VirtualObjects::operator==(VirtualObjects objects)
+bool VirtualObjects::operator==(VirtualObjects objects) const
 {
+    if(_objects.count() != objects.count())
+        return false;
+
     for (VIRTUAL_FILE_OBJECT obj : _objects) {
         try {
             objects.value(obj.filePath);
@@ -162,12 +182,4 @@ bool VirtualObjects::operator==(VirtualObjects objects)
         }
     }
     return true;
-}
-
-VIRTUAL_FILE_OBJECT VirtualObjects::operator[](int a)
-{
-    if(a < 0 || a > _objects.count())
-        throw std::out_of_range("Index out of bounds");
-
-    return _objects.value(a);
 }

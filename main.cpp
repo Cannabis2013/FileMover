@@ -10,15 +10,12 @@ using namespace std;
     {
         QString orgName = "MH";
         QString appName = "Filehandler";
-        bool testSession = false;
     };
 
     void processArguments(const QStringList &arguments,argumentValues &argVals)
     {
         for (int i = 0;i <arguments.count();i++) {
             QString argument = arguments.value(i);
-            if(argument == "--test-session")
-                argVals.testSession = true;
             if(argument == "--application-name")
                 argVals.appName = arguments.value(++i);
             if(argument == "--organization-name")
@@ -37,8 +34,7 @@ using namespace std;
         processArguments(arguments,argVals);
 
         MainApplication *mainApplicaton = new MainApplication(argVals.appName,
-                                                              argVals.orgName,
-                                                              argVals.testSession);
+                                                              argVals.orgName);
 
         mainWindow *w = new mainWindow(mainApplicaton);
         w->show();

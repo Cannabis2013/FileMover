@@ -3,12 +3,6 @@
 
 #include "testfilecreator.h"
 
-#ifdef TEST_MODE
-
-/*
-  * TODO: Implement test functionality that tests the fileoperations done by FileWorker
- */
-
 
 class HelperFunctions
 {
@@ -89,7 +83,12 @@ public:
     }
 };
 
-const QString workingPath = "d:/Test_folder/";
+#ifdef __WIN64__
+#define TEST_WORKING_PATH "d:/Test_folder/"
+#elif __GNUC__
+    #define TEST_WORKING_PATH QDir::homePath() + "/Programming/Test/FileMover_Test_Folder/"
+#endif
+
 const QStringList test_file_set_1 = {"test.fdl",
                                "Notes.txt",
                                "hello.cpp",
@@ -114,6 +113,12 @@ public:
     ~Core_functionality();
 
 private slots:
+
+    // Cleanup
+
+    void cleanup();
+
+    void cleanupTestCase();
 
     // Settings and persistence related
     void persistence_SettingsManager_Success_1();
@@ -142,7 +147,6 @@ private slots:
 private:
     MainApplication *mApp;
 };
-
 Core_functionality::Core_functionality()
 {
     // Setup the core module
@@ -151,10 +155,19 @@ Core_functionality::Core_functionality()
 
 Core_functionality::~Core_functionality()
 {
+}
+
+void Core_functionality::cleanup()
+{
+    // Clear rules
+    mApp->clearRules();
+}
+
+void Core_functionality::cleanupTestCase()
+{
     // Clear the registry
     QSettings s("MH","MHTest");
     s.clear();
-
 }
 
 void Core_functionality::persistence_SettingsManager_Success_1()
@@ -521,35 +534,30 @@ void Core_functionality::insert_rule_sizeinterval_fail_1()
 
 void Core_functionality::operation_file_set_one_delete_success()
 {
-    /*
-     * TODO: Implement remove files section
-     * TODO: Implement check to ensure the files intented to be removed has actually been removed. And only them.
-     */
 
     /*
      * INITIAL STATE:
      *  - Create dummy files in folder 'test_folder'
      */
 
-
     TestFileCreator *f_creator;
     try {
-        f_creator = new  TestFileCreator(workingPath,test_file_set_1 ,true);
+        f_creator = new  TestFileCreator();
     } catch (char *msg) {
         printf("%s\n",msg);
         QVERIFY(false);
         return;
     }
 
-    mApp->addWatchFolder(workingPath);
+    mApp->addWatchFolder(TEST_WORKING_PATH);
 
     // Pre-state variables
 
-    QString preAPath = workingPath, preTitle = "Test1";
+    const QString preTitle = "Test1";
     QStringList prekWrds = QStringList() << "Notes" << "FCK";
     rD::fileActionEntity preAction = rD::Delete;
     rD::fileConditionEntity preCond = rD::filepathMode;
-    rD::fileCompareEntity preComp = rD::match;
+    rD::fileCompareEntity preComp = rD::contains;
     Rule preRule;
 
     // Initialize pre-state
@@ -557,8 +565,9 @@ void Core_functionality::operation_file_set_one_delete_success()
     preRule.title = preTitle;
     preRule.actionRuleEntity = preAction;
 
+    // Create rule
     SubRule sR;
-    preRule.appliesToPath = preAPath;
+    preRule.appliesToPath = TEST_WORKING_PATH;
     sR.keyWords = prekWrds;
     sR.fieldCondition = preCond;
     sR.fileCompareMode = preComp;
@@ -567,24 +576,52 @@ void Core_functionality::operation_file_set_one_delete_success()
 
     mApp->insertRule(preRule);
 
+    const VirtualObjects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+
+    VirtualObjects referenceList;
+
+    for (int i = 0; i < objects->count(); ++i) {
+        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        QFileInfo info = obj.additionalInformation;
+        for (QString str : prekWrds) {
+            QString fName = info.fileName();
+            if(fName.contains(str))
+            {
+                referenceList << obj;
+                continue;
+            }
+        }
+    }
+
+    mApp->clearFoldersAccordingToRules(mApp->watchFolders());
+
+    VirtualObjects actualList;
+    try {
+        actualList = f_creator->getVirtualFiles(TEST_WORKING_PATH);
+    }  catch (const char *msg) {
+        cout << msg << endl;
+    }
 
 
     /*
      * END STATE:
      *  - Clear test folder
      */
-
+    int cleaned_up = false;
     try {
-        f_creator->emptyTestFolder();
-    } catch (char *msg) {
+        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+    } catch (const char *msg) {
         printf("%s\n",msg);
-        QVERIFY(false);
         return;
     }
+
+    if(!cleaned_up)
+        printf("Some files/folders not deleted");
+
+    QVERIFY(referenceList == actualList);
 }
 
     QTEST_MAIN(Core_functionality)
 
 #include "tst_core_functionality.moc"
-#endif
 

@@ -14,8 +14,7 @@ class MainApplication : public ICoreApplication
     Q_OBJECT
 public:
     MainApplication(const QString &appName,
-                    const QString &orgName,
-                    const bool &testSession = false);
+                    const QString &orgName);
 
     ~MainApplication();
 
@@ -38,6 +37,7 @@ public:
     Rule rule(QString title){return rManager->rule(title);}
     QList<QTreeWidgetItem*> ruleItemModels(){return rManager->ruleItems();}
     void swapRule(int i, int j){rManager->swapRule(i,j);}
+    void clearRules() const;
 
     QList<MyIcon> icons(){return sManager->allIcons();}
 
@@ -55,7 +55,6 @@ public:
     void clearFolders(QStringList paths);
     void clearFoldersAccordingToRules(QStringList paths);
 
-    bool isTestSession(){return testMode;}
 
 public slots:
     void addWatchFolder(QString path){sManager->insertPath(path);}
@@ -68,7 +67,6 @@ public slots:
     void removeRule(QString title){rManager->removeRule(title);}
 
 private:
-    bool testMode = false;
     FileOperationWorker *fWorker;
     EntityQueueManager *entityManager;
     rulesManager *rManager;
@@ -76,6 +74,7 @@ private:
     FileInformationManager *fManager;
     FileSystemWatcher *fWatcher;
     QThread *fileWorkerThread;
+
 };
 
 #endif // MAINAPPLICATION_H

@@ -7,6 +7,11 @@
 
 /*
  * Queue management of fileoperations and other stuff
+ *
+ * Modus operandi (signals and slot's call flow):
+ *  - EntityQueueManager::WakeupProcess -> FileOperationWorker::HandleProcessRequest
+ *  - FileOperationWorker::requestNextEntity -> EntityQueueManager::sendNextEntity
+ *  - EntityQueueManager::SendEntity -> FileWorkerOperation::processEntity
 */
 
 class EntityQueueManager : public QObject

@@ -10,8 +10,10 @@ MainApplication::MainApplication(const QString &appName,
     fWorker = new FileOperationWorker();
     fWatcher = new FileSystemWatcher(sManager->paths());
     fileWorkerThread = new QThread();
+    queueThread = new QThread();
 
     fWorker->moveToThread(fileWorkerThread);
+    entityManager->moveToThread(queueThread);
 
     QString ressourceFolderPath = "Ressources";
 
@@ -26,6 +28,8 @@ MainApplication::MainApplication(const QString &appName,
      */
 
     // Entity queue related..
+    connect(this,&MainApplication::sendEntity,entityManager,&EntityQueueManager::addEntity);
+    connect(entityManager,&EntityQueueManager::wakeUpProcess,fWorker,&fW::handleProcessRequest);
     connect(fWorker,&fW::requestNextEntity,entityManager,&EntityQueueManager::sendNextEntity);
     connect(entityManager,&EntityQueueManager::sendEntity,fWorker,&fW::processEntity);
 
@@ -44,11 +48,11 @@ MainApplication::MainApplication(const QString &appName,
     connect(rManager,&rulesManager::stateChanged,this,&MainApplication::stateChanged);
     connect(fManager,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);
 
-    connect(entityManager,&EntityQueueManager::wakeUpProcess,fWorker,&FileOperationWorker::handleProcessRequest);
 
     connect(fWorker,&fW::jobDone,this,&ICoreApplication::stateChanged);
 
     fileWorkerThread->start();
+    queueThread->start();
 
     emit sManager->processPath(new fileInformationEntity(watchFolders()));
 }
@@ -85,7 +89,7 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         entity->setFileActionDestinations(r.destinationPath);
         entity->setDirectoryFileContent(allFiles);
         entity->setFileActionRule(r.actionRuleEntity);
-        entityManager->addEntity(entity);
+        emit sendEntity(entity);
     }
 }
 

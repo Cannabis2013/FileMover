@@ -60,6 +60,7 @@ signals:
     void sendFolderSize(DirectoryCountEntity *fObject);
     void sendStatusMessage(const QString &filePath);
     void sendSystemTrayMessage(const QString &title, const QString &msg);
+    void sendEntity(EntityModel *model);
 
 signals:
 

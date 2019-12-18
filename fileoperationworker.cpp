@@ -340,8 +340,10 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             if(rule.fileCompareMode == rD::contains)
             {
                 for(QString kWord : rule.keyWords)
+                {
                     if(fObject->fileName().contains(kWord))
                         condition = true;
+                }
                 if(condition)
                     filesToProcess << fObject;
             }

@@ -1,6 +1,7 @@
 #include <QtTest>
 #include <QCoreApplication>
 
+
 #include "testfilecreator.h"
 
 
@@ -142,10 +143,10 @@ private slots:
      * FileOperations section
      */
 
-    void operation_file_set_one_delete_success();
+    void operation_filepath_contain_success();
 
 private:
-    MainApplication *mApp;
+    ICoreApplication *mApp;
 };
 Core_functionality::Core_functionality()
 {
@@ -155,6 +156,7 @@ Core_functionality::Core_functionality()
 
 Core_functionality::~Core_functionality()
 {
+
 }
 
 void Core_functionality::cleanup()
@@ -532,7 +534,7 @@ void Core_functionality::insert_rule_sizeinterval_fail_1()
     QVERIFY(!HelperFunctions::RuleEquals(compareRule,postRule));
 }
 
-void Core_functionality::operation_file_set_one_delete_success()
+void Core_functionality::operation_filepath_contain_success()
 {
 
     /*
@@ -583,17 +585,27 @@ void Core_functionality::operation_file_set_one_delete_success()
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->value(i);
         QFileInfo info = obj.additionalInformation;
+        bool match = false;
         for (QString str : prekWrds) {
             QString fName = info.fileName();
+
             if(fName.contains(str))
-            {
-                referenceList << obj;
-                continue;
-            }
+               match = true;
         }
+        if(!match)
+            referenceList << obj;
     }
 
     mApp->clearFoldersAccordingToRules(mApp->watchFolders());
+
+
+    /*
+     * Note regard async call:
+     *  Due to asynchonously calls to both FileWorkOperationWorker and EntityQueueManager tests have to wait a little amount of time
+     *  to ensure proper sync between the caller and the called classes
+     */
+
+    QThread::sleep(2);
 
     VirtualObjects actualList;
     try {

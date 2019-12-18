@@ -73,7 +73,7 @@ private:
     settingsManager *sManager;
     FileInformationManager *fManager;
     FileSystemWatcher *fWatcher;
-    QThread *fileWorkerThread;
+    QThread *fileWorkerThread, *queueThread;
 
 };
 

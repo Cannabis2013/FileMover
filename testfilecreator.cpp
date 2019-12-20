@@ -94,7 +94,6 @@ VirtualObjects TestFileCreator::getVirtualFiles(const QString &directory)
         try {
             resultingList << _virtualObjects.value(file.absoluteFilePath());
         }  catch (const char *msg) {
-            cout << msg << endl;
             continue;
         }
     }

@@ -2,6 +2,8 @@
 #define RULEDEFINITIONS_H
 
 #include <qlist.h>
+#include <qtranslator.h>
+
 
 /*
  * Mappings:
@@ -118,39 +120,39 @@ struct ruleDefinitions
      */
 
     const QList<QPair<QString,fileActionEntity> > actionMappings {
-        QPair<QString,fileActionEntity>("Flytte indhold",fileActionEntity::Move),
-                QPair<QString,fileActionEntity>("Slette indhold",fileActionEntity::Delete),
-                QPair<QString,fileActionEntity>("Kopiere indhold",fileActionEntity::Copy),
-                QPair<QString,fileActionEntity>("Gøre intet",fileActionEntity::none)};
+        QPair<QString,fileActionEntity>(("Move content"),fileActionEntity::Move),
+                QPair<QString,fileActionEntity>("Delete content",fileActionEntity::Delete),
+                QPair<QString,fileActionEntity>("Copy content",fileActionEntity::Copy),
+                QPair<QString,fileActionEntity>("Do nothing",fileActionEntity::none)};
 
     const QList<QPair<QString,fileConditionEntity> > conditionMappings {
-        QPair<QString,fileConditionEntity>("Filnavn",fileConditionEntity::filepathMode),
-                QPair<QString,fileConditionEntity>("Filendelse",fileConditionEntity::extensionMode),
-                QPair<QString,fileConditionEntity>("Størrelse",fileConditionEntity::sizeMode),
-                QPair<QString,fileConditionEntity>("I mappen",fileConditionEntity::parentFolderMode),
-                QPair<QString,fileConditionEntity>("Dato oprettet",fileConditionEntity::dateCreatedMode),
-                QPair<QString,fileConditionEntity>("Dato redigeret",fileConditionEntity::dateModifiedMode),
-                QPair<QString,fileConditionEntity>("Ingen betingelser",fileConditionEntity::nonConditionalMode)};
+        QPair<QString,fileConditionEntity>("File name",fileConditionEntity::filepathMode),
+                QPair<QString,fileConditionEntity>("File suffix",fileConditionEntity::extensionMode),
+                QPair<QString,fileConditionEntity>("File size",fileConditionEntity::sizeMode),
+                QPair<QString,fileConditionEntity>("In folder",fileConditionEntity::parentFolderMode),
+                QPair<QString,fileConditionEntity>("Date created",fileConditionEntity::dateCreatedMode),
+                QPair<QString,fileConditionEntity>("Date edited",fileConditionEntity::dateModifiedMode),
+                QPair<QString,fileConditionEntity>("No conditions",fileConditionEntity::nonConditionalMode)};
 
     const QList<QPair<QString,fileCompareEntity> > compareMappings {
-        QPair<QString,fileCompareEntity>("Indeholder følgende",fileCompareEntity::contains),
-                QPair<QString,fileCompareEntity>("Indeholder ikke følgende",fileCompareEntity::dontMatch),
-                QPair<QString,fileCompareEntity>("Matcher følgende",fileCompareEntity::match),
-                QPair<QString,fileCompareEntity>("Matcher ikke følgende",fileCompareEntity::dontMatch),
-                QPair<QString,fileCompareEntity>("Større end",fileCompareEntity::bigger),
-                QPair<QString,fileCompareEntity>("Større eller lig med",fileCompareEntity::biggerOrEqual),
-                QPair<QString,fileCompareEntity>("Lig med",fileCompareEntity::equal),
-                QPair<QString,fileCompareEntity>("Mindre eller lig med",fileCompareEntity::lesserOrEqual),
-                QPair<QString,fileCompareEntity>("Mindre end",fileCompareEntity::lesser),
-                QPair<QString,fileCompareEntity>("Ældre end",fileCompareEntity::olderThan),
-                QPair<QString,fileCompareEntity>("Præcis dato",fileCompareEntity::exactDate),
-                QPair<QString,fileCompareEntity>("Yngre end",fileCompareEntity::youngerThan)};
+        QPair<QString,fileCompareEntity>("Contains",fileCompareEntity::contains),
+                QPair<QString,fileCompareEntity>("Does not contain",fileCompareEntity::dontMatch),
+                QPair<QString,fileCompareEntity>("Matching",fileCompareEntity::match),
+                QPair<QString,fileCompareEntity>("Does not match",fileCompareEntity::dontMatch),
+                QPair<QString,fileCompareEntity>("Greater than",fileCompareEntity::bigger),
+                QPair<QString,fileCompareEntity>("Greater or equal than",fileCompareEntity::biggerOrEqual),
+                QPair<QString,fileCompareEntity>("Equal",fileCompareEntity::equal),
+                QPair<QString,fileCompareEntity>("Less or equal than",fileCompareEntity::lesserOrEqual),
+                QPair<QString,fileCompareEntity>("Equal than",fileCompareEntity::lesser),
+                QPair<QString,fileCompareEntity>("Older than",fileCompareEntity::olderThan),
+                QPair<QString,fileCompareEntity>("Extact date",fileCompareEntity::exactDate),
+                QPair<QString,fileCompareEntity>("Younger than",fileCompareEntity::youngerThan)};
 
     const QList<QPair<QString,fileTypeEntity> > fileTypeFilterMappings
     {
-        QPair<QString,fileTypeEntity>("Filer", fileTypeEntity::File),
-                QPair<QString,fileTypeEntity>("Mapper", fileTypeEntity::Folder),
-                QPair<QString,fileTypeEntity>("Uafklaret", fileTypeEntity::unresolved)
+        QPair<QString,fileTypeEntity>("Files", fileTypeEntity::File),
+                QPair<QString,fileTypeEntity>("Folders", fileTypeEntity::Folder),
+                QPair<QString,fileTypeEntity>("Undetermined", fileTypeEntity::unresolved)
     };
 
     // Retrieve list methods

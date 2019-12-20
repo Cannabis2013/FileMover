@@ -4,6 +4,7 @@
 
 #include "testfilecreator.h"
 
+#ifdef TEST_MODE
 
 class HelperFunctions
 {
@@ -632,8 +633,7 @@ void Core_functionality::operation_filepath_contain_success()
 
     QVERIFY(referenceList == actualList);
 }
-
     QTEST_MAIN(Core_functionality)
 
 #include "tst_core_functionality.moc"
-
+#endif

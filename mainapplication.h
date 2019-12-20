@@ -2,6 +2,7 @@
 #define MAINAPPLICATION_H
 
 #define TEST_MODE
+
 #include <qthread.h>
 #include "settingsmanager.h"
 #include "fileinformationmanager.h"

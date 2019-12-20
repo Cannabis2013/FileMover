@@ -176,8 +176,8 @@ void mainWindow::closeEvent(QCloseEvent *cE)
 {
     if(coreApplication->closeOnExit()) {
         cE->accept();
-        delete coreApplication;
         writeSettings();
+        delete coreApplication;
         tray->hide();
     }
     else {

@@ -24,7 +24,7 @@ void AddRuleDialog::on_addSubRule_clicked()
     rD::fileCompareEntity currentCompareMode = condWidget->currentCompareMode();
     sRule.fieldCondition = rDefs.fileConditionEntityFromString(cText);
     sRule.fileCompareMode = condWidget->currentCompareMode();
-    if(conMode == rD::filepathMode|| conMode == rD::extensionMode)
+    if(conMode == rD::baseNameMode || conMode == rD::filepathMode|| conMode == rD::extensionMode)
     {
         sRule.keyWords = Worker::splitString(condWidget->keyWordValues());
 

@@ -5,7 +5,8 @@
 #include "messageBox.h"
 #include <QTranslator>
 
-class AddRuleDialog : public AbstractRuleDialog
+class
+        AddRuleDialog : public AbstractRuleDialog
 {
 public:
     explicit AddRuleDialog(QStringList watchFolders);

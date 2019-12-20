@@ -335,7 +335,48 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
     {
         bool condition = false;
         // Evaluating filename patterns
-        if(rule.fieldCondition == rD::filepathMode)
+        if(rule.fieldCondition == rD::baseNameMode)
+        {
+            if(rule.fileCompareMode == rD::contains)
+            {
+                for(QString kWord : rule.keyWords)
+                {
+                    if(fObject->baseName().contains(kWord))
+                        condition = true;
+                }
+                if(condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::dontContain)
+            {
+                for(QString kWord : rule.keyWords)
+                {
+                    if(fObject->baseName().contains(kWord))
+                        condition = true;
+                }
+                if(!condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::match)
+            {
+                for(QString kWord : rule.keyWords)
+                {
+                    if(fObject->baseName() == kWord)
+                        condition = true;
+                }
+                if(condition)
+                    filesToProcess << fObject;
+            }
+            else if(rule.fileCompareMode == rD::dontMatch)
+            {
+                for(QString kWord : rule.keyWords)
+                    if(fObject->baseName() == kWord)
+                        condition = true;
+                if(!condition)
+                    filesToProcess << fObject;
+            }
+        }
+        else if(rule.fieldCondition == rD::filepathMode)
         {
             if(rule.fileCompareMode == rD::contains)
             {

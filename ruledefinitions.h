@@ -73,16 +73,23 @@
 struct ruleDefinitions
 {
     // Enumerated variables..
-    enum ruleEntityType {actionProperty,conditionProperty, compareProperty, everyProperty};
-    enum fileActionEntity{Move,Delete,Copy,none};
+    enum ruleEntityType {actionProperty,
+                         conditionProperty,
+                         compareProperty,
+                         everyProperty};
+    enum fileActionEntity{Move,
+                          Delete,
+                          Copy,
+                          none};
     enum fileConditionEntity{notDefined,
-                                 filepathMode,
-                                 extensionMode,
-                                 sizeMode,
-                                 parentFolderMode,
-                                 dateCreatedMode,
-                                 dateModifiedMode,
-                                 nonConditionalMode};
+                             baseNameMode,
+                             filepathMode,
+                             extensionMode,
+                             sizeMode,
+                             parentFolderMode,
+                             dateCreatedMode,
+                             dateModifiedMode,
+                             nonConditionalMode};
 
     enum fileCompareEntity{match,
                      dontMatch,
@@ -121,18 +128,19 @@ struct ruleDefinitions
 
     const QList<QPair<QString,fileActionEntity> > actionMappings {
         QPair<QString,fileActionEntity>(("Move content"),fileActionEntity::Move),
-                QPair<QString,fileActionEntity>("Delete content",fileActionEntity::Delete),
-                QPair<QString,fileActionEntity>("Copy content",fileActionEntity::Copy),
-                QPair<QString,fileActionEntity>("Do nothing",fileActionEntity::none)};
+        QPair<QString,fileActionEntity>("Delete content",fileActionEntity::Delete),
+        QPair<QString,fileActionEntity>("Copy content",fileActionEntity::Copy),
+        QPair<QString,fileActionEntity>("Do nothing",fileActionEntity::none)};
 
     const QList<QPair<QString,fileConditionEntity> > conditionMappings {
+        QPair<QString,fileConditionEntity>("Base name",fileConditionEntity::baseNameMode),
         QPair<QString,fileConditionEntity>("File name",fileConditionEntity::filepathMode),
-                QPair<QString,fileConditionEntity>("File suffix",fileConditionEntity::extensionMode),
-                QPair<QString,fileConditionEntity>("File size",fileConditionEntity::sizeMode),
-                QPair<QString,fileConditionEntity>("In folder",fileConditionEntity::parentFolderMode),
-                QPair<QString,fileConditionEntity>("Date created",fileConditionEntity::dateCreatedMode),
-                QPair<QString,fileConditionEntity>("Date edited",fileConditionEntity::dateModifiedMode),
-                QPair<QString,fileConditionEntity>("No conditions",fileConditionEntity::nonConditionalMode)};
+        QPair<QString,fileConditionEntity>("File suffix",fileConditionEntity::extensionMode),
+        QPair<QString,fileConditionEntity>("File size",fileConditionEntity::sizeMode),
+        QPair<QString,fileConditionEntity>("In folder",fileConditionEntity::parentFolderMode),
+        QPair<QString,fileConditionEntity>("Date created",fileConditionEntity::dateCreatedMode),
+        QPair<QString,fileConditionEntity>("Date edited",fileConditionEntity::dateModifiedMode),
+QPair<QString,fileConditionEntity>("No conditions",fileConditionEntity::nonConditionalMode)};
 
     const QList<QPair<QString,fileCompareEntity> > compareMappings {
         QPair<QString,fileCompareEntity>("Contains",fileCompareEntity::contains),
@@ -182,7 +190,8 @@ struct ruleDefinitions
     const QStringList allCompareEntitiesToStrings(fileConditionEntity condition)
     {
         QStringList resultingList;
-        if(condition == fileConditionEntity::filepathMode ||
+        if(condition == fileConditionEntity::baseNameMode ||
+                condition == fileConditionEntity::filepathMode ||
                 condition == fileConditionEntity::extensionMode)
         {
             for(QPair<QString,fileCompareEntity> pair : compareMappings) {

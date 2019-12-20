@@ -234,7 +234,9 @@ ruleDefinitions::fileCompareEntity conditionWidget::currentCompareMode()
     rD rDefs;
     QString modeText = mainModeSelector->currentText();
 
-    if(currentFileModeRule == rD::filepathMode || currentFileModeRule == rD::extensionMode)
+    if(currentFileModeRule == rD::baseNameMode ||
+            currentFileModeRule == rD::filepathMode ||
+            currentFileModeRule == rD::extensionMode)
         return rDefs.fileCompareEntityFromString(modeText);
     else if(currentFileModeRule == rD::sizeMode && modeText == rDefs.intervalConditionalList.at(0))
         return rDefs.fileCompareEntityFromString(ui->fixedSizeOperatorSelector->currentText());

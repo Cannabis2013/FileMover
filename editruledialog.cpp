@@ -43,10 +43,9 @@ void EditRuleDialog::on_addSubRule_clicked()
     sRule.fieldCondition = conMode;
     rD::fileCompareEntity currentCompareMode = condWidget->currentCompareMode();
     sRule.fileCompareMode = currentCompareMode;
-    if(conMode == rD::filepathMode|| conMode == rD::extensionMode)
+    if(conMode == rD::baseNameMode || conMode == rD::filepathMode|| conMode == rD::extensionMode)
     {
         sRule.keyWords = Worker::splitString(condWidget->keyWordValues());
-
     }
     else if(conMode == rD::sizeMode &&
             currentCompareMode != rD::interval)

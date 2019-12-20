@@ -97,8 +97,6 @@ protected:
 
 private:
     Ui::AbstractRuleDialog *ui;
-
-    friend class settingsWindow;
 };
 
 #endif // abstractRuleDialog_H

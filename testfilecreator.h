@@ -25,17 +25,21 @@ struct VIRTUAL_FILE_OBJECT
     QString filePath;
     myDateTime dateCreated; // Has to be altered to perform tests
     QFileInfo additionalInformation; // Static information not to be altered
-
+    QString fileName(){return additionalInformation != QFileInfo() ?
+                    additionalInformation.fileName() :
+                    QString();}
 };
 
-class VirtualObjects
+class Virtual_Objects
 {
 public:
-    explicit VirtualObjects();
+    explicit Virtual_Objects();
     VIRTUAL_FILE_OBJECT value(const QString &path) const;
     VIRTUAL_FILE_OBJECT value(const int &index) const;
-    void operator<<(const VIRTUAL_FILE_OBJECT &obj);
-    bool operator==(VirtualObjects objects) const;
+    const Virtual_Objects &operator<<(const VIRTUAL_FILE_OBJECT &obj);
+    bool operator==(Virtual_Objects objects) const;
+    bool operator!=(Virtual_Objects objects) const;
+    VIRTUAL_FILE_OBJECT operator[](long a);
 
     inline int count() const{return _objects.count();}
 
@@ -50,11 +54,12 @@ class TestFileCreator
 public:
     TestFileCreator();
 
-    const VirtualObjects *createFiles(const QString &directory, const QStringList &fileNames);
-    VirtualObjects getVirtualFiles(const QString &filePath);
+    const Virtual_Objects *createFiles(const QString &directory, const QStringList &fileNames);
+    VIRTUAL_FILE_OBJECT VirtualObject(const QString &fileName);
+    Virtual_Objects VirtualObjects(const QString &filePath);
     bool emptyTestFolder(const QString &dirPath);
 
-    VirtualObjects virtualObjects() const;
+    Virtual_Objects virtualObjects() const;
 
 private:
     // Private member methods
@@ -62,7 +67,7 @@ private:
     void appendVirtualFileObject(const QFileInfo &file);
     // Member variables
     QMap<int,myDateTime> dateMappings;
-    VirtualObjects _virtualObjects;
+    Virtual_Objects _virtualObjects;
 };
 
 #endif // TESTFILECREATOR_H

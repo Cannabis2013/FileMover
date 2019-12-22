@@ -2,6 +2,7 @@
 
 TestFileCreator::TestFileCreator()
 {
+    fillDateMappings();
 }
 
 bool TestFileCreator::emptyTestFolder(const QString &dirPath)
@@ -38,7 +39,7 @@ bool TestFileCreator::emptyTestFolder(const QString &dirPath)
 
 }
 
-const VirtualObjects *TestFileCreator::createFiles(const QString &directory, const QStringList &fileNames)
+const Virtual_Objects *TestFileCreator::createFiles(const QString &directory, const QStringList &fileNames)
 {
     QString fPath = directory;
 
@@ -56,8 +57,6 @@ const VirtualObjects *TestFileCreator::createFiles(const QString &directory, con
     QDir dir(directory);
     if(!dir.exists())
         dir.mkdir(directory);
-
-
 
     for(QString fileName : fileNames)
     {
@@ -81,13 +80,26 @@ const VirtualObjects *TestFileCreator::createFiles(const QString &directory, con
     return  &_virtualObjects;
 }
 
-VirtualObjects TestFileCreator::getVirtualFiles(const QString &directory)
+VIRTUAL_FILE_OBJECT TestFileCreator::VirtualObject(const QString &fileName)
+{
+    for (int i = 0; i < _virtualObjects.count(); ++i) {
+        VIRTUAL_FILE_OBJECT object = _virtualObjects[i];
+        QString objectFilePath = object.filePath;
+        QString objectFileName = object.fileName();
+        if(objectFileName == fileName && QFile::exists(objectFilePath))
+            return object;
+    }
+
+    throw "Object has no representation on filesystem";
+}
+
+Virtual_Objects TestFileCreator::VirtualObjects(const QString &directory)
 {
     /*
      * Retrieve a list of virtual file objects conditioned upon their existance in the list
      */
 
-    VirtualObjects resultingList;
+    Virtual_Objects resultingList;
     QDirIterator it(directory,QDir::AllEntries, QDirIterator::Subdirectories);
     while (it.hasNext()) {
         QFileInfo file = it.next();
@@ -132,17 +144,18 @@ void TestFileCreator::appendVirtualFileObject(const QFileInfo &file)
     _virtualObjects << f_obj;
 }
 
-VirtualObjects TestFileCreator::virtualObjects() const
+Virtual_Objects TestFileCreator::virtualObjects() const
 {
     return _virtualObjects;
 }
 
-VirtualObjects::VirtualObjects()
+
+Virtual_Objects::Virtual_Objects()
 {
 
 }
 
-VIRTUAL_FILE_OBJECT VirtualObjects::value(const QString &path) const
+VIRTUAL_FILE_OBJECT Virtual_Objects::value(const QString &path) const
 {
     VIRTUAL_FILE_OBJECT item;
     for (int i = 0; i < _objects.count(); ++i) {
@@ -154,7 +167,7 @@ VIRTUAL_FILE_OBJECT VirtualObjects::value(const QString &path) const
     throw "Not found";
 }
 
-VIRTUAL_FILE_OBJECT VirtualObjects::value(const int &index) const
+VIRTUAL_FILE_OBJECT Virtual_Objects::value(const int &index) const
 {
     if(index < 0 || index >= _objects.count())
         throw std::out_of_range("OUT_OF_RANGE");
@@ -162,12 +175,13 @@ VIRTUAL_FILE_OBJECT VirtualObjects::value(const int &index) const
     return _objects.value(index);
 }
 
-void VirtualObjects::operator<<(const VIRTUAL_FILE_OBJECT &obj)
+const Virtual_Objects &Virtual_Objects::operator<<(const VIRTUAL_FILE_OBJECT &obj)
 {
     _objects << obj;
+    return *this;
 }
 
-bool VirtualObjects::operator==(VirtualObjects objects) const
+bool Virtual_Objects::operator==(Virtual_Objects objects) const
 {
     if(_objects.count() != objects.count())
         return false;
@@ -181,4 +195,25 @@ bool VirtualObjects::operator==(VirtualObjects objects) const
         }
     }
     return true;
+}
+
+bool Virtual_Objects::operator!=(Virtual_Objects objects) const
+{
+    if(_objects.count() != objects.count())
+        return true;
+
+    for (VIRTUAL_FILE_OBJECT obj : _objects) {
+        try {
+            objects.value(obj.filePath);
+        }  catch (char *msg) {
+            Q_UNUSED(msg)
+            return true;
+        }
+    }
+    return false;
+}
+
+VIRTUAL_FILE_OBJECT Virtual_Objects::operator[](long a)
+{
+    return _objects[a];
 }

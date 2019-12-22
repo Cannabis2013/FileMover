@@ -98,6 +98,8 @@ Virtual_Objects TestFileCreator::VirtualObjects(const QString &directory)
     /*
      * Retrieve a list of virtual file objects conditioned upon their existance in the list
      */
+    if(!QFile::exists(directory))
+        throw std::domain_error("Directory is not part of the domain!");
 
     Virtual_Objects resultingList;
     QDirIterator it(directory,QDir::AllEntries, QDirIterator::Subdirectories);

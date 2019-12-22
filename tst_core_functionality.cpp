@@ -146,6 +146,7 @@ private slots:
     void operation_filepath_match_success_1();
     void operation_filepath_match_fail_1();
     void operation_filepath_contain_success_1();
+    void operation_filepath_contain_fail_1();
 
 private:
     ICoreApplication *mApp;
@@ -614,6 +615,9 @@ void Core_functionality::operation_filepath_match_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
+    } catch (const std::domain_error e)
+    {
+        throw e;
     }
 
 
@@ -681,22 +685,23 @@ void Core_functionality::operation_filepath_match_fail_1()
     const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
     Q_UNUSED(objects)
 
-    // Initialize reference list with expected or control elements
+    // Initialize reference list with expected/control elements
     Virtual_Objects referenceList;
 
-    QStringList chosenList = QStringList() << "";
-
+    QStringList chosenList = QStringList() << prekWrds.first();
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->value(i);
         QFileInfo info = obj.additionalInformation;
         bool match = true;
         QString fName = info.fileName();
-
-        if(fName != prekWrds.first())
-           match = false;
-        if(!match)
-            referenceList << obj;
+        for (QString str : chosenList)
+        {
+            if(fName != str)
+               match = false;
+            if(!match)
+                referenceList << obj;
+        }
     }
 
     mApp->clearFoldersAccordingToRules(mApp->watchFolders());
@@ -715,8 +720,10 @@ void Core_functionality::operation_filepath_match_fail_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
+    } catch (const std::domain_error e)
+    {
+        throw e;
     }
-
 
     /*
      * END STATE:
@@ -734,7 +741,7 @@ void Core_functionality::operation_filepath_match_fail_1()
         printf("Some files/folders not deleted");
 
     QVERIFY(referenceList != actualList &&
-            referenceList.count() == test_file_set_1.count() - 1 &&
+            referenceList.count() == test_file_set_1.count() - chosenList.count() &&
             actualList.count() == test_file_set_1.count() - prekWrds.count());
 }
 
@@ -816,6 +823,9 @@ void Core_functionality::operation_filepath_contain_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
+    } catch (const std::domain_error e)
+    {
+        throw e;
     }
 
 
@@ -835,6 +845,107 @@ void Core_functionality::operation_filepath_contain_success_1()
         printf("Some files/folders not deleted");
 
     QVERIFY(referenceList == actualList);
+}
+
+void Core_functionality::operation_filepath_contain_fail_1()
+{
+    /*
+     * INITIAL STATE:
+     *  - Create dummy files in folder 'test_folder'
+     */
+
+    TestFileCreator *f_creator;
+    try {
+        f_creator = new  TestFileCreator();
+    } catch (char *msg) {
+        printf("%s\n",msg);
+        QVERIFY(false);
+        return;
+    }
+
+    mApp->addWatchFolder(TEST_WORKING_PATH);
+
+    // Pre-state variables
+
+    const QString preTitle = "Test1";
+    QStringList prekWrds = QStringList() << "Notes" << "FCK";
+    rD::fileActionEntity preAction = rD::Delete;
+    rD::fileConditionEntity preCond = rD::filepathMode;
+    rD::fileCompareEntity preComp = rD::contains;
+    Rule preRule;
+
+    // Initialize pre-state
+
+    preRule.title = preTitle;
+    preRule.actionRuleEntity = preAction;
+
+    // Create rule
+    SubRule sR;
+    preRule.appliesToPath = TEST_WORKING_PATH;
+    sR.keyWords = prekWrds;
+    sR.fieldCondition = preCond;
+    sR.fileCompareMode = preComp;
+
+    preRule.subRules << sR;
+
+    mApp->insertRule(preRule);
+
+    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+
+    Virtual_Objects referenceList;
+
+    QStringList chosenList = QStringList() << prekWrds.first();
+
+    for (int i = 0; i < objects->count(); ++i) {
+        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        QFileInfo info = obj.additionalInformation;
+        QString fName = info.fileName();
+        bool contains = false;
+        for (QString str : chosenList) {
+            if(fName.contains(str))
+               contains = true;
+        }
+        if(!contains)
+            referenceList << obj;
+    }
+
+    mApp->clearFoldersAccordingToRules(mApp->watchFolders());
+
+    /*
+     * Note regard async call:
+     *  Due to asynchonously calls to both FileWorkOperationWorker and EntityQueueManager tests have to wait a little amount of time
+     *  to ensure proper sync between the caller and the called classes
+     */
+
+    QThread::sleep(2);
+
+    Virtual_Objects actualList;
+    try {
+        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+    }  catch (const char *msg) {
+        cout << msg << endl;
+    } catch (const std::domain_error e)
+    {
+        throw e;
+    }
+
+
+    /*
+     * END STATE:
+     *  - Clear test folder
+     */
+    int cleaned_up = false;
+    try {
+        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
+
+    if(!cleaned_up)
+        printf("Some files/folders not deleted");
+
+    QVERIFY(referenceList != actualList);
 }
     QTEST_MAIN(Core_functionality)
 

@@ -54,7 +54,7 @@ class TestFileCreator
 public:
     TestFileCreator();
 
-    const Virtual_Objects *createFiles(const QString &directory, const QStringList &fileNames);
+    Virtual_Objects *createFiles(const QString &directory, const QStringList &fileNames);
     VIRTUAL_FILE_OBJECT VirtualObject(const QString &fileName);
     Virtual_Objects VirtualObjects(const QString &filePath);
     bool emptyTestFolder(const QString &dirPath);

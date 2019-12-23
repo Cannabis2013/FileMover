@@ -39,7 +39,7 @@ bool TestFileCreator::emptyTestFolder(const QString &dirPath)
 
 }
 
-const Virtual_Objects *TestFileCreator::createFiles(const QString &directory, const QStringList &fileNames)
+Virtual_Objects *TestFileCreator::createFiles(const QString &directory, const QStringList &fileNames)
 {
     QString fPath = directory;
 

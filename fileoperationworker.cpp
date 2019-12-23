@@ -335,7 +335,7 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
     {
         bool condition = false;
         // Evaluating filename patterns
-        if(rule.fieldCondition == rD::baseNameMode)
+        if(rule.fieldCondition == rD::fileBaseMode)
         {
             if(rule.fileCompareMode == rD::contains)
             {
@@ -415,7 +415,7 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         }
 
         // Evaluating file extension related patterns
-        else if(rule.fieldCondition == rD::extensionMode && fObject->isFile())
+        else if(rule.fieldCondition == rD::fileExtensionMode && fObject->isFile())
         {
             if(rule.fileCompareMode == rD::contains)
             {
@@ -455,7 +455,7 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
          * Check if parent folder name meets the criterias set
          */
 
-        else if(rule.fieldCondition == rD::parentFolderMode)
+        else if(rule.fieldCondition == rD::fileParentMode)
         {
             if(rule.fileCompareMode == rD::contains)
             {
@@ -491,31 +491,31 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                     filesToProcess << fObject;
             }
         }
-        else if(rule.fieldCondition == rD::sizeMode)
+        else if(rule.fieldCondition == rD::fileSize)
         {
             if(rule.fileCompareMode != rD::interval)
             {
-                if(rule.fileCompareMode == rD::lesser && fObject->size() < fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                if(rule.fileCompareMode == rD::lesser && fObject->size() < fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << fObject;
                 else if(rule.fileCompareMode == rD::lesserOrEqual &&
-                        fObject->size() <= fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                        fObject->size() <= fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << fObject;
                 else if(rule.fileCompareMode == rD::equal &&
-                        fObject->size() == fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                        fObject->size() == fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << fObject;
                 else if(rule.fileCompareMode == rD::biggerOrEqual &&
-                        fObject->size() >= fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                        fObject->size() >= fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << fObject;
                 else if(rule.fileCompareMode == rD::bigger &&
-                        fObject->size() > fW::byteConvert(rule.sizeLimit.first,rule.sizeLimit.second))
+                        fObject->size() > fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << fObject;
             }
             else if(rule.fileCompareMode == rD::interval &&
-                    fObject->size() >= fW::byteConvert(rule.sizeInterval.first.first,rule.sizeInterval.first.second) &&
-                    fObject->size() <= fW::byteConvert(rule.sizeInterval.second.first,rule.sizeInterval.second.second))
+                    fObject->size() >= fW::toBytes(rule.sizeInterval.first.first,rule.sizeInterval.first.second) &&
+                    fObject->size() <= fW::toBytes(rule.sizeInterval.second.first,rule.sizeInterval.second.second))
                 filesToProcess << fObject;
         }
-        else if(rule.fieldCondition == rD::dateCreatedMode)
+        else if(rule.fieldCondition == rD::fileCreatedMode)
         {
             if(rule.fileCompareMode == rD::interval)
             {
@@ -533,7 +533,7 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             }
 
         }
-        else if(rule.fieldCondition == rD::dateModifiedMode)
+        else if(rule.fieldCondition == rD::fileModifiedMode)
         {
             if(rule.fileCompareMode == rD::interval)
             {

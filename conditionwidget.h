@@ -78,7 +78,7 @@ private:
     // Filename/filepath related..
     QString keyWordValues() const;
     // Get size values..
-    QPair<int,QString> fixedSizeValues() const;
+    QPair<uint, QString> fixedSizeValues() const;
     QPair<QPair<int,QString>,QPair<int,QString>> intervalSizeValues() const;
     // Get Date values..
     myDateTime fixedConditionalDate() const;

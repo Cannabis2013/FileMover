@@ -45,16 +45,16 @@ QStringList rulesManager::splitString(const QString split)
 
 QString rulesManager::ruleKeyWordToString(SubRule sRule)
 {
-    if(sRule.fieldCondition == rD::sizeMode &&
+    if(sRule.fieldCondition == rD::fileSize &&
             sRule.fileCompareMode != rD::interval)
         return QString::number(sRule.sizeLimit.first) + " " + sRule.sizeLimit.second;
-    else if(sRule.fieldCondition == rD::sizeMode &&
+    else if(sRule.fieldCondition == rD::fileSize &&
             sRule.fileCompareMode == rD::interval)
         return rulesManager::ruleSizeLimitsToString(sRule);
-    else if((sRule.fieldCondition == rD::dateCreatedMode || sRule.fieldCondition == rD::dateModifiedMode) &&
+    else if((sRule.fieldCondition == rD::fileCreatedMode || sRule.fieldCondition == rD::fileModifiedMode) &&
             sRule.fileCompareMode != rD::interval)
         return sRule.date.toString("dd.MM.yyyy");
-    else if((sRule.fieldCondition == rD::dateCreatedMode || sRule.fieldCondition == rD::dateModifiedMode) &&
+    else if((sRule.fieldCondition == rD::fileCreatedMode || sRule.fieldCondition == rD::fileModifiedMode) &&
             sRule.fileCompareMode == rD::interval)
         return rulesManager::ruleDateLimitsToString(sRule);
     else

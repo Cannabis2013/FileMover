@@ -82,29 +82,29 @@ struct ruleDefinitions
                           Copy,
                           none};
     enum fileConditionEntity{notDefined,
-                             baseNameMode,
+                             fileBaseMode,
                              filepathMode,
-                             extensionMode,
-                             sizeMode,
-                             parentFolderMode,
-                             dateCreatedMode,
-                             dateModifiedMode,
+                             fileExtensionMode,
+                             fileSize,
+                             fileParentMode,
+                             fileCreatedMode,
+                             fileModifiedMode,
                              nonConditionalMode};
 
-    enum fileCompareEntity{match,
-                     dontMatch,
-                     contains,
-                     dontContain,
-                     lesser,
-                     lesserOrEqual,
-                     equal,
-                     biggerOrEqual,
-                     bigger,
-                     interval,
-                     olderThan,
-                     exactDate,
-                     youngerThan,
-                     noDateSet,
+    enum fileCompareEntity{match,   // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
+                     dontMatch,     // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
+                     contains,      // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
+                     dontContain,   // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
+                     lesser,        // Filesize
+                     lesserOrEqual, // Filesize
+                     equal,         // Filesize
+                     biggerOrEqual, // Filesize
+                     bigger,        // Filesize
+                     interval,      // Filesize/date interval
+                     olderThan,     // FileDateMode {fileCreatedMode,fileModifiedMode}
+                     exactDate,     // FileDateMode {fileCreatedMode,fileModifiedMode}
+                     youngerThan,   // FileDateMode {fileCreatedMode,fileModifiedMode}
+                     noDateSet,     // FileDateMode {fileCreatedMode,fileModifiedMode}
                      noCompareModeSet};
 
     enum fileTypeEntity {Folder, File, unresolved};
@@ -115,7 +115,7 @@ struct ruleDefinitions
     QStringList intervalConditionalList {"Enkel grænse","Interval grænse"};
 
     // List variables..
-    static QStringList sizeUnits(){return QStringList{"b","kb","mb","gb"};}
+    static QStringList sizeUnits(){return {"b","kb","mb","gb"};}
 
 
     /*
@@ -133,13 +133,13 @@ struct ruleDefinitions
         QPair<QString,fileActionEntity>("Do nothing",fileActionEntity::none)};
 
     const QList<QPair<QString,fileConditionEntity> > conditionMappings {
-        QPair<QString,fileConditionEntity>("Base name",fileConditionEntity::baseNameMode),
+        QPair<QString,fileConditionEntity>("Base name",fileConditionEntity::fileBaseMode),
         QPair<QString,fileConditionEntity>("File name",fileConditionEntity::filepathMode),
-        QPair<QString,fileConditionEntity>("File suffix",fileConditionEntity::extensionMode),
-        QPair<QString,fileConditionEntity>("File size",fileConditionEntity::sizeMode),
-        QPair<QString,fileConditionEntity>("In folder",fileConditionEntity::parentFolderMode),
-        QPair<QString,fileConditionEntity>("Date created",fileConditionEntity::dateCreatedMode),
-        QPair<QString,fileConditionEntity>("Date edited",fileConditionEntity::dateModifiedMode),
+        QPair<QString,fileConditionEntity>("File suffix",fileConditionEntity::fileExtensionMode),
+        QPair<QString,fileConditionEntity>("File size",fileConditionEntity::fileSize),
+        QPair<QString,fileConditionEntity>("In folder",fileConditionEntity::fileParentMode),
+        QPair<QString,fileConditionEntity>("Date created",fileConditionEntity::fileCreatedMode),
+        QPair<QString,fileConditionEntity>("Date edited",fileConditionEntity::fileModifiedMode),
 QPair<QString,fileConditionEntity>("No conditions",fileConditionEntity::nonConditionalMode)};
 
     const QList<QPair<QString,fileCompareEntity> > compareMappings {
@@ -190,9 +190,9 @@ QPair<QString,fileConditionEntity>("No conditions",fileConditionEntity::nonCondi
     const QStringList allCompareEntitiesToStrings(fileConditionEntity condition)
     {
         QStringList resultingList;
-        if(condition == fileConditionEntity::baseNameMode ||
+        if(condition == fileConditionEntity::fileBaseMode ||
                 condition == fileConditionEntity::filepathMode ||
-                condition == fileConditionEntity::extensionMode)
+                condition == fileConditionEntity::fileExtensionMode)
         {
             for(QPair<QString,fileCompareEntity> pair : compareMappings) {
                 if(pair.second == fileCompareEntity::contains ||
@@ -204,7 +204,7 @@ QPair<QString,fileConditionEntity>("No conditions",fileConditionEntity::nonCondi
                 }
             }
         }
-        else if(condition == fileConditionEntity::sizeMode)
+        else if(condition == fileConditionEntity::fileSize)
         {
             for(QPair<QString,fileCompareEntity> pair : compareMappings)
             {
@@ -218,8 +218,8 @@ QPair<QString,fileConditionEntity>("No conditions",fileConditionEntity::nonCondi
                 }
             }
         }
-        else if(condition == fileConditionEntity::dateCreatedMode ||
-                condition == fileConditionEntity::dateModifiedMode)
+        else if(condition == fileConditionEntity::fileCreatedMode ||
+                condition == fileConditionEntity::fileModifiedMode)
         {
             for(QPair<QString,fileCompareEntity> pair : compareMappings)
             {

@@ -113,7 +113,7 @@ QStringList Worker::splitString(const QString split)
     return splittetList;
 }
 
-qint64 Worker::byteConvert(int unit, QString fromUnit)
+qint64 Worker::toBytes(uint unit, QString fromUnit)
 {
     if(fromUnit == "b")
         return unit;

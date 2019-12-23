@@ -45,7 +45,6 @@ SOURCES += main.cpp\
     customdialog.cpp \
     customsplitter.cpp \
     customsplitterhandle.cpp \
-    entitymodel.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
     fileobject.cpp \

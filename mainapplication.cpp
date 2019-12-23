@@ -3,6 +3,7 @@
 MainApplication::MainApplication(const QString &appName,
                                  const QString &orgName)
 {
+    // Initialize member variables and pointers
     rManager = new rulesManager(appName,orgName);
     sManager = new settingsManager(appName,orgName);
     entityManager = new EntityQueueManager();
@@ -12,14 +13,16 @@ MainApplication::MainApplication(const QString &appName,
     fileWorkerThread = new QThread();
     queueThread = new QThread();
 
+    QString ressourceFolderPath = "Ressources";
+
+
+    // Move classes to their respective threads
     fWorker->moveToThread(fileWorkerThread);
     entityManager->moveToThread(queueThread);
 
-    QString ressourceFolderPath = "Ressources";
-
+    // Register custom types that is not recognised by Qt per default
     qRegisterMetaType<DirectoryItem>("DirectoryItem");
     qRegisterMetaType<QList<DirectoryItem>>("QList<DirectoryItem>");
-
     qRegisterMetaType<EntityModel>("EntityModel");
     qRegisterMetaType<DirectoryCountEntity>("DirectoryCountEntity");
 
@@ -51,6 +54,7 @@ MainApplication::MainApplication(const QString &appName,
 
     connect(fWorker,&fW::jobDone,this,&ICoreApplication::stateChanged);
 
+    // Start threads
     fileWorkerThread->start();
     queueThread->start();
 

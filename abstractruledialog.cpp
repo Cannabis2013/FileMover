@@ -73,21 +73,21 @@ void AbstractRuleDialog::updateConditionView(SubRule &sR)
     rD::fileConditionEntity cond = sR.fieldCondition;
     rD::fileCompareEntity comp = sR.fileCompareMode;
 
-    if(cond == rD::sizeMode && comp != rD::interval)
+    if(cond == rD::fileSize && comp != rD::interval)
     {
         condWidget->setConditionalFixedSize(sR.sizeLimit,sR.fileCompareMode);
     }
-    else if(cond == rD::sizeMode && comp== rD::interval)
+    else if(cond == rD::fileSize && comp== rD::interval)
     {
         condWidget->setConditionalIntervalSize(sR.sizeInterval);
     }
-    else if((cond == rD::dateCreatedMode || cond == rD::dateModifiedMode) &&
+    else if((cond == rD::fileCreatedMode || cond == rD::fileModifiedMode) &&
             comp != rD::interval)
     {
         condWidget->setFixedDate(sR.date);
         condWidget->setCompareView(sR.fileCompareMode);
     }
-    else if((cond == rD::dateCreatedMode || cond == rD::dateModifiedMode) &&
+    else if((cond == rD::fileCreatedMode || cond == rD::fileModifiedMode) &&
             comp == rD::interval)
     {
         condWidget->setIntervalDate(sR.dateIntervals);
@@ -141,22 +141,22 @@ void AbstractRuleDialog::updateView()
         headerData << rDefs.fileConditionEntityToString(condition);
         headerData << rDefs.fileCompareEntityToString(sRule.fileCompareMode);
 
-        if((condition == rD::dateCreatedMode || condition == rD::dateModifiedMode) &&
+        if((condition == rD::fileCreatedMode || condition == rD::fileModifiedMode) &&
                 sRule.fileCompareMode != rD::interval)
         {
             headerData << rulesManager::ruleKeyWordToString(sRule);
         }
-        else if((condition == rD::dateCreatedMode || condition == rD::dateModifiedMode) &&
+        else if((condition == rD::fileCreatedMode || condition == rD::fileModifiedMode) &&
                 sRule.fileCompareMode == rD::interval)
         {
             headerData << rulesManager::ruleDateLimitsToString(sRule);
         }
-        else if(condition == rD::sizeMode &&
+        else if(condition == rD::fileSize &&
                 sRule.fileCompareMode != rD::interval)
         {
            headerData << rulesManager::ruleKeyWordToString(sRule);
         }
-        else if(condition == rD::sizeMode &&
+        else if(condition == rD::fileSize &&
                 sRule.fileCompareMode == rD::interval)
         {
             headerData << rulesManager::ruleSizeLimitsToString(sRule);

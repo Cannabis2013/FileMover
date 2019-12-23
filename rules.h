@@ -13,8 +13,8 @@ struct SubRule
     rD::fileCompareEntity fileCompareMode = rD::noCompareModeSet;
     rD::fileConditionEntity fieldCondition = rD::nonConditionalMode;
 
-    QPair<int,QString>sizeLimit;
-    QPair<QPair<int,QString>,QPair<int,QString>> sizeInterval;
+    QPair<uint,QString>sizeLimit;
+    QPair<QPair<uint,QString>,QPair<int,QString>> sizeInterval;
     myDateTime date;
     QPair<myDateTime,myDateTime>dateIntervals;
     bool matchWholeWords = false;

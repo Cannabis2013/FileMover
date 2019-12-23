@@ -6,6 +6,8 @@
 
 #ifdef TEST_MODE
 
+#define SLEEP_SEC 1
+
 class RuleTools
 {
 public:
@@ -147,6 +149,7 @@ private slots:
     void operation_filepath_match_fail_1();
     void operation_filepath_contain_success_1();
     void operation_filepath_contain_fail_1();
+    void operation_size_at_least_success_1();
 
 private:
     ICoreApplication *mApp;
@@ -335,7 +338,7 @@ void Core_functionality::insert_rule_filepath_match_fail_2()
 
     QString postAPath = "/testpath", postTitle = "Test3";
     QStringList postkWrds = QStringList() << "T1" << "T2";
-    rD::fileConditionEntity postCond = rD::extensionMode;
+    rD::fileConditionEntity postCond = rD::fileExtensionMode;
     rD::fileCompareEntity postComp = rD::match;
     Rule compareRule;
 
@@ -368,7 +371,7 @@ void Core_functionality::insert_rule_datecreated_before_succes1()
     myDateTime mDate;
     mDate.setDate(QDate(2017,6,3));
 
-    sR.fieldCondition = rD::dateCreatedMode;
+    sR.fieldCondition = rD::fileCreatedMode;
     sR.fileCompareMode = rD::olderThan;
     sR.date = mDate;
 
@@ -394,7 +397,7 @@ void Core_functionality::insert_rule_datecreated_after_succes1()
     myDateTime mDate;
     mDate.setDate(QDate(2017,6,3));
 
-    sR.fieldCondition = rD::dateCreatedMode;
+    sR.fieldCondition = rD::fileCreatedMode;
     sR.fileCompareMode = rD::youngerThan;
     sR.date = mDate;
 
@@ -423,13 +426,13 @@ void Core_functionality::insert_rule_datecreated_before_fail1()
     originalDate.setDate(QDate(2017,6,3));
     compareDate.setDate(QDate(2015,4,2));
 
-    sR1.fieldCondition = rD::dateCreatedMode;
+    sR1.fieldCondition = rD::fileCreatedMode;
     sR1.fileCompareMode = rD::olderThan;
     sR1.date = originalDate;
 
     preRule.subRules << sR1;
 
-    sR2.fieldCondition = rD::dateCreatedMode;
+    sR2.fieldCondition = rD::fileCreatedMode;
     sR2.fileCompareMode = rD::olderThan;
     sR2.date = compareDate;
 
@@ -458,13 +461,13 @@ void Core_functionality::insert_rule_datecreated_before_fail2()
     myDateTime originalDate;
     originalDate.setDate(QDate(2017,6,3));
 
-    sR1.fieldCondition = rD::dateCreatedMode;
+    sR1.fieldCondition = rD::fileCreatedMode;
     sR1.fileCompareMode = rD::olderThan;
     sR1.date = originalDate;
 
     preRule.subRules << sR1;
 
-    sR2.fieldCondition = rD::dateCreatedMode;
+    sR2.fieldCondition = rD::fileCreatedMode;
     sR2.fileCompareMode = rD::youngerThan;
     sR2.date = originalDate;
 
@@ -488,7 +491,7 @@ void Core_functionality::insert_rule_sizeinterval_success_1()
 
     SubRule sR;
 
-    sR.fieldCondition = rD::sizeMode;
+    sR.fieldCondition = rD::fileSize;
     sR.fileCompareMode = rD::interval;
 
     SizeOperand minSize(244,"kb"),maxSize(512,"kb");
@@ -515,10 +518,10 @@ void Core_functionality::insert_rule_sizeinterval_fail_1()
 
     SubRule sR1,sR2;
 
-    sR1.fieldCondition = rD::sizeMode;
+    sR1.fieldCondition = rD::fileSize;
     sR1.fileCompareMode = rD::interval;
 
-    sR2.fieldCondition = rD::sizeMode;
+    sR2.fieldCondition = rD::fileSize;
     sR2.fileCompareMode = rD::interval;
 
 
@@ -608,7 +611,7 @@ void Core_functionality::operation_filepath_match_success_1()
      *  to ensure proper sync between the caller and the called classes
      */
 
-    QThread::sleep(2);
+    QThread::sleep(SLEEP_SEC);
 
     Virtual_Objects actualList;
     try {
@@ -713,7 +716,7 @@ void Core_functionality::operation_filepath_match_fail_1()
      *  to ensure proper sync between the caller and the called classes
      */
 
-    QThread::sleep(2);
+    QThread::sleep(SLEEP_SEC);
 
     Virtual_Objects actualList;
     try {
@@ -816,7 +819,7 @@ void Core_functionality::operation_filepath_contain_success_1()
      *  to ensure proper sync between the caller and the called classes
      */
 
-    QThread::sleep(2);
+    QThread::sleep(SLEEP_SEC);
 
     Virtual_Objects actualList;
     try {
@@ -917,7 +920,103 @@ void Core_functionality::operation_filepath_contain_fail_1()
      *  to ensure proper sync between the caller and the called classes
      */
 
-    QThread::sleep(2);
+    QThread::sleep(SLEEP_SEC);
+
+    Virtual_Objects actualList;
+    try {
+        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+    }  catch (const char *msg) {
+        cout << msg << endl;
+    } catch (const std::domain_error e)
+    {
+        throw e;
+    }
+
+
+    /*
+     * END STATE:
+     *  - Clear test folder
+     */
+    int cleaned_up = false;
+    try {
+        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
+
+    if(!cleaned_up)
+        printf("Some files/folders not deleted");
+
+    QVERIFY(referenceList != actualList);
+}
+
+void Core_functionality::operation_size_at_least_success_1()
+{
+    /*
+     * INITIAL STATE:
+     *  - Create dummy files in folder 'test_folder'
+     */
+
+    TestFileCreator *f_creator;
+    try {
+        f_creator = new  TestFileCreator();
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        QVERIFY(false);
+        return;
+    }
+
+    mApp->addWatchFolder(TEST_WORKING_PATH);
+
+    // Pre-state variables
+
+    const QString preTitle = "Test1";
+    uint sizeUnits = 500;
+    QString unit = "kb";
+    const QPair<uint,QString> upperLimit(sizeUnits,unit);
+    rD::fileActionEntity preAction = rD::Delete;
+    rD::fileConditionEntity preCond = rD::fileSize;
+    rD::fileCompareEntity preComp = rD::lesser;
+    Rule preRule;
+
+    // Initialize pre-state
+
+    preRule.title = preTitle;
+    preRule.actionRuleEntity = preAction;
+
+    // Create rule
+    SubRule sR;
+    preRule.appliesToPath = TEST_WORKING_PATH;
+    sR.fieldCondition = preCond;
+    sR.fileCompareMode = preComp;
+    sR.sizeLimit = upperLimit;
+
+    preRule.subRules << sR;
+
+    mApp->insertRule(preRule);
+
+    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+
+    Virtual_Objects referenceList;
+    qint64 bytes = fW::toBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+
+    for (int i = 0; i < objects->count(); ++i) {
+        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        qint64 sz = obj.additionalInformation.size();
+        if(sz < bytes)
+            referenceList << obj;
+    }
+
+    mApp->clearFoldersAccordingToRules(mApp->watchFolders());
+
+    /*
+     * Note regard async call:
+     *  Due to asynchonously calls to both FileWorkOperationWorker and EntityQueueManager tests have to wait a little amount of time
+     *  to ensure proper sync between the caller and the called classes
+     */
+
+    QThread::sleep(SLEEP_SEC);
 
     Virtual_Objects actualList;
     try {

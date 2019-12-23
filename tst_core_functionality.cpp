@@ -130,8 +130,8 @@ private slots:
 
     /*
      * Rules section
-     *  - rD::fileConditionEntity = filepathMode rD::fileCompareEntity = match4
      */
+
     void insert_rule_filepath_match_success_1();
     void insert_rule_filepath_match_fail_1();
     void insert_rule_filepath_match_fail_2();
@@ -145,11 +145,21 @@ private slots:
     /*
      * FileOperations section
      */
+
+    /*
+     * Delete
+     */
+
+    // FilePathMode
     void operation_filepath_match_success_1();
     void operation_filepath_match_fail_1();
     void operation_filepath_contain_success_1();
     void operation_filepath_contain_fail_1();
-    void operation_size_at_least_success_1();
+
+    // FileSizeMode
+    void operation_size_less_than_success_1();
+    void operation_size_equal_success_1();
+    void operation_size_greater_than_success_1();
 
 private:
     ICoreApplication *mApp;
@@ -951,7 +961,7 @@ void Core_functionality::operation_filepath_contain_fail_1()
     QVERIFY(referenceList != actualList);
 }
 
-void Core_functionality::operation_size_at_least_success_1()
+void Core_functionality::operation_size_less_than_success_1()
 {
     /*
      * INITIAL STATE:
@@ -972,12 +982,12 @@ void Core_functionality::operation_size_at_least_success_1()
     // Pre-state variables
 
     const QString preTitle = "Test1";
-    uint sizeUnits = 500;
+    uint sizeUnits = 100;
     QString unit = "kb";
     const QPair<uint,QString> upperLimit(sizeUnits,unit);
     rD::fileActionEntity preAction = rD::Delete;
     rD::fileConditionEntity preCond = rD::fileSize;
-    rD::fileCompareEntity preComp = rD::lesser;
+    rD::fileCompareEntity preComp = rD::lesserThan;
     Rule preRule;
 
     // Initialize pre-state
@@ -1004,7 +1014,7 @@ void Core_functionality::operation_size_at_least_success_1()
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->value(i);
         qint64 sz = obj.additionalInformation.size();
-        if(sz < bytes)
+        if(sz >= bytes)
             referenceList << obj;
     }
 
@@ -1028,6 +1038,105 @@ void Core_functionality::operation_size_at_least_success_1()
         throw e;
     }
 
+    /*
+     * END STATE:
+     *  - Clear test folder
+     */
+    int cleaned_up = false;
+    try {
+        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
+
+    if(!cleaned_up)
+        printf("Some files/folders not deleted");
+
+    QVERIFY(referenceList == actualList);
+}
+
+void Core_functionality::operation_size_equal_success_1()
+{
+    /*
+     * INITIAL STATE:
+     *  - Create dummy files in folder 'test_folder'
+     */
+
+    TestFileCreator *f_creator;
+    try {
+        f_creator = new  TestFileCreator();
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        QVERIFY(false);
+        return;
+    }
+
+    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+
+    mApp->addWatchFolder(TEST_WORKING_PATH);
+
+    // Pre-state variables
+
+    const QString preTitle = "Test1";
+    rD::fileActionEntity preAction = rD::Delete;
+    rD::fileConditionEntity preCond = rD::fileSize;
+    rD::fileCompareEntity preComp = rD::equal;
+    Rule preRule;
+
+    QString randomElement = test_file_set_1.value(qrand() % test_file_set_1.count() + 1);
+
+    VIRTUAL_FILE_OBJECT object = f_creator->VirtualObject(randomElement);
+
+    uint sizeUnits = object.additionalInformation.size();
+    QString unit = "b";
+    const QPair<uint,QString> exactLimit(sizeUnits,unit);
+
+    // Initialize pre-state
+
+    preRule.title = preTitle;
+    preRule.actionRuleEntity = preAction;
+
+    // Create rule
+    SubRule sR;
+    preRule.appliesToPath = TEST_WORKING_PATH;
+    sR.fieldCondition = preCond;
+    sR.fileCompareMode = preComp;
+    sR.sizeLimit = exactLimit;
+
+    preRule.subRules << sR;
+
+    mApp->insertRule(preRule);
+
+    Virtual_Objects referenceList;
+    qint64 bytes = sR.sizeLimit.first;
+
+    for (int i = 0; i < objects->count(); ++i) {
+        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        qint64 sz = obj.additionalInformation.size();
+        if(sz != bytes)
+            referenceList << obj;
+    }
+
+    mApp->clearFoldersAccordingToRules(mApp->watchFolders());
+
+    /*
+     * Note regard async call:
+     *  Due to asynchonously calls to both FileWorkOperationWorker and EntityQueueManager tests have to wait a little amount of time
+     *  to ensure proper sync between the caller and the called classes
+     */
+
+    QThread::sleep(SLEEP_SEC);
+
+    Virtual_Objects actualList;
+    try {
+        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+    }  catch (const char *msg) {
+        cout << msg << endl;
+    } catch (const std::domain_error e)
+    {
+        throw e;
+    }
 
     /*
      * END STATE:
@@ -1044,7 +1153,102 @@ void Core_functionality::operation_size_at_least_success_1()
     if(!cleaned_up)
         printf("Some files/folders not deleted");
 
-    QVERIFY(referenceList != actualList);
+    QVERIFY(referenceList == actualList);
+}
+
+void Core_functionality::operation_size_greater_than_success_1()
+{
+    /*
+     * INITIAL STATE:
+     *  - Create dummy files in folder 'test_folder'
+     */
+
+    TestFileCreator *f_creator;
+    try {
+        f_creator = new  TestFileCreator();
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        QVERIFY(false);
+        return;
+    }
+
+    mApp->addWatchFolder(TEST_WORKING_PATH);
+
+    // Pre-state variables
+
+    const QString preTitle = "Test1";
+    uint sizeUnits = 100;
+    QString unit = "kb";
+    const QPair<uint,QString> lowerLimit(sizeUnits,unit);
+    rD::fileActionEntity preAction = rD::Delete;
+    rD::fileConditionEntity preCond = rD::fileSize;
+    rD::fileCompareEntity preComp = rD::greaterThan;
+    Rule preRule;
+
+    // Initialize pre-state
+
+    preRule.title = preTitle;
+    preRule.actionRuleEntity = preAction;
+
+    // Create rule
+    SubRule sR;
+    preRule.appliesToPath = TEST_WORKING_PATH;
+    sR.fieldCondition = preCond;
+    sR.fileCompareMode = preComp;
+    sR.sizeLimit = lowerLimit;
+
+    preRule.subRules << sR;
+
+    mApp->insertRule(preRule);
+
+    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+
+    Virtual_Objects referenceList;
+    qint64 bytes = fW::toBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+
+    for (int i = 0; i < objects->count(); ++i) {
+        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        qint64 sz = obj.additionalInformation.size();
+        if(sz <= bytes)
+            referenceList << obj;
+    }
+
+    mApp->clearFoldersAccordingToRules(mApp->watchFolders());
+
+    /*
+     * Note regard async call:
+     *  Due to asynchonously calls to both FileWorkOperationWorker and EntityQueueManager tests have to wait a little amount of time
+     *  to ensure proper sync between the caller and the called classes
+     */
+
+    QThread::sleep(SLEEP_SEC);
+
+    Virtual_Objects actualList;
+    try {
+        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+    }  catch (const char *msg) {
+        cout << msg << endl;
+    } catch (const std::domain_error e)
+    {
+        throw e;
+    }
+
+    /*
+     * END STATE:
+     *  - Clear test folder
+     */
+    int cleaned_up = false;
+    try {
+        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
+
+    if(!cleaned_up)
+        printf("Some files/folders not deleted");
+
+    QVERIFY(referenceList == actualList);
 }
     QTEST_MAIN(Core_functionality)
 

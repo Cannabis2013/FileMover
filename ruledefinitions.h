@@ -91,20 +91,20 @@ struct ruleDefinitions
                              fileModifiedMode,
                              nonConditionalMode};
 
-    enum fileCompareEntity{match,   // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
-                     dontMatch,     // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
-                     contains,      // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
-                     dontContain,   // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
-                     lesser,        // Filesize
-                     lesserOrEqual, // Filesize
-                     equal,         // Filesize
-                     biggerOrEqual, // Filesize
-                     bigger,        // Filesize
-                     interval,      // Filesize/date interval
-                     olderThan,     // FileDateMode {fileCreatedMode,fileModifiedMode}
-                     exactDate,     // FileDateMode {fileCreatedMode,fileModifiedMode}
-                     youngerThan,   // FileDateMode {fileCreatedMode,fileModifiedMode}
-                     noDateSet,     // FileDateMode {fileCreatedMode,fileModifiedMode}
+    enum fileCompareEntity{match,           // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
+                     dontMatch,             // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
+                     contains,              // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
+                     dontContain,           // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
+                     lesserThan,            // Filesize
+                     lesserOrEqualThan,     // Filesize
+                     equal,                 // Filesize
+                     greaterOrEqualThan,    // Filesize
+                     greaterThan,           // Filesize
+                     interval,              // Filesize/date interval
+                     olderThan,             // FileDateMode {fileCreatedMode,fileModifiedMode}
+                     exactDate,             // FileDateMode {fileCreatedMode,fileModifiedMode}
+                     youngerThan,           // FileDateMode {fileCreatedMode,fileModifiedMode}
+                     noDateSet,             // FileDateMode {fileCreatedMode,fileModifiedMode}
                      noCompareModeSet};
 
     enum fileTypeEntity {Folder, File, unresolved};
@@ -147,11 +147,11 @@ QPair<QString,fileConditionEntity>("No conditions",fileConditionEntity::nonCondi
                 QPair<QString,fileCompareEntity>("Does not contain",fileCompareEntity::dontMatch),
                 QPair<QString,fileCompareEntity>("Matching",fileCompareEntity::match),
                 QPair<QString,fileCompareEntity>("Does not match",fileCompareEntity::dontMatch),
-                QPair<QString,fileCompareEntity>("Greater than",fileCompareEntity::bigger),
-                QPair<QString,fileCompareEntity>("Greater or equal than",fileCompareEntity::biggerOrEqual),
+                QPair<QString,fileCompareEntity>("Greater than",fileCompareEntity::greaterThan),
+                QPair<QString,fileCompareEntity>("Greater or equal than",fileCompareEntity::greaterOrEqualThan),
                 QPair<QString,fileCompareEntity>("Equal",fileCompareEntity::equal),
-                QPair<QString,fileCompareEntity>("Less or equal than",fileCompareEntity::lesserOrEqual),
-                QPair<QString,fileCompareEntity>("Equal than",fileCompareEntity::lesser),
+                QPair<QString,fileCompareEntity>("Less or equal than",fileCompareEntity::lesserOrEqualThan),
+                QPair<QString,fileCompareEntity>("Equal than",fileCompareEntity::lesserThan),
                 QPair<QString,fileCompareEntity>("Older than",fileCompareEntity::olderThan),
                 QPair<QString,fileCompareEntity>("Extact date",fileCompareEntity::exactDate),
                 QPair<QString,fileCompareEntity>("Younger than",fileCompareEntity::youngerThan)};
@@ -208,11 +208,11 @@ QPair<QString,fileConditionEntity>("No conditions",fileConditionEntity::nonCondi
         {
             for(QPair<QString,fileCompareEntity> pair : compareMappings)
             {
-                if(pair.second == fileCompareEntity::bigger ||
-                        pair.second ==fileCompareEntity::biggerOrEqual ||
+                if(pair.second == fileCompareEntity::greaterThan ||
+                        pair.second ==fileCompareEntity::greaterOrEqualThan ||
                         pair.second ==fileCompareEntity::equal ||
-                        pair.second ==fileCompareEntity::lesserOrEqual ||
-                        pair.second == fileCompareEntity::lesser)
+                        pair.second ==fileCompareEntity::lesserOrEqualThan ||
+                        pair.second == fileCompareEntity::lesserThan)
                 {
                     resultingList << pair.first;
                 }

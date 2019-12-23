@@ -495,18 +495,18 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         {
             if(rule.fileCompareMode != rD::interval)
             {
-                if(rule.fileCompareMode == rD::lesser && fObject->size() < fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                if(rule.fileCompareMode == rD::lesserThan && fObject->size() < fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::lesserOrEqual &&
+                else if(rule.fileCompareMode == rD::lesserOrEqualThan &&
                         fObject->size() <= fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << fObject;
                 else if(rule.fileCompareMode == rD::equal &&
                         fObject->size() == fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::biggerOrEqual &&
+                else if(rule.fileCompareMode == rD::greaterOrEqualThan &&
                         fObject->size() >= fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::bigger &&
+                else if(rule.fileCompareMode == rD::greaterThan &&
                         fObject->size() > fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << fObject;
             }

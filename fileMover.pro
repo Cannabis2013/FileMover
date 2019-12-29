@@ -50,9 +50,11 @@ SOURCES += main.cpp\
     fileobject.cpp \
     fileoperationworker.cpp \
     filepathdialogwidget.cpp \
+    filesystemwatcher.cpp \
     icoreapplication.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
+    mutuablewidget.cpp \
     rulesmanager.cpp \
     mydatetime.cpp \
     settingsmanager.cpp \
@@ -66,7 +68,6 @@ SOURCES += main.cpp\
     testfilecreator.cpp \
     tst_core_functionality.cpp \
     worker.cpp \
-    mywidget.cpp \
     topframeform.cpp
 
 HEADERS  += mainwindow.h \
@@ -89,10 +90,11 @@ HEADERS  += mainwindow.h \
     icoreapplication.h \
     mainapplication.h \
     messageBox.h \
+    mutableobject.h \
+    mutuablewidget.h \
     myicon.h \
     myicon.h \
     myicon.h \
-    myobject.h \
     rulesmanager.h \
     myscreendimensions.h \
     mydatetime.h \
@@ -110,7 +112,6 @@ HEADERS  += mainwindow.h \
     rules.h \
     testfilecreator.h \
     worker.h \
-    mywidget.h \
     topframeform.h
 
 FORMS    += mainwindow.ui \

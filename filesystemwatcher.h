@@ -4,33 +4,19 @@
 #include <qfilesystemwatcher.h>
 #include "fileoperationworker.h"
 
-class FileSystemWatcher : public MyObject
+class FileSystemWatcher : public MutableObject
 {
     Q_OBJECT
 public:
-    FileSystemWatcher(const QStringList &paths):
-        fWatcher(new QFileSystemWatcher(paths))
-    {
-        connect(fWatcher,&QFileSystemWatcher::directoryChanged,this,&FileSystemWatcher::_folderChanged);
-    }
-
-    void removePath(const QString &path)
-    {
-        QStringList paths = fWatcher->directories();
-        paths.removeOne(path);
-    }
+    FileSystemWatcher(const QStringList &paths);
+    void removePath(const QString &path);
 
 signals:
     void folderChanged(EntityModel *eModel);
 
 private slots:
 
-    void _folderChanged(const QString &path)
-    {
-        emit folderChanged(new fileInformationEntity(path));
-        QString msg = QString("A change in the following folder has occured: \n %1").arg(path);
-        emit sendSystemTrayMessage("Information",msg);
-    }
+    void changed(const QString &path);
 
 private:
     QFileSystemWatcher *fWatcher;

@@ -9,7 +9,7 @@
 #include <QVBoxLayout>
 #include <iostream>
 
-#include "mywidget.h"
+#include "mutuablewidget.h"
 
 using namespace std;
 
@@ -23,7 +23,7 @@ class AbstractTextSelectorDialog;
 
 // Base class..
 
-class AbstractTextSelectorDialog : public MyWidget
+class AbstractTextSelectorDialog : public MutuableWidget
 {
     Q_OBJECT
 

@@ -3,9 +3,9 @@
 
 #include <qwidget.h>
 #include <QMouseEvent>
-#include "mywidget.h"
+#include "mutuablewidget.h"
 
-class AbstractFrameImplementable : public MyWidget
+class AbstractFrameImplementable : public MutuableWidget
 {
     Q_OBJECT
 public:

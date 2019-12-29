@@ -6,9 +6,9 @@
 #include "myicon.h"
 #include "rulesmanager.h"
 #include "settingsdelegate.h"
-#include "myobject.h"
+#include "mutableobject.h"
 
-class ICoreApplication : public MyObject
+class ICoreApplication : public MutableObject
 {
     Q_OBJECT
 public:
@@ -59,7 +59,6 @@ signals:
 
     void sendFolderSize(DirectoryCountEntity *fObject);
     void sendStatusMessage(const QString &filePath);
-    void sendSystemTrayMessage(const QString &title, const QString &msg);
     void sendEntity(EntityModel *model);
 
 signals:

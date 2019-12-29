@@ -11,13 +11,13 @@
 #include <qdiriterator.h>
 #include "settingsdelegate.h"
 #include "entitymodel.h"
-#include "myobject.h"
+#include "mutableobject.h"
 #include <qdatastream.h>
 #include <iostream>
 
 using namespace std;
 
-class settingsManager : public MyObject,
+class settingsManager : public MutableObject,
         private AbstractPersistence
 {
     Q_OBJECT

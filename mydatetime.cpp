@@ -1,6 +1,6 @@
 ﻿#include "mydatetime.h"
 
-myDateTime::myDateTime(QDateTime dTime)
+myDateTime::myDateTime(const QDateTime &dTime)
 {
     setDate(dTime.date());
     setTime(dTime.time());
@@ -110,27 +110,35 @@ bool myDateTime::operator ==(QDateTime other)
             date().day() == otherDate.day();
 }
 
-void myDateTime::operator <<(const QDateTime &dTime)
+myDateTime &myDateTime::operator <<(const QDateTime &dTime)
 {
     setDate(dTime.date());
     setTime(dTime.time());
+
+    return *this;
 }
 
-void myDateTime::operator <<(const QDateEdit *dEdit)
+myDateTime &myDateTime::operator <<(const QDateEdit *dEdit)
 {
     setDate(dEdit->date());
     setTime(dEdit->time());
+
+    return *this;
 }
 
-void myDateTime::operator =(QDateTime dTime)
+myDateTime &myDateTime::operator =(const QDateTime &dTime)
 {
     setDate(dTime.date());
     setTime(dTime.time());
+
+    return *this;
 }
 
-void myDateTime::operator =(myDateTime dTime)
+myDateTime &myDateTime::operator =(const myDateTime &dTime)
 {
     setDate(dTime.date());
     setTime(dTime.time());
+
+    return *this;
 }
 

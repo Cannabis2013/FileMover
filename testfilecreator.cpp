@@ -117,18 +117,13 @@ Virtual_Objects TestFileCreator::VirtualObjects(const QString &directory)
 
 void TestFileCreator::fillDateMappings()
 {
-    int minYear = 2000;
-    for (int i = 0; i < NUMBER_OF_MAPPINGS; ++i)
+    for (int i = 0; i < NUMBER_OF_DATE_MAPPINGS; ++i)
     {
-        int year = qrand() % (QDate::currentDate().year() % 1000) + minYear;
+        int year = qrand() % (QDate::currentDate().year() % 1000) + MIN_YEAR;
         int month = qrand() % 12 + 1;
-        int day = 1;
-        if(month == 2)
-            day = qrand() % 29 + 1;
-        else if(month % 2 != 0 || month == 8)
-            day = qrand() % 31 + 1;
-        else
-            day = qrand() % 30 + 1;
+        int day = (month == 2) ? qrand() % 29 + 1 :
+                               (month % 2 != 0 || month == 8) ? qrand() % 31 + 1 :
+                                                                day = qrand() % 30 + 1;
 
         dateMappings[i] = myDateTime(day,month,year);
     }
@@ -136,7 +131,7 @@ void TestFileCreator::fillDateMappings()
 
 void TestFileCreator::appendVirtualFileObject(const QFileInfo &file)
 {
-    int index = qrand() % NUMBER_OF_MAPPINGS + 1;
+    int index = qrand() % NUMBER_OF_DATE_MAPPINGS + 1;
 
     VIRTUAL_FILE_OBJECT f_obj;
     f_obj.filePath = file.absoluteFilePath();

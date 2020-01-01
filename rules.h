@@ -6,6 +6,9 @@
 #include <QStringList>
 #include "mydatetime.h"
 
+typedef QPair<uint,QString> IntervalUnit;
+typedef QPair<IntervalUnit,IntervalUnit> SizeLimits;
+
 struct SubRule
 {
     // Enumerated values..
@@ -14,7 +17,7 @@ struct SubRule
     rD::fileConditionEntity fieldCondition = rD::nonConditionalMode;
 
     QPair<uint,QString>sizeLimit;
-    QPair<QPair<uint,QString>,QPair<int,QString>> sizeInterval;
+    SizeLimits sizeInterval;
     myDateTime date;
     QPair<myDateTime,myDateTime>dateIntervals;
     bool matchWholeWords = false;

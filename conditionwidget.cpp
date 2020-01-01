@@ -166,8 +166,8 @@ void conditionWidget::initDefaultOperators()
 
     rD rDefs;
 
-    fixedSizeModeSelector->addItems(rDefs.allCompareEntitiesToStrings(rD::fileSize));
-    dateOperatorSelector->addItems(rDefs.allCompareEntitiesToStrings(rD::fileCreatedMode));
+    fixedSizeModeSelector->addItems(rDefs.fileCompareModesToStringList(rD::fileSize));
+    dateOperatorSelector->addItems(rDefs.fileCompareModesToStringList(rD::fileCreatedMode));
 }
 
 void conditionWidget::initDefaultUnits()
@@ -226,7 +226,7 @@ void conditionWidget::setMode(QString condition)
         mainModeSelector->addItems(rDefs.intervalConditionalList);
     }
     else
-        mainModeSelector->addItems(rDefs.allCompareEntitiesToStrings(rD::filepathMode));
+        mainModeSelector->addItems(rDefs.fileCompareModesToStringList(rD::filepathMode));
 }
 
 ruleDefinitions::fileCompareEntity conditionWidget::currentCompareMode()

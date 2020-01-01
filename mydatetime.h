@@ -17,7 +17,7 @@ public:
 
     // Constructor..
 
-    myDateTime(QDateTime dTime);
+    explicit myDateTime(const QDateTime &dTime);
     myDateTime(int day,
                int month,
                int year,
@@ -32,10 +32,10 @@ public:
     bool operator >(QDateTime other);
     bool operator ==(myDateTime other);
     bool operator ==(QDateTime other);
-    void operator <<(const QDateTime &dTime);
-    void operator <<(const QDateEdit *dEdit);
-    void operator =(QDateTime dTime);
-    void operator =(myDateTime dTime);
+    myDateTime &operator <<(const QDateTime &dTime);
+    myDateTime &operator <<(const QDateEdit *dEdit);
+    myDateTime &operator =(const QDateTime &dTime);
+    myDateTime &operator =(const myDateTime &dTime);
 };
 
 #endif // MYDATETIME_H

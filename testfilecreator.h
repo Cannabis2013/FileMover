@@ -17,7 +17,8 @@
     extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 #endif
 
-#define NUMBER_OF_MAPPINGS 50
+#define NUMBER_OF_DATE_MAPPINGS 50
+#define MIN_YEAR 2000
 
 
 struct VIRTUAL_FILE_OBJECT

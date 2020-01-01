@@ -342,30 +342,33 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                 for(QString kWord : rule.keyWords)
                 {
                     if(fObject->baseName().contains(kWord))
-                        condition = true;
+                    {
+                        filesToProcess << fObject;
+                        break;
+                    }
                 }
-                if(condition)
-                    filesToProcess << fObject;
             }
             else if(rule.fileCompareMode == rD::dontContain)
             {
                 for(QString kWord : rule.keyWords)
                 {
                     if(fObject->baseName().contains(kWord))
-                        condition = true;
+                    {
+                        filesToProcess << fObject;
+                        break;
+                    }
                 }
-                if(!condition)
-                    filesToProcess << fObject;
             }
             else if(rule.fileCompareMode == rD::match)
             {
                 for(QString kWord : rule.keyWords)
                 {
                     if(fObject->baseName() == kWord)
-                        condition = true;
+                    {
+                        filesToProcess << fObject;
+                        break;
+                    }
                 }
-                if(condition)
-                    filesToProcess << fObject;
             }
             else if(rule.fileCompareMode == rD::dontMatch)
             {
@@ -383,16 +386,19 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                 for(QString kWord : rule.keyWords)
                 {
                     if(fObject->fileName().contains(kWord))
-                        condition = true;
+                    {
+                        filesToProcess << fObject;
+                        break;
+                    }
                 }
-                if(condition)
-                    filesToProcess << fObject;
             }
             else if(rule.fileCompareMode == rD::dontContain)
             {
                 for(QString kWord : rule.keyWords)
+                {
                     if(fObject->fileName().contains(kWord))
                         condition = true;
+                }
                 if(!condition)
                     filesToProcess << fObject;
             }
@@ -400,9 +406,10 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             {
                 for(QString kWord : rule.keyWords)
                     if(fObject->fileName() == kWord)
-                        condition = true;
-                if(condition)
-                    filesToProcess << fObject;
+                    {
+                        filesToProcess << fObject;
+                        break;
+                    }
             }
             else if(rule.fileCompareMode == rD::dontMatch)
             {
@@ -421,10 +428,10 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             {
                 for(QString kWord : rule.keyWords)
                     if(fObject->suffix().contains(kWord))
-                        condition = true;
-
-                if(condition)
-                    filesToProcess << fObject;
+                    {
+                        filesToProcess << fObject;
+                        break;
+                    }
             }
             else if(rule.fileCompareMode == rD::dontContain)
             {
@@ -438,9 +445,10 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             {
                 for(QString kWord : rule.keyWords)
                     if(fObject->suffix() == kWord)
-                        condition = true;
-                if(condition)
-                    filesToProcess << fObject;
+                    {
+                        filesToProcess << fObject;
+                        break;
+                    }
             }
             else if(rule.fileCompareMode == rD::dontMatch)
             {
@@ -477,16 +485,20 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             else if(rule.fileCompareMode == rD::match)
             {
                 for(QString kWord : rule.keyWords)
+                {
                     if(fObject->parentFolderObject()->fileName() == kWord)
                         condition = true;
+                }
                 if(condition)
                     filesToProcess << fObject;
             }
             else if(rule.fileCompareMode == rD::dontMatch)
             {
                 for(QString kWord : rule.keyWords)
+                {
                     if(fObject->parentFolderObject()->fileName() == kWord)
                         condition = true;
+                }
                 if(!condition)
                     filesToProcess << fObject;
             }

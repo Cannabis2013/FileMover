@@ -19,7 +19,7 @@ AddFolderWidget::~AddFolderWidget()
     delete ui;
 }
 
-void AddFolderWidget::resizeEvent(QSize newSize)
+void AddFolderWidget::resizeNotify(QSize newSize)
 {
     emit sizeChanged(newSize);
 }
@@ -39,7 +39,7 @@ void AddFolderWidget::sizeAdjust(QSizePolicy::Policy p, int H)
         setFixedHeight(lastSavedHeight);
         setMaximumHeight(maxHeight.height());
     }
-    resizeEvent(size());
+    resizeNotify(size());
 }
 
 void AddFolderWidget::on_Add_Button_Clicked()

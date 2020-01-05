@@ -121,7 +121,7 @@ void AbstractRuleDialog::closeEvent(QCloseEvent *event)
     emit destroyed();
 }
 
-void AbstractRuleDialog::resizeEvent(QSize newSize)
+void AbstractRuleDialog::resizeNotify(QSize newSize)
 {
     Q_UNUSED(newSize)
 }

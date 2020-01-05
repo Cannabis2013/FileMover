@@ -67,7 +67,7 @@ protected:
     // Protected methods
     enum buttonType {acceptButton,cancelButton};
     void setButtonText(QString txt,buttonType bType = buttonType::acceptButton);
-    void resizeEvent(QSize newSize);
+    void resizeNotify(QSize newSize);
 
     // Protected member variables
     conditionWidget *condWidget;

@@ -23,7 +23,7 @@ signals:
 
 protected:
     void closeEvent(QCloseEvent *event);
-    virtual void resizeEvent(QSize newSize) = 0;
+    virtual void resizeNotify(QSize newSize) = 0;
 
 private:
     bool resizeable = true;

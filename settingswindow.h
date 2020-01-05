@@ -71,7 +71,7 @@ signals:
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);
-    void resizeEvent(QSize newSize){Q_UNUSED(newSize);}
+    void resizeNotify(QSize newSize){Q_UNUSED(newSize);}
 
 private slots:
 

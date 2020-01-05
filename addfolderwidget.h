@@ -27,7 +27,7 @@ signals:
     void sendPath(QString path);
 
 protected:
-    void resizeEvent(QSize newSize);
+    void resizeNotify(QSize newSize);
 
 private slots:
     void sizeAdjust(QSizePolicy::Policy p,int H);

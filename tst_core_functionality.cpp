@@ -1658,7 +1658,6 @@ void Core_functionality::operation_size_interval_success_1()
     QVERIFY(referenceList == actualList);
 }
 
-
     QTEST_MAIN(Core_functionality)
 
 #include "tst_core_functionality.moc"

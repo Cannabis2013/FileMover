@@ -22,7 +22,11 @@ signals:
     void sizeChanged(QSize newSize);
 
 protected:
+
+    // Reimplemented
     void closeEvent(QCloseEvent *event);
+
+    // Pure virtual
     virtual void resizeNotify(QSize newSize) = 0;
 
 private:

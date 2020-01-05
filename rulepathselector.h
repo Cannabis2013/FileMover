@@ -16,6 +16,7 @@ public:
     rulePathSelector(QWidget *parent = nullptr);
 
 protected slots:
+    // Reimplemented
     void on_toolButton_clicked();
 
 private:

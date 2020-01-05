@@ -126,19 +126,3 @@ myDateTime &myDateTime::operator <<(const QDateEdit *dEdit)
     return *this;
 }
 
-myDateTime &myDateTime::operator =(const QDateTime &dTime)
-{
-    setDate(dTime.date());
-    setTime(dTime.time());
-
-    return *this;
-}
-
-myDateTime &myDateTime::operator =(const myDateTime &dTime)
-{
-    setDate(dTime.date());
-    setTime(dTime.time());
-
-    return *this;
-}
-

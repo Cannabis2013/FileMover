@@ -180,12 +180,17 @@ void rulesManager::readSettings()
             sRule.sizeInterval.second.first = persistenceSettings->value("Maxsizeinterval",0).toInt();
             sRule.sizeInterval.second.second = persistenceSettings->value("Maxsizeunitinterval","kb").toString();
             persistenceSettings->endGroup();
-
-            sRule.date = QDateTime::fromString(persistenceSettings->value("Datetime","").toString(),"dd.MM.yyyy");
+            QDateTime persistedDate = QDateTime::fromString(persistenceSettings->value("Datetime","").toString(),"dd.MM.yyyy");
+            sRule.date = static_cast<myDateTime>(persistedDate);
 
             persistenceSettings->beginGroup("Datelimits");
-            sRule.dateIntervals.first = myDateTime::fromString(persistenceSettings->value("Startdate","01.01.2000").toString());
-            sRule.dateIntervals.second = myDateTime::fromString(persistenceSettings->value("Enddate","01.01.2000").toString());
+
+            QDateTime persistedStartDate = myDateTime::fromString(persistenceSettings->value("Startdate","01.01.2000").toString());
+            QDateTime persistedEndDate = myDateTime::fromString(persistenceSettings->value("Enddate","01.01.2000").toString());
+
+            sRule.dateIntervals.first = static_cast<myDateTime>(persistedStartDate);
+            sRule.dateIntervals.second = static_cast<myDateTime>(persistedEndDate);
+
             persistenceSettings->endGroup();
 
             r.subRules.append(sRule);
@@ -274,9 +279,9 @@ void rulesManager::replaceRule(const Rule r, QString title)
 void rulesManager::swapRule(int i, int j)
 {
     if(i >= rules.count() || j >= rules.count())
-        throw std::out_of_range("Index out of range");
+        throw new std::out_of_range("Index out of range");
     if(i < 0 || j < 0)
-        throw std::out_of_range("Index out of range");
+        throw new std::out_of_range("Index out of range");
 
     rules.swapItemsAt(i,j);
 

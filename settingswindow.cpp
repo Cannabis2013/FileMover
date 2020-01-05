@@ -132,7 +132,7 @@ void SettingsWindow::on_moveDownButton_2_clicked()
     try {
         coreApplication->swapRule(i,i - 1);
     }
-    catch (std::out_of_range e)
+    catch (const std::out_of_range *e)
     {
         return;
     }
@@ -149,7 +149,7 @@ void SettingsWindow::on_moveUpButton_2_clicked()
     try {
         coreApplication->swapRule(i,i + 1);
     }
-    catch (std::out_of_range e)
+    catch (const std::out_of_range *e)
     {
         return;
     }

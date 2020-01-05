@@ -12,6 +12,8 @@ public:
     PathLine(QWidget *parent = nullptr);
 
 signals:
+
+    // Connected in forms editor
     void showFileExplorer();
 
 protected:

@@ -34,8 +34,6 @@ public:
     bool operator ==(QDateTime other);
     myDateTime &operator <<(const QDateTime &dTime);
     myDateTime &operator <<(const QDateEdit *dEdit);
-    myDateTime &operator =(const QDateTime &dTime);
-    myDateTime &operator =(const myDateTime &dTime);
 };
 
 #endif // MYDATETIME_H

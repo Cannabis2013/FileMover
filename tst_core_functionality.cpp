@@ -636,7 +636,7 @@ void Core_functionality::operation_filepath_match_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }
@@ -741,7 +741,7 @@ void Core_functionality::operation_filepath_match_fail_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }
@@ -844,7 +844,7 @@ void Core_functionality::operation_filepath_contain_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }
@@ -945,7 +945,7 @@ void Core_functionality::operation_filepath_contain_fail_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }
@@ -1043,7 +1043,7 @@ void Core_functionality::operation_extension_match_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }
@@ -1139,7 +1139,7 @@ void Core_functionality::operation_size_less_than_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }
@@ -1239,7 +1239,7 @@ void Core_functionality::operation_size_equal_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }
@@ -1341,7 +1341,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }
@@ -1436,7 +1436,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }
@@ -1531,7 +1531,7 @@ void Core_functionality::operation_size_greater_than_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }
@@ -1635,7 +1635,7 @@ void Core_functionality::operation_size_interval_success_1()
         actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
-    } catch (const std::domain_error e)
+    } catch (const std::domain_error *e)
     {
         throw e;
     }

@@ -14,7 +14,7 @@
 #include <qscreen.h>
 
 #include "ui_customdialog.h"
-#include "mutuablewidget.h"
+#include "mutableobject.h"
 #include "abstractframeimplementable.h"
 
 using namespace std;
@@ -23,7 +23,9 @@ namespace Ui {
     class CustomDialog;
 }
 
-class CustomDialog : public MutuableWidget
+class CustomDialog :
+        public QWidget,
+        public MutableObject
 {
     Q_OBJECT
 
@@ -41,7 +43,8 @@ public:
 
     void setWidget(AbstractFrameImplementable *implementable);
 
-
+signals:
+    void stateChanged();
 protected:
     void closeEvent(QCloseEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -73,6 +76,8 @@ private:
     QPoint mousePressPosition;
     QRect tempGeometry;
     QSize widgetSize;
+
+public:
 };
 
 #endif // CUSTOMDIALOG_H

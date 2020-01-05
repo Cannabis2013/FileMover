@@ -4,7 +4,10 @@
 #include <qfilesystemwatcher.h>
 #include "fileoperationworker.h"
 
-class FileSystemWatcher : public MutableObject
+class FileSystemWatcher :
+        public QObject,
+        public MutableObject,
+        public BroadcastingObject
 {
     Q_OBJECT
 public:
@@ -13,6 +16,11 @@ public:
 
 signals:
     void folderChanged(EntityModel *eModel);
+    // Reimplemented from BroadcastingObject
+    void sendSystemTrayMessage(const QString &title, const QString &msg);
+    void sendStatusLineMessage(const QString &msg);
+    // Reimplemented from MutableObject
+    void stateChanged();
 
 private slots:
 
@@ -20,6 +28,7 @@ private slots:
 
 private:
     QFileSystemWatcher *fWatcher;
+
 };
 
 #endif // FILESYSTEMWATCHER_H

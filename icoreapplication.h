@@ -8,7 +8,10 @@
 #include "settingsdelegate.h"
 #include "mutableobject.h"
 
-class ICoreApplication : public MutableObject
+class ICoreApplication :
+        public QObject,
+        public MutableObject,
+        public BroadcastingObject
 {
     Q_OBJECT
 public:
@@ -60,9 +63,11 @@ signals:
     void sendFolderSize(DirectoryCountEntity *fObject);
     void sendStatusMessage(const QString &filePath);
     void sendEntity(EntityModel *model);
+    void stateChanged();
 
-signals:
 
+    void sendSystemTrayMessage(const QString &title, const QString &msg);
+    void sendStatusLineMessage(const QString &msg);
 };
 
 #endif // ABSTRACTCOREAPPLICATION_H

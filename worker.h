@@ -10,7 +10,7 @@
 #include <math.h>
 #include "mutableobject.h"
 
-class Worker : public MutableObject
+class Worker
 {
 public:
     virtual ~Worker();

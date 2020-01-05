@@ -11,13 +11,17 @@ using namespace std;
  * Provides the 'notify observers' service
  */
 
-class MutableObject : public QObject
+class MutableObject
 {
-    Q_OBJECT
-signals:
-    void stateChanged(); // Notify observers
-    void sendSystemTrayMessage(const QString &title,const QString &msg);
-    void sendStatusLineMessage(const QString &msg);
+public:
+    virtual void stateChanged() = 0; // Notify observers
+};
+
+class BroadcastingObject
+{
+public:
+    virtual void sendSystemTrayMessage(const QString &title,const QString &msg) = 0;
+    virtual void sendStatusLineMessage(const QString &msg) = 0;
 };
 
 #endif // MYOBJECT_H

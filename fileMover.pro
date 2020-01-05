@@ -54,7 +54,6 @@ SOURCES += main.cpp\
     icoreapplication.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
-    mutuablewidget.cpp \
     rulesmanager.cpp \
     mydatetime.cpp \
     settingsmanager.cpp \
@@ -91,7 +90,6 @@ HEADERS  += mainwindow.h \
     mainapplication.h \
     messageBox.h \
     mutableobject.h \
-    mutuablewidget.h \
     myicon.h \
     myicon.h \
     myicon.h \

@@ -3,9 +3,11 @@
 
 #include <qwidget.h>
 #include <QMouseEvent>
-#include "mutuablewidget.h"
+#include "mutableobject.h"
 
-class AbstractFrameImplementable : public MutuableWidget
+class AbstractFrameImplementable :
+        public QWidget,
+        public MutableObject
 {
     Q_OBJECT
 public:
@@ -20,6 +22,7 @@ public:
 
 signals:
     void sizeChanged(QSize newSize);
+    void stateChanged();
 
 protected:
 
@@ -32,6 +35,8 @@ protected:
 private:
     bool resizeable = true;
     QString widgetTitle = "Frametitle";
+
+public:
 };
 
 #endif // ABSTRACTFRAMEIMPLEMENTABLE_H

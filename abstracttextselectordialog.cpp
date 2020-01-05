@@ -2,7 +2,7 @@
 #include "ui_textpathedit.h"
 
 AbstractTextSelectorDialog::AbstractTextSelectorDialog(QWidget *parent, QString txt) :
-    MutuableWidget(parent),
+    QWidget(parent),
     ui(new Ui::AbstractTextSelectorDialog)
 {
     ui->setupUi(this);

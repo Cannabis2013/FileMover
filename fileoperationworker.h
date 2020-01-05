@@ -7,7 +7,10 @@
 #ifdef __MINGW64__
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 #endif
-class FileOperationWorker : public Worker
+class FileOperationWorker :
+        public QObject,
+        public Worker,
+        public BroadcastingObject
 {
     Q_OBJECT
 
@@ -47,6 +50,8 @@ signals:
     void processFinished(QList<DirectoryItem>items);
     void jobDone(bool status);
 
+    void sendSystemTrayMessage(const QString &title, const QString &msg);
+    void sendStatusLineMessage(const QString &msg);
 
 private:
 
@@ -79,6 +84,7 @@ private:
 
     QString busyMessage;
     bool isBusy;
+
 };
 
 typedef FileOperationWorker fW;

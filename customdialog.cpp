@@ -1,7 +1,7 @@
 #include "customdialog.h"
 
 CustomDialog::CustomDialog(AbstractFrameImplementable *implementable, bool applicationModal, widget_Location location, QWidget *parent) :
-    MutuableWidget(parent),
+    QWidget(parent),
     ui(new Ui::CustomDialog)
 {
     ui->setupUi(this);

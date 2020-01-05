@@ -1,7 +1,7 @@
 #include "abstractframeimplementable.h"
 
 AbstractFrameImplementable::AbstractFrameImplementable(QWidget *parent):
-    MutuableWidget(parent)
+    QWidget(parent)
 {
 }
 

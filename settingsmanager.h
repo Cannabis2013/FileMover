@@ -17,7 +17,9 @@
 
 using namespace std;
 
-class settingsManager : public MutableObject,
+class settingsManager :
+        public QObject,
+        public MutableObject,
         private AbstractPersistence
 {
     Q_OBJECT
@@ -68,9 +70,9 @@ public:
 
 signals:
     void processPath(EntityModel *entity);
-
     void removeItem(QString path);
 
+    void stateChanged();
 private:
     QList<MyIcon> scanForIcons(QString path);
     QStringList mainFolderPaths;
@@ -82,6 +84,7 @@ private:
     QList<MyIcon> fileIconList;
     QIcon currentTrayIcon;
     QIcon fileIconStandard;
+
 };
 
 typedef settingsManager sM;

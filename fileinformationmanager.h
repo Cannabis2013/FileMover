@@ -34,7 +34,9 @@ struct DirectoryItem
     QTreeWidgetItem *directoryItemModels;
 };
 
-class FileInformationManager : public MutableObject,
+class FileInformationManager :
+        public QObject,
+        public MutableObject,
         private AbstractPersistence
 {
     Q_OBJECT
@@ -73,6 +75,7 @@ public slots:
 
 signals:
     void sendItem(DirectoryItem item);
+    void stateChanged();
 private:
 
     bool isDuplicate(QString path);

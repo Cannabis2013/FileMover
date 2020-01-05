@@ -9,7 +9,6 @@
 #include <QVBoxLayout>
 #include <iostream>
 
-#include "mutuablewidget.h"
 
 using namespace std;
 
@@ -17,13 +16,17 @@ using namespace std;
 #include "filepathdialogwidget.h"
 #include <qtoolbutton.h>
 
+#include "mutableobject.h"
+
 namespace Ui {
 class AbstractTextSelectorDialog;
 }
 
 // Base class..
 
-class AbstractTextSelectorDialog : public MutuableWidget
+class AbstractTextSelectorDialog :
+        public QWidget,
+        public MutableObject
 {
     Q_OBJECT
 
@@ -39,6 +42,7 @@ public slots:
 
 signals:
     void sendCurrentFilePath(QString txt);
+    void stateChanged();
 
 protected slots:
     void insertChosenPath(QString p);
@@ -47,6 +51,8 @@ protected slots:
 private:
     QLineEdit *pathSelector;
     Ui::AbstractTextSelectorDialog *ui;
+
+public:
 };
 
 #endif // TEXTPATHEDIT_H

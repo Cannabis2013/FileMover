@@ -6,8 +6,8 @@
 
 class FileSystemWatcher :
         public QObject,
-        public MutableObject,
-        public BroadcastingObject
+        public IMutableObject,
+        public IBroadcastingObject
 {
     Q_OBJECT
 public:

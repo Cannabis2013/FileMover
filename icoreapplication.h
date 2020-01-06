@@ -6,12 +6,12 @@
 #include "myicon.h"
 #include "rulesmanager.h"
 #include "settingsdelegate.h"
-#include "mutableobject.h"
+#include "imutableobject.h"
 
 class ICoreApplication :
         public QObject,
-        public MutableObject,
-        public BroadcastingObject
+        public IMutableObject,
+        public IBroadcastingObject
 {
     Q_OBJECT
 public:

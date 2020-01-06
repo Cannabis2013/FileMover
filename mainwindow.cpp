@@ -400,8 +400,8 @@ void mainWindow::clearCompleted(bool a)
 void mainWindow::folderContentRecieved(DirectoryCountEntity *fObject)
 {
     QString sizeNotation;
-    double scaledAndRoundedSize = fW::convertSizeToAppropriateUnits(fObject->size(),sizeNotation,2);
-    QString folderName = fObject->directoryPath(),
+    double scaledAndRoundedSize = fW::convertSizeToAppropriateUnits(fObject->directorySize,sizeNotation,2);
+    QString folderName = fObject->directoryPath,
             folderSize = QString::number(scaledAndRoundedSize),
             message = QString("Size of folder content is %1 %2").arg(folderSize).arg(sizeNotation);
     showSystemMessage(folderName,message);

@@ -1,5 +1,5 @@
-#ifndef MYOBJECT_H
-#define MYOBJECT_H
+#ifndef IMUTABLEOBJECT_H
+#define IMUTABLEOBJECT_H
 
 #include <qobject.h>
 #include <iostream>
@@ -11,18 +11,18 @@ using namespace std;
  * Provides the 'notify observers' service
  */
 
-class MutableObject
+class IMutableObject
 {
 public:
     virtual void stateChanged() = 0; // Notify observers
 };
 
-class BroadcastingObject
+class IBroadcastingObject
 {
 public:
     virtual void sendSystemTrayMessage(const QString &title,const QString &msg) = 0;
     virtual void sendStatusLineMessage(const QString &msg) = 0;
 };
 
-#endif // MYOBJECT_H
+#endif // IMUTABLEOBJECT_H
 

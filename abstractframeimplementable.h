@@ -3,11 +3,11 @@
 
 #include <qwidget.h>
 #include <QMouseEvent>
-#include "mutableobject.h"
+#include "imutableobject.h"
 
 class AbstractFrameImplementable :
         public QWidget,
-        public MutableObject
+        public IMutableObject
 {
     Q_OBJECT
 public:

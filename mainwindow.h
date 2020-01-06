@@ -166,7 +166,7 @@ private:
     QFont viewFont;    
     QHeaderView *suffixHeader;
     QIcon trayStandard,fileStandard;
-    QKeyEvent *currentKeyEvent;
+    QKeyEvent *currentKeyEvent{};
     QLineEdit *statusLine;
     QList<int>columnWidths;
     QMenu *trayMenu,*countTrayMenu,*clearTrayMenu,*folderTrayMenu,*watchFolderViewMenu, *detailedFolderViewMenu;
@@ -174,14 +174,14 @@ private:
     QPoint offset;
     QPushButton *clBut;
     QSplitter hSplit,vSplit;
-    QStackedWidget *buttonContainer;
+    QStackedWidget *buttonContainer{};
     QString ePath,title,currentDir;
     QStringList directoriesToAppend;
     QSystemTrayIcon *tray;
-    QTextBrowser *tBrowser;
+    QTextBrowser *tBrowser{};
     QTimer *countTimer, *clearStatusTextTimer;
     QTreeWidget *detailedFolderView, *suffixTree,*watchFolderView;
-    QWidget *infBox;
+    QWidget *infBox{};
 };
 
 #endif // MAINWINDOW_H

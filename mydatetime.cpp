@@ -17,8 +17,7 @@ myDateTime::myDateTime(int day, int month, int year, int hour, int minute, int s
 }
 
 myDateTime::myDateTime()
-{
-}
+= default;
 
 bool myDateTime::operator <(myDateTime compared)
 {

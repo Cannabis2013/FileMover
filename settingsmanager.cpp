@@ -26,27 +26,40 @@ settingsManager::settingsManager(const QString &appName, const QString &orgName)
         fileIconStandard = fileIconList.last();
 
     readSettings();
-    deserialize();
 }
 
 settingsManager::~settingsManager()
 {
     writeSettings();
-    serialize();
 }
 
 void settingsManager::insertPath(QString path)
 {
     mainFolderPaths << path;
-
-    emit processPath(new fileInformationEntity(path));
+    FileInformationEntity *fEntity;
+    try {
+        fEntity = makeEntity<FileInformationEntity>(fileInformationEntity);
+    } catch (const char *msg) {
+        cout << msg << endl;
+        exit(1);
+    }
+    fEntity->filePaths << path;
+    emit processPath(fEntity);
     emit stateChanged();
 }
 
-void settingsManager::insertPath(QStringList paths)
+void settingsManager::insertPath(const QStringList& paths)
 {
     mainFolderPaths << paths;
-    emit processPath(new fileInformationEntity(paths));
+    FileInformationEntity *fEntity;
+    try {
+        fEntity = makeEntity<FileInformationEntity>(fileInformationEntity);
+    } catch (const char *msg) {
+        cout << msg << endl;
+        exit(1);
+    }
+    fEntity->filePaths = paths;
+    emit processPath(fEntity);
     emit stateChanged();
 }
 
@@ -79,8 +92,8 @@ void settingsManager::requestProcess()
 QList<QTreeWidgetItem *> settingsManager::pathItems()
 {
     QList<QTreeWidgetItem*> items;
-    for (QString path : mainFolderPaths) {
-        QTreeWidgetItem *treeItem = new QTreeWidgetItem();
+    for (const QString &path : mainFolderPaths) {
+        auto treeItem = new QTreeWidgetItem();
         treeItem->setIcon(0,QIcon(":/My Images/Ressources/Folder.png"));
         treeItem->setText(0,path);
         items << treeItem;

@@ -7,7 +7,7 @@
 #include <qpair.h>
 #include <memory>
 #include <QTreeWidgetItem>
-#include "mutableobject.h"
+#include "imutableobject.h"
 
 #include "abstractpersistence.h"
 
@@ -36,7 +36,7 @@ struct DirectoryItem
 
 class FileInformationManager :
         public QObject,
-        public MutableObject,
+        public IMutableObject,
         private AbstractPersistence
 {
     Q_OBJECT

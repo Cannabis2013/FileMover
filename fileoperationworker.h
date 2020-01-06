@@ -10,7 +10,7 @@ extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 class FileOperationWorker :
         public QObject,
         public Worker,
-        public BroadcastingObject
+        public IBroadcastingObject
 {
     Q_OBJECT
 
@@ -32,9 +32,8 @@ public slots:
                     QDirIterator::IteratorFlags i = QDirIterator::NoIteratorFlags);
     void countFolders(QStringList Path);
 
+    // wake-up/Start entity file operations
     void handleProcessRequest();
-
-    // Start/wake-up entity file operations
     void processEntity(EntityModel *entity);
 
 signals:
@@ -57,13 +56,13 @@ private:
 
     // File object entity operations
 
-    void processFileActionEntity(EntityModel *entity);
+    void processFileEntity(EntityModel *entity);
     void processFileInformationEntity(EntityModel *entity);
-    void reProcessFileInformationEntity(const QStringList paths);
+    void reProcessFileInformationEntity(const QStringList &paths);
     void processDirectoryCountEntity(EntityModel *entity);
 
     // Fileoperation from QFileinfoList..
-    bool removeFileItems(const FileObjectList filePaths, QStringList * const err = nullptr);
+    bool removeFileItems(const FileObjectList& filePaths, QStringList * const err = nullptr);
     bool copyFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
     bool moveFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
 
@@ -84,6 +83,7 @@ private:
 
     QString busyMessage;
     bool isBusy;
+    QMutex mutex;
 
 };
 

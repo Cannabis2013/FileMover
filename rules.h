@@ -32,7 +32,7 @@ struct Rule
     QString title = "title";
     rD::fileTypeEntity typeFilter = rD::File;
     rD::fileActionEntity actionRuleEntity;
-    QStringList destinationPath;
+    QStringList destinationPaths;
     QString appliesToPath = "Alle";
     bool deepScanMode = false;
     QList<SubRule> subRules;

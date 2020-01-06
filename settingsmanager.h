@@ -11,15 +11,12 @@
 #include <qdiriterator.h>
 #include "settingsdelegate.h"
 #include "entitymodel.h"
-#include "mutableobject.h"
+#include "imutableobject.h"
 #include <qdatastream.h>
-#include <iostream>
-
-using namespace std;
 
 class settingsManager :
         public QObject,
-        public MutableObject,
+        public IMutableObject,
         private AbstractPersistence
 {
     Q_OBJECT
@@ -47,7 +44,7 @@ public:
     // Path Related..
 
     void insertPath(QString path);
-    void insertPath(QStringList paths);
+    void insertPath(const QStringList& paths);
 
     void removePath(QString path);
     void removePathAt(int index);

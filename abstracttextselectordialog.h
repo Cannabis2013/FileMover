@@ -16,7 +16,7 @@ using namespace std;
 #include "filepathdialogwidget.h"
 #include <qtoolbutton.h>
 
-#include "mutableobject.h"
+#include "imutableobject.h"
 
 namespace Ui {
 class AbstractTextSelectorDialog;
@@ -26,7 +26,7 @@ class AbstractTextSelectorDialog;
 
 class AbstractTextSelectorDialog :
         public QWidget,
-        public MutableObject
+        public IMutableObject
 {
     Q_OBJECT
 

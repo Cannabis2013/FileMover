@@ -71,7 +71,7 @@ public:
         if(compOne.title != compTwo.title ||
                 compOne.typeFilter != compTwo.typeFilter ||
                 compOne.actionRuleEntity != compTwo.actionRuleEntity ||
-                compOne.destinationPath != compTwo.destinationPath ||
+                compOne.destinationPaths != compTwo.destinationPaths ||
                 compOne.appliesToPath != compTwo.appliesToPath ||
                 compOne.deepScanMode != compTwo.deepScanMode)
         {
@@ -574,7 +574,7 @@ void Core_functionality::operation_filepath_match_success_1()
         return;
     }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+
 
     // Pre-state variables
 
@@ -601,7 +601,13 @@ void Core_functionality::operation_filepath_match_success_1()
 
     mApp->insertRule(preRule);
 
-    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    const Virtual_Objects *objects;
+    try {
+        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
 
     Virtual_Objects referenceList;
 
@@ -621,7 +627,6 @@ void Core_functionality::operation_filepath_match_success_1()
     }
 
     mApp->clearFoldersAccordingToRules(mApp->watchFolders());
-
 
     /*
      * Note about async call:
@@ -654,6 +659,7 @@ void Core_functionality::operation_filepath_match_success_1()
         return;
     }
 
+
     if(!cleaned_up)
         printf(DELETE_STATUS);
 
@@ -676,7 +682,7 @@ void Core_functionality::operation_filepath_match_fail_1()
         return;
     }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+
 
     // Pre-state variables
 
@@ -703,7 +709,13 @@ void Core_functionality::operation_filepath_match_fail_1()
 
     mApp->insertRule(preRule);
 
-    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    const Virtual_Objects *objects;
+    try {
+        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
     Q_UNUSED(objects)
 
     // Initialize reference list with expected/control elements
@@ -783,7 +795,7 @@ void Core_functionality::operation_filepath_contain_success_1()
         return;
     }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+
 
     // Pre-state variables
 
@@ -810,7 +822,13 @@ void Core_functionality::operation_filepath_contain_success_1()
 
     mApp->insertRule(preRule);
 
-    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    const Virtual_Objects *objects;
+    try {
+        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
 
     Virtual_Objects referenceList;
 
@@ -884,7 +902,7 @@ void Core_functionality::operation_filepath_contain_fail_1()
         return;
     }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+
 
     // Pre-state variables
 
@@ -911,7 +929,13 @@ void Core_functionality::operation_filepath_contain_fail_1()
 
     mApp->insertRule(preRule);
 
-    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    const Virtual_Objects *objects;
+    try {
+        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
 
     Virtual_Objects referenceList;
 
@@ -985,7 +1009,7 @@ void Core_functionality::operation_extension_match_success_1()
         return;
     }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+
 
     // Pre-state variables
 
@@ -1012,7 +1036,13 @@ void Core_functionality::operation_extension_match_success_1()
 
     mApp->insertRule(preRule);
 
-    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    const Virtual_Objects *objects;
+    try {
+        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
 
     Virtual_Objects referenceList;
 
@@ -1083,7 +1113,7 @@ void Core_functionality::operation_size_less_than_success_1()
         return;
     }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+
 
     // Pre-state variables
 
@@ -1112,7 +1142,13 @@ void Core_functionality::operation_size_less_than_success_1()
 
     mApp->insertRule(preRule);
 
-    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    const Virtual_Objects *objects;
+    try {
+        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
 
     Virtual_Objects referenceList;
     qint64 bytes = fW::toBytes(sR.sizeLimit.first,sR.sizeLimit.second);
@@ -1178,9 +1214,15 @@ void Core_functionality::operation_size_equal_success_1()
         return;
     }
 
-    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    const Virtual_Objects *objects;
+    try {
+        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+
 
     // Pre-state variables
 
@@ -1286,7 +1328,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
         Q_ASSERT(false);
     }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+
 
     // Pre-state variables
 
@@ -1380,7 +1422,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
         return;
     }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+
 
     // Pre-state variables
 
@@ -1409,7 +1451,13 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
 
     mApp->insertRule(preRule);
 
-    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    const Virtual_Objects *objects;
+    try {
+        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
 
     Virtual_Objects referenceList;
     qint64 bytes = fW::toBytes(sR.sizeLimit.first,sR.sizeLimit.second);
@@ -1475,7 +1523,7 @@ void Core_functionality::operation_size_greater_than_success_1()
         return;
     }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+
 
     // Pre-state variables
 
@@ -1503,8 +1551,13 @@ void Core_functionality::operation_size_greater_than_success_1()
     preRule.subRules << sR;
 
     mApp->insertRule(preRule);
-
-    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    const Virtual_Objects *objects;
+    try {
+        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
 
     Virtual_Objects referenceList;
     qint64 bytes = fW::toBytes(sR.sizeLimit.first,sR.sizeLimit.second);
@@ -1570,9 +1623,13 @@ void Core_functionality::operation_size_interval_success_1()
         return;
     }
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
-
-    const Virtual_Objects *objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    const Virtual_Objects *objects;
+    try {
+        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
 
     // Pre-state variables
 

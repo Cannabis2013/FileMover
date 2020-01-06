@@ -87,9 +87,9 @@ HEADERS  += mainwindow.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
     icoreapplication.h \
+    imutableobject.h \
     mainapplication.h \
     messageBox.h \
-    mutableobject.h \
     myicon.h \
     myicon.h \
     myicon.h \

@@ -85,7 +85,7 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     QList<QTreeWidgetItem*>resultingList;
     for(Rule r : rules)
     {
-        QStringList headerData {r.title,rDefs.fileActionEntityToString(r.actionRuleEntity),Worker::mergeStringList(r.destinationPath)};
+        QStringList headerData {r.title,rDefs.fileActionEntityToString(r.actionRuleEntity),Worker::mergeStringList(r.destinationPaths)};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         QIcon itemIcon = QIcon(":/My Images/Ressources/rule_icon.png");
         pItem->setIcon(0,itemIcon);
@@ -157,7 +157,7 @@ void rulesManager::readSettings()
         r.actionRuleEntity = static_cast<rD::fileActionEntity>(persistenceSettings->value("Action","").toInt());
         r.appliesToPath = persistenceSettings->value("ApplyPath","Alle").toString();
         r.typeFilter = static_cast<rD::fileTypeEntity>(persistenceSettings->value("Scan type filter","").toInt());
-        r.destinationPath = Worker::splitString(persistenceSettings->value("Destination paths","").toString());
+        r.destinationPaths = Worker::splitString(persistenceSettings->value("Destination paths","").toString());
         int count = persistenceSettings->beginReadArray("Subrules");
         for (int j = 0; j < count; ++j)
         {
@@ -217,7 +217,7 @@ void rulesManager::writeSettings()
         persistenceSettings->setValue("Scan type filter",r.typeFilter);
         persistenceSettings->setValue("ApplyPath",r.appliesToPath);
         persistenceSettings->setValue("Destination paths",
-                   mergeStringList(r.destinationPath));
+                   mergeStringList(r.destinationPaths));
         persistenceSettings->setValue("Scan Mode",r.deepScanMode);
         QList<SubRule>sRules = r.subRules;
         int total = sRules.count();

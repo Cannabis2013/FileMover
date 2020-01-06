@@ -78,7 +78,7 @@ void AddRuleDialog::on_addButton_clicked()
     r.title = titleSelector->text();
     r.appliesToPath = applySelector->currentText();
     r.actionRuleEntity = rDefs.fileActionEntityFromString(actionBox->currentText());
-    r.destinationPath = Worker::splitString(pathSelector->text());
+    r.destinationPaths = Worker::splitString(pathSelector->text());
     r.typeFilter = rDefs.fileTypeEntityFromString(fileTypeSelector->currentText());
 
     r.subRules = subRules;

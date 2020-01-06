@@ -4,11 +4,12 @@
 #include "mydatetime.h"
 #include "fileinformationmanager.h"
 #include "entitymodel.h"
+#include <qmutex.h>
 
 /*
  * Queue management of fileoperations and other stuff
  *
- * Modus operandi (signals and slot's call flow):
+ * signals and slot's call flow:
  *  - EntityQueueManager::WakeupProcess -> FileOperationWorker::HandleProcessRequest
  *  - FileOperationWorker::requestNextEntity -> EntityQueueManager::sendNextEntity
  *  - EntityQueueManager::SendEntity -> FileWorkerOperation::processEntity
@@ -30,19 +31,25 @@ public slots:
 
     void addEntity(EntityModel *entity)
     {
+        mutex.lock();
         entityQueue << entity;
+        mutex.unlock();
         emit wakeUpProcess();
     }
 
     void sendNextEntity()
     {
+        mutex.lock();
         if(entityQueue.isEmpty())
         {
-            emit sendEntity(new EntityModel("Queue is empty"));
+            auto emptyEntity = makeEntity<EntityModel>(nullEntity);
+            emptyEntity->errorDescription = "Queue is empty";
+            emit sendEntity(emptyEntity);
             return;
         }
-
-        emit sendEntity(entityQueue.takeFirst());
+        auto firstEntity = entityQueue.takeFirst();
+        emit sendEntity(firstEntity);
+        mutex.unlock();
     }
 
 signals:
@@ -53,6 +60,8 @@ signals:
 
 private:
     QList<EntityModel*>entityQueue;
+    QMutex mutex;
+
 };
 
 #endif // PROCESSCONTROLLER_H

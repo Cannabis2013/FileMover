@@ -17,8 +17,8 @@ MainApplication::MainApplication(const QString &appName,
 
 
     // Move classes to their respective threads
-    fWorker->moveToThread(fileWorkerThread);
     entityManager->moveToThread(queueThread);
+    fWorker->moveToThread(fileWorkerThread);
 
     // Register custom types that is not recognised by Qt per default
     qRegisterMetaType<DirectoryItem>("DirectoryItem");
@@ -51,14 +51,24 @@ MainApplication::MainApplication(const QString &appName,
     connect(rManager,&rulesManager::stateChanged,this,&MainApplication::stateChanged);
     connect(fManager,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);
 
-
     connect(fWorker,&fW::jobDone,this,&ICoreApplication::stateChanged);
 
     // Start threads
     fileWorkerThread->start();
     queueThread->start();
 
-    emit sManager->processPath(new fileInformationEntity(watchFolders()));
+    // Incarcerate entity model
+    FileInformationEntity *fEntity;
+    try {
+        fEntity = makeEntity<FileInformationEntity>(fileOperationEntity);
+    } catch (const char *msg) {
+        cout << msg << endl;
+        exit(1);
+    }
+
+    fEntity->filePaths = watchFolders();
+
+    emit sManager->processPath(fEntity);
 }
 
 MainApplication::~MainApplication()
@@ -70,11 +80,17 @@ MainApplication::~MainApplication()
 
 void MainApplication::clearFolders(QStringList paths)
 {
-    FileObjectList allFiles = fW::generateFileObjects(paths);
-    FileActionEntity *entity = new FileActionEntity();
-    entity->setDirectoryPaths(paths);
-    entity->setDirectoryFileContent(allFiles);
-    entityManager->addEntity(entity);
+    FileActionEntity *file_entity;
+    try {
+        file_entity = makeEntity<FileActionEntity>(fileOperationEntity);
+    } catch (const char *msg) {
+        cout << msg << endl;
+        exit(1);
+    }
+
+    file_entity->directoryPaths = paths;
+    file_entity->allFiles = fW::generateFileObjects(paths);
+    entityManager->addEntity(file_entity);
 }
 
 void MainApplication::clearFoldersAccordingToRules(QStringList paths)
@@ -82,18 +98,24 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
     const QList<Rule>rules = rManager->ruleslist();
     if(rules.isEmpty())
         clearFolders(paths);
-    for(Rule r : rules)
+    for(const Rule &r : rules)
     {
         FileObjectList allFiles = fW::generateFileObjects(paths,r.appliesToPath,r.typeFilter);
         for(SubRule sR : r.subRules)
             allFiles = fWorker->processFileObjects(allFiles,sR);
 
-        FileActionEntity *entity = new FileActionEntity;
-        entity->setDirectoryPaths(paths);
-        entity->setFileActionDestinations(r.destinationPath);
-        entity->setDirectoryFileContent(allFiles);
-        entity->setFileActionRule(r.actionRuleEntity);
-        emit sendEntity(entity);
+        FileActionEntity *file_entity;
+        try {
+            file_entity = makeEntity<FileActionEntity>(fileOperationEntity);
+        } catch (const char *msg) {
+            cout << msg << endl;
+            exit(1);
+        }
+        file_entity->directoryPaths = paths;
+        file_entity->fileDestinations = r.destinationPaths;
+        file_entity->allFiles = allFiles;
+        file_entity->fileActionRule = r.actionRuleEntity;
+        emit sendEntity(file_entity);
     }
 }
 
@@ -137,12 +159,17 @@ void MainApplication::setSettings(SettingsDelegate s)
 void MainApplication::calculateFolderSize(QString path)
 {
     QFileInfo fInfo(path);
-    DirectoryCountEntity *fObject = new DirectoryCountEntity();
+    DirectoryCountEntity *dirEntity;
+    try {
+        dirEntity = makeEntity<DirectoryCountEntity>(directoryCountEntity);
+    } catch (const char *msg) {
+        cout << msg << endl;
+        exit(1);
+    }
+    dirEntity->directoryPath = fInfo.absoluteFilePath();
+    dirEntity->directoryName = fInfo.fileName();
 
-    fObject->setDirectoryPath(fInfo.absoluteFilePath());
-    fObject->setDirectoryName(fInfo.fileName());
-
-    entityManager->addEntity(fObject);
+    entityManager->addEntity(dirEntity);
 }
 
 void MainApplication::removeWatchFolderAt(int index)

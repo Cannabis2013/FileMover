@@ -123,18 +123,18 @@ void FileOperationWorker::processDirectoryCountEntity(EntityModel *entity)
 void FileOperationWorker::processEntity(EntityModel *entity)
 {
     isBusy = true;
-    if(entity->type == nullEntity)
+    if(entity->type == EntityModel::nullEntity)
     {
         emit jobDone(true);
         isBusy = false;
         return;
     }
 
-    if(entity->type == fileOperationEntity)
+    if(entity->type == EntityModel::fileOperationEntity)
         processFileEntity(entity);
-    else if(entity->type == fileInformationEntity)
+    else if(entity->type == EntityModel::fileInformationEntity)
         processFileInformationEntity(entity);
-    else if(entity->type == directoryCountEntity)
+    else if(entity->type == EntityModel::directoryCountEntity)
         processDirectoryCountEntity(entity);
 
     entity = nullptr;
@@ -639,16 +639,11 @@ void FileOperationWorker::countFolders(QStringList Path)
 
 void FileOperationWorker::handleProcessRequest()
 {
-    mutex.lock();
     if(isBusy)
-    {
-        mutex.unlock();
         return;
-    }
     else
         emit requestNextEntity();
 
-    mutex.unlock();
 }
 
 void FileOperationWorker::processFileInformationEntity(EntityModel * entity)

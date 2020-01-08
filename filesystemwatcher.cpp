@@ -17,7 +17,7 @@ void FileSystemWatcher::changed(const QString &path)
 {
     FileInformationEntity *fEntity;
     try {
-        fEntity = makeEntity<FileInformationEntity>(fileInformationEntity);
+        fEntity = makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
     } catch (const char *msg) {
         cout << msg << endl;
         exit(1);

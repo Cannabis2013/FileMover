@@ -31,25 +31,21 @@ public slots:
 
     void addEntity(EntityModel *entity)
     {
-        mutex.lock();
         entityQueue << entity;
-        mutex.unlock();
         emit wakeUpProcess();
     }
 
     void sendNextEntity()
     {
-        mutex.lock();
         if(entityQueue.isEmpty())
         {
-            auto emptyEntity = makeEntity<EntityModel>(nullEntity);
+            auto emptyEntity = makeEntity<EntityModel>(EntityModel::nullEntity);
             emptyEntity->errorDescription = "Queue is empty";
             emit sendEntity(emptyEntity);
             return;
         }
         auto firstEntity = entityQueue.takeFirst();
         emit sendEntity(firstEntity);
-        mutex.unlock();
     }
 
 signals:
@@ -60,7 +56,6 @@ signals:
 
 private:
     QList<EntityModel*>entityQueue;
-    QMutex mutex;
 
 };
 

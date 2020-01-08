@@ -60,7 +60,7 @@ MainApplication::MainApplication(const QString &appName,
     // Incarcerate entity model
     FileInformationEntity *fEntity;
     try {
-        fEntity = makeEntity<FileInformationEntity>(fileOperationEntity);
+        fEntity = makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
     } catch (const char *msg) {
         cout << msg << endl;
         exit(1);
@@ -82,7 +82,7 @@ void MainApplication::clearFolders(QStringList paths)
 {
     FileActionEntity *file_entity;
     try {
-        file_entity = makeEntity<FileActionEntity>(fileOperationEntity);
+        file_entity = makeEntity<FileActionEntity>(EntityModel::fileOperationEntity);
     } catch (const char *msg) {
         cout << msg << endl;
         exit(1);
@@ -106,7 +106,7 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
 
         FileActionEntity *file_entity;
         try {
-            file_entity = makeEntity<FileActionEntity>(fileOperationEntity);
+            file_entity = makeEntity<FileActionEntity>(EntityModel::fileOperationEntity);
         } catch (const char *msg) {
             cout << msg << endl;
             exit(1);
@@ -140,6 +140,11 @@ QStringList MainApplication::watchFolders()
     return sManager->paths();
 }
 
+int MainApplication::watchFolderCount()
+{
+    return sManager->folderCount();
+}
+
 void MainApplication::clearRules() const
 {
     for (int i = 0; i < rManager->ruleCount(); ++i)
@@ -161,7 +166,7 @@ void MainApplication::calculateFolderSize(QString path)
     QFileInfo fInfo(path);
     DirectoryCountEntity *dirEntity;
     try {
-        dirEntity = makeEntity<DirectoryCountEntity>(directoryCountEntity);
+        dirEntity = makeEntity<DirectoryCountEntity>(EntityModel::directoryCountEntity);
     } catch (const char *msg) {
         cout << msg << endl;
         exit(1);

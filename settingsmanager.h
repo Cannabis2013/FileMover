@@ -28,13 +28,13 @@ public:
     void readSettings();
     void writeSettings();
 
-    // void members..
+    // Basic settings
     void setCloseOnExit(bool enable);
     void setRulesEnabled(bool enable);
     void setTimerEnabled(bool enable);
     void setTimerInterval(int msec);
 
-    // Icons related..
+    // Icons
     void insertIcon(const MyIcon ic){trayIconList << ic;}
     void insertIcons(QList<MyIcon>icons){trayIconList << icons;}
 
@@ -42,6 +42,8 @@ public:
     void setSettings(SettingsDelegate s);
 
     // Path Related..
+
+    int folderCount(){return watchFolders.count();}
 
     void insertPath(QString path);
     void insertPath(const QStringList& paths);
@@ -54,7 +56,7 @@ public:
 
     void requestProcess();
 
-    QStringList paths() {return mainFolderPaths;}
+    QStringList paths() {return watchFolders;}
     QList<QTreeWidgetItem*> pathItems();
 
     bool closeOnQuit() {return _settings->closeOnExit;}
@@ -72,7 +74,7 @@ signals:
     void stateChanged();
 private:
     QList<MyIcon> scanForIcons(QString path);
-    QStringList mainFolderPaths;
+    QStringList watchFolders;
     QString ressourceFolder = "Ressources";
     QString fileIconPath = "fileIcons";
     SettingsDelegate *_settings;

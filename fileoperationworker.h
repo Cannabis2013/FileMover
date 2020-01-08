@@ -83,7 +83,6 @@ private:
 
     QString busyMessage;
     bool isBusy;
-    QMutex mutex;
 
 };
 

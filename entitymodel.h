@@ -9,10 +9,10 @@
 
 using namespace std;
 
-enum typeMode {nullEntity,fileInformationEntity,fileOperationEntity,directoryCountEntity};
 
 struct EntityModel
 {
+    enum typeMode {nullEntity,fileInformationEntity,fileOperationEntity,directoryCountEntity};
     typeMode type = nullEntity;
     QString errorDescription = "No error";
 };
@@ -37,7 +37,7 @@ struct FileInformationEntity : public EntityModel
     QStringList filePaths;
 };
 
-template<class T> T *makeEntity(typeMode type)
+template<class T> T *makeEntity(EntityModel::typeMode type)
 {
     if(!std::is_base_of_v<EntityModel,T>)
         throw "Not base of EntityModel";

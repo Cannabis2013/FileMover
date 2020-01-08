@@ -764,6 +764,9 @@ void mainWindow::on_addBut_clicked()
 
 void mainWindow::on_countButt_clicked()
 {
+    if(coreApplication->watchFolderCount() <= 0)
+        return;
+
     QString path = watchFolderView->currentItem()->text(0);
     coreApplication->calculateFolderSize(path);
 }

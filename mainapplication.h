@@ -1,7 +1,7 @@
 #ifndef MAINAPPLICATION_H
 #define MAINAPPLICATION_H
 
-#define TEST_MODE
+//#define TEST_MODE
 
 #include <qthread.h>
 #include "settingsmanager.h"
@@ -27,6 +27,7 @@ public:
     QStringList watchFolders();
     QList<QTreeWidgetItem *> watchFolderItems(){return sManager->pathItems();}
     QList<QTreeWidgetItem*> detailedWatchFolderItems(){return fManager->allTreeItems();}
+    int watchFolderCount();
 
     QList<QTreeWidgetItem*> suffixList(QString path){return fManager->item(path).suffixItems();}
 

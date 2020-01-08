@@ -35,10 +35,10 @@ settingsManager::~settingsManager()
 
 void settingsManager::insertPath(QString path)
 {
-    mainFolderPaths << path;
+    watchFolders << path;
     FileInformationEntity *fEntity;
     try {
-        fEntity = makeEntity<FileInformationEntity>(fileInformationEntity);
+        fEntity = makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
     } catch (const char *msg) {
         cout << msg << endl;
         exit(1);
@@ -50,10 +50,10 @@ void settingsManager::insertPath(QString path)
 
 void settingsManager::insertPath(const QStringList& paths)
 {
-    mainFolderPaths << paths;
+    watchFolders << paths;
     FileInformationEntity *fEntity;
     try {
-        fEntity = makeEntity<FileInformationEntity>(fileInformationEntity);
+        fEntity = makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
     } catch (const char *msg) {
         cout << msg << endl;
         exit(1);
@@ -65,7 +65,7 @@ void settingsManager::insertPath(const QStringList& paths)
 
 void settingsManager::removePath(QString path)
 {
-    mainFolderPaths.removeOne(path);
+    watchFolders.removeOne(path);
     emit removeItem(path);
     emit stateChanged();
 }
@@ -74,13 +74,13 @@ void settingsManager::removePathAt(int index)
 {
     // TODO: Implement some 'out of range' check
     // NOTE: Should throw something
-    mainFolderPaths.removeAt(index);
+    watchFolders.removeAt(index);
     emit stateChanged();
 }
 
 void settingsManager::clearPaths()
 {
-    for (int i = 0; i < mainFolderPaths.count(); ++i)
+    for (int i = 0; i < watchFolders.count(); ++i)
         removePathAt(i);
 }
 
@@ -92,7 +92,7 @@ void settingsManager::requestProcess()
 QList<QTreeWidgetItem *> settingsManager::pathItems()
 {
     QList<QTreeWidgetItem*> items;
-    for (const QString &path : mainFolderPaths) {
+    for (const QString &path : watchFolders) {
         auto treeItem = new QTreeWidgetItem();
         treeItem->setIcon(0,QIcon(":/My Images/Ressources/Folder.png"));
         treeItem->setText(0,path);
@@ -164,12 +164,12 @@ void settingsManager::writeSettings()
     persistenceSettings->setValue("Timer enabled",_settings->ruleTimerEnabled);
     persistenceSettings->setValue("Main gui geometry",_settings->mainGuiGeometry);
     persistenceSettings->endGroup();
-    persistenceSettings->beginWriteArray("Watchfolders", mainFolderPaths.count());
+    persistenceSettings->beginWriteArray("Watchfolders", watchFolders.count());
 
-    for(int i = 0;i < mainFolderPaths.count();i++)
+    for(int i = 0;i < watchFolders.count();i++)
     {
         persistenceSettings->setArrayIndex(i);
-        QString path = mainFolderPaths.at(i);
+        QString path = watchFolders.at(i);
         QString keyVal = QString("Folder (%1)").arg(i);
         persistenceSettings->setValue(keyVal,path);
     }

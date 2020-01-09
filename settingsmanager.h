@@ -11,7 +11,6 @@
 #include <qdiriterator.h>
 #include "settings_structure.h"
 #include "entitymodel.h"
-#include "imutableobject.h"
 #include "NotifyDomain.h"
 #include <qdatastream.h>
 

@@ -129,7 +129,7 @@ public:
 
 private:
 
-    FileModel* M() const
+    IFileModel<FileModel>* M() const
     {
         return _model;
     }

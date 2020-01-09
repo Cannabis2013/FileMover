@@ -199,7 +199,7 @@ void Core_functionality::cleanupTestCase()
 void Core_functionality::persistence_SettingsManager_Success_1()
 {
     // Pre state variables
-    SettingsDelegate preSettings;
+    Settings_Structure preSettings;
 
     preSettings.closeOnExit = true;
     preSettings.rulesEnabled = false;
@@ -211,7 +211,7 @@ void Core_functionality::persistence_SettingsManager_Success_1()
 
     mApp = new MainApplication("MHTest","MH");
 
-    SettingsDelegate postSettings = mApp->settingsState();
+    Settings_Structure postSettings = mApp->settingsState();
 
     bool isTrue = true;
 
@@ -227,7 +227,7 @@ void Core_functionality::persistence_SettingsManager_Success_1()
 void Core_functionality::persistence_SettingsManager_Success_2()
 {
     // Pre state variables
-    SettingsDelegate preSettings;
+    Settings_Structure preSettings;
     preSettings.closeOnExit = true;
     preSettings.rulesEnabled = true;
     preSettings.ruleTimerEnabled = false;
@@ -238,7 +238,7 @@ void Core_functionality::persistence_SettingsManager_Success_2()
 
     mApp = new MainApplication("MHTest","MH");
 
-    SettingsDelegate postSettings = mApp->settingsState();
+    Settings_Structure postSettings = mApp->settingsState();
 
     bool isTrue = true;
 

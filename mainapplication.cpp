@@ -100,7 +100,7 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         clearFolders(paths);
     for(const Rule &r : rules)
     {
-        FileObjectList allFiles = fW::generateFileObjects(paths,r.appliesToPath,r.typeFilter);
+        QList<const IFileModelDelegate<IFileModel<FileModel>>*> allFiles = fW::generateFileObjects(paths,r.appliesToPath,r.typeFilter);
         for(SubRule sR : r.subRules)
             allFiles = fWorker->processFileObjects(allFiles,sR);
 

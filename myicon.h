@@ -13,10 +13,10 @@ public:
         addFile(fName);
     }
 
-    void setName(QString n){N = n;}
-    QString name() const{return N;}
+    void setName(QString name){_name = name;}
+    QString name() const{return _name;}
 private:
-    QString N;
+    QString _name;
 };
 
 #endif // MYICON_H

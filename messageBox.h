@@ -48,7 +48,6 @@ public:
                 return false;
             else
                 return true;
-
         }
         else if(reinterpret_cast<QPushButton*>(box.clickedButton()) == b2)
         {
@@ -64,7 +63,6 @@ public:
             return false;
         }
     }
-
 };
 
 #endif // MESSAGEBOX_H

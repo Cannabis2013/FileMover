@@ -2,7 +2,7 @@
 #define ENTITYMODEL_H
 
 #include "ruledefinitions.h"
-#include "fileobject.h"
+#include "filemodel.h"
 #include <QFileInfoList>
 
 #include <iostream>
@@ -27,7 +27,7 @@ struct DirectoryCountEntity : public EntityModel
 struct FileActionEntity : public EntityModel
 {
     QStringList directoryPaths;
-    FileObjectList allFiles;
+    QList<const IFileModelDelegate<IFileModel<FileModel>>*> allFiles;
     rD::fileActionEntity fileActionRule = rD::none;
     QStringList fileDestinations = QStringList();
 };

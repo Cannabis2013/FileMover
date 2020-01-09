@@ -3,17 +3,17 @@
 
 #include <qrect.h>
 
-class myScreenDimension: public QRect
+class ScreenDimension: public QRect
 {
 public:
-    myScreenDimension(int left,int tp,int w,int h)
+    ScreenDimension(int left,int tp,int w,int h)
     {
         setLeft(left);
         setTop(tp);
         setWidth(w);
         setHeight(h);
     }
-    myScreenDimension(QRect parent = QRect())
+    ScreenDimension(QRect parent = QRect())
     {
         setLeft(parent.left());
         setTop(parent.top());
@@ -22,10 +22,10 @@ public:
     }
     bool operator <=(QRect cRect)
     {
-        QSize cSZ(cRect.width(),cRect.height()),
-                sZ(this->width(),this->height());
+        QSize compareDimension(cRect.width(),cRect.height()),
+                dimension(this->width(),this->height());
 
-        if(sZ.width() <= cSZ.width() && sZ.height() <= cSZ.height())
+        if(dimension.width() <= compareDimension.width() && dimension.height() <= compareDimension.height())
             return true;
         else
             return false;

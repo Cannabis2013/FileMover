@@ -162,7 +162,7 @@ private:
     bool countTimerStatus;
     fileInformationView *fileInfoBrowser;
     int tempKey,normalListFontSize, detailedListFontSize, countTimerInterval;    
-    myScreenDimension laptopScreenSize, screenSize;
+    ScreenDimension laptopScreenSize, screenSize;
     QFont viewFont;    
     QHeaderView *suffixHeader;
     QIcon trayStandard,fileStandard;

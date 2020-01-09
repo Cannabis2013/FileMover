@@ -25,10 +25,10 @@ mainWindow::mainWindow(ICoreApplication *coreApplication) :
     fileInfoBrowser = ui->fileInformationBrowserView;
     fileStandard = QIcon();
     folderTrayMenu = new QMenu;
-    laptopScreenSize = myScreenDimension(0,0,1280,800);
+    laptopScreenSize = ScreenDimension(0,0,1280,800);
     watchFolderView = ui->WatchFolderView;
     normalListFontSize = 16;
-    screenSize = myScreenDimension(QGuiApplication::screens().at(0)->geometry());
+    screenSize = ScreenDimension(QGuiApplication::screens().at(0)->geometry());
     statusLine = ui->statusLineEdit;
     suffixTree = ui->suffixTree;
     suffixHeader = suffixTree->header();

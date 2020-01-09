@@ -3,7 +3,7 @@
 
 #include <qrect.h>
 
-struct SettingsDelegate
+struct Settings_Structure
 {
     bool closeOnExit;
     bool ruleTimerEnabled;

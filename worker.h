@@ -9,6 +9,7 @@
 #include <qpair.h>
 #include <math.h>
 #include "imutableobject.h"
+#include "NotifyDomain.h"
 
 class Worker
 {

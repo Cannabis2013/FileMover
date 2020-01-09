@@ -1,5 +1,5 @@
-#ifndef IMUTABLEOBJECT_H
-#define IMUTABLEOBJECT_H
+#ifndef NOTIFYDOMAIN_H
+#define NOTIFYDOMAIN_H
 
 #include <qobject.h>
 #include <iostream>
@@ -24,5 +24,4 @@ public:
     virtual void sendStatusLineMessage(const QString &msg) = 0;
 };
 
-#endif // IMUTABLEOBJECT_H
-
+#endif // NOTIFYDOMAIN_H

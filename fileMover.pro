@@ -71,6 +71,7 @@ SOURCES += main.cpp\
     topframeform.cpp
 
 HEADERS  += mainwindow.h \
+    NotifyDomain.h \
     abstractruledialog.h \
     abstractframeimplementable.h \
     abstractpersistence.h \
@@ -89,7 +90,6 @@ HEADERS  += mainwindow.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
     icoreapplication.h \
-    imutableobject.h \
     mainapplication.h \
     messageBox.h \
     myicon.h \
@@ -98,7 +98,7 @@ HEADERS  += mainwindow.h \
     rulesmanager.h \
     myscreendimensions.h \
     mydatetime.h \
-    settingsdelegate.h \
+    settings_structure.h \
     settingsmanager.h \
     settingswindow.h \
     fileinformationview.h \

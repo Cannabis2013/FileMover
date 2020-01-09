@@ -9,9 +9,10 @@
 #include "myicon.h"
 #include <qdir.h>
 #include <qdiriterator.h>
-#include "settingsdelegate.h"
+#include "settings_structure.h"
 #include "entitymodel.h"
 #include "imutableobject.h"
+#include "NotifyDomain.h"
 #include <qdatastream.h>
 
 class settingsManager :
@@ -38,8 +39,8 @@ public:
     void insertIcon(const MyIcon ic){trayIconList << ic;}
     void insertIcons(QList<MyIcon>icons){trayIconList << icons;}
 
-    SettingsDelegate settingsState();
-    void setSettings(SettingsDelegate s);
+    Settings_Structure settingsState();
+    void setSettings(Settings_Structure s);
 
     // Path Related..
 
@@ -77,7 +78,7 @@ private:
     QStringList watchFolders;
     QString ressourceFolder = "Ressources";
     QString fileIconPath = "fileIcons";
-    SettingsDelegate *_settings;
+    Settings_Structure *_settings;
     QTimer countTimer;
     QList<MyIcon> trayIconList;
     QList<MyIcon> fileIconList;

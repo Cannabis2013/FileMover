@@ -5,8 +5,8 @@
 #include "fileoperationworker.h"
 #include "myicon.h"
 #include "rulesmanager.h"
-#include "settingsdelegate.h"
-#include "imutableobject.h"
+#include "settings_structure.h"
+#include "NotifyDomain.h"
 
 class ICoreApplication :
         public QObject,
@@ -36,8 +36,8 @@ public:
 
     virtual QList<MyIcon> icons() = 0;
 
-    virtual SettingsDelegate settingsState() = 0;
-    virtual void setSettings(SettingsDelegate s) =0;
+    virtual Settings_Structure settingsState() = 0;
+    virtual void setSettings(Settings_Structure s) =0;
 
     virtual bool closeOnExit() = 0;
 
@@ -65,7 +65,6 @@ signals:
     void sendStatusMessage(const QString &filePath);
     void sendEntity(EntityModel *model);
     void stateChanged();
-
 
     void sendSystemTrayMessage(const QString &title, const QString &msg);
     void sendStatusLineMessage(const QString &msg);

@@ -7,7 +7,7 @@
 #include <qpair.h>
 #include <memory>
 #include <QTreeWidgetItem>
-#include "imutableobject.h"
+#include "NotifyDomain.h"
 
 #include "abstractpersistence.h"
 

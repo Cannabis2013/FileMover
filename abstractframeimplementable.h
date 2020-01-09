@@ -3,7 +3,7 @@
 
 #include <qwidget.h>
 #include <QMouseEvent>
-#include "imutableobject.h"
+#include "NotifyDomain.h"
 
 class AbstractFrameImplementable :
         public QWidget,

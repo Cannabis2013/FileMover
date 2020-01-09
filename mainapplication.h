@@ -45,8 +45,8 @@ public:
 
     // Basic settings and persistence related
 
-    SettingsDelegate settingsState();
-    void setSettings(SettingsDelegate s);
+    Settings_Structure settingsState();
+    void setSettings(Settings_Structure s);
 
     bool closeOnExit(){return sManager->closeOnQuit();}
 

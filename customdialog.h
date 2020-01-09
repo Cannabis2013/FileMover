@@ -14,7 +14,7 @@
 #include <qscreen.h>
 
 #include "ui_customdialog.h"
-#include "imutableobject.h"
+#include "NotifyDomain.h"
 #include "abstractframeimplementable.h"
 
 using namespace std;

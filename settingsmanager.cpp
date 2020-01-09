@@ -5,7 +5,7 @@ settingsManager::settingsManager(const QString &appName, const QString &orgName)
 {
     QList<MyIcon> trayIconList = scanForIcons(ressourceFolder);
 
-    _settings = new SettingsDelegate;
+    _settings = new Settings_Structure;
 
     QDir dir;
     if(!dir.exists(ressourceFolder))
@@ -196,12 +196,12 @@ void settingsManager::setTimerInterval(int msec)
     _settings->ruleCountInterval = msec;
 }
 
-SettingsDelegate settingsManager::settingsState()
+Settings_Structure settingsManager::settingsState()
 {
     return *_settings;
 }
 
-void settingsManager::setSettings(SettingsDelegate s)
+void settingsManager::setSettings(Settings_Structure s)
 {
     *_settings = s;
 }

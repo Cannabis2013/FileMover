@@ -453,14 +453,14 @@ QString mainWindow::currentMainFolderPath() const
 
 void mainWindow::writeSettings()
 {
-    SettingsDelegate sDelegate = this->coreApplication->settingsState();
+    Settings_Structure sDelegate = this->coreApplication->settingsState();
     sDelegate.mainGuiGeometry = geometry();
     this->coreApplication->setSettings(sDelegate);
 }
 
 void mainWindow::readSettings()
 {
-    SettingsDelegate sDelegate = this->coreApplication->settingsState();
+    Settings_Structure sDelegate = this->coreApplication->settingsState();
     setGeometry(sDelegate.mainGuiGeometry);
 }
 
@@ -508,7 +508,7 @@ QFont mainWindow::createFont(fontType ft, QString family, bool bold, bool italic
 
 void mainWindow::on_clearButt_clicked()
 {
-    SettingsDelegate sDelegate = coreApplication->settingsState();
+    Settings_Structure sDelegate = coreApplication->settingsState();
     if(sDelegate.rulesEnabled)
     {
         if(messageBox::customBox(this,

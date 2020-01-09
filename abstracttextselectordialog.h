@@ -9,14 +9,12 @@
 #include <QVBoxLayout>
 #include <iostream>
 
-
 using namespace std;
-
 
 #include "filepathdialogwidget.h"
 #include <qtoolbutton.h>
 
-#include "imutableobject.h"
+#include "NotifyDomain.h"
 
 namespace Ui {
 class AbstractTextSelectorDialog;

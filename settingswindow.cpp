@@ -163,7 +163,7 @@ void SettingsWindow::on_countTImerIntervalEdit_2_returnPressed()
 
 void SettingsWindow::on_saveButton_clicked()
 {
-    SettingsDelegate currentState;
+    Settings_Structure currentState;
     currentState.closeOnExit = closeOnBox->isChecked();
     currentState.rulesEnabled = enableRules->isChecked();
     currentState.ruleCountInterval = countTimerInterval->text().toInt();
@@ -174,7 +174,7 @@ void SettingsWindow::on_saveButton_clicked()
 
 void SettingsWindow::initializeState()
 {
-    SettingsDelegate state = coreApplication->settingsState();
+    Settings_Structure state = coreApplication->settingsState();
     closeOnBox->setChecked(state.closeOnExit);
     enableRules->setChecked(state.rulesEnabled);
     countTimerInterval->setText(QString::number(state.ruleCountInterval));

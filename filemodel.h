@@ -8,11 +8,11 @@ class FileModel :
         public QFileInfo
 {
 public:
-    const IFileModel<FileModel> *parent() const
+    const FileModel *parent() const
     {
         return _parent;
     }
-    void setParent(const IFileModel<FileModel> *parent)
+    void setParent(const FileModel *parent)
     {
         _parent = parent;
     }
@@ -33,12 +33,12 @@ public:
     }
 
 private:
-    const IFileModel<FileModel> *_parent = nullptr;
+    const FileModel *_parent = nullptr;
     QList<FileModel*> _children;
 
 };
 
-class FileModelDelegate : public IFileModelDelegate<IFileModel<FileModel>>
+class FileModelDelegate : public IFileModelDelegate<FileModel>
 {
 public:
     FileModelDelegate(const FileModel &model)
@@ -46,7 +46,7 @@ public:
         _model = new FileModel(model);
     }
 
-    const IFileModel<FileModel> *parentModel() const
+    const FileModel *parentModel() const
     {
         const FileModel* m;
         try {
@@ -56,9 +56,9 @@ public:
         }
         return m->parent();
     }
-    void setParentModel(const IFileModelDelegate<IFileModel<FileModel>> *newParent)
+    void setParentModel(const IFileModelDelegate<FileModel> *newParent)
     {
-        const IFileModel<FileModel>* candidateParent;
+        const FileModel* candidateParent;
         try {
             candidateParent = newParent->model();
         } catch (const char *msg) {
@@ -67,9 +67,9 @@ public:
         _model->setParent(candidateParent);
     }
 
-    const QList<const IFileModelDelegate<IFileModel<FileModel>> *> children() const
+    const QList<const IFileModelDelegate<FileModel> *> children() const
     {
-        QList<const IFileModelDelegate<IFileModel<FileModel>>*> c;
+        QList<const IFileModelDelegate<FileModel>*> c;
         const FileModel *m;
         try {
             m = model();
@@ -81,10 +81,10 @@ public:
 
         return c;
     }
-    void setChildren(const QList<const IFileModelDelegate<IFileModel<FileModel>> *> &value)
+    void setChildren(const QList<const IFileModelDelegate<FileModel> *> &value)
     {
         QList<FileModel*> children;
-        for (const IFileModelDelegate<IFileModel<FileModel>> *delegate : value)
+        for (const IFileModelDelegate<FileModel> *delegate : value)
         {
             FileModel *object = static_cast<FileModel*>(delegate->M());
             const FileModel *m;
@@ -99,7 +99,7 @@ public:
 
         _model->setChildren(children);
     }
-    void appendChild(const IFileModelDelegate<IFileModel<FileModel>> *object)
+    void appendChild(const IFileModelDelegate<FileModel> *object)
     {
         IFileModel<FileModel> *model = object->M();
         model->setParent(_model);
@@ -129,7 +129,7 @@ public:
 
 private:
 
-    IFileModel<FileModel>* M() const
+    FileModel* M() const
     {
         return _model;
     }

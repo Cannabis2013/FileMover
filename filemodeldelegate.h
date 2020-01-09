@@ -9,7 +9,7 @@ template<class T> class IFileModel
 {
 public:
     virtual const IFileModel<T> *parent() const = 0;
-    virtual void setParent(const IFileModel<T> *parent) = 0;
+    virtual void setParent(const T *parent) = 0;
 
     virtual QList<const T *> children() const = 0;
     virtual void setChildren(const QList<T *> &children) = 0;

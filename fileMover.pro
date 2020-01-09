@@ -47,8 +47,6 @@ SOURCES += main.cpp\
     customsplitterhandle.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
-    filemodel.cpp \
-    filemodeldelegate.cpp \
     fileoperationworker.cpp \
     filepathdialogwidget.cpp \
     filesystemwatcher.cpp \

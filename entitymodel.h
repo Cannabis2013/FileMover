@@ -27,7 +27,7 @@ struct DirectoryCountEntity : public EntityModel
 struct FileActionEntity : public EntityModel
 {
     QStringList directoryPaths;
-    QList<const IFileModelDelegate<IFileModel<FileModel>>*> allFiles;
+    QList<const IFileModelDelegate<FileModel>*> allFiles;
     rD::fileActionEntity fileActionRule = rD::none;
     QStringList fileDestinations = QStringList();
 };

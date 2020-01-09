@@ -11,12 +11,12 @@ FileOperationWorker::FileOperationWorker()
     #endif
 }
 
-bool FileOperationWorker::removeFileItems(const QList<const IFileModelDelegate<IFileModel<FileModel>>*>& filePaths, QStringList *const err)
+bool FileOperationWorker::removeFileItems(const QList<const IFileModelDelegate<FileModel>*>& filePaths, QStringList *const err)
 {
     if(filePaths.isEmpty())
         return true;
 
-    for(const IFileModelDelegate<IFileModel<FileModel>>* fObject: filePaths)
+    for(const IFileModelDelegate<FileModel>* fObject: filePaths)
     {
         const FileModel* model = dynamic_cast<const FileModel*>(fObject->model());
         QString absoluteFilePath = model->absoluteFilePath();
@@ -40,7 +40,7 @@ bool FileOperationWorker::removeFileItems(const QList<const IFileModelDelegate<I
     return true;
 }
 
-bool FileOperationWorker::moveFileItems(const QList<const IFileModelDelegate<IFileModel<FileModel>>*> &fileObjects, const QStringList destinations, QStringList * const err)
+bool FileOperationWorker::moveFileItems(const QList<const IFileModelDelegate<FileModel>*> &fileObjects, const QStringList destinations, QStringList * const err)
 {
 
     // TODO: Implement some error handling when something goes wrong
@@ -51,7 +51,7 @@ bool FileOperationWorker::moveFileItems(const QList<const IFileModelDelegate<IFi
         if(!dir.exists())
             dir.mkdir(destPath);
 
-        for(const IFileModelDelegate<IFileModel<FileModel>>* modelDelegate : fileObjects)
+        for(const IFileModelDelegate<FileModel>* modelDelegate : fileObjects)
         {
             const FileModel *model = dynamic_cast<const FileModel*>(modelDelegate->model());
             bool noErrors = true;
@@ -76,13 +76,13 @@ bool FileOperationWorker::moveFileItems(const QList<const IFileModelDelegate<IFi
             else if(!model->exists())
                 continue;
             if(noErrors)
-                removeFileItems(QList<const IFileModelDelegate<IFileModel<FileModel>>*>() << modelDelegate,err);
+                removeFileItems(QList<const IFileModelDelegate<FileModel>*>() << modelDelegate,err);
         }
     }
     return result;
 }
 
-bool FileOperationWorker::copyFileItems(const QList<const IFileModelDelegate<IFileModel<FileModel>>*> &fileObjects, const QStringList destinations, QStringList * const err)
+bool FileOperationWorker::copyFileItems(const QList<const IFileModelDelegate<FileModel>*> &fileObjects, const QStringList destinations, QStringList * const err)
 {
     // TODO: Implement some error handling when something goes wrong
     bool result = true;
@@ -92,7 +92,7 @@ bool FileOperationWorker::copyFileItems(const QList<const IFileModelDelegate<IFi
         if(!dir.exists())
             dir.mkdir(destPath);
 
-        for(const IFileModelDelegate<IFileModel<FileModel>>* modelDelegate : fileObjects)
+        for(const IFileModelDelegate<FileModel>* modelDelegate : fileObjects)
         {
             const FileModel *model  = dynamic_cast<const FileModel*>(modelDelegate->model());
             bool noErrors = true;
@@ -330,10 +330,10 @@ QStringList FileOperationWorker::createHeader(QFileInfo fi)
     return headers;
 }
 
-QList<const IFileModelDelegate<IFileModel<FileModel>>*> FileOperationWorker::processFileObjects(QList<const IFileModelDelegate<IFileModel<FileModel>>*> fileObjects, SubRule rule)
+QList<const IFileModelDelegate<FileModel> *> FileOperationWorker::processFileObjects(QList<const IFileModelDelegate<FileModel>*> fileObjects, SubRule rule)
 {
-    QList<const IFileModelDelegate<IFileModel<FileModel>>*> filesToProcess;
-    for(const IFileModelDelegate<IFileModel<FileModel>>* modelDelegate : fileObjects)
+    QList<const IFileModelDelegate<FileModel>*> filesToProcess;
+    for(const IFileModelDelegate<FileModel>* modelDelegate : fileObjects)
     {
         const FileModel *model = dynamic_cast<const FileModel*>(modelDelegate->model());
         bool condition = false;
@@ -574,9 +574,9 @@ QList<const IFileModelDelegate<IFileModel<FileModel>>*> FileOperationWorker::pro
     return filesToProcess;
 }
 
-QList<const IFileModelDelegate<IFileModel<FileModel>>*> FileOperationWorker::generateFileObjects(const QStringList &paths, const QString &rPath, ruleDefinitions::fileTypeEntity filter)
+QList<const IFileModelDelegate<FileModel>*> FileOperationWorker::generateFileObjects(const QStringList &paths, const QString &rPath, ruleDefinitions::fileTypeEntity filter)
 {
-    QList<const IFileModelDelegate<IFileModel<FileModel>>*> resultingList;
+    QList<const IFileModelDelegate<FileModel>*> resultingList;
 
     QStringList rPaths;
     if(rPath != QString() && rPath != "Alle")
@@ -600,7 +600,7 @@ QList<const IFileModelDelegate<IFileModel<FileModel>>*> FileOperationWorker::gen
                 resultingList << new FileModelDelegate(*model);
             else if(model->model()->isDir())
             {
-                QList<const IFileModelDelegate<IFileModel<FileModel>>*> list = generateFileObjects(paths,model->model()->absoluteFilePath());
+                QList<const IFileModelDelegate<FileModel>*> list = generateFileObjects(paths,model->model()->absoluteFilePath());
                 if(filter == rD::Folder)
                 {
                     model->setChildren(list);

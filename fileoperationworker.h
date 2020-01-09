@@ -19,9 +19,8 @@ public:
 
     QStringList static createHeader(QFileInfo fi = QFileInfo());
 
-    static QList<const IFileModelDelegate<IFileModel<FileModel>> *> processFileObjects(QList<const IFileModelDelegate<IFileModel<FileModel>> *> fileObjects, SubRule rule);
-
-    static QList<const IFileModelDelegate<IFileModel<FileModel>> *> generateFileObjects(const QStringList &paths,
+    static QList<const IFileModelDelegate<FileModel> *> processFileObjects(QList<const IFileModelDelegate<FileModel> *> fileObjects, SubRule rule);
+    static QList<const IFileModelDelegate<FileModel> *> generateFileObjects(const QStringList &paths,
                                               const QString &rPath = QString(),
                                               rD::fileTypeEntity filter = rD::File);
 
@@ -62,9 +61,9 @@ private:
     void processDirectoryCountEntity(EntityModel *entity);
 
     // Fileoperation from QFileinfoList..
-    bool removeFileItems(const QList<const IFileModelDelegate<IFileModel<FileModel>> *> &filePaths, QStringList * const err = nullptr);
-    bool copyFileItems(const QList<const IFileModelDelegate<IFileModel<FileModel>>*> &fileObjects, const QStringList destinations, QStringList * const err = nullptr);
-    bool moveFileItems(const QList<const IFileModelDelegate<IFileModel<FileModel>>*> &fileObjects, const QStringList destinations, QStringList * const err = nullptr);
+    bool removeFileItems(const QList<const IFileModelDelegate<FileModel> *> &filePaths, QStringList * const err = nullptr);
+    bool copyFileItems(const QList<const IFileModelDelegate<FileModel> *> &fileObjects, const QStringList destinations, QStringList * const err = nullptr);
+    bool moveFileItems(const QList<const IFileModelDelegate<FileModel> *> &fileObjects, const QStringList destinations, QStringList * const err = nullptr);
 
     // Methods to count files and number of contents in folders
     int folderCount(QString p);
@@ -83,7 +82,6 @@ private:
 
     QString busyMessage;
     bool isBusy;
-
 };
 
 typedef FileOperationWorker fW;

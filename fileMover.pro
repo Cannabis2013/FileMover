@@ -47,7 +47,7 @@ SOURCES += main.cpp\
     customsplitterhandle.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
-    fileobject.cpp \
+    filemodel.cpp \
     fileoperationworker.cpp \
     filepathdialogwidget.cpp \
     filesystemwatcher.cpp \
@@ -82,7 +82,7 @@ HEADERS  += mainwindow.h \
     entitymodel.h \
     entityqueuemanager.h \
     fileinformationmanager.h \
-    fileobject.h \
+    filemodel.h \
     fileoperationworker.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \

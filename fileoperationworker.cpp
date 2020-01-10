@@ -16,7 +16,7 @@ bool FileOperationWorker::removeFileItems(const FileObjectList& filePaths, QStri
     if(filePaths.isEmpty())
         return true;
 
-    for(FileObject* fObject: filePaths)
+    for(FileModel* fObject: filePaths)
     {
         QString absoluteFilePath = fObject->absoluteFilePath();
         if(fObject->isFile())
@@ -50,7 +50,7 @@ bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const 
         if(!dir.exists())
             dir.mkdir(destPath);
 
-        for(FileObject* fObject : fileObjects)
+        for(FileModel* fObject : fileObjects)
         {
             bool noErrors = true;
             QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + fObject->fileName();
@@ -90,7 +90,7 @@ bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const 
         if(!dir.exists())
             dir.mkdir(destPath);
 
-        for(FileObject* fObject : fileObjects)
+        for(FileModel* fObject : fileObjects)
         {
             bool noErrors = true;
             QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + fObject->fileName();
@@ -330,7 +330,7 @@ QStringList FileOperationWorker::createHeader(QFileInfo fi)
 FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObjects, SubRule rule)
 {
     FileObjectList filesToProcess;
-    for(FileObject* fObject : fileObjects)
+    for(FileModel* fObject : fileObjects)
     {
         bool condition = false;
         // Evaluating filename patterns
@@ -584,8 +584,8 @@ FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths
         QDirIterator it(path,QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System | QDir::Hidden);
         while(it.hasNext())
         {
-            FileObject* fObject = new FileObject(it.next());
-            fObject->setParentFolderObject(new FileObject(path));
+            FileModel* fObject = new FileModel(it.next());
+            fObject->setParentFolderObject(new FileModel(path));
             if(fObject->isFile() && filter == rD::File)
                 resultingList << fObject;
             else if(fObject->isDir())

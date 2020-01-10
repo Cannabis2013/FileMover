@@ -2,7 +2,7 @@
 #define ENTITYMODEL_H
 
 #include "ruledefinitions.h"
-#include "fileobject.h"
+#include "filemodel.h"
 #include <QFileInfoList>
 
 #include <iostream>

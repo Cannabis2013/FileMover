@@ -12,6 +12,10 @@ class FileSystemWatcher :
     Q_OBJECT
 public:
     FileSystemWatcher(const QStringList &paths);
+    void addPath(const QString &path)
+    {
+        fWatcher->addPath(path);
+    }
     void removePath(const QString &path);
 
 signals:
@@ -28,7 +32,6 @@ private slots:
 
 private:
     QFileSystemWatcher *fWatcher;
-
 };
 
 #endif // FILESYSTEMWATCHER_H

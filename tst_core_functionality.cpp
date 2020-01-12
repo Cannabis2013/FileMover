@@ -91,7 +91,7 @@ public:
 #ifdef __WIN64__
 #define TEST_WORKING_PATH "d:/Test_folder/"
 #elif __GNUC__
-    #define TEST_WORKING_PATH QDir::homePath() + "/Programming/Test/FileMover_Test_Folder/"
+    #define TEST_WORKING_PATH QDir::homePath() + "/MyDocs/Programming/Test/FileMover_Test_Folder/"
 #endif
 
 const QStringList test_file_set_1 = {"test.fdl",
@@ -574,8 +574,6 @@ void Core_functionality::operation_filepath_match_success_1()
         return;
     }
 
-
-
     // Pre-state variables
 
     const QString preTitle = "Test1";
@@ -613,7 +611,14 @@ void Core_functionality::operation_filepath_match_success_1()
 
     // Initialize reference list with expected elements
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj;
+        try {
+
+            obj = objects->value(i);
+        }  catch (std::out_of_range *e) {
+            cout << e->what() << endl;
+            return Q_ASSERT(false);
+        }
         QFileInfo info = obj.additionalInformation;
         bool match = false;
         for (QString str : prekWrds) {
@@ -643,7 +648,8 @@ void Core_functionality::operation_filepath_match_success_1()
         cout << msg << endl;
     } catch (const std::domain_error *e)
     {
-        throw e;
+        cout << e->what() << endl;
+        return Q_ASSERT(false);
     }
 
 
@@ -1563,7 +1569,13 @@ void Core_functionality::operation_size_greater_than_success_1()
     qint64 bytes = fW::toBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj;
+        try {
+            obj = objects->value(i);
+        }  catch (std::out_of_range *e) {
+            cout << e->what() << endl;
+            return Q_ASSERT(false);
+        }
         qint64 sz = obj.additionalInformation.size();
         if(sz <= bytes)
             referenceList << obj;
@@ -1586,7 +1598,8 @@ void Core_functionality::operation_size_greater_than_success_1()
         cout << msg << endl;
     } catch (const std::domain_error *e)
     {
-        throw e;
+        cout << e->what() << endl;
+        return Q_ASSERT(false);
     }
 
     /*
@@ -1694,7 +1707,8 @@ void Core_functionality::operation_size_interval_success_1()
         cout << msg << endl;
     } catch (const std::domain_error *e)
     {
-        throw e;
+        cout << e->what() << endl;
+        return Q_ASSERT(false);
     }
 
     /*

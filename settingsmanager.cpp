@@ -132,48 +132,51 @@ QList<MyIcon> settingsManager::scanForIcons(QString path)
 
 void settingsManager::readSettings()
 {
-    persistenceSettings->beginGroup("Basic settings");
+    QSettings *pSettings = persistenceSettings();
+    pSettings->beginGroup("Basic settings");
 
-    _settings->closeOnExit = persistenceSettings->value("Close on exit",true).toBool();
-    _settings->ruleCountInterval = persistenceSettings->value("Count timer interval", 2000).toInt();
-    _settings->rulesEnabled = persistenceSettings->value("Rules enabled", false).toBool();
-    _settings->ruleTimerEnabled = persistenceSettings->value("Timer enabled",false).toBool();
-    _settings->mainGuiGeometry = persistenceSettings->value("Main gui geometry",QRect()).toRect();
+    _settings->closeOnExit = pSettings->value("Close on exit",true).toBool();
+    _settings->ruleCountInterval = pSettings->value("Count timer interval", 2000).toInt();
+    _settings->rulesEnabled = pSettings->value("Rules enabled", false).toBool();
+    _settings->ruleTimerEnabled = pSettings->value("Timer enabled",false).toBool();
+    _settings->mainGuiGeometry = pSettings->value("Main gui geometry",QRect()).toRect();
 
-    persistenceSettings->endGroup();
+    pSettings->endGroup();
 
-    int count = persistenceSettings->beginReadArray("Watchfolders");
+    int count = pSettings->beginReadArray("Watchfolders");
     QStringList folders;
     for (int i = 0;i < count;i++)
     {
-        persistenceSettings->setArrayIndex(i);
-        folders << persistenceSettings->value(QString("Folder (%1)").arg(i)).toString();
+        pSettings->setArrayIndex(i);
+        folders << pSettings->value(QString("Folder (%1)").arg(i)).toString();
     }
 
     insertPath(folders);
-    persistenceSettings->endArray();
+    pSettings->endArray();
 }
 
 void settingsManager::writeSettings()
 {
-    persistenceSettings->beginGroup("Basic settings");
-    persistenceSettings->clear();
-    persistenceSettings->setValue("Close on exit", _settings->closeOnExit);
-    persistenceSettings->setValue("Count timer interval", _settings->ruleCountInterval);
-    persistenceSettings->setValue("Rules enabled", _settings->rulesEnabled);
-    persistenceSettings->setValue("Timer enabled",_settings->ruleTimerEnabled);
-    persistenceSettings->setValue("Main gui geometry",_settings->mainGuiGeometry);
-    persistenceSettings->endGroup();
-    persistenceSettings->beginWriteArray("Watchfolders", watchFolders.count());
+    QSettings *pSettings = persistenceSettings();
+
+    pSettings->beginGroup("Basic settings");
+    pSettings->clear();
+    pSettings->setValue("Close on exit", _settings->closeOnExit);
+    pSettings->setValue("Count timer interval", _settings->ruleCountInterval);
+    pSettings->setValue("Rules enabled", _settings->rulesEnabled);
+    pSettings->setValue("Timer enabled",_settings->ruleTimerEnabled);
+    pSettings->setValue("Main gui geometry",_settings->mainGuiGeometry);
+    pSettings->endGroup();
+    pSettings->beginWriteArray("Watchfolders", watchFolders.count());
 
     for(int i = 0;i < watchFolders.count();i++)
     {
-        persistenceSettings->setArrayIndex(i);
+        pSettings->setArrayIndex(i);
         QString path = watchFolders.at(i);
         QString keyVal = QString("Folder (%1)").arg(i);
-        persistenceSettings->setValue(keyVal,path);
+        pSettings->setValue(keyVal,path);
     }
-    persistenceSettings->endArray();
+    pSettings->endArray();
 }
 
 void settingsManager::setCloseOnExit(bool enable)

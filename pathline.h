@@ -9,7 +9,9 @@ class PathLine : public AbstractTextSelectorDialog
     Q_OBJECT
 
 public:
-    PathLine(QWidget *parent = nullptr);
+    PathLine(QWidget *parent = nullptr):
+        AbstractTextSelectorDialog(parent)
+    {}
 
 signals:
 
@@ -17,7 +19,10 @@ signals:
     void showFileExplorer();
 
 protected:
-    void on_toolButton_clicked();
+    void on_toolButton_clicked()
+    {
+        emit showFileExplorer();
+    }
 
 private slots:
 };

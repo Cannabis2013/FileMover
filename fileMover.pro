@@ -60,7 +60,6 @@ SOURCES += main.cpp\
     settingswindow.cpp \
     addfolderwidget.cpp \
     addfiledialog.cpp \
-    pathline.cpp \
     rulepathselector.cpp \
     addruledialog.cpp \
     editruledialog.cpp \

@@ -148,112 +148,113 @@ const Rule rulesManager::rule(QString title)
 void rulesManager::readSettings()
 {
     QList<Rule>rules;
-    int total = persistenceSettings->beginReadArray("Rules");
+    QSettings *pSettings = persistenceSettings();
+    int total = pSettings->beginReadArray("Rules");
     for (int i = 0; i < total; ++i)
     {
         Rule r;
-        persistenceSettings->setArrayIndex(i);
-        r.title = persistenceSettings->value("Title","Title").toString();
-        r.actionRuleEntity = static_cast<rD::fileActionEntity>(persistenceSettings->value("Action","").toInt());
-        r.appliesToPath = persistenceSettings->value("ApplyPath","Alle").toString();
-        r.typeFilter = static_cast<rD::fileTypeEntity>(persistenceSettings->value("Scan type filter","").toInt());
-        r.destinationPaths = Worker::splitString(persistenceSettings->value("Destination paths","").toString());
-        int count = persistenceSettings->beginReadArray("Subrules");
+        pSettings->setArrayIndex(i);
+        r.title = pSettings->value("Title","Title").toString();
+        r.actionRuleEntity = static_cast<rD::fileActionEntity>(pSettings->value("Action","").toInt());
+        r.appliesToPath = pSettings->value("ApplyPath","Alle").toString();
+        r.typeFilter = static_cast<rD::fileTypeEntity>(pSettings->value("Scan type filter","").toInt());
+        r.destinationPaths = Worker::splitString(pSettings->value("Destination paths","").toString());
+        int count = pSettings->beginReadArray("Subrules");
         for (int j = 0; j < count; ++j)
         {
             SubRule sRule;
-            persistenceSettings->setArrayIndex(j);
+            pSettings->setArrayIndex(j);
 
-            sRule.copymode = static_cast<rD::copyMode>(persistenceSettings->value("Copymode",0).toInt());
-            sRule.fieldCondition = static_cast<rD::fileConditionEntity>(persistenceSettings->value("Condition","").toInt());
-            sRule.fileCompareMode = static_cast<rD::fileCompareEntity>(persistenceSettings->value("Comparemode",0).toInt());
+            sRule.copymode = static_cast<rD::copyMode>(pSettings->value("Copymode",0).toInt());
+            sRule.fieldCondition = static_cast<rD::fileConditionEntity>(pSettings->value("Condition","").toInt());
+            sRule.fileCompareMode = static_cast<rD::fileCompareEntity>(pSettings->value("Comparemode",0).toInt());
 
-            sRule.matchWholeWords = persistenceSettings->value("Matchwholewords",false).toBool();
-            sRule.keyWords = Worker::splitString(persistenceSettings->value("Keywords","").toString());
+            sRule.matchWholeWords = pSettings->value("Matchwholewords",false).toBool();
+            sRule.keyWords = Worker::splitString(pSettings->value("Keywords","").toString());
 
-            sRule.sizeLimit.first = persistenceSettings->value("Sizelimit",0).toInt();
-            sRule.sizeLimit.second = persistenceSettings->value("Sizelimitunit","kb").toString();
+            sRule.sizeLimit.first = pSettings->value("Sizelimit",0).toInt();
+            sRule.sizeLimit.second = pSettings->value("Sizelimitunit","kb").toString();
 
-            persistenceSettings->beginGroup("Sizelimits");
-            sRule.sizeInterval.first.first = persistenceSettings->value("Minsizeinterval",0).toInt();
-            sRule.sizeInterval.first.second = persistenceSettings->value("Minsizeunitinterval","kb").toString();
-            sRule.sizeInterval.second.first = persistenceSettings->value("Maxsizeinterval",0).toInt();
-            sRule.sizeInterval.second.second = persistenceSettings->value("Maxsizeunitinterval","kb").toString();
-            persistenceSettings->endGroup();
-            QDateTime persistedDate = QDateTime::fromString(persistenceSettings->value("Datetime","").toString(),"dd.MM.yyyy");
+            pSettings->beginGroup("Sizelimits");
+            sRule.sizeInterval.first.first = pSettings->value("Minsizeinterval",0).toInt();
+            sRule.sizeInterval.first.second = pSettings->value("Minsizeunitinterval","kb").toString();
+            sRule.sizeInterval.second.first = pSettings->value("Maxsizeinterval",0).toInt();
+            sRule.sizeInterval.second.second = pSettings->value("Maxsizeunitinterval","kb").toString();
+            pSettings->endGroup();
+            QDateTime persistedDate = QDateTime::fromString(pSettings->value("Datetime","").toString(),"dd.MM.yyyy");
             sRule.date = static_cast<myDateTime>(persistedDate);
 
-            persistenceSettings->beginGroup("Datelimits");
+            pSettings->beginGroup("Datelimits");
 
-            QDateTime persistedStartDate = myDateTime::fromString(persistenceSettings->value("Startdate","01.01.2000").toString());
-            QDateTime persistedEndDate = myDateTime::fromString(persistenceSettings->value("Enddate","01.01.2000").toString());
+            QDateTime persistedStartDate = myDateTime::fromString(pSettings->value("Startdate","01.01.2000").toString());
+            QDateTime persistedEndDate = myDateTime::fromString(pSettings->value("Enddate","01.01.2000").toString());
 
             sRule.dateIntervals.first = static_cast<myDateTime>(persistedStartDate);
             sRule.dateIntervals.second = static_cast<myDateTime>(persistedEndDate);
 
-            persistenceSettings->endGroup();
+            pSettings->endGroup();
 
             r.subRules.append(sRule);
         }
-        persistenceSettings->endArray();
+        pSettings->endArray();
         rules << r;
     }
-    persistenceSettings->endArray();
+    pSettings->endArray();
     addRules(rules);
 }
 
 void rulesManager::writeSettings()
 {
     QList<Rule> rules = ruleslist();
-
-    persistenceSettings->remove("Rules");
-    persistenceSettings->beginWriteArray("Rules",rules.count());
+    QSettings *pSettings = persistenceSettings();
+    pSettings->remove("Rules");
+    pSettings->beginWriteArray("Rules",rules.count());
     for (int i = 0; i < rules.count(); ++i)
     {
-        persistenceSettings->setArrayIndex(i);
+        pSettings->setArrayIndex(i);
         Rule r = rules.at(i);
-        persistenceSettings->setValue("Title",r.title);
-        persistenceSettings->setValue("Action",r.actionRuleEntity);
-        persistenceSettings->setValue("Scan type filter",r.typeFilter);
-        persistenceSettings->setValue("ApplyPath",r.appliesToPath);
-        persistenceSettings->setValue("Destination paths",
+        pSettings->setValue("Title",r.title);
+        pSettings->setValue("Action",r.actionRuleEntity);
+        pSettings->setValue("Scan type filter",r.typeFilter);
+        pSettings->setValue("ApplyPath",r.appliesToPath);
+        pSettings->setValue("Destination paths",
                    mergeStringList(r.destinationPaths));
-        persistenceSettings->setValue("Scan Mode",r.deepScanMode);
+        pSettings->setValue("Scan Mode",r.deepScanMode);
         QList<SubRule>sRules = r.subRules;
         int total = sRules.count();
-        persistenceSettings->beginWriteArray("Subrules",total);
+        pSettings->beginWriteArray("Subrules",total);
         for (int j = 0; j < total; ++j)
         {
             SubRule sRule = sRules.at(j);
-            persistenceSettings->setArrayIndex(j);
+            pSettings->setArrayIndex(j);
 
-            persistenceSettings->setValue("Copymode",sRule.copymode);
-            persistenceSettings->setValue("Condition",sRule.fieldCondition);
-            persistenceSettings->setValue("Comparemode",sRule.fileCompareMode);
+            pSettings->setValue("Copymode",sRule.copymode);
+            pSettings->setValue("Condition",sRule.fieldCondition);
+            pSettings->setValue("Comparemode",sRule.fileCompareMode);
 
-            persistenceSettings->setValue("Matchwholewords",sRule.matchWholeWords);
-            persistenceSettings->setValue("Keywords",Worker::mergeStringList(sRule.keyWords));
+            pSettings->setValue("Matchwholewords",sRule.matchWholeWords);
+            pSettings->setValue("Keywords",Worker::mergeStringList(sRule.keyWords));
 
-            persistenceSettings->setValue("Sizelimit",sRule.sizeLimit.first);
-            persistenceSettings->setValue("Sizelimitunit",sRule.sizeLimit.second);
+            pSettings->setValue("Sizelimit",sRule.sizeLimit.first);
+            pSettings->setValue("Sizelimitunit",sRule.sizeLimit.second);
 
-            persistenceSettings->beginGroup("Sizelimits");
-            persistenceSettings->setValue("Minsizeinterval",sRule.sizeInterval.first.first);
-            persistenceSettings->setValue("Minsizeunitinterval",sRule.sizeInterval.first.second);
-            persistenceSettings->setValue("Maxsizeinterval",sRule.sizeInterval.second.first);
-            persistenceSettings->setValue("Maxsizeunitinterval",sRule.sizeInterval.second.second);
-            persistenceSettings->endGroup();
+            pSettings->beginGroup("Sizelimits");
+            pSettings->setValue("Minsizeinterval",sRule.sizeInterval.first.first);
+            pSettings->setValue("Minsizeunitinterval",sRule.sizeInterval.first.second);
+            pSettings->setValue("Maxsizeinterval",sRule.sizeInterval.second.first);
+            pSettings->setValue("Maxsizeunitinterval",sRule.sizeInterval.second.second);
+            pSettings->endGroup();
 
-            persistenceSettings->setValue("Datetime",sRule.date.toString("dd.MM.yyyy"));
+            pSettings->setValue("Datetime",sRule.date.toString("dd.MM.yyyy"));
 
-            persistenceSettings->beginGroup("Datelimits");
-            persistenceSettings->setValue("Startdate",sRule.dateIntervals.first.toString("dd.MM.yyyy"));
-            persistenceSettings->setValue("Enddate",sRule.dateIntervals.second.toString("dd.MM.yyyy"));
-            persistenceSettings->endGroup();
+            pSettings->beginGroup("Datelimits");
+            pSettings->setValue("Startdate",sRule.dateIntervals.first.toString("dd.MM.yyyy"));
+            pSettings->setValue("Enddate",sRule.dateIntervals.second.toString("dd.MM.yyyy"));
+            pSettings->endGroup();
         }
-        persistenceSettings->endArray();
+        pSettings->endArray();
     }
-    persistenceSettings->endArray();
+    pSettings->endArray();
 }
 
 void rulesManager::replaceRule(const Rule r, int index)

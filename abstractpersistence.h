@@ -8,18 +8,35 @@ class AbstractPersistence
 {
 
 public:
-    AbstractPersistence(QString appName, QString orgName);
-    virtual ~AbstractPersistence() = 0;
+    AbstractPersistence(QString appName, QString orgName)
+    {
+        _persistenceSettings = new QSettings(orgName,appName);
 
-    QString OrganisationTitle() const;
-    QString ApplicationTitle() const;
+        applicationTitle = appName;
+        organisationTitle = orgName;
+    }
+    virtual ~AbstractPersistence() = default;
+
+    QString OrganisationTitle() const
+    {
+        return organisationTitle;
+    }
+    QString ApplicationTitle() const
+    {
+        return applicationTitle;
+    }
 
     virtual void readSettings() = 0;
     virtual void writeSettings() = 0;
 
-    QSettings *persistenceSettings;
+
+    QSettings *persistenceSettings() const
+    {
+        return _persistenceSettings;
+    }
 
 private:
+    QSettings *_persistenceSettings;
     QString applicationTitle, organisationTitle;
 };
 

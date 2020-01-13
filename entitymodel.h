@@ -37,17 +37,81 @@ struct FileInformationEntity : public EntityModel
     QStringList filePaths;
 };
 
-template<class T = EntityModel>
 class EntityModelDelegate : public IModelDelegate
 {
 public:
+    ~EntityModelDelegate()
+    {
+        delete _model;
+    }
+
     quint64 modelId()
     {
         return _model->id;
     }
-    const T *model() const
+    const EntityModel *model() const
     {
         return _model;
+    }
+
+    static EntityModelDelegate* make(const EntityModel* entity)
+    {
+        return new EntityModelDelegate(entity);
+    }
+
+    static EntityModelDelegate* makeErrorEntity(const QString &err)
+    {
+        EntityModel *entity =
+                makeEntity<EntityModel>(EntityModel::nullEntity);
+        entity->errorDescription = err;
+        EntityModelDelegate *delegate = new EntityModelDelegate(entity);
+        return delegate;
+    }
+
+    static EntityModelDelegate* makeFileInformationEntity(const QStringList &paths)
+    {
+        FileInformationEntity *entity =
+                makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
+        entity->filePaths = paths;
+        EntityModelDelegate *delegate = new EntityModelDelegate(entity);
+        return delegate;
+    }
+
+    static EntityModelDelegate* makeFileActionEntity(const QStringList &dirPaths,
+                                                     const FileObjectList &allFiles,
+                                                     const rD::fileActionEntity &fileActionRule,
+                                                     const QStringList &destinations)
+    {
+        FileActionEntity *entity =
+                makeEntity<FileActionEntity>(EntityModel::fileOperationEntity);
+        entity->directoryPaths = dirPaths;
+        entity->allFiles = allFiles;
+        entity->fileActionRule = fileActionRule;
+        entity->fileDestinations = destinations;
+        EntityModelDelegate *delegate = new EntityModelDelegate(entity);
+        return delegate;
+    }
+    long long directorySize;
+    QString directoryName;
+    QString directoryPath;
+
+    static EntityModelDelegate* makeDirectoryCountEntity(const long long &size,
+                                                     const QString &name,
+                                                     const QString &path)
+    {
+        DirectoryCountEntity *entity =
+                makeEntity<DirectoryCountEntity>(EntityModel::directoryCountEntity);
+        entity->directorySize = size;
+        entity->directoryName = name;
+        entity->directoryPath = path;
+        EntityModelDelegate *delegate = new EntityModelDelegate(entity);
+        return delegate;
+    }
+
+private:
+    EntityModelDelegate(const EntityModel *model)
+    {
+        _model = model;
     }
 
     template<class Y>
@@ -62,16 +126,8 @@ public:
         return static_cast<Y*>(entity);
     }
 
-private:
-    EntityModelDelegate(const T &model)
-    {
-        *_model = model;
-    }
-
-
-    T *_model = new T;
+    const EntityModel *_model;
 };
 
-typedef EntityModelDelegate<> eMD;
-
+typedef EntityModelDelegate eMD;
 #endif // ENTITYMODEL_H

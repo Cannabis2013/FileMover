@@ -15,15 +15,11 @@ void FileSystemWatcher::removePath(const QString &path)
 
 void FileSystemWatcher::changed(const QString &path)
 {
+    auto filesChanged = QStringList() << path;
     FileInformationEntity *fEntity;
-    try {
-        fEntity = eMD::makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
-    } catch (const char *msg) {
-        cout << msg << endl;
-        exit(1);
-    }
-    fEntity->filePaths << path;
-    emit folderChanged(fEntity);
+    auto delegate = eMD::makeFileInformationEntity(filesChanged);
+    emit folderChanged(delegate);
+
     QString msg = QString("A change in the following folder has occured: \n %1").arg(path);
     emit sendSystemTrayMessage("Information",msg);
 }

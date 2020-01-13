@@ -114,18 +114,22 @@ bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const 
     return result;
 }
 
-void FileOperationWorker::processDirectoryCountEntity(EntityModel *entity)
+void FileOperationWorker::processDirectoryCountEntity(const EntityModel *entity)
 {
-    auto directoryEntity = static_cast<DirectoryCountEntity*>(entity);
+    auto directoryEntity = static_cast<const DirectoryCountEntity*>(entity);
     QFileInfo fInfo = directoryEntity->directoryPath;
-    directoryEntity->directorySize = folderSize(fInfo.absoluteFilePath());
+    long long size = folderSize(fInfo.absoluteFilePath());
+    auto delegate = eMD::makeDirectoryCountEntity(size,
+                                                  directoryEntity->directoryName,
+                                                  directoryEntity->directoryPath);
 
-    emit sendFolderSizeEntity(directoryEntity);
+    emit sendFolderSizeEntity(static_cast<const DirectoryCountEntity*>(delegate->model()));
 }
 
-void FileOperationWorker::processEntity(EntityModel *entity)
+void FileOperationWorker::processEntity(EntityModelDelegate *delegate)
 {
     isBusy = true;
+    const EntityModel *entity = delegate->model();
     if(entity->type == EntityModel::nullEntity)
     {
         emit jobDone(true);
@@ -653,9 +657,9 @@ void FileOperationWorker::handleProcessRequest()
 
 }
 
-void FileOperationWorker::processFileInformationEntity(EntityModel * entity)
+void FileOperationWorker::processFileInformationEntity(const EntityModel * entity)
 {
-    auto itemEntity = static_cast<FileInformationEntity*>(entity);
+    auto itemEntity = static_cast<const FileInformationEntity*>(entity);
 
     QList<DirectoryItem> directories;
     for (int i = 0;i <itemEntity->filePaths.count();i++)
@@ -699,9 +703,9 @@ void FileOperationWorker::reProcessFileInformationEntity(const QStringList &path
     emit processFinished(directories);
 }
 
-void FileOperationWorker::processFileEntity(EntityModel *entity)
+void FileOperationWorker::processFileEntity(const EntityModel *entity)
 {
-    auto item = static_cast<FileActionEntity*>(entity);
+    auto item = static_cast<const FileActionEntity*>(entity);
 
     if(item->fileActionRule == rD::Delete || item->fileActionRule == rD::none)
     {

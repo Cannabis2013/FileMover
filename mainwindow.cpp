@@ -133,7 +133,8 @@ mainWindow::mainWindow(ICoreApplication *coreApplication) :
 
     // Fileworker Related..
 
-    qRegisterMetaType<QList<DirectoryCountEntity>>("QList<fileObject>");
+    qRegisterMetaType<QList<DirectoryCountEntity>>("QList<DirectoryCountEntity>");
+    qRegisterMetaType<EntityModelDelegate*>("EntityModelDelegate");
 
     /*
      * Setup connections
@@ -397,7 +398,7 @@ void mainWindow::clearCompleted(bool a)
     tray->showMessage("Removal",msg);
 }
 
-void mainWindow::folderContentRecieved(DirectoryCountEntity *fObject)
+void mainWindow::folderContentRecieved(const DirectoryCountEntity *fObject)
 {
     QString sizeNotation;
     double scaledAndRoundedSize = fW::convertSizeToAppropriateUnits(fObject->directorySize,sizeNotation,2);

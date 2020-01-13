@@ -174,9 +174,6 @@ private:
 };
 Core_functionality::Core_functionality()
 {
-    // Setup the core module
-    QSettings s("MH","MHTest");
-    s.clear();
     mApp = new MainApplication("MHTest","MH");
 }
 
@@ -215,15 +212,10 @@ void Core_functionality::persistence_SettingsManager_Success_1()
 
     SettingsDelegate postSettings = mApp->settingsState();
 
-    bool isTrue = true;
-
-    if(preSettings.closeOnExit != postSettings.closeOnExit ||
-            preSettings.rulesEnabled != postSettings.rulesEnabled ||
-            preSettings.ruleTimerEnabled != postSettings.ruleTimerEnabled ||
-            preSettings.ruleCountInterval != postSettings.ruleCountInterval)
-        isTrue = false;
-
-    QVERIFY(isTrue);
+    QVERIFY(preSettings.closeOnExit == postSettings.closeOnExit &&
+            preSettings.rulesEnabled == postSettings.rulesEnabled &&
+            preSettings.ruleTimerEnabled == postSettings.ruleTimerEnabled &&
+            preSettings.ruleCountInterval == postSettings.ruleCountInterval);
 }
 
 void Core_functionality::persistence_SettingsManager_Success_2()
@@ -242,15 +234,10 @@ void Core_functionality::persistence_SettingsManager_Success_2()
 
     SettingsDelegate postSettings = mApp->settingsState();
 
-    bool isTrue = true;
-
-    if(preSettings.closeOnExit != postSettings.closeOnExit ||
-            preSettings.rulesEnabled != postSettings.rulesEnabled ||
-            preSettings.ruleTimerEnabled != postSettings.ruleTimerEnabled ||
-            preSettings.ruleCountInterval != postSettings.ruleCountInterval)
-        isTrue = false;
-
-    QVERIFY(isTrue);
+    QVERIFY(preSettings.closeOnExit == postSettings.closeOnExit &&
+            preSettings.rulesEnabled == postSettings.rulesEnabled &&
+            preSettings.ruleTimerEnabled == postSettings.ruleTimerEnabled &&
+            preSettings.ruleCountInterval == postSettings.ruleCountInterval);
 }
 
 

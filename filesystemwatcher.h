@@ -19,7 +19,7 @@ public:
     void removePath(const QString &path);
 
 signals:
-    void folderChanged(EntityModel *eModel);
+    void folderChanged(EntityModelDelegate *eModel);
     // Reimplemented from BroadcastingObject
     void sendSystemTrayMessage(const QString &title, const QString &msg);
     void sendStatusLineMessage(const QString &msg);

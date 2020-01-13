@@ -68,7 +68,7 @@ public:
     QList<MyIcon>allIcons() const {return trayIconList;}
 
 signals:
-    void processPath(EntityModel *entity);
+    void processPath(EntityModelDelegate *delegate);
     void removeItem(QString path);
 
     void stateChanged();

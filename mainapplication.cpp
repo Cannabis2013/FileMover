@@ -57,18 +57,10 @@ MainApplication::MainApplication(const QString &appName,
     fileWorkerThread->start();
     queueThread->start();
 
-    // Incarcerate entity model
-    FileInformationEntity *fEntity;
-    try {
-        fEntity = eMD::makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
-    } catch (const char *msg) {
-        cout << msg << endl;
-        exit(1);
-    }
 
-    fEntity->filePaths = watchFolders();
-
-    emit sManager->processPath(fEntity);
+    auto folders = QStringList() << watchFolders();
+    auto delegate = eMD::makeFileInformationEntity(folders);
+    emit sManager->processPath(delegate);
 }
 
 MainApplication::~MainApplication()
@@ -80,17 +72,12 @@ MainApplication::~MainApplication()
 
 void MainApplication::clearFolders(QStringList paths)
 {
-    FileActionEntity *file_entity;
-    try {
-        file_entity = eMD::makeEntity<FileActionEntity>(EntityModel::fileOperationEntity);
-    } catch (const char *msg) {
-        cout << msg << endl;
-        exit(1);
-    }
+    auto directoryPaths = paths;
+    auto allFiles = fW::generateFileObjects(paths);
 
-    file_entity->directoryPaths = paths;
-    file_entity->allFiles = fW::generateFileObjects(paths);
-    entityManager->addEntity(file_entity);
+    auto delegate = eMD::makeFileActionEntity(paths,allFiles,rD::Delete,QStringList());
+
+    entityManager->addEntity(delegate);
 }
 
 void MainApplication::clearFoldersAccordingToRules(QStringList paths)
@@ -104,18 +91,14 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         for(SubRule sR : r.subRules)
             allFiles = fWorker->processFileObjects(allFiles,sR);
 
-        FileActionEntity *file_entity;
-        try {
-            file_entity = eMD::makeEntity<FileActionEntity>(EntityModel::fileOperationEntity);
-        } catch (const char *msg) {
-            cout << msg << endl;
-            exit(1);
-        }
-        file_entity->directoryPaths = paths;
-        file_entity->fileDestinations = r.destinationPaths;
-        file_entity->allFiles = allFiles;
-        file_entity->fileActionRule = r.actionRuleEntity;
-        emit sendEntity(file_entity);
+        auto directoryPaths = paths;
+        auto destinations = r.destinationPaths;
+        auto files = allFiles;
+        auto fileRule = r.actionRuleEntity;
+
+        auto delegate = eMD::makeFileActionEntity(directoryPaths,files,fileRule,destinations);
+
+        emit sendEntity(delegate);
     }
 }
 
@@ -164,17 +147,13 @@ void MainApplication::setSettings(SettingsDelegate s)
 void MainApplication::calculateFolderSize(QString path)
 {
     QFileInfo fInfo(path);
-    DirectoryCountEntity *dirEntity;
-    try {
-        dirEntity = eMD::makeEntity<DirectoryCountEntity>(EntityModel::directoryCountEntity);
-    } catch (const char *msg) {
-        cout << msg << endl;
-        exit(1);
-    }
-    dirEntity->directoryPath = fInfo.absoluteFilePath();
-    dirEntity->directoryName = fInfo.fileName();
 
-    entityManager->addEntity(dirEntity);
+    auto directoryPath = fInfo.absoluteFilePath();
+    auto directoryName = fInfo.fileName();
+
+    auto delegate = eMD::makeDirectoryCountEntity(0,directoryName,directoryPath);
+
+    entityManager->addEntity(delegate);
 }
 
 void MainApplication::removeWatchFolderAt(int index)

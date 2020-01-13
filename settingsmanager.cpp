@@ -36,30 +36,19 @@ settingsManager::~settingsManager()
 void settingsManager::insertPath(QString path)
 {
     watchFolders << path;
-    FileInformationEntity *fEntity;
-    try {
-        fEntity = eMD::makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
-    } catch (const char *msg) {
-        cout << msg << endl;
-        exit(1);
-    }
-    fEntity->filePaths << path;
-    emit processPath(fEntity);
+    QStringList filePaths = QStringList() << path;
+    auto delegate = eMD::makeFileInformationEntity(filePaths);
+
+    emit processPath(delegate);
     emit stateChanged();
 }
 
 void settingsManager::insertPath(const QStringList& paths)
 {
     watchFolders << paths;
-    FileInformationEntity *fEntity;
-    try {
-        fEntity = eMD::makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
-    } catch (const char *msg) {
-        cout << msg << endl;
-        exit(1);
-    }
-    fEntity->filePaths = paths;
-    emit processPath(fEntity);
+    auto filePaths = QStringList() << paths;
+    auto delegate = eMD::makeFileInformationEntity(filePaths);
+    emit processPath(delegate);
     emit stateChanged();
 }
 

@@ -34,11 +34,11 @@ public slots:
 
     // wake-up/Start entity file operations
     void handleProcessRequest();
-    void processEntity(EntityModel *entity);
+    void processEntity(EntityModelDelegate *delegate);
 
 signals:
     void fileCount(long antal);
-    void sendFolderSizeEntity(DirectoryCountEntity *fObj);
+    void sendFolderSizeEntity(const DirectoryCountEntity *fObj);
     void sendFolderSizeEntities(QList<DirectoryCountEntity> s);
 
     void clearFinished(bool a);
@@ -56,10 +56,10 @@ private:
 
     // File object entity operations
 
-    void processFileEntity(EntityModel *entity);
-    void processFileInformationEntity(EntityModel *entity);
+    void processFileEntity(const EntityModel *entity);
+    void processFileInformationEntity(const EntityModel *entity);
     void reProcessFileInformationEntity(const QStringList &paths);
-    void processDirectoryCountEntity(EntityModel *entity);
+    void processDirectoryCountEntity(const EntityModel *entity);
 
     // Fileoperation from QFileinfoList..
     bool removeFileItems(const FileObjectList& filePaths, QStringList * const err = nullptr);

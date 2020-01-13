@@ -2,15 +2,15 @@
 #define ENTITYMODEL_H
 
 #include "ruledefinitions.h"
-#include "filemodel.h"
+#include "filemodeldelegate.h"
 #include <QFileInfoList>
 
 #include <iostream>
+#include "modeldelegates.h"
 
 using namespace std;
 
-
-struct EntityModel
+struct EntityModel : public Model
 {
     enum typeMode {nullEntity,fileInformationEntity,fileOperationEntity,directoryCountEntity};
     typeMode type = nullEntity;
@@ -37,15 +37,41 @@ struct FileInformationEntity : public EntityModel
     QStringList filePaths;
 };
 
-template<class T> T *makeEntity(EntityModel::typeMode type)
+template<class T = EntityModel>
+class EntityModelDelegate : public IModelDelegate
 {
-    if(!std::is_base_of_v<EntityModel,T>)
-        throw "Not base of EntityModel";
+public:
+    quint64 modelId()
+    {
+        return _model->id;
+    }
+    const T *model() const
+    {
+        return _model;
+    }
 
-    EntityModel *entity = new T;
-    entity->type = type;
+    template<class Y>
+    static Y *makeEntity(EntityModel::typeMode type)
+    {
+        if(!std::is_base_of_v<EntityModel,Y>)
+            throw "Not base of EntityModel";
 
-    return static_cast<T*>(entity);
-}
+        EntityModel *entity = new Y;
+        entity->type = type;
+
+        return static_cast<Y*>(entity);
+    }
+
+private:
+    EntityModelDelegate(const T &model)
+    {
+        *_model = model;
+    }
+
+
+    T *_model = new T;
+};
+
+typedef EntityModelDelegate<> eMD;
 
 #endif // ENTITYMODEL_H

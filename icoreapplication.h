@@ -15,7 +15,7 @@ class ICoreApplication :
 {
     Q_OBJECT
 public:
-    virtual ~ICoreApplication();
+    virtual ~ICoreApplication() = default;
 
     virtual QString watchFolder(int index) const = 0;
     virtual void clearWatchFolders() = 0;
@@ -64,8 +64,8 @@ signals:
     void sendFolderSize(DirectoryCountEntity *fObject);
     void sendStatusMessage(const QString &filePath);
     void sendEntity(EntityModel *model);
-    void stateChanged();
 
+    void stateChanged();
 
     void sendSystemTrayMessage(const QString &title, const QString &msg);
     void sendStatusLineMessage(const QString &msg);

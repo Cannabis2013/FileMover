@@ -16,21 +16,22 @@ bool FileOperationWorker::removeFileItems(const FileObjectList& filePaths, QStri
     if(filePaths.isEmpty())
         return true;
 
-    for(FileModel* fObject: filePaths)
+    for(ITreeModelDelegate* modelDelegate: filePaths)
     {
-        QString absoluteFilePath = fObject->absoluteFilePath();
-        if(fObject->isFile())
+        const FileModel *model = static_cast<const FileModel*>(modelDelegate->model());
+        QString absoluteFilePath = model->absoluteFilePath();
+        if(model->isFile())
         {
-            QFile fileItem(fObject->absoluteFilePath());
+            QFile fileItem(model->absoluteFilePath());
             if(!fileItem.remove())
             {
-                *err << "Operation on: " + fObject->fileName() + " in: " +
-                    fObject->absolutePath() + " returned: " + fileItem.errorString();
+                *err << "Operation on: " + model->fileName() + " in: " +
+                    model->absolutePath() + " returned: " + fileItem.errorString();
             }
         }
-        else if(fObject->isDir())
+        else if(model->isDir())
         {
-            removeFileItems(fObject->children(),err);
+            removeFileItems(modelDelegate->children(),err);
             QDir dir(absoluteFilePath);
             dir.rmdir(absoluteFilePath);
         }
@@ -50,31 +51,32 @@ bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const 
         if(!dir.exists())
             dir.mkdir(destPath);
 
-        for(FileModel* fObject : fileObjects)
+        for(ITreeModelDelegate* modelDelegate : fileObjects)
         {
             bool noErrors = true;
-            QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + fObject->fileName();
-            if(fObject->isDir())
+            auto model = static_cast<const FileModel*>(modelDelegate->model());
+            QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + model->fileName();
+            if(model->isDir())
             {
-                noErrors = moveFileItems(fObject->children(),QStringList() << AbsoluteFilePath,err);
+                noErrors = moveFileItems(modelDelegate->children(),QStringList() << AbsoluteFilePath,err);
                 result = noErrors ? result : false;
             }
-            else if(fObject->isFile())
+            else if(model->isFile())
             {
-                QFile file(fObject->absoluteFilePath());
+                QFile file(model->absoluteFilePath());
                 QString errString;
                 noErrors = file.copy(AbsoluteFilePath);
                 result = noErrors ? result : false;
                 if(!noErrors)
                 {
                     *err << QString("Failed to delete file '%1'. Error provided: %2")
-                            .arg(fObject->fileName()).arg(file.errorString());
+                            .arg(model->fileName()).arg(file.errorString());
                 }
             }
-            else if(!fObject->exists())
+            else if(!model->exists())
                 continue;
             if(noErrors)
-                removeFileItems(FileObjectList() << fObject,err);
+                removeFileItems(FileObjectList() << fMD::delegateFromPath(model->absoluteFilePath()),err);
         }
     }
     return result;
@@ -90,21 +92,22 @@ bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const 
         if(!dir.exists())
             dir.mkdir(destPath);
 
-        for(FileModel* fObject : fileObjects)
+        for(const ITreeModelDelegate* modelDelegate : fileObjects)
         {
             bool noErrors = true;
-            QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + fObject->fileName();
-            if(fObject->isDir())
+            const FileModel* model = static_cast<const FileModel*>(modelDelegate->model());
+            QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + model->fileName();
+            if(model->isDir())
             {
-                noErrors = copyFileItems(fObject->children(),QStringList() << AbsoluteFilePath);
+                noErrors = copyFileItems(modelDelegate->children(),QStringList() << AbsoluteFilePath);
                 result = noErrors ? result : false;
             }
-            else if(fObject->isFile())
+            else if(model->isFile())
             {
-                noErrors = QFile::copy(fObject->absoluteFilePath(),AbsoluteFilePath);
+                noErrors = QFile::copy(model->absoluteFilePath(),AbsoluteFilePath);
                 result = noErrors ? result : false;
             }
-            else if(!fObject->exists())
+            else if(!model->exists())
                 continue;
         }
     }
@@ -330,8 +333,9 @@ QStringList FileOperationWorker::createHeader(QFileInfo fi)
 FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObjects, SubRule rule)
 {
     FileObjectList filesToProcess;
-    for(FileModel* fObject : fileObjects)
+    for(ITreeModelDelegate* modelDelegate : fileObjects)
     {
+        auto model = static_cast<const FileModel*>(modelDelegate->model());
         bool condition = false;
         // Evaluating filename patterns
         if(rule.fieldCondition == rD::fileBaseMode)
@@ -340,9 +344,9 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             {
                 for(QString kWord : rule.keyWords)
                 {
-                    if(fObject->baseName().contains(kWord))
+                    if(model->baseName().contains(kWord))
                     {
-                        filesToProcess << fObject;
+                        filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                         break;
                     }
                 }
@@ -351,9 +355,9 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             {
                 for(QString kWord : rule.keyWords)
                 {
-                    if(fObject->baseName().contains(kWord))
+                    if(model->baseName().contains(kWord))
                     {
-                        filesToProcess << fObject;
+                        filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                         break;
                     }
                 }
@@ -362,9 +366,9 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             {
                 for(QString kWord : rule.keyWords)
                 {
-                    if(fObject->baseName() == kWord)
+                    if(model->baseName() == kWord)
                     {
-                        filesToProcess << fObject;
+                        filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                         break;
                     }
                 }
@@ -372,10 +376,10 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             else if(rule.fileCompareMode == rD::dontMatch)
             {
                 for(QString kWord : rule.keyWords)
-                    if(fObject->baseName() == kWord)
+                    if(model->baseName() == kWord)
                         condition = true;
                 if(!condition)
-                    filesToProcess << fObject;
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
         }
         else if(rule.fieldCondition == rD::filepathMode)
@@ -384,9 +388,9 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             {
                 for(QString kWord : rule.keyWords)
                 {
-                    if(fObject->fileName().contains(kWord))
+                    if(model->fileName().contains(kWord))
                     {
-                        filesToProcess << fObject;
+                        filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                         break;
                     }
                 }
@@ -395,67 +399,67 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             {
                 for(QString kWord : rule.keyWords)
                 {
-                    if(fObject->fileName().contains(kWord))
+                    if(model->fileName().contains(kWord))
                         condition = true;
                 }
                 if(!condition)
-                    filesToProcess << fObject;
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
             else if(rule.fileCompareMode == rD::match)
             {
                 for(QString kWord : rule.keyWords)
-                    if(fObject->fileName() == kWord)
+                    if(model->fileName() == kWord)
                     {
-                        filesToProcess << fObject;
+                        filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                         break;
                     }
             }
             else if(rule.fileCompareMode == rD::dontMatch)
             {
                 for(QString kWord : rule.keyWords)
-                    if(fObject->fileName() == kWord)
+                    if(model->fileName() == kWord)
                         condition = true;
                 if(!condition)
-                    filesToProcess << fObject;
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
         }
 
         // Evaluating file extension related patterns
-        else if(rule.fieldCondition == rD::fileExtensionMode && fObject->isFile())
+        else if(rule.fieldCondition == rD::fileExtensionMode && model->isFile())
         {
             if(rule.fileCompareMode == rD::contains)
             {
                 for(QString kWord : rule.keyWords)
-                    if(fObject->suffix().contains(kWord))
+                    if(model->suffix().contains(kWord))
                     {
-                        filesToProcess << fObject;
+                        filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                         break;
                     }
             }
             else if(rule.fileCompareMode == rD::dontContain)
             {
                 for(QString kWord : rule.keyWords)
-                    if(fObject->suffix().contains(kWord))
+                    if(model->suffix().contains(kWord))
                         condition = true;
                 if(!condition)
-                    filesToProcess << fObject;
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
             else if(rule.fileCompareMode == rD::match)
             {
                 for(QString kWord : rule.keyWords)
-                    if(fObject->suffix() == kWord)
+                    if(model->suffix() == kWord)
                     {
-                        filesToProcess << fObject;
+                        filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                         break;
                     }
             }
             else if(rule.fileCompareMode == rD::dontMatch)
             {
                 for(QString kWord : rule.keyWords)
-                    if(fObject->suffix() == kWord)
+                    if(model->suffix() == kWord)
                         condition = true;
                 if(!condition)
-                    filesToProcess << fObject;
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
         }
         /*
@@ -467,80 +471,80 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
             if(rule.fileCompareMode == rD::contains)
             {
                 for(QString kWord : rule.keyWords)
-                    if(fObject->parentFolderObject()->fileName().contains(kWord))
+                    if(static_cast<FileModel*>(model->_parent)->fileName().contains(kWord))
                         condition = true;
 
                 if(condition)
-                    filesToProcess << fObject;
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
             else if(rule.fileCompareMode == rD::dontContain)
             {
                 for(QString kWord : rule.keyWords)
-                    if(fObject->parentFolderObject()->fileName().contains(kWord))
+                    if(static_cast<FileModel*>(model->_parent)->fileName().contains(kWord))
                         condition = true;
                 if(!condition)
-                    filesToProcess << fObject;
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
             else if(rule.fileCompareMode == rD::match)
             {
                 for(QString kWord : rule.keyWords)
                 {
-                    if(fObject->parentFolderObject()->fileName() == kWord)
+                    if(static_cast<FileModel*>(model->_parent)->fileName() == kWord)
                         condition = true;
                 }
                 if(condition)
-                    filesToProcess << fObject;
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
             else if(rule.fileCompareMode == rD::dontMatch)
             {
                 for(QString kWord : rule.keyWords)
                 {
-                    if(fObject->parentFolderObject()->fileName() == kWord)
+                    if(static_cast<FileModel*>(model->_parent)->fileName() == kWord)
                         condition = true;
                 }
                 if(!condition)
-                    filesToProcess << fObject;
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
         }
         else if(rule.fieldCondition == rD::fileSize)
         {
             if(rule.fileCompareMode != rD::interval)
             {
-                if(rule.fileCompareMode == rD::lesserThan && fObject->size() < fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
-                    filesToProcess << fObject;
+                if(rule.fileCompareMode == rD::lesserThan && model->size() < fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                 else if(rule.fileCompareMode == rD::lesserOrEqualThan &&
-                        fObject->size() <= fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
-                    filesToProcess << fObject;
+                        model->size() <= fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                 else if(rule.fileCompareMode == rD::equal &&
-                        fObject->size() == fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
-                    filesToProcess << fObject;
+                        model->size() == fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                 else if(rule.fileCompareMode == rD::greaterOrEqualThan &&
-                        fObject->size() >= fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
-                    filesToProcess << fObject;
+                        model->size() >= fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
                 else if(rule.fileCompareMode == rD::greaterThan &&
-                        fObject->size() > fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
-                    filesToProcess << fObject;
+                        model->size() > fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
             else if(rule.fileCompareMode == rD::interval &&
-                    fObject->size() >= fW::toBytes(rule.sizeInterval.first.first,rule.sizeInterval.first.second) &&
-                    fObject->size() <= fW::toBytes(rule.sizeInterval.second.first,rule.sizeInterval.second.second))
-                filesToProcess << fObject;
+                    model->size() >= fW::toBytes(rule.sizeInterval.first.first,rule.sizeInterval.first.second) &&
+                    model->size() <= fW::toBytes(rule.sizeInterval.second.first,rule.sizeInterval.second.second))
+                filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
         }
         else if(rule.fieldCondition == rD::fileCreatedMode)
         {
             if(rule.fileCompareMode == rD::interval)
             {
-                if(rule.dateIntervals.first > fObject->birthTime() && rule.dateIntervals.second < fObject->birthTime())
-                    filesToProcess << fObject;
+                if(rule.dateIntervals.first > model->birthTime() && rule.dateIntervals.second < model->birthTime())
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
             else if(rule.fileCompareMode != rD::interval)
             {
-                if(rule.fileCompareMode == rD::youngerThan && rule.date > fObject->birthTime())
-                    filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::exactDate && rule.date == fObject->birthTime())
-                    filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::olderThan && rule.date < fObject->birthTime())
-                    filesToProcess << fObject;
+                if(rule.fileCompareMode == rD::youngerThan && rule.date > model->birthTime())
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
+                else if(rule.fileCompareMode == rD::exactDate && rule.date == model->birthTime())
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
+                else if(rule.fileCompareMode == rD::olderThan && rule.date < model->birthTime())
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
 
         }
@@ -548,22 +552,22 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         {
             if(rule.fileCompareMode == rD::interval)
             {
-                if(rule.dateIntervals.first > fObject->lastModified() && rule.dateIntervals.second < fObject->lastModified())
-                    filesToProcess << fObject;
+                if(rule.dateIntervals.first > model->lastModified() && rule.dateIntervals.second < model->lastModified())
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
             else if(rule.fileCompareMode != rD::interval)
             {
-                if(rule.fileCompareMode == rD::youngerThan && rule.date > fObject->lastModified())
-                    filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::exactDate && rule.date == fObject->lastModified())
-                    filesToProcess << fObject;
-                else if(rule.fileCompareMode == rD::olderThan && rule.date < fObject->lastModified())
-                    filesToProcess << fObject;
+                if(rule.fileCompareMode == rD::youngerThan && rule.date > model->lastModified())
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
+                else if(rule.fileCompareMode == rD::exactDate && rule.date == model->lastModified())
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
+                else if(rule.fileCompareMode == rD::olderThan && rule.date < model->lastModified())
+                    filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
             }
         }
         else if(rule.fieldCondition == rD::nonConditionalMode)
         {
-            filesToProcess << fObject;
+            filesToProcess << fMD::delegateFromPath(model->absoluteFilePath());
         }
     }
     return filesToProcess;
@@ -584,17 +588,20 @@ FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths
         QDirIterator it(path,QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System | QDir::Hidden);
         while(it.hasNext())
         {
-            FileModel* fObject = new FileModel(it.next());
-            fObject->setParentFolderObject(new FileModel(path));
-            if(fObject->isFile() && filter == rD::File)
-                resultingList << fObject;
-            else if(fObject->isDir())
+            auto modelDelegate = fMD::delegateFromPath(it.next());
+            auto model = modelDelegate->model();
+            FileModel parentModel;
+            parentModel.setFile(path);
+            modelDelegate->setParentModelDelegate(fMD::delegateFromPath(path));
+            if(model->isFile() && filter == rD::File)
+                resultingList << modelDelegate;
+            else if(model->isDir())
             {
-                FileObjectList list = generateFileObjects(paths,fObject->absoluteFilePath());
+                FileObjectList list = generateFileObjects(paths,model->absoluteFilePath());
                 if(filter == rD::Folder)
                 {
-                    fObject->setChildren(list);
-                    resultingList << fObject;
+                    modelDelegate->setChildren(list);
+                    resultingList << modelDelegate;
                 }
                 else
                 {
@@ -648,14 +655,14 @@ void FileOperationWorker::handleProcessRequest()
 
 void FileOperationWorker::processFileInformationEntity(EntityModel * entity)
 {
-    auto itemModel = static_cast<FileInformationEntity*>(entity);
+    auto itemEntity = static_cast<FileInformationEntity*>(entity);
 
     QList<DirectoryItem> directories;
-    for (int i = 0;i <itemModel->filePaths.count();i++)
+    for (int i = 0;i <itemEntity->filePaths.count();i++)
     {
         DirectoryItem item;
 
-        QString path = itemModel->filePaths.at(i);
+        QString path = itemEntity->filePaths.at(i);
         QString denotation;
         item.path = path;
         double directorySize = convertSizeToAppropriateUnits(folderSize(path),denotation);

@@ -39,7 +39,7 @@ public slots:
     {
         if(entityQueue.isEmpty())
         {
-            auto emptyEntity = makeEntity<EntityModel>(EntityModel::nullEntity);
+            auto emptyEntity = eMD::makeEntity<EntityModel>(EntityModel::nullEntity);
             emptyEntity->errorDescription = "Queue is empty";
             emit sendEntity(emptyEntity);
             return;

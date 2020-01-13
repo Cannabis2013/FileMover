@@ -175,6 +175,8 @@ private:
 Core_functionality::Core_functionality()
 {
     // Setup the core module
+    QSettings s("MH","MHTest");
+    s.clear();
     mApp = new MainApplication("MHTest","MH");
 }
 

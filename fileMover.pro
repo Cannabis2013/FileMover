@@ -39,7 +39,6 @@ RC_ICONS = xIcon.ico
 SOURCES += main.cpp\
     abstractruledialog.cpp \
     abstractframeimplementable.cpp \
-    abstractpersistence.cpp \
     abstracttextselectordialog.cpp \
     conditionwidget.cpp \
     customdialog.cpp \
@@ -47,11 +46,9 @@ SOURCES += main.cpp\
     customsplitterhandle.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
-    filemodel.cpp \
     fileoperationworker.cpp \
     filepathdialogwidget.cpp \
     filesystemwatcher.cpp \
-    icoreapplication.cpp \
     mainapplication.cpp \
         mainwindow.cpp \
     rulesmanager.cpp \
@@ -81,7 +78,7 @@ HEADERS  += mainwindow.h \
     entitymodel.h \
     entityqueuemanager.h \
     fileinformationmanager.h \
-    filemodel.h \
+    filemodeldelegate.h \
     fileoperationworker.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
@@ -89,6 +86,7 @@ HEADERS  += mainwindow.h \
     imutableobject.h \
     mainapplication.h \
     messageBox.h \
+    modeldelegates.h \
     myicon.h \
     myicon.h \
     myicon.h \

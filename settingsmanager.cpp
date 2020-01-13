@@ -38,7 +38,7 @@ void settingsManager::insertPath(QString path)
     watchFolders << path;
     FileInformationEntity *fEntity;
     try {
-        fEntity = makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
+        fEntity = eMD::makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
     } catch (const char *msg) {
         cout << msg << endl;
         exit(1);
@@ -53,7 +53,7 @@ void settingsManager::insertPath(const QStringList& paths)
     watchFolders << paths;
     FileInformationEntity *fEntity;
     try {
-        fEntity = makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
+        fEntity = eMD::makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
     } catch (const char *msg) {
         cout << msg << endl;
         exit(1);

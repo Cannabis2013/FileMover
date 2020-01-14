@@ -56,10 +56,10 @@ private:
 
     // File object entity operations
 
-    void processFileEntity(const EntityModel *entity);
-    void processFileInformationEntity(const EntityModel *entity);
+    void processFileEntity(const EntityModelDelegate *delegate);
+    void processFileInformationEntity(const EntityModelDelegate *delegate);
+    void processDirectoryCountEntity(const EntityModelDelegate *delegate);
     void reProcessFileInformationEntity(const QStringList &paths);
-    void processDirectoryCountEntity(const EntityModel *entity);
 
     // Fileoperation from QFileinfoList..
     bool removeFileItems(const FileObjectList& filePaths, QStringList * const err = nullptr);

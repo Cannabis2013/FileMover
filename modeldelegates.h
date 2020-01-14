@@ -19,9 +19,6 @@ public:
     IModelDelegate() = default;
     virtual ~IModelDelegate() = default;
     virtual quint64 modelId() = 0;
-
-    virtual const Model *model() const = 0;
-
 };
 class ITreeModelDelegate : public IModelDelegate
 {

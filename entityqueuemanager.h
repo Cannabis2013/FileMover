@@ -31,7 +31,7 @@ public slots:
 
     void addEntity(EntityModelDelegate *delegate)
     {
-        entityQueue << delegate->model();
+        entityQueue << delegate->model<EntityModel>();
         emit wakeUpProcess();
     }
 

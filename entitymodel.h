@@ -49,9 +49,13 @@ public:
     {
         return _model->id;
     }
-    const EntityModel *model() const
+    template<class t>
+    const t *model() const
     {
-        return _model;
+        if(std::is_base_of_v<EntityModelDelegate,t>)
+            throw "Not direct base of EntityModel";
+
+        return static_cast<const t*>(_model);
     }
 
     static EntityModelDelegate* make(const EntityModel* entity)
@@ -106,6 +110,17 @@ public:
         entity->directoryPath = path;
         EntityModelDelegate *delegate = new EntityModelDelegate(entity);
         return delegate;
+    }
+
+    template<class t>
+    t* getModelValue() const
+    {
+        return static_cast<t*>(new EntityModel(*_model));
+    }
+
+    EntityModel::typeMode type()
+    {
+        return _model->type;
     }
 
 private:

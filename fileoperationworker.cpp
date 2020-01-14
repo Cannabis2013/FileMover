@@ -114,37 +114,35 @@ bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const 
     return result;
 }
 
-void FileOperationWorker::processDirectoryCountEntity(const EntityModel *entity)
+void FileOperationWorker::processDirectoryCountEntity(const EntityModelDelegate *delegate)
 {
-    auto directoryEntity = static_cast<const DirectoryCountEntity*>(entity);
-    QFileInfo fInfo = directoryEntity->directoryPath;
-    long long size = folderSize(fInfo.absoluteFilePath());
-    auto delegate = eMD::makeDirectoryCountEntity(size,
-                                                  directoryEntity->directoryName,
-                                                  directoryEntity->directoryPath);
+    auto entity = delegate->getModelValue<DirectoryCountEntity>();
 
-    emit sendFolderSizeEntity(static_cast<const DirectoryCountEntity*>(delegate->model()));
+    QFileInfo fInfo = entity->directoryPath;
+
+    entity->directorySize = folderSize(fInfo.absoluteFilePath());
+
+    emit sendFolderSizeEntity(entity);
 }
 
 void FileOperationWorker::processEntity(EntityModelDelegate *delegate)
 {
     isBusy = true;
-    const EntityModel *entity = delegate->model();
-    if(entity->type == EntityModel::nullEntity)
+    if(delegate->type() == EntityModel::nullEntity)
     {
         emit jobDone(true);
         isBusy = false;
         return;
     }
 
-    if(entity->type == EntityModel::fileOperationEntity)
-        processFileEntity(entity);
-    else if(entity->type == EntityModel::fileInformationEntity)
-        processFileInformationEntity(entity);
-    else if(entity->type == EntityModel::directoryCountEntity)
-        processDirectoryCountEntity(entity);
+    if(delegate->type() == EntityModel::fileOperationEntity)
+        processFileEntity(delegate);
+    else if(delegate->type() == EntityModel::fileInformationEntity)
+        processFileInformationEntity(delegate);
+    else if(delegate->type() == EntityModel::directoryCountEntity)
+        processDirectoryCountEntity(delegate);
 
-    entity = nullptr;
+    delegate = nullptr;
     isBusy = false;
 
     emit requestNextEntity();
@@ -657,16 +655,16 @@ void FileOperationWorker::handleProcessRequest()
 
 }
 
-void FileOperationWorker::processFileInformationEntity(const EntityModel * entity)
+void FileOperationWorker::processFileInformationEntity(const EntityModelDelegate *delegate)
 {
-    auto itemEntity = static_cast<const FileInformationEntity*>(entity);
+    auto entity = delegate->model<FileInformationEntity>();
 
     QList<DirectoryItem> directories;
-    for (int i = 0;i <itemEntity->filePaths.count();i++)
+    for (int i = 0;i <entity->filePaths.count();i++)
     {
         DirectoryItem item;
 
-        QString path = itemEntity->filePaths.at(i);
+        QString path = entity->filePaths.at(i);
         QString denotation;
         item.path = path;
         double directorySize = convertSizeToAppropriateUnits(folderSize(path),denotation);
@@ -687,7 +685,7 @@ void FileOperationWorker::processFileInformationEntity(const EntityModel * entit
 void FileOperationWorker::reProcessFileInformationEntity(const QStringList &paths)
 {
     QList<DirectoryItem>directories;
-    for(const QString &p: paths)
+    for(const QString &p : paths)
     {
         QString denotation;
         DirectoryItem item;
@@ -703,23 +701,23 @@ void FileOperationWorker::reProcessFileInformationEntity(const QStringList &path
     emit processFinished(directories);
 }
 
-void FileOperationWorker::processFileEntity(const EntityModel *entity)
+void FileOperationWorker::processFileEntity(const EntityModelDelegate *delegate)
 {
-    auto item = static_cast<const FileActionEntity*>(entity);
+    auto model = delegate->model<FileActionEntity>();
 
-    if(item->fileActionRule == rD::Delete || item->fileActionRule == rD::none)
+    if(model->fileActionRule == rD::Delete || model->fileActionRule == rD::none)
     {
         // TODO: You have to pass an error related stringlist in order to be able to display errors
-        removeFileItems(item->allFiles);
-        processFileInformationEntity(item);
+        removeFileItems(model->allFiles);
+        processFileInformationEntity(delegate);
     }
-    else if(item->fileActionRule == rD::Move)
+    else if(model->fileActionRule == rD::Move)
     {
-        moveFileItems(item->allFiles,item->fileDestinations);
-        processFileInformationEntity(item);
+        moveFileItems(model->allFiles,model->fileDestinations);
+        processFileInformationEntity(delegate);
     }
-    else if(item->fileActionRule == rD::Copy)
-        copyFileItems(item->allFiles,item->fileDestinations);
+    else if(model->fileActionRule == rD::Copy)
+        copyFileItems(model->allFiles,model->fileDestinations);
 
-    item = nullptr;
+    model = nullptr;
 }

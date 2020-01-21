@@ -8,44 +8,44 @@
 
 
 struct FileModel : public QFileInfo, public TreeModel{};
-
-class FileModelDelegate : public ITreeModelDelegate
+template<class T = FileModel>
+class FileModelDelegate : public ITreeModelDelegate<T>
 {
 public:
 
 
-    ITreeModelDelegate *parentModelDelegate() const
+    ITreeModelDelegate<T> *parentModelDelegate() const
     {
         return new FileModelDelegate(*static_cast<const FileModel*>(_model->_parent));
     }
-    void setParentModelDelegate(ITreeModelDelegate *const &newParent)
+    void setParentModelDelegate(ITreeModelDelegate<T> *const &newParent)
     {
         FileModelDelegate *delegate = dynamic_cast<FileModelDelegate*>(newParent);
         _model->_parent = delegate->_model;
     }
 
-    QList<ITreeModelDelegate*> children() const
+    QList<ITreeModelDelegate<T>*> children() const
     {
-        QList<ITreeModelDelegate*> delegates;
+        QList<ITreeModelDelegate<T>*> delegates;
         for (const TreeModel *child : _model->_children)
             delegates << new FileModelDelegate(*static_cast<const FileModel*>(child));
 
         return delegates;
     }
-    void setChildren(const QList<ITreeModelDelegate*> &newChildren)
+    void setChildren(const QList<ITreeModelDelegate<T>*> &newChildren)
     {
         QList<TreeModel*> models;
-        for (const ITreeModelDelegate *child : newChildren)
+        for (const ITreeModelDelegate<T> *child : newChildren)
         {
-            const FileModelDelegate *C = static_cast<const FileModelDelegate*>(child);
+            const FileModelDelegate<T> *C = static_cast<const FileModelDelegate<T>*>(child);
             models << C->_model;
         }
 
         _model->_children = models;
     }
-    void appendChild(ITreeModelDelegate * const &object)
+    void appendChild(ITreeModelDelegate<T> * const &object)
     {
-        FileModelDelegate *delegates = dynamic_cast<FileModelDelegate*>(object);
+        FileModelDelegate<T> *delegates = dynamic_cast<FileModelDelegate<T>*>(object);
         object->setParentModelDelegate(this);
         _model->_children.append(delegates->_model);
     }
@@ -82,8 +82,7 @@ private:
     FileModel *_model = new FileModel;
 
 };
-typedef FileModelDelegate fMD;
-typedef QList<ITreeModelDelegate*> FileObjectList;
+typedef QList<ITreeModelDelegate<FileModel>*> FileObjectList;
 #endif // FILEOBJECTMODEL_H
 
 

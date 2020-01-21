@@ -12,7 +12,7 @@ using namespace std;
 
 struct EntityModel : public Model
 {
-    enum typeMode {nullEntity,fileInformationEntity,fileOperationEntity,directoryCountEntity};
+    enum typeMode {nullEntity,fileInformationEntity,fileActionEntity,directoryCountEntity};
     typeMode type = nullEntity;
     QString errorDescription = "No error";
 };
@@ -37,9 +37,14 @@ struct FileInformationEntity : public EntityModel
     QStringList filePaths;
 };
 
-class EntityModelDelegate : public IModelDelegate
+template<class T>
+class EntityModelDelegate : public IModelDelegate<T>
 {
 public:
+    EntityModelDelegate(const EntityModel *model)
+    {
+        _model = model;
+    }
     ~EntityModelDelegate()
     {
         delete _model;
@@ -49,13 +54,10 @@ public:
     {
         return _model->id;
     }
-    template<class t>
-    const t *model() const
-    {
-        if(std::is_base_of_v<EntityModelDelegate,t>)
-            throw "Not direct base of EntityModel";
 
-        return static_cast<const t*>(_model);
+    const T *model() const
+    {
+        return static_cast<const T*>(_model);
     }
 
     static EntityModelDelegate* make(const EntityModel* entity)
@@ -87,7 +89,7 @@ public:
                                                      const QStringList &destinations)
     {
         FileActionEntity *entity =
-                makeEntity<FileActionEntity>(EntityModel::fileOperationEntity);
+                makeEntity<FileActionEntity>(EntityModel::fileActionEntity);
         entity->directoryPaths = dirPaths;
         entity->allFiles = allFiles;
         entity->fileActionRule = fileActionRule;
@@ -112,10 +114,9 @@ public:
         return delegate;
     }
 
-    template<class t>
-    t* getModelValue() const
+    T* getModelValue() const
     {
-        return static_cast<t*>(new EntityModel(*_model));
+        return static_cast<T*>(new EntityModel(*_model));
     }
 
     EntityModel::typeMode type()
@@ -124,11 +125,6 @@ public:
     }
 
 private:
-    EntityModelDelegate(const EntityModel *model)
-    {
-        _model = model;
-    }
-
     template<class Y>
     static Y *makeEntity(EntityModel::typeMode type)
     {
@@ -143,6 +139,4 @@ private:
 
     const EntityModel *_model;
 };
-
-typedef EntityModelDelegate eMD;
 #endif // ENTITYMODEL_H

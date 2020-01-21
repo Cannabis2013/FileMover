@@ -175,6 +175,7 @@ private:
 Core_functionality::Core_functionality()
 {
     mApp = new MainApplication("MHTest","MH");
+    mApp->addWatchFolder(TEST_WORKING_PATH);
 }
 
 Core_functionality::~Core_functionality()
@@ -619,6 +620,8 @@ void Core_functionality::operation_filepath_match_success_1()
         if(!match)
             referenceList << obj;
     }
+
+    // FILTER STATE:
 
     mApp->clearFoldersAccordingToRules(mApp->watchFolders());
 

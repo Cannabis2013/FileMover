@@ -59,7 +59,7 @@ MainApplication::MainApplication(const QString &appName,
 
 
     auto folders = QStringList() << watchFolders();
-    auto delegate = eMD::makeFileInformationEntity(folders);
+    auto delegate = EntityModelDelegate<EntityModel>::makeFileInformationEntity(folders);
     emit sManager->processPath(delegate);
 }
 
@@ -75,7 +75,7 @@ void MainApplication::clearFolders(QStringList paths)
     auto directoryPaths = paths;
     auto allFiles = fW::generateFileObjects(paths);
 
-    auto delegate = eMD::makeFileActionEntity(paths,allFiles,rD::Delete,QStringList());
+    auto delegate = EntityModelDelegate<EntityModel>::makeFileActionEntity(paths,allFiles,rD::Delete,QStringList());
 
     entityManager->addEntity(delegate);
 }
@@ -96,7 +96,7 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         auto files = allFiles;
         auto fileRule = r.actionRuleEntity;
 
-        auto delegate = eMD::makeFileActionEntity(directoryPaths,files,fileRule,destinations);
+        auto delegate = EntityModelDelegate<EntityModel>::makeFileActionEntity(directoryPaths,files,fileRule,destinations);
 
         emit sendEntity(delegate);
     }
@@ -151,7 +151,7 @@ void MainApplication::calculateFolderSize(QString path)
     auto directoryPath = fInfo.absoluteFilePath();
     auto directoryName = fInfo.fileName();
 
-    auto delegate = eMD::makeDirectoryCountEntity(0,directoryName,directoryPath);
+    auto delegate = EntityModelDelegate<EntityModel>::makeDirectoryCountEntity(0,directoryName,directoryPath);
 
     entityManager->addEntity(delegate);
 }

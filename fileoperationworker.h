@@ -34,7 +34,7 @@ public slots:
 
     // wake-up/Start entity file operations
     void handleProcessRequest();
-    void processEntity(EntityModelDelegate *delegate);
+    void processEntity(EntityModelDelegate<EntityModel> *delegate);
 
 signals:
     void fileCount(long antal);
@@ -56,9 +56,9 @@ private:
 
     // File object entity operations
 
-    void processFileEntity(const EntityModelDelegate *delegate);
-    void processFileInformationEntity(const EntityModelDelegate *delegate);
-    void processDirectoryCountEntity(const EntityModelDelegate *delegate);
+    void processFileEntity(const EntityModelDelegate<FileActionEntity> *delegate);
+    void processFileInformationEntity(const EntityModelDelegate<FileInformationEntity> *delegate);
+    void processDirectoryCountEntity(const EntityModelDelegate<DirectoryCountEntity> *delegate);
     void reProcessFileInformationEntity(const QStringList &paths);
 
     // Fileoperation from QFileinfoList..

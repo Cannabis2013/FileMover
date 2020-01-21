@@ -16,8 +16,7 @@ void FileSystemWatcher::removePath(const QString &path)
 void FileSystemWatcher::changed(const QString &path)
 {
     auto filesChanged = QStringList() << path;
-    FileInformationEntity *fEntity;
-    auto delegate = eMD::makeFileInformationEntity(filesChanged);
+    auto delegate = EntityModelDelegate<EntityModel>::makeFileInformationEntity(filesChanged);
     emit folderChanged(delegate);
 
     QString msg = QString("A change in the following folder has occured: \n %1").arg(path);

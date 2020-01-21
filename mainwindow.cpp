@@ -134,7 +134,7 @@ mainWindow::mainWindow(ICoreApplication *coreApplication) :
     // Fileworker Related..
 
     qRegisterMetaType<QList<DirectoryCountEntity>>("QList<DirectoryCountEntity>");
-    qRegisterMetaType<EntityModelDelegate*>("EntityModelDelegate");
+    qRegisterMetaType<EntityModelDelegate<EntityModel>*>("EntityModelDelegate<EntityModel>");
 
     /*
      * Setup connections

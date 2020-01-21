@@ -29,9 +29,9 @@ public:
 
 public slots:
 
-    void addEntity(EntityModelDelegate *delegate)
+    void addEntity(EntityModelDelegate<EntityModel> *delegate)
     {
-        entityQueue << delegate->model<EntityModel>();
+        entityQueue << delegate->model();
         emit wakeUpProcess();
     }
 
@@ -40,11 +40,11 @@ public slots:
         if(entityQueue.isEmpty())
         {
             const QString err = "Queue is empty";
-            auto delegate = eMD::makeErrorEntity(err);
+            auto delegate = EntityModelDelegate<EntityModel>::makeErrorEntity(err);
             emit sendEntity(delegate);
             return;
         }
-        auto delegate = eMD::make(entityQueue.takeFirst());
+        auto delegate = EntityModelDelegate<EntityModel>::make(entityQueue.takeFirst());
         emit sendEntity(delegate);
     }
 
@@ -52,7 +52,7 @@ signals:
     void wakeUpProcess();
     void processFinished();
 
-    void sendEntity(eMD *delegate);
+    void sendEntity(EntityModelDelegate<EntityModel> *delegate);
 
 private:
     QList<const EntityModel*>entityQueue;

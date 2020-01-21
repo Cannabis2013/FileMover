@@ -52,12 +52,3 @@ void AbstractTextSelectorDialog::insertChosenPath(QString p)
     pathSelector->setText(currentText);
 }
 
-/*
-void TextPathEdit::on_toolButton_clicked()
-{
-    filepathDialogWidget *chooseFilePathDialog = new filepathDialogWidget();
-    connect(chooseFilePathDialog,&filepathDialogWidget::chosenPath,this,&TextPathEdit::insertChosenPath);
-    chooseFilePathDialog->show();
-}
-*/
-

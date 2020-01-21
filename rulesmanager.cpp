@@ -284,7 +284,7 @@ void rulesManager::swapRule(int i, int j)
     if(i < 0 || j < 0)
         throw new std::out_of_range("Index out of range");
 
-    rules.swapItemsAt(i,j);
+    rules.swap(i,j);
 
     emit stateChanged();
 }

@@ -89,7 +89,7 @@ public:
 };
 
 #ifdef __WIN64__
-#define TEST_WORKING_PATH "d:/Test_folder/"
+#define TEST_WORKING_PATH QDir::homePath() + "/Test_folder/"
 #elif __GNUC__
     #define TEST_WORKING_PATH QDir::homePath() + "/MyDocs/Programming/Test/FileMover_Test_Folder/"
 #endif

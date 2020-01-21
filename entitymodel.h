@@ -60,6 +60,12 @@ public:
         return static_cast<const T*>(_model);
     }
 
+    template<class t>
+    t* getModelValue() const
+    {
+        return static_cast<t*>(new EntityModel(*_model));
+    }
+
     static EntityModelDelegate* make(const EntityModel* entity)
     {
         return new EntityModelDelegate(entity);
@@ -97,9 +103,6 @@ public:
         EntityModelDelegate *delegate = new EntityModelDelegate(entity);
         return delegate;
     }
-    long long directorySize;
-    QString directoryName;
-    QString directoryPath;
 
     static EntityModelDelegate* makeDirectoryCountEntity(const long long &size,
                                                      const QString &name,

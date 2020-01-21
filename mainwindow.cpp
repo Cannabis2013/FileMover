@@ -398,15 +398,15 @@ void mainWindow::clearCompleted(bool a)
     tray->showMessage("Removal",msg);
 }
 
-void mainWindow::folderContentRecieved(const DirectoryCountEntity *fObject)
+void mainWindow::folderContentRecieved(const DirectoryCountEntity *entity)
 {
     QString sizeNotation;
-    double scaledAndRoundedSize = fW::convertSizeToAppropriateUnits(fObject->directorySize,sizeNotation,2);
-    QString folderName = fObject->directoryPath,
+    double scaledAndRoundedSize = fW::convertSizeToAppropriateUnits(entity->directorySize,sizeNotation,2);
+    QString folderName = entity->directoryPath,
             folderSize = QString::number(scaledAndRoundedSize),
             message = QString("Size of folder content is %1 %2").arg(folderSize).arg(sizeNotation);
     showSystemMessage(folderName,message);
-    fObject = nullptr;
+    delete entity;
 }
 
 void mainWindow::contextMenuCalled(QPoint p)

@@ -44,6 +44,7 @@ SOURCES += main.cpp\
     customdialog.cpp \
     customsplitter.cpp \
     customsplitterhandle.cpp \
+    exceptionhandler.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
     fileoperationworker.cpp \
@@ -77,6 +78,7 @@ HEADERS  += mainwindow.h \
     customsplitterhandle.h \
     entitymodel.h \
     entityqueuemanager.h \
+    exceptionhandler.h \
     fileinformationmanager.h \
     filemodeldelegate.h \
     fileoperationworker.h \

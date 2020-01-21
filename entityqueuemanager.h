@@ -4,7 +4,7 @@
 #include "mydatetime.h"
 #include "fileinformationmanager.h"
 #include "entitymodel.h"
-#include <qmutex.h>
+#include "exceptionhandler.h"
 
 /*
  * Queue management of fileoperations and other stuff

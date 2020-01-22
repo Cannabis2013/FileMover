@@ -87,7 +87,7 @@ QWidget#conditionWidget
       </font>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="fileCompareView">
       <property name="sizePolicy">
@@ -181,7 +181,7 @@ QWidget#conditionWidget
            <item>
             <widget class="QComboBox" name="fixedSizeOperatorSelector">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -429,7 +429,7 @@ QWidget#conditionWidget
         <number>0</number>
        </property>
        <item>
-        <widget class="QStackedWidget" name="dateView_2">
+        <widget class="QStackedWidget" name="stackedDateView">
          <widget class="QWidget" name="singleDateView">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <property name="spacing">
@@ -454,6 +454,12 @@ QWidget#conditionWidget
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>256</width>
+               <height>0</height>
+              </size>
              </property>
              <property name="maximumSize">
               <size>

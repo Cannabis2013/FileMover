@@ -329,7 +329,7 @@ void conditionWidget::on_modeSelector_currentIndexChanged(int index)
         ui->sizeViewSelector->setCurrentIndex(index);
     if((currentFileModeRule == rD::fileCreatedMode ||
         currentFileModeRule == rD::fileModifiedMode))
-        ui->dateView_2->setCurrentIndex(index);
+        ui->stackedDateView->setCurrentIndex(index);
 }
 
 void conditionWidget::on_folderSelector_toggled(bool checked)

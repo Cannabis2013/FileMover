@@ -8,6 +8,7 @@
 
 
 struct FileModel : public QFileInfo, public TreeModel{};
+
 template<class T = FileModel>
 class FileModelDelegate : public ITreeModelDelegate<T>
 {

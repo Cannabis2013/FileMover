@@ -1,10 +1,8 @@
+#ifdef TEST_MODE
 #include <QtTest>
 #include <QCoreApplication>
 
-
 #include "testfilecreator.h"
-
-#ifdef TEST_MODE
 
 #define SLEEP_SEC 1
 #define DELETE_STATUS "Some files/folders not deleted"

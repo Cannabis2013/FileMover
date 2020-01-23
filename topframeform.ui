@@ -61,12 +61,6 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>32</height>
-      </size>
-     </property>
      <property name="cursor">
       <cursorShape>ArrowCursor</cursorShape>
      </property>
@@ -95,10 +89,13 @@
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>2</number>
+       <number>0</number>
       </property>
       <item>
        <widget class="QWidget" name="widget" native="true">
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
         <property name="styleSheet">
          <string notr="true">QWidget#widget
 {
@@ -122,7 +119,7 @@ background-color: rgb(255, 255, 255);
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
+         <item alignment="Qt::AlignLeft|Qt::AlignTop">
           <widget class="QLabel" name="frameTitle">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -130,22 +127,16 @@ background-color: rgb(255, 255, 255);
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>24</height>
-            </size>
-           </property>
            <property name="font">
             <font>
              <family>Comic Sans MS</family>
-             <pointsize>11</pointsize>
+             <pointsize>-1</pointsize>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">color:black;
-background-color:white;
-padding:2px;</string>
+            <string notr="true">color:white;
+background-color:green;
+font-size: 20px;</string>
            </property>
            <property name="text">
             <string>Frame title</string>
@@ -177,7 +168,7 @@ padding:2px;</string>
            </property>
           </spacer>
          </item>
-         <item>
+         <item alignment="Qt::AlignTop">
           <widget class="QPushButton" name="exitButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -200,7 +191,7 @@ padding:2px;</string>
            <property name="font">
             <font>
              <family>Calibri</family>
-             <pointsize>16</pointsize>
+             <pointsize>-1</pointsize>
              <weight>50</weight>
              <bold>false</bold>
             </font>
@@ -217,13 +208,12 @@ padding:2px;</string>
 	background-color:red;
 	color:white;
 	border:1px solid black;
-	padding:4px;
-	margin-right:0px;
+	font-size: 32px;
 }
 QPushButton#exitButton:hover
 {
-	background-color: rgb(214, 161, 162);
-	border:2px solid white;
+	border:2px solid black;
+	font-size: 24px;
 }</string>
            </property>
            <property name="text">

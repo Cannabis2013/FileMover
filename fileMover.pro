@@ -67,6 +67,7 @@ SOURCES += main.cpp\
     topframeform.cpp
 
 HEADERS  += mainwindow.h \
+    abstractcoreapplication.h \
     abstractruledialog.h \
     abstractframeimplementable.h \
     abstractpersistence.h \
@@ -84,7 +85,6 @@ HEADERS  += mainwindow.h \
     fileoperationworker.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
-    icoreapplication.h \
     imutableobject.h \
     mainapplication.h \
     messageBox.h \

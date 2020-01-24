@@ -58,7 +58,7 @@ public:
         return _model;
     }
 
-    static FileModelDelegate* delegateFromPath(const QString &path)
+    static FileModelDelegate* buildDelegate(const QString &path)
     {
         return new FileModelDelegate(path);
     }

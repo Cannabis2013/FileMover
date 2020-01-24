@@ -40,11 +40,13 @@ public slots:
         if(entityQueue.isEmpty())
         {
             const QString err = "Queue is empty";
-            auto delegate = EntityModelDelegate<EntityModel>::makeErrorEntity(err);
+            auto delegate = EntityModelDelegateBuilder::buildErrorEntity(err);
             emit sendEntity(delegate);
             return;
         }
-        auto delegate = EntityModelDelegate<EntityModel>::make(entityQueue.takeFirst());
+
+        auto delegate = EntityModelDelegateBuilder::buildDelegate(entityQueue.takeFirst());
+
         emit sendEntity(delegate);
     }
 

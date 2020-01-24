@@ -8,14 +8,14 @@
 #include "settingsdelegate.h"
 #include "imutableobject.h"
 
-class ICoreApplication :
+class AbstractCoreApplication :
         public QObject,
         public IMutableObject,
         public IBroadcastingObject
 {
     Q_OBJECT
 public:
-    virtual ~ICoreApplication() = default;
+    virtual ~AbstractCoreApplication() = default;
 
     virtual QString watchFolder(int index) const = 0;
     virtual void clearWatchFolders() = 0;

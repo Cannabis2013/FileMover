@@ -60,66 +60,15 @@ public:
         return static_cast<const T*>(_model);
     }
 
+    T* getModelValue() const
+    {
+        return static_cast<T*>(new EntityModel(*_model));
+    }
+
     template<class t>
     t* getModelValue() const
     {
         return static_cast<t*>(new EntityModel(*_model));
-    }
-
-    static EntityModelDelegate* make(const EntityModel* entity)
-    {
-        return new EntityModelDelegate(entity);
-    }
-
-    static EntityModelDelegate* makeErrorEntity(const QString &err)
-    {
-        EntityModel *entity =
-                makeEntity<EntityModel>(EntityModel::nullEntity);
-        entity->errorDescription = err;
-        EntityModelDelegate *delegate = new EntityModelDelegate(entity);
-        return delegate;
-    }
-
-    static EntityModelDelegate* makeFileInformationEntity(const QStringList &paths)
-    {
-        FileInformationEntity *entity =
-                makeEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
-        entity->filePaths = paths;
-        EntityModelDelegate *delegate = new EntityModelDelegate(entity);
-        return delegate;
-    }
-
-    static EntityModelDelegate* makeFileActionEntity(const QStringList &dirPaths,
-                                                     const FileObjectList &allFiles,
-                                                     const rD::fileActionEntity &fileActionRule,
-                                                     const QStringList &destinations)
-    {
-        FileActionEntity *entity =
-                makeEntity<FileActionEntity>(EntityModel::fileActionEntity);
-        entity->directoryPaths = dirPaths;
-        entity->allFiles = allFiles;
-        entity->fileActionRule = fileActionRule;
-        entity->fileDestinations = destinations;
-        EntityModelDelegate *delegate = new EntityModelDelegate(entity);
-        return delegate;
-    }
-
-    static EntityModelDelegate* makeDirectoryCountEntity(const long long &size,
-                                                     const QString &name,
-                                                     const QString &path)
-    {
-        DirectoryCountEntity *entity =
-                makeEntity<DirectoryCountEntity>(EntityModel::directoryCountEntity);
-        entity->directorySize = size;
-        entity->directoryName = name;
-        entity->directoryPath = path;
-        EntityModelDelegate *delegate = new EntityModelDelegate(entity);
-        return delegate;
-    }
-
-    T* getModelValue() const
-    {
-        return static_cast<T*>(new EntityModel(*_model));
     }
 
     EntityModel::typeMode type()
@@ -128,18 +77,94 @@ public:
     }
 
 private:
-    template<class Y>
-    static Y *makeEntity(EntityModel::typeMode type)
-    {
-        if(!std::is_base_of_v<EntityModel,Y>)
-            throw "Not base of EntityModel";
-
-        EntityModel *entity = new Y;
-        entity->type = type;
-
-        return static_cast<Y*>(entity);
-    }
 
     const EntityModel *_model;
+
+    friend class EntityModelDelegateBuilder;
 };
+
+class EntityModelDelegateBuilder
+{
+public:
+    static EntityModelDelegate<EntityModel>* buildDelegate(const EntityModel* entity)
+    {
+        return new EntityModelDelegate<EntityModel>(entity);
+    }
+
+    static EntityModelDelegate<EntityModel>* buildErrorEntity(const QString &err)
+    {
+        EntityModelDelegateBuilder builder;
+        EntityModel *entity =
+                builder.buildEntity<EntityModel>(EntityModel::nullEntity);
+        entity->errorDescription = err;
+        return new EntityModelDelegate<EntityModel>(entity);
+    }
+    template<class T>
+    static EntityModelDelegate<T>* buildFileInformationEntity(const QStringList &paths)
+    {
+        EntityModelDelegateBuilder builder;
+        if(!std::is_base_of_v<Model,T>)
+            throw "Template class not direct base of Model";
+
+        FileInformationEntity *entity =
+                builder.buildEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
+
+        entity->filePaths = paths;
+
+        return new EntityModelDelegate<T>(entity);
+    }
+    template<class T>
+    static EntityModelDelegate<T>* buildFileActionEntity(const QStringList &dirPaths,
+                                                     const FileObjectList &allFiles,
+                                                     const rD::fileActionEntity &fileActionRule,
+                                                     const QStringList &destinations)
+    {
+        if(!std::is_base_of_v<Model,T>)
+            throw "Template class not direct base of Model";
+
+        EntityModelDelegateBuilder builder;
+        FileActionEntity *entity =
+                builder.buildEntity<FileActionEntity>(EntityModel::fileActionEntity);
+
+        entity->directoryPaths = dirPaths;
+        entity->allFiles = allFiles;
+        entity->fileActionRule = fileActionRule;
+        entity->fileDestinations = destinations;
+
+        return new EntityModelDelegate<T>(entity);
+    }
+
+    template<class T>
+    static EntityModelDelegate<T>* buildDirectoryCountEntity(const long long &size,
+                                                     const QString &name,
+                                                     const QString &path)
+    {
+        if(!std::is_base_of_v<Model,T>)
+            throw "Template class not direct base of Model";
+
+        EntityModelDelegateBuilder builder;
+        auto *entity =
+                builder.buildEntity<DirectoryCountEntity>(EntityModel::directoryCountEntity);
+
+        entity->directorySize = size;
+        entity->directoryName = name;
+        entity->directoryPath = path;
+
+        return new EntityModelDelegate<T>(entity);
+    }
+
+private:
+    template<class T = EntityModel>
+    T *buildEntity(EntityModel::typeMode type)
+    {
+        if(!std::is_base_of_v<Model,T>)
+            throw "Not base of EntityModel";
+
+        EntityModel *entity = new T;
+        entity->type = type;
+
+        return static_cast<T*>(entity);
+    }
+};
+
 #endif // ENTITYMODEL_H

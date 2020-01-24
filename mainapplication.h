@@ -6,11 +6,11 @@
 #include <qthread.h>
 #include "settingsmanager.h"
 #include "fileinformationmanager.h"
-#include "icoreapplication.h"
+#include "abstractcoreapplication.h"
 #include "filesystemwatcher.h"
 
 
-class MainApplication : public ICoreApplication
+class MainApplication : public AbstractCoreApplication
 {
     Q_OBJECT
 public:

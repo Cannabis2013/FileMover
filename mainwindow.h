@@ -41,7 +41,7 @@ class mainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit mainWindow(ICoreApplication *coreApplication);
+    explicit mainWindow(AbstractCoreApplication *coreApplication);
     ~mainWindow();
 
     enum fontType{listFont,detailedList,labelFont,standardFont};
@@ -157,7 +157,7 @@ private:
     // Member variables..
     Ui::mainWindow *ui;
 
-    ICoreApplication *coreApplication;
+    AbstractCoreApplication *coreApplication;
 
     bool countTimerStatus;
     fileInformationView *fileInfoBrowser;

@@ -46,8 +46,10 @@ void settingsManager::insertPath(QString path)
 void settingsManager::insertPath(const QStringList& paths)
 {
     watchFolders << paths;
+
     auto filePaths = QStringList() << paths;
     auto delegate = EntityModelDelegateBuilder::buildFileInformationEntity<EntityModel>(filePaths);
+
     emit processPath(delegate);
     emit stateChanged();
 }

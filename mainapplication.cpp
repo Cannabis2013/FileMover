@@ -51,7 +51,7 @@ MainApplication::MainApplication(const QString &appName,
     connect(rManager,&rulesManager::stateChanged,this,&MainApplication::stateChanged);
     connect(fManager,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);
 
-    connect(fWorker,&fW::jobDone,this,&ICoreApplication::stateChanged);
+    connect(fWorker,&fW::jobDone,this,&AbstractCoreApplication::stateChanged);
 
     // Start threads
     fileWorkerThread->start();

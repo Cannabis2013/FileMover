@@ -1,8 +1,9 @@
+#include "testfilecreator.h"
+
 #ifdef TEST_MODE
 #include <QtTest>
 #include <QCoreApplication>
 
-#include "testfilecreator.h"
 
 #define SLEEP_SEC 1
 #define DELETE_STATUS "Some files/folders not deleted"
@@ -168,7 +169,7 @@ private slots:
     void operation_size_interval_success_1();
 
 private:
-    ICoreApplication *mApp;
+    AbstractCoreApplication *mApp;
 };
 Core_functionality::Core_functionality()
 {
@@ -247,8 +248,8 @@ void Core_functionality::insert_rule_filepath_match_success_1()
 
     QString preAPath = "/testpath", preTitle = "Test1";
     QStringList prekWrds = QStringList() << "T1" << "T2";
-    rD::fileConditionEntity preCond = rD::filepathMode;
-    rD::fileCompareEntity preComp = rD::match;
+    rD::ruleCriteria preCond = rD::filepathMode;
+    rD::ruleCompareCriteria preComp = rD::match;
     Rule preRule;
 
     // Initialize pre-state
@@ -276,8 +277,8 @@ void Core_functionality::insert_rule_filepath_match_fail_1()
 
     QString preAPath = "/testpath", preTitle = "Test2";
     QStringList prekWrds = QStringList() << "T1" << "T2";
-    rD::fileConditionEntity preCond = rD::filepathMode;
-    rD::fileCompareEntity preComp = rD::match;
+    rD::ruleCriteria preCond = rD::filepathMode;
+    rD::ruleCompareCriteria preComp = rD::match;
     Rule preRule;
 
     // Initialize pre-state
@@ -297,8 +298,8 @@ void Core_functionality::insert_rule_filepath_match_fail_1()
 
     QString postAPath = "/testpath", postTitle = "NotInTest";
     QStringList postkWrds = QStringList() << "T1" << "T2";
-    rD::fileConditionEntity postCond = rD::filepathMode;
-    rD::fileCompareEntity postComp = rD::match;
+    rD::ruleCriteria postCond = rD::filepathMode;
+    rD::ruleCompareCriteria postComp = rD::match;
     Rule compareRule;
 
     // Post-state
@@ -323,8 +324,8 @@ void Core_functionality::insert_rule_filepath_match_fail_2()
 
     QString preAPath = "/testpath", preTitle = "Test3";
     QStringList prekWrds = QStringList() << "T1" << "T2";
-    rD::fileConditionEntity preCond = rD::filepathMode;
-    rD::fileCompareEntity preComp = rD::match;
+    rD::ruleCriteria preCond = rD::filepathMode;
+    rD::ruleCompareCriteria preComp = rD::match;
     Rule preRule;
 
     // Initialize pre-state
@@ -344,8 +345,8 @@ void Core_functionality::insert_rule_filepath_match_fail_2()
 
     QString postAPath = "/testpath", postTitle = "Test3";
     QStringList postkWrds = QStringList() << "T1" << "T2";
-    rD::fileConditionEntity postCond = rD::fileExtensionMode;
-    rD::fileCompareEntity postComp = rD::match;
+    rD::ruleCriteria postCond = rD::fileExtensionMode;
+    rD::ruleCompareCriteria postComp = rD::match;
     Rule compareRule;
 
     // Post-state
@@ -566,9 +567,9 @@ void Core_functionality::operation_filepath_match_success_1()
 
     const QString preTitle = "Test1";
     QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::filepathMode;
-    rD::fileCompareEntity preComp = rD::match;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::filepathMode;
+    rD::ruleCompareCriteria preComp = rD::match;
     Rule preRule;
 
     // Initialize pre-state
@@ -684,9 +685,9 @@ void Core_functionality::operation_filepath_match_fail_1()
 
     const QString preTitle = "Test1";
     QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::filepathMode;
-    rD::fileCompareEntity preComp = rD::match;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::filepathMode;
+    rD::ruleCompareCriteria preComp = rD::match;
     Rule preRule;
 
     // Initialize pre-state
@@ -797,9 +798,9 @@ void Core_functionality::operation_filepath_contain_success_1()
 
     const QString preTitle = "Test1";
     QStringList prekWrds = QStringList() << "Notes" << "FCK";
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::filepathMode;
-    rD::fileCompareEntity preComp = rD::contains;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::filepathMode;
+    rD::ruleCompareCriteria preComp = rD::contains;
     Rule preRule;
 
     // Initialize pre-state
@@ -904,9 +905,9 @@ void Core_functionality::operation_filepath_contain_fail_1()
 
     const QString preTitle = "Test1";
     QStringList prekWrds = QStringList() << "Notes" << "FCK";
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::filepathMode;
-    rD::fileCompareEntity preComp = rD::contains;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::filepathMode;
+    rD::ruleCompareCriteria preComp = rD::contains;
     Rule preRule;
 
     // Initialize pre-state
@@ -1011,9 +1012,9 @@ void Core_functionality::operation_extension_match_success_1()
 
     const QString preTitle = "Test1";
     QStringList prekWrds = QStringList() << "txt" << "jpg";
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::fileExtensionMode;
-    rD::fileCompareEntity preComp = rD::match;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::fileExtensionMode;
+    rD::ruleCompareCriteria preComp = rD::match;
     Rule preRule;
 
     // Initialize pre-state
@@ -1117,9 +1118,9 @@ void Core_functionality::operation_size_less_than_success_1()
     uint sizeUnits = 100;
     QString unit = "kb";
     const QPair<uint,QString> upperLimit(sizeUnits,unit);
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::fileSize;
-    rD::fileCompareEntity preComp = rD::lesserThan;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::fileSize;
+    rD::ruleCompareCriteria preComp = rD::lesserThan;
     Rule preRule;
 
     // Initialize pre-state
@@ -1147,7 +1148,7 @@ void Core_functionality::operation_size_less_than_success_1()
     }
 
     Virtual_Objects referenceList;
-    qint64 bytes = fW::toBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->value(i);
@@ -1223,9 +1224,9 @@ void Core_functionality::operation_size_equal_success_1()
     // Pre-state variables
 
     const QString preTitle = "Test1";
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::fileSize;
-    rD::fileCompareEntity preComp = rD::equal;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::fileSize;
+    rD::ruleCompareCriteria preComp = rD::equal;
     Rule preRule;
 
     QString randomElement = test_file_set_1.value(qrand() % test_file_set_1.count() + 1);
@@ -1332,9 +1333,9 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
     uint sizeUnits = 100;
     QString unit = "kb";
     const QPair<uint,QString> lowerLimit(sizeUnits,unit);
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::fileSize;
-    rD::fileCompareEntity preComp = rD::lesserOrEqualThan;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::fileSize;
+    rD::ruleCompareCriteria preComp = rD::lesserOrEqualThan;
     Rule preRule;
 
     // Initialize pre-state
@@ -1355,7 +1356,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
 
 
     Virtual_Objects referenceList;
-    qint64 bytes = fW::toBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->value(i);
@@ -1426,9 +1427,9 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
     uint sizeUnits = 100;
     QString unit = "kb";
     const QPair<uint,QString> lowerLimit(sizeUnits,unit);
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::fileSize;
-    rD::fileCompareEntity preComp = rD::greaterOrEqualThan;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::fileSize;
+    rD::ruleCompareCriteria preComp = rD::greaterOrEqualThan;
     Rule preRule;
 
     // Initialize pre-state
@@ -1456,7 +1457,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
     }
 
     Virtual_Objects referenceList;
-    qint64 bytes = fW::toBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->value(i);
@@ -1527,9 +1528,9 @@ void Core_functionality::operation_size_greater_than_success_1()
     uint sizeUnits = 100;
     QString unit = "kb";
     const QPair<uint,QString> lowerLimit(sizeUnits,unit);
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::fileSize;
-    rD::fileCompareEntity preComp = rD::greaterThan;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::fileSize;
+    rD::ruleCompareCriteria preComp = rD::greaterThan;
     Rule preRule;
 
     // Initialize pre-state
@@ -1556,7 +1557,7 @@ void Core_functionality::operation_size_greater_than_success_1()
     }
 
     Virtual_Objects referenceList;
-    qint64 bytes = fW::toBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj;
@@ -1637,9 +1638,9 @@ void Core_functionality::operation_size_interval_success_1()
     // Pre-state variables
 
     const QString preTitle = "Test1";
-    rD::fileActionEntity preAction = rD::Delete;
-    rD::fileConditionEntity preCond = rD::fileSize;
-    rD::fileCompareEntity preComp = rD::interval;
+    rD::ruleAction preAction = rD::Delete;
+    rD::ruleCriteria preCond = rD::fileSize;
+    rD::ruleCompareCriteria preComp = rD::interval;
     SizeLimits interval;
     IntervalUnit lowerLimit, upperLimit;
 
@@ -1676,7 +1677,7 @@ void Core_functionality::operation_size_interval_success_1()
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->value(i);
         qint64 sz = obj.additionalInformation.size();
-        if(sz <= fW::toBytes(lowerLimit.first,lowerLimit.second) || sz >= fW::toBytes(upperLimit.first,lowerLimit.second))
+        if(sz <= fW::convertToBytes(lowerLimit.first,lowerLimit.second) || sz >= fW::convertToBytes(upperLimit.first,lowerLimit.second))
             referenceList << obj;
     }
 

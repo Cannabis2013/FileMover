@@ -114,7 +114,7 @@ bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const 
     return result;
 }
 
-void FileOperationWorker::processDirectoryCountEntity(const EntityModelDelegate<DirectoryCountEntity> *delegate)
+void FileOperationWorker::processDirectoryCountEntity(const EntityModelDelegate<DirectoryEntity> *delegate)
 {
     auto entity = delegate->getModelValue();
 
@@ -136,11 +136,11 @@ void FileOperationWorker::processEntity(EntityModelDelegate<EntityModel> *delega
     }
 
     if(delegate->type() == EntityModel::fileActionEntity)
-        processFileEntity(new EntityModelDelegate<FileActionEntity>(delegate->model()));
+        processFileEntity(DelegateBuilder::buildDelegate<FileRuleEntity>(delegate->model()));
     else if(delegate->type() == EntityModel::fileInformationEntity)
-        processFileInformationEntity(new EntityModelDelegate<FileInformationEntity>(delegate->model()));
+        processFileInformationEntity(DelegateBuilder::buildDelegate<FileInformationEntity>(delegate->model()));
     else if(delegate->type() == EntityModel::directoryCountEntity)
-        processDirectoryCountEntity(new EntityModelDelegate<DirectoryCountEntity>(delegate->model()));
+        processDirectoryCountEntity(DelegateBuilder::buildDelegate<DirectoryEntity>(delegate->model()));
 
     delegate = nullptr;
     isBusy = false;
@@ -512,24 +512,24 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         {
             if(rule.fileCompareMode != rD::interval)
             {
-                if(rule.fileCompareMode == rD::lesserThan && model->size() < fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                if(rule.fileCompareMode == rD::lesserThan && model->size() < fW::convertToBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                 else if(rule.fileCompareMode == rD::lesserOrEqualThan &&
-                        model->size() <= fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                        model->size() <= fW::convertToBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                 else if(rule.fileCompareMode == rD::equal &&
-                        model->size() == fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                        model->size() == fW::convertToBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                 else if(rule.fileCompareMode == rD::greaterOrEqualThan &&
-                        model->size() >= fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                        model->size() >= fW::convertToBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                 else if(rule.fileCompareMode == rD::greaterThan &&
-                        model->size() > fW::toBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                        model->size() > fW::convertToBytes(rule.sizeLimit.first,rule.sizeLimit.second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
             else if(rule.fileCompareMode == rD::interval &&
-                    model->size() >= fW::toBytes(rule.sizeInterval.first.first,rule.sizeInterval.first.second) &&
-                    model->size() <= fW::toBytes(rule.sizeInterval.second.first,rule.sizeInterval.second.second))
+                    model->size() >= fW::convertToBytes(rule.sizeInterval.first.first,rule.sizeInterval.first.second) &&
+                    model->size() <= fW::convertToBytes(rule.sizeInterval.second.first,rule.sizeInterval.second.second))
                 filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
         }
         else if(rule.fieldCondition == rD::fileCreatedMode)
@@ -660,14 +660,13 @@ void FileOperationWorker::processFileInformationEntity(const EntityModelDelegate
     auto entity = delegate->model();
 
     QList<DirectoryItem> directories;
-    for (int i = 0;i <entity->filePaths.count();i++)
+    for (auto path : entity->filePaths)
     {
         DirectoryItem item;
 
-        QString path = entity->filePaths.at(i);
         QString denotation;
         item.path = path;
-        double directorySize = convertSizeToAppropriateUnits(folderSize(path),denotation);
+        double directorySize = convertFromBytes(folderSize(path),denotation);
         item.dirSize = QString::number(directorySize) + " " + denotation;
         item.numberOfDirectories = folderCount(path);
         item.numberOfFiles = fileCount(path);
@@ -690,7 +689,7 @@ void FileOperationWorker::reProcessFileInformationEntity(const QStringList &path
         QString denotation;
         DirectoryItem item;
         item.path = p;
-        double directorySize = convertSizeToAppropriateUnits(folderSize(p),denotation);
+        double directorySize = convertFromBytes(folderSize(p),denotation);
         item.dirSize = QString::number(directorySize) + " " + denotation;
         item.numberOfDirectories = folderCount(p);
         item.numberOfFiles = fileCount(p);
@@ -701,7 +700,7 @@ void FileOperationWorker::reProcessFileInformationEntity(const QStringList &path
     emit processFinished(directories);
 }
 
-void FileOperationWorker::processFileEntity(const EntityModelDelegate<FileActionEntity> *delegate)
+void FileOperationWorker::processFileEntity(const EntityModelDelegate<FileRuleEntity> *delegate)
 {
     auto model = delegate->model();
 
@@ -709,18 +708,18 @@ void FileOperationWorker::processFileEntity(const EntityModelDelegate<FileAction
     {
         // TODO: You have to pass an error related stringlist in order to be able to display errors
         removeFileItems(model->allFiles);
-        FileInformationEntity *entity = new FileInformationEntity;
-        entity->filePaths = model->directoryPaths;
+        auto entity = DelegateBuilder::buildFileInformationEntity
+                <FileInformationEntity>(model->directoryPaths)->model();
 
-        processFileInformationEntity(new EntityModelDelegate<FileInformationEntity>(entity));
+        processFileInformationEntity(DelegateBuilder::buildDelegate<FileInformationEntity>(entity));
     }
     else if(model->fileActionRule == rD::Move)
     {
         moveFileItems(model->allFiles,model->fileDestinations);
-        FileInformationEntity *entity = new FileInformationEntity;
-        entity->filePaths = model->directoryPaths;
+        auto entity = DelegateBuilder::buildFileInformationEntity
+                <FileInformationEntity>(model->directoryPaths)->model();
 
-        processFileInformationEntity(new EntityModelDelegate<FileInformationEntity>(entity));
+        processFileInformationEntity(DelegateBuilder::buildDelegate<FileInformationEntity>(entity));
 
     }
     else if(model->fileActionRule == rD::Copy)

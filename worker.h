@@ -20,8 +20,8 @@ public:
     enum iteratorMode{filesOnly = 0,folderOnly = 1,allEntries = 2, noTypeSet = 3};
 
     // Convert size units related..
-    static double convertSizeToAppropriateUnits(long long numb, QString &denote, int dec = 2);
-    static qint64 toBytes(uint unit, QString fromUnit);
+    static double convertFromBytes(long long numb, QString &denote, int dec = 2);
+    static qint64 convertToBytes(uint unit, QString fromUnit);
 
     // Basic stringlist operations..
     static QString mergeStringList(const QStringList strings);
@@ -31,7 +31,7 @@ public:
     QString checkAndCorrectForBackslash(QString path);
 
     // Filename operations
-    static bool containsTrailingBackslash(QString path);
+    static bool hasTrailingBackslash(QString path);
     static QString directoryName(QString path);
     };
 

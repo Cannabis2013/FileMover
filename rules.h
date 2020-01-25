@@ -13,8 +13,8 @@ struct SubRule
 {
     // Enumerated values..
     rD::copyMode copymode = rD::noMode;
-    rD::fileCompareEntity fileCompareMode = rD::noCompareModeSet;
-    rD::fileConditionEntity fieldCondition = rD::nonConditionalMode;
+    rD::ruleCompareCriteria fileCompareMode = rD::noCompareModeSet;
+    rD::ruleCriteria fieldCondition = rD::nonConditionalMode;
 
     QPair<uint,QString>sizeLimit;
     SizeLimits sizeInterval;
@@ -31,7 +31,7 @@ struct Rule
 {
     QString title = "title";
     rD::fileTypeEntity typeFilter = rD::File;
-    rD::fileActionEntity actionRuleEntity;
+    rD::ruleAction actionRuleEntity;
     QStringList destinationPaths;
     QString appliesToPath = "Alle";
     bool deepScanMode = false;

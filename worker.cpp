@@ -9,7 +9,7 @@ QString Worker::checkAndCorrectForBackslash(QString path)
         return path;
 }
 
-bool Worker::containsTrailingBackslash(QString path)
+bool Worker::hasTrailingBackslash(QString path)
 {
     int lastIndex = path.length() - 1;
     if(path.at(lastIndex) == '/' || path.at(lastIndex) == '\\')
@@ -22,7 +22,7 @@ QString Worker::directoryName(QString path)
 {
     QString result;
 
-    if(containsTrailingBackslash(path))
+    if(hasTrailingBackslash(path))
         path.remove(path.length() -1,1);
 
     for (int i = path.length()-1; i >= 0; --i) {
@@ -36,7 +36,7 @@ QString Worker::directoryName(QString path)
     return result;
 }
 
-double Worker::convertSizeToAppropriateUnits(long long numb, QString &denote, int dec)
+double Worker::convertFromBytes(long long numb, QString &denote, int dec)
 {
     long long d = 1,
         dc = 10,
@@ -50,7 +50,7 @@ double Worker::convertSizeToAppropriateUnits(long long numb, QString &denote, in
     {
         for(int a = 0;a <dec;a++)
         {
-            d = d *dc;
+            d *= dc;
         }
     }
     if(numb <sizeKb)
@@ -113,7 +113,7 @@ QStringList Worker::splitString(const QString split)
     return splittetList;
 }
 
-qint64 Worker::toBytes(uint unit, QString fromUnit)
+qint64 Worker::convertToBytes(uint unit, QString fromUnit)
 {
     if(fromUnit == "b")
         return unit;

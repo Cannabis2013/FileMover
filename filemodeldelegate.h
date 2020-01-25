@@ -63,7 +63,7 @@ public:
         return new FileModelDelegate(path);
     }
 
-    quint64 modelId()
+    QUuid modelId()
     {
         return _model->id;
     }
@@ -71,7 +71,7 @@ private:
     FileModelDelegate(const QString &path)
     {
         _model = new FileModel;
-        _model->id = 666;
+        _model->id = QUuid::createUuid();
         _model->setFile(path);
     }
 

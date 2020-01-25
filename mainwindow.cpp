@@ -133,7 +133,7 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication) :
 
     // Fileworker Related..
 
-    qRegisterMetaType<QList<DirectoryCountEntity>>("QList<DirectoryCountEntity>");
+    qRegisterMetaType<QList<DirectoryEntity>>("QList<DirectoryCountEntity>");
     qRegisterMetaType<EntityModelDelegate<EntityModel>*>("EntityModelDelegate<EntityModel>");
 
     /*
@@ -398,10 +398,10 @@ void mainWindow::clearCompleted(bool a)
     tray->showMessage("Removal",msg);
 }
 
-void mainWindow::folderContentRecieved(const DirectoryCountEntity *entity)
+void mainWindow::folderContentRecieved(const DirectoryEntity *entity)
 {
     QString sizeNotation;
-    double scaledAndRoundedSize = fW::convertSizeToAppropriateUnits(entity->directorySize,sizeNotation,2);
+    double scaledAndRoundedSize = fW::convertFromBytes(entity->directorySize,sizeNotation,2);
     QString folderName = entity->directoryPath,
             folderSize = QString::number(scaledAndRoundedSize),
             message = QString("Size of folder content is %1 %2").arg(folderSize).arg(sizeNotation);

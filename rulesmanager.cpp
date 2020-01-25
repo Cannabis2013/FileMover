@@ -155,7 +155,7 @@ void rulesManager::readSettings()
         Rule r;
         pSettings->setArrayIndex(i);
         r.title = pSettings->value("Title","Title").toString();
-        r.actionRuleEntity = static_cast<rD::fileActionEntity>(pSettings->value("Action","").toInt());
+        r.actionRuleEntity = static_cast<rD::ruleAction>(pSettings->value("Action","").toInt());
         r.appliesToPath = pSettings->value("ApplyPath","Alle").toString();
         r.typeFilter = static_cast<rD::fileTypeEntity>(pSettings->value("Scan type filter","").toInt());
         r.destinationPaths = Worker::splitString(pSettings->value("Destination paths","").toString());
@@ -166,8 +166,8 @@ void rulesManager::readSettings()
             pSettings->setArrayIndex(j);
 
             sRule.copymode = static_cast<rD::copyMode>(pSettings->value("Copymode",0).toInt());
-            sRule.fieldCondition = static_cast<rD::fileConditionEntity>(pSettings->value("Condition","").toInt());
-            sRule.fileCompareMode = static_cast<rD::fileCompareEntity>(pSettings->value("Comparemode",0).toInt());
+            sRule.fieldCondition = static_cast<rD::ruleCriteria>(pSettings->value("Condition","").toInt());
+            sRule.fileCompareMode = static_cast<rD::ruleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
 
             sRule.matchWholeWords = pSettings->value("Matchwholewords",false).toBool();
             sRule.keyWords = Worker::splitString(pSettings->value("Keywords","").toString());
@@ -284,7 +284,7 @@ void rulesManager::swapRule(int i, int j)
     if(i < 0 || j < 0)
         throw new std::out_of_range("Index out of range");
 
-    rules.swap(i,j);
+    rules.swapItemsAt(i,j);
 
     emit stateChanged();
 }

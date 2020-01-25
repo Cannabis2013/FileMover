@@ -2,10 +2,11 @@
 #define MODELDELEGATES_H
 
 #include <qlist.h>
+#include <quuid.h>
 
 struct Model
 {
-    quint64 id;
+    QUuid id;
 };
 
 struct TreeModel : public Model
@@ -20,7 +21,7 @@ class IModelDelegate
 public:
     IModelDelegate() = default;
     virtual ~IModelDelegate() = default;
-    virtual quint64 modelId() = 0;
+    virtual QUuid modelId() = 0;
     virtual const T* model() const= 0;
 };
 template<class T = TreeModel>

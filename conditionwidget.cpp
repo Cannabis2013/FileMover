@@ -49,7 +49,7 @@ void conditionWidget::setKeyWords(QString kW)
     ui->keyWordSelector->setText(kW);
 }
 
-void conditionWidget::setConditionalFixedSize(QPair<int, QString> fSize, ruleDefinitions::fileCompareEntity cMode)
+void conditionWidget::setConditionalFixedSize(QPair<int, QString> fSize, ruleDefinitions::ruleCompareCriteria cMode)
 {
     rD rDefs;
     ui->modeSelector->setCurrentText(rDefs.intervalConditionalList.at(0));
@@ -116,7 +116,7 @@ void conditionWidget::setCurrentView(QString txt)
      */
 
     rD rDefs;
-    rD::fileConditionEntity conMode = rDefs.fileConditionEntityFromString(txt);
+    rD::ruleCriteria conMode = rDefs.fileConditionEntityFromString(txt);
     currentFileModeRule = conMode;
     mainModeSelector->show();
 
@@ -139,7 +139,7 @@ void conditionWidget::setCurrentView(int index)
     mainModeView->setCurrentIndex(index);
 }
 
-void conditionWidget::setCompareView(ruleDefinitions::fileCompareEntity compare)
+void conditionWidget::setCompareView(ruleDefinitions::ruleCompareCriteria compare)
 {
     rD rDefs;
 
@@ -229,7 +229,7 @@ void conditionWidget::setMode(QString condition)
         mainModeSelector->addItems(rDefs.fileCompareModesToStringList(rD::filepathMode));
 }
 
-ruleDefinitions::fileCompareEntity conditionWidget::currentCompareMode()
+ruleDefinitions::ruleCompareCriteria conditionWidget::currentCompareMode()
 {
     rD rDefs;
     QString modeText = mainModeSelector->currentText();

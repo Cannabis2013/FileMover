@@ -16,7 +16,7 @@ void FileSystemWatcher::removePath(const QString &path)
 void FileSystemWatcher::changed(const QString &path)
 {
     auto filesChanged = QStringList() << path;
-    EntityModelDelegateBuilder builder;
+    DelegateBuilder builder;
 
     auto delegate = builder.buildFileInformationEntity<EntityModel>(filesChanged);
 

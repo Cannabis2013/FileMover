@@ -38,7 +38,7 @@ private:
     // Editrule related..
 
     void setKeyWords(QString kW);
-    void setConditionalFixedSize(QPair<int,QString>fSize, rD::fileCompareEntity cMode);
+    void setConditionalFixedSize(QPair<int,QString>fSize, rD::ruleCompareCriteria cMode);
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
     void setFixedDate(myDateTime &dateTime);
     void setIntervalDate(QPair<myDateTime,myDateTime> iDate);
@@ -59,7 +59,7 @@ private:
     // Set the index of QStackWidget prior to the argument.
     void setCurrentView(int index);
 
-    void setCompareView(rD::fileCompareEntity compare);
+    void setCompareView(rD::ruleCompareCriteria compare);
 
     // General values and other..
     void initDefaultOperators();
@@ -69,7 +69,7 @@ private:
 
     // non-void members..
     //  Comparemode
-    rD::fileCompareEntity currentCompareMode();
+    rD::ruleCompareCriteria currentCompareMode();
     QString currentMode() const {return mainModeSelector->currentText();}
 
 
@@ -98,7 +98,7 @@ private:
     QPair<int,int>indexRange;
     QSpinBox *fixedSizeSelector,*minIntervalSizeSelector,*maxIntervalSizeSelector;
     QStackedWidget *mainModeView;
-    rD::fileConditionEntity currentFileModeRule;
+    rD::ruleCriteria currentFileModeRule;
     Ui::conditionWidget *ui;
 
     friend class AbstractRuleDialog;

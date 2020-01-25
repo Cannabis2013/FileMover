@@ -39,8 +39,8 @@ public slots:
 
 signals:
     void fileCount(long antal);
-    void sendFolderSizeEntity(const DirectoryCountEntity *fObj);
-    void sendFolderSizeEntities(QList<DirectoryCountEntity> s);
+    void sendFolderSizeEntity(const DirectoryEntity *fObj);
+    void sendFolderSizeEntities(QList<DirectoryEntity> s);
 
     void clearFinished(bool a);
 
@@ -57,9 +57,9 @@ private:
 
     // File object entity operations
 
-    void processFileEntity(const EntityModelDelegate<FileActionEntity> *delegate);
+    void processFileEntity(const EntityModelDelegate<FileRuleEntity> *delegate);
     void processFileInformationEntity(const EntityModelDelegate<FileInformationEntity> *delegate);
-    void processDirectoryCountEntity(const EntityModelDelegate<DirectoryCountEntity> *delegate);
+    void processDirectoryCountEntity(const EntityModelDelegate<DirectoryEntity> *delegate);
     void reProcessFileInformationEntity(const QStringList &paths);
 
     // Fileoperation from QFileinfoList..

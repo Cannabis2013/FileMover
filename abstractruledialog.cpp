@@ -70,8 +70,8 @@ void AbstractRuleDialog::resetAllForm()
 
 void AbstractRuleDialog::updateConditionView(SubRule &sR)
 {
-    rD::fileConditionEntity cond = sR.fieldCondition;
-    rD::fileCompareEntity comp = sR.fileCompareMode;
+    rD::ruleCriteria cond = sR.fieldCondition;
+    rD::ruleCompareCriteria comp = sR.fileCompareMode;
 
     if(cond == rD::fileSize && comp != rD::interval)
     {
@@ -136,7 +136,7 @@ void AbstractRuleDialog::updateView()
     {
         QStringList headerData;
         SubRule sRule = subRules.at(i);
-        rD::fileConditionEntity condition = sRule.fieldCondition;
+        rD::ruleCriteria condition = sRule.fieldCondition;
 
         headerData << rDefs.fileConditionEntityToString(condition);
         headerData << rDefs.fileCompareEntityToString(sRule.fileCompareMode);

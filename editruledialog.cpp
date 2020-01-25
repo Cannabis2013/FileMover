@@ -39,10 +39,10 @@ void EditRuleDialog::on_addSubRule_clicked()
     rD rDefs;
     SubRule sRule;
     QString currentCondition = conditionBox->currentText();
-    rD::ruleCriteria conMode = rDefs.fileConditionEntityFromString(currentCondition);
-    sRule.fieldCondition = conMode;
+    rD::ruleCriteria conMode = rDefs.buildCriteriaFromString(currentCondition);
+    sRule.criteria = conMode;
     rD::ruleCompareCriteria currentCompareMode = condWidget->currentCompareMode();
-    sRule.fileCompareMode = currentCompareMode;
+    sRule.compareCriteria = currentCompareMode;
     if(conMode == rD::fileBaseMode || conMode == rD::filepathMode|| conMode == rD::fileExtensionMode)
     {
         sRule.keyWords = Worker::splitString(condWidget->keyWordValues());

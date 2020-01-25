@@ -13,8 +13,8 @@ struct SubRule
 {
     // Enumerated values..
     rD::copyMode copymode = rD::noMode;
-    rD::ruleCompareCriteria fileCompareMode = rD::noCompareModeSet;
-    rD::ruleCriteria fieldCondition = rD::nonConditionalMode;
+    rD::ruleCompareCriteria compareCriteria = rD::noCompareModeSet;
+    rD::ruleCriteria criteria = rD::nonConditionalMode;
 
     QPair<uint,QString>sizeLimit;
     SizeLimits sizeInterval;

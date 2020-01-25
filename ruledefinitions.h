@@ -73,14 +73,16 @@
 struct ruleDefinitions
 {
     // Enumerated variables..
-    enum ruleEntityType {actionProperty,
-                         conditionProperty,
-                         compareProperty,
-                         everyProperty};
+    enum ruleType {action,
+                   criteria,
+                   compareCriteria,
+                   all};
+
     enum ruleAction{Move,
                     Delete,
                     Copy,
                     none};
+
     enum ruleCriteria{notDefined,
                              fileBaseMode,
                              filepathMode,
@@ -90,6 +92,7 @@ struct ruleDefinitions
                              fileCreatedMode, // FileDateMode
                              fileModifiedMode, // FileDateMode
                              nonConditionalMode};
+
 
     enum ruleCompareCriteria{match,           // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
                      dontMatch,             // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
@@ -132,7 +135,7 @@ struct ruleDefinitions
         QPair<QString,ruleAction>("Copy content",ruleAction::Copy),
         QPair<QString,ruleAction>("Do nothing",ruleAction::none)};
 
-    const QList<QPair<QString,ruleCriteria> > conditionMappings {
+    const QList<QPair<QString,ruleCriteria> > criteriaMappings {
         QPair<QString,ruleCriteria>("Base name",ruleCriteria::fileBaseMode),
         QPair<QString,ruleCriteria>("File name",ruleCriteria::filepathMode),
         QPair<QString,ruleCriteria>("File suffix",ruleCriteria::fileExtensionMode),
@@ -142,7 +145,7 @@ struct ruleDefinitions
         QPair<QString,ruleCriteria>("Date edited",ruleCriteria::fileModifiedMode),
         QPair<QString,ruleCriteria>("No conditions",ruleCriteria::nonConditionalMode)};
 
-    const QList<QPair<QString,ruleCompareCriteria> > compareMappings {
+    const QList<QPair<QString,ruleCompareCriteria> > compareCriteriaMappings {
         QPair<QString,ruleCompareCriteria>("Contains",ruleCompareCriteria::contains),
                 QPair<QString,ruleCompareCriteria>("Does not contain",ruleCompareCriteria::dontMatch),
                 QPair<QString,ruleCompareCriteria>("Matching",ruleCompareCriteria::match),
@@ -165,22 +168,22 @@ struct ruleDefinitions
 
     // Retrieve list methods
 
-    const QStringList allEntitiesToStrings(ruleEntityType property = ruleEntityType::everyProperty)
+    const QStringList buildStringListFromEntity(ruleType property = ruleType::all)
     {
         QStringList resultingList;
-        if(property == ruleEntityType::actionProperty || property == ruleEntityType::everyProperty)
+        if(property == ruleType::action || property == ruleType::all)
         {
             for ( QPair<QString,ruleAction> actionMapping : actionMappings)
                 resultingList << actionMapping.first;
         }
-        if(property == ruleEntityType::conditionProperty || property == ruleEntityType::everyProperty)
+        if(property == ruleType::criteria || property == ruleType::all)
         {
-            for ( QPair<QString,ruleCriteria> pair : conditionMappings)
+            for ( QPair<QString,ruleCriteria> pair : criteriaMappings)
                 resultingList << pair.first;
         }
-        if(property == ruleEntityType::compareProperty || property == ruleEntityType::everyProperty)
+        if(property == ruleType::compareCriteria || property == ruleType::all)
         {
-            for ( QPair<QString,ruleCompareCriteria> pair : compareMappings)
+            for ( QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings)
                 resultingList << pair.first;
         }
 
@@ -194,7 +197,7 @@ struct ruleDefinitions
                 condition == ruleCriteria::filepathMode ||
                 condition == ruleCriteria::fileExtensionMode)
         {
-            for(QPair<QString,ruleCompareCriteria> pair : compareMappings) {
+            for(QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings) {
                 if(pair.second == ruleCompareCriteria::contains ||
                         pair.second == ruleCompareCriteria::dontMatch ||
                         pair.second == ruleCompareCriteria::match ||
@@ -206,7 +209,7 @@ struct ruleDefinitions
         }
         else if(condition == ruleCriteria::fileSize)
         {
-            for(QPair<QString,ruleCompareCriteria> pair : compareMappings)
+            for(QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings)
             {
                 if(pair.second == ruleCompareCriteria::greaterThan ||
                         pair.second ==ruleCompareCriteria::greaterOrEqualThan ||
@@ -221,7 +224,7 @@ struct ruleDefinitions
         else if(condition == ruleCriteria::fileCreatedMode ||
                 condition == ruleCriteria::fileModifiedMode)
         {
-            for(QPair<QString,ruleCompareCriteria> pair : compareMappings)
+            for(QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings)
             {
                 if(pair.second == ruleCompareCriteria::olderThan ||
                         pair.second == ruleCompareCriteria::exactDate ||
@@ -269,7 +272,7 @@ struct ruleDefinitions
 
     QString fileConditionEntityToString(const ruleCriteria mode)
     {
-        for(QPair<QString,ruleCriteria> pair : conditionMappings)
+        for(QPair<QString,ruleCriteria> pair : criteriaMappings)
         {
             if(pair.second == mode)
                 return pair.first;
@@ -277,9 +280,9 @@ struct ruleDefinitions
         return QString();
     }
 
-    ruleCriteria fileConditionEntityFromString(const QString string)
+    ruleCriteria buildCriteriaFromString(const QString string)
     {
-        for(QPair<QString,ruleCriteria> pair : conditionMappings)
+        for(QPair<QString,ruleCriteria> pair : criteriaMappings)
         {
             if(pair.first == string)
                 return pair.second;
@@ -287,9 +290,9 @@ struct ruleDefinitions
         return ruleCriteria::notDefined;
     }
 
-    QString fileCompareEntityToString(const ruleCompareCriteria mode)
+    QString buildStringFromCompareCriteria(const ruleCompareCriteria mode)
     {
-        for(QPair<QString,ruleCompareCriteria> pair : compareMappings)
+        for(QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings)
         {
             if(pair.second == mode)
                 return pair.first;
@@ -299,7 +302,7 @@ struct ruleDefinitions
 
     ruleCompareCriteria fileCompareEntityFromString(const QString string)
     {
-        for(QPair<QString,ruleCompareCriteria> pair : compareMappings)
+        for(QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings)
         {
             if(pair.first == string)
                 return pair.second;

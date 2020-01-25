@@ -56,7 +56,7 @@ void conditionWidget::setConditionalFixedSize(QPair<int, QString> fSize, ruleDef
 
     ui->fixedSizeSelector->setValue(fSize.first);
     ui->fixedSizeUnitSelector->setCurrentText(fSize.second);
-    ui->fixedSizeOperatorSelector->setCurrentText(rDefs.fileCompareEntityToString(cMode));
+    ui->fixedSizeOperatorSelector->setCurrentText(rDefs.buildStringFromCompareCriteria(cMode));
 }
 
 void conditionWidget::setConditionalIntervalSize(QPair<QPair<int, QString>, QPair<int, QString> > iSize)
@@ -116,7 +116,7 @@ void conditionWidget::setCurrentView(QString txt)
      */
 
     rD rDefs;
-    rD::ruleCriteria conMode = rDefs.fileConditionEntityFromString(txt);
+    rD::ruleCriteria conMode = rDefs.buildCriteriaFromString(txt);
     currentFileModeRule = conMode;
     mainModeSelector->show();
 
@@ -145,17 +145,17 @@ void conditionWidget::setCompareView(ruleDefinitions::ruleCompareCriteria compar
 
     if(currentFileModeRule == rD::fileSize && currentCompareMode() != rD::interval)
     {
-        fixedSizeModeSelector->setCurrentText(rDefs.fileCompareEntityToString(compare));
+        fixedSizeModeSelector->setCurrentText(rDefs.buildStringFromCompareCriteria(compare));
     }
     else if((currentFileModeRule == rD::fileCreatedMode ||
              currentFileModeRule == rD::fileModifiedMode) &&
             currentCompareMode() != rD::interval)
     {
-        dateOperatorSelector->setCurrentText(rDefs.fileCompareEntityToString(compare));
+        dateOperatorSelector->setCurrentText(rDefs.buildStringFromCompareCriteria(compare));
     }
     else
     {
-        mainModeSelector->setCurrentText(rDefs.fileCompareEntityToString(compare));
+        mainModeSelector->setCurrentText(rDefs.buildStringFromCompareCriteria(compare));
     }
 }
 
@@ -206,7 +206,7 @@ void conditionWidget::setMode(QString condition)
 {
     rD rDefs;
     mainModeSelector->clear();
-    currentFileModeRule = rDefs.fileConditionEntityFromString(condition);
+    currentFileModeRule = rDefs.buildCriteriaFromString(condition);
 
     setCurrentView(condition);
 

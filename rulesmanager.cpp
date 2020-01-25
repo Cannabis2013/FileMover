@@ -45,17 +45,17 @@ QStringList rulesManager::splitString(const QString split)
 
 QString rulesManager::ruleKeyWordToString(SubRule sRule)
 {
-    if(sRule.fieldCondition == rD::fileSize &&
-            sRule.fileCompareMode != rD::interval)
+    if(sRule.criteria == rD::fileSize &&
+            sRule.compareCriteria != rD::interval)
         return QString::number(sRule.sizeLimit.first) + " " + sRule.sizeLimit.second;
-    else if(sRule.fieldCondition == rD::fileSize &&
-            sRule.fileCompareMode == rD::interval)
+    else if(sRule.criteria == rD::fileSize &&
+            sRule.compareCriteria == rD::interval)
         return rulesManager::ruleSizeLimitsToString(sRule);
-    else if((sRule.fieldCondition == rD::fileCreatedMode || sRule.fieldCondition == rD::fileModifiedMode) &&
-            sRule.fileCompareMode != rD::interval)
+    else if((sRule.criteria == rD::fileCreatedMode || sRule.criteria == rD::fileModifiedMode) &&
+            sRule.compareCriteria != rD::interval)
         return sRule.date.toString("dd.MM.yyyy");
-    else if((sRule.fieldCondition == rD::fileCreatedMode || sRule.fieldCondition == rD::fileModifiedMode) &&
-            sRule.fileCompareMode == rD::interval)
+    else if((sRule.criteria == rD::fileCreatedMode || sRule.criteria == rD::fileModifiedMode) &&
+            sRule.compareCriteria == rD::interval)
         return rulesManager::ruleDateLimitsToString(sRule);
     else
         return Worker::mergeStringList(sRule.keyWords);
@@ -92,8 +92,8 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
         for(SubRule sRule : r.subRules)
         {
             QStringList hData;
-            hData << rDefs.fileConditionEntityToString(sRule.fieldCondition) <<
-                     rDefs.fileCompareEntityToString(sRule.fileCompareMode) <<
+            hData << rDefs.fileConditionEntityToString(sRule.criteria) <<
+                     rDefs.buildStringFromCompareCriteria(sRule.compareCriteria) <<
                      rulesManager::ruleKeyWordToString(sRule);
 
             QTreeWidgetItem *cItem = new QTreeWidgetItem(hData);
@@ -166,8 +166,8 @@ void rulesManager::readSettings()
             pSettings->setArrayIndex(j);
 
             sRule.copymode = static_cast<rD::copyMode>(pSettings->value("Copymode",0).toInt());
-            sRule.fieldCondition = static_cast<rD::ruleCriteria>(pSettings->value("Condition","").toInt());
-            sRule.fileCompareMode = static_cast<rD::ruleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
+            sRule.criteria = static_cast<rD::ruleCriteria>(pSettings->value("Condition","").toInt());
+            sRule.compareCriteria = static_cast<rD::ruleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
 
             sRule.matchWholeWords = pSettings->value("Matchwholewords",false).toBool();
             sRule.keyWords = Worker::splitString(pSettings->value("Keywords","").toString());
@@ -229,8 +229,8 @@ void rulesManager::writeSettings()
             pSettings->setArrayIndex(j);
 
             pSettings->setValue("Copymode",sRule.copymode);
-            pSettings->setValue("Condition",sRule.fieldCondition);
-            pSettings->setValue("Comparemode",sRule.fileCompareMode);
+            pSettings->setValue("Condition",sRule.criteria);
+            pSettings->setValue("Comparemode",sRule.compareCriteria);
 
             pSettings->setValue("Matchwholewords",sRule.matchWholeWords);
             pSettings->setValue("Keywords",Worker::mergeStringList(sRule.keyWords));

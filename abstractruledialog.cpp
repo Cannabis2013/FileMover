@@ -20,8 +20,8 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
 
     rD ruleDefs;
 
-    QStringList actionList = ruleDefs.allEntitiesToStrings(rD::actionProperty),
-            conditionList = ruleDefs.allEntitiesToStrings(rD::conditionProperty),
+    QStringList actionList = ruleDefs.buildStringListFromEntity(rD::action),
+            conditionList = ruleDefs.buildStringListFromEntity(rD::criteria),
             unitList = ruleDefs.sizeUnits();
 
     actionBox->addItems(actionList);
@@ -70,12 +70,12 @@ void AbstractRuleDialog::resetAllForm()
 
 void AbstractRuleDialog::updateConditionView(SubRule &sR)
 {
-    rD::ruleCriteria cond = sR.fieldCondition;
-    rD::ruleCompareCriteria comp = sR.fileCompareMode;
+    rD::ruleCriteria cond = sR.criteria;
+    rD::ruleCompareCriteria comp = sR.compareCriteria;
 
     if(cond == rD::fileSize && comp != rD::interval)
     {
-        condWidget->setConditionalFixedSize(sR.sizeLimit,sR.fileCompareMode);
+        condWidget->setConditionalFixedSize(sR.sizeLimit,sR.compareCriteria);
     }
     else if(cond == rD::fileSize && comp== rD::interval)
     {
@@ -85,7 +85,7 @@ void AbstractRuleDialog::updateConditionView(SubRule &sR)
             comp != rD::interval)
     {
         condWidget->setFixedDate(sR.date);
-        condWidget->setCompareView(sR.fileCompareMode);
+        condWidget->setCompareView(sR.compareCriteria);
     }
     else if((cond == rD::fileCreatedMode || cond == rD::fileModifiedMode) &&
             comp == rD::interval)
@@ -95,7 +95,7 @@ void AbstractRuleDialog::updateConditionView(SubRule &sR)
     else
     {
         condWidget->setKeyWords(rulesManager::ruleKeyWordToString(sR));
-        condWidget->setCompareView(sR.fileCompareMode);
+        condWidget->setCompareView(sR.compareCriteria);
     }
 }
 
@@ -109,8 +109,8 @@ void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
     int rowIndex = index.row();
     rD rDefs;
     SubRule clickedSubRule = subRules.at(rowIndex);
-    conditionBox->setCurrentText(rDefs.fileConditionEntityToString(clickedSubRule.fieldCondition));
-    conditionBox->currentTextChanged(rDefs.fileConditionEntityToString( clickedSubRule.fieldCondition));
+    conditionBox->setCurrentText(rDefs.fileConditionEntityToString(clickedSubRule.criteria));
+    conditionBox->currentTextChanged(rDefs.fileConditionEntityToString( clickedSubRule.criteria));
 
     updateConditionView(clickedSubRule);
 }
@@ -136,28 +136,28 @@ void AbstractRuleDialog::updateView()
     {
         QStringList headerData;
         SubRule sRule = subRules.at(i);
-        rD::ruleCriteria condition = sRule.fieldCondition;
+        rD::ruleCriteria condition = sRule.criteria;
 
         headerData << rDefs.fileConditionEntityToString(condition);
-        headerData << rDefs.fileCompareEntityToString(sRule.fileCompareMode);
+        headerData << rDefs.buildStringFromCompareCriteria(sRule.compareCriteria);
 
         if((condition == rD::fileCreatedMode || condition == rD::fileModifiedMode) &&
-                sRule.fileCompareMode != rD::interval)
+                sRule.compareCriteria != rD::interval)
         {
             headerData << rulesManager::ruleKeyWordToString(sRule);
         }
         else if((condition == rD::fileCreatedMode || condition == rD::fileModifiedMode) &&
-                sRule.fileCompareMode == rD::interval)
+                sRule.compareCriteria == rD::interval)
         {
             headerData << rulesManager::ruleDateLimitsToString(sRule);
         }
         else if(condition == rD::fileSize &&
-                sRule.fileCompareMode != rD::interval)
+                sRule.compareCriteria != rD::interval)
         {
            headerData << rulesManager::ruleKeyWordToString(sRule);
         }
         else if(condition == rD::fileSize &&
-                sRule.fileCompareMode == rD::interval)
+                sRule.compareCriteria == rD::interval)
         {
             headerData << rulesManager::ruleSizeLimitsToString(sRule);
         }

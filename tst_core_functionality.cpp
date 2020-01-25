@@ -14,8 +14,8 @@ public:
     static bool SubRuleEquals(const SubRule &compOne, const SubRule &compTwo)
     {
         if(compOne.copymode != compTwo.copymode ||
-                compOne.fileCompareMode != compTwo.fileCompareMode ||
-                compOne.fieldCondition != compTwo.fieldCondition ||
+                compOne.compareCriteria != compTwo.compareCriteria ||
+                compOne.criteria != compTwo.criteria ||
                 compOne.matchWholeWords != compTwo.matchWholeWords ||
                 compOne.keyWords != compTwo.keyWords)
         {
@@ -258,8 +258,8 @@ void Core_functionality::insert_rule_filepath_match_success_1()
     SubRule sR;
     preRule.appliesToPath = preAPath;
     sR.keyWords = prekWrds;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
 
     preRule.subRules << sR;
 
@@ -287,8 +287,8 @@ void Core_functionality::insert_rule_filepath_match_fail_1()
     preRule.title = preTitle;
     preRule.appliesToPath = preAPath;
     sR.keyWords = prekWrds;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
 
     preRule.subRules << sR;
 
@@ -308,8 +308,8 @@ void Core_functionality::insert_rule_filepath_match_fail_1()
     compareRule.title = postTitle;
     compareRule.appliesToPath = postAPath;
     cSR.keyWords = postkWrds;
-    cSR.fieldCondition = postCond;
-    cSR.fileCompareMode = postComp;
+    cSR.criteria = postCond;
+    cSR.compareCriteria = postComp;
 
     compareRule.subRules << cSR;
 
@@ -334,8 +334,8 @@ void Core_functionality::insert_rule_filepath_match_fail_2()
     SubRule sR;
     preRule.appliesToPath = preAPath;
     sR.keyWords = prekWrds;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
 
     preRule.subRules << sR;
 
@@ -355,8 +355,8 @@ void Core_functionality::insert_rule_filepath_match_fail_2()
     compareRule.title = postTitle;
     compareRule.appliesToPath = postAPath;
     cSR.keyWords = postkWrds;
-    cSR.fieldCondition = postCond;
-    cSR.fileCompareMode = postComp;
+    cSR.criteria = postCond;
+    cSR.compareCriteria = postComp;
 
     compareRule.subRules << cSR;
 
@@ -378,8 +378,8 @@ void Core_functionality::insert_rule_datecreated_before_succes1()
     myDateTime mDate;
     mDate.setDate(QDate(2017,6,3));
 
-    sR.fieldCondition = rD::fileCreatedMode;
-    sR.fileCompareMode = rD::olderThan;
+    sR.criteria = rD::fileCreatedMode;
+    sR.compareCriteria = rD::olderThan;
     sR.date = mDate;
 
     preRule.subRules << sR;
@@ -404,8 +404,8 @@ void Core_functionality::insert_rule_datecreated_after_succes1()
     myDateTime mDate;
     mDate.setDate(QDate(2017,6,3));
 
-    sR.fieldCondition = rD::fileCreatedMode;
-    sR.fileCompareMode = rD::youngerThan;
+    sR.criteria = rD::fileCreatedMode;
+    sR.compareCriteria = rD::youngerThan;
     sR.date = mDate;
 
     preRule.subRules << sR;
@@ -433,14 +433,14 @@ void Core_functionality::insert_rule_datecreated_before_fail1()
     originalDate.setDate(QDate(2017,6,3));
     compareDate.setDate(QDate(2015,4,2));
 
-    sR1.fieldCondition = rD::fileCreatedMode;
-    sR1.fileCompareMode = rD::olderThan;
+    sR1.criteria = rD::fileCreatedMode;
+    sR1.compareCriteria = rD::olderThan;
     sR1.date = originalDate;
 
     preRule.subRules << sR1;
 
-    sR2.fieldCondition = rD::fileCreatedMode;
-    sR2.fileCompareMode = rD::olderThan;
+    sR2.criteria = rD::fileCreatedMode;
+    sR2.compareCriteria = rD::olderThan;
     sR2.date = compareDate;
 
     compareRule.subRules << sR2;
@@ -468,14 +468,14 @@ void Core_functionality::insert_rule_datecreated_before_fail2()
     myDateTime originalDate;
     originalDate.setDate(QDate(2017,6,3));
 
-    sR1.fieldCondition = rD::fileCreatedMode;
-    sR1.fileCompareMode = rD::olderThan;
+    sR1.criteria = rD::fileCreatedMode;
+    sR1.compareCriteria = rD::olderThan;
     sR1.date = originalDate;
 
     preRule.subRules << sR1;
 
-    sR2.fieldCondition = rD::fileCreatedMode;
-    sR2.fileCompareMode = rD::youngerThan;
+    sR2.criteria = rD::fileCreatedMode;
+    sR2.compareCriteria = rD::youngerThan;
     sR2.date = originalDate;
 
     compareRule.subRules << sR2;
@@ -498,8 +498,8 @@ void Core_functionality::insert_rule_sizeinterval_success_1()
 
     SubRule sR;
 
-    sR.fieldCondition = rD::fileSize;
-    sR.fileCompareMode = rD::interval;
+    sR.criteria = rD::fileSize;
+    sR.compareCriteria = rD::interval;
 
     SizeOperand minSize(244,"kb"),maxSize(512,"kb");
     sR.sizeInterval = SizeInterval(minSize,maxSize);
@@ -525,11 +525,11 @@ void Core_functionality::insert_rule_sizeinterval_fail_1()
 
     SubRule sR1,sR2;
 
-    sR1.fieldCondition = rD::fileSize;
-    sR1.fileCompareMode = rD::interval;
+    sR1.criteria = rD::fileSize;
+    sR1.compareCriteria = rD::interval;
 
-    sR2.fieldCondition = rD::fileSize;
-    sR2.fileCompareMode = rD::interval;
+    sR2.criteria = rD::fileSize;
+    sR2.compareCriteria = rD::interval;
 
 
     SizeOperand minSize1(244,"kb"),maxSize1(512,"kb");
@@ -581,8 +581,8 @@ void Core_functionality::operation_filepath_match_success_1()
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
     sR.keyWords = prekWrds;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
 
     preRule.subRules << sR;
 
@@ -699,8 +699,8 @@ void Core_functionality::operation_filepath_match_fail_1()
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
     sR.keyWords = prekWrds;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
 
     preRule.subRules << sR;
 
@@ -812,8 +812,8 @@ void Core_functionality::operation_filepath_contain_success_1()
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
     sR.keyWords = prekWrds;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
 
     preRule.subRules << sR;
 
@@ -919,8 +919,8 @@ void Core_functionality::operation_filepath_contain_fail_1()
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
     sR.keyWords = prekWrds;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
 
     preRule.subRules << sR;
 
@@ -1026,8 +1026,8 @@ void Core_functionality::operation_extension_match_success_1()
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
     sR.keyWords = prekWrds;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
 
     preRule.subRules << sR;
 
@@ -1131,8 +1131,8 @@ void Core_functionality::operation_size_less_than_success_1()
     // Create rule
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
     sR.sizeLimit = upperLimit;
 
     preRule.subRules << sR;
@@ -1245,8 +1245,8 @@ void Core_functionality::operation_size_equal_success_1()
     // Create rule
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
     sR.sizeLimit = exactLimit;
 
     preRule.subRules << sR;
@@ -1346,8 +1346,8 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
     // Create rule
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
     sR.sizeLimit = lowerLimit;
 
     preRule.subRules << sR;
@@ -1440,8 +1440,8 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
     // Create rule
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
     sR.sizeLimit = lowerLimit;
 
     preRule.subRules << sR;
@@ -1541,8 +1541,8 @@ void Core_functionality::operation_size_greater_than_success_1()
     // Create rule
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
     sR.sizeLimit = lowerLimit;
 
     preRule.subRules << sR;
@@ -1663,8 +1663,8 @@ void Core_functionality::operation_size_interval_success_1()
     // Create rule
     SubRule sR;
     preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.fieldCondition = preCond;
-    sR.fileCompareMode = preComp;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
     sR.sizeInterval = interval;
 
     preRule.subRules << sR;

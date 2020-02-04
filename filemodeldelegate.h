@@ -63,6 +63,11 @@ public:
         return new FileModelDelegate(path);
     }
 
+    DefaultModelType type()
+    {
+        return DefaultModelType::Tree;
+    }
+
     QUuid modelId()
     {
         return _model->id;

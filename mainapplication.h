@@ -8,6 +8,7 @@
 #include "fileinformationmanager.h"
 #include "abstractcoreapplication.h"
 #include "filesystemwatcher.h"
+#include "threadsmanager.h"
 
 
 class MainApplication : public AbstractCoreApplication
@@ -69,12 +70,13 @@ public slots:
     void removeRule(QString title){rManager->removeRule(title);}
 
 private:
-    FileOperationWorker *fWorker;
     EntityQueueManager *entityManager;
+    FileOperationWorker *fWorker;
     rulesManager *rManager;
-    settingsManager *sManager;
     FileInformationManager *fManager;
     FileSystemWatcher *fWatcher;
+    settingsManager *sManager;
+    ThreadsManager *tManager;
     QThread *fileWorkerThread, *queueThread;
 
 };

@@ -4,6 +4,8 @@
 #include <qlist.h>
 #include <quuid.h>
 
+enum DefaultModelType{non_tree,Tree};
+
 struct Model
 {
     QUuid id;
@@ -15,17 +17,18 @@ struct TreeModel : public Model
     QList<TreeModel*>_children;
 };
 
-template<class T>
+template<class TModel = Model>
 class IModelDelegate
 {
 public:
     IModelDelegate() = default;
     virtual ~IModelDelegate() = default;
     virtual QUuid modelId() = 0;
-    virtual const T* model() const= 0;
+    virtual const TModel* model() const= 0;
+
 };
-template<class T = TreeModel>
-class ITreeModelDelegate : public IModelDelegate<T>
+template<class TModel = TreeModel>
+class ITreeModelDelegate : public IModelDelegate<TModel>
 {
 public:
     virtual ITreeModelDelegate *parentModelDelegate() const = 0;

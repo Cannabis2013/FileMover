@@ -62,6 +62,7 @@ SOURCES += main.cpp\
     addruledialog.cpp \
     editruledialog.cpp \
     testfilecreator.cpp \
+    threadsmanager.cpp \
     tst_core_functionality.cpp \
     worker.cpp \
     topframeform.cpp
@@ -108,6 +109,7 @@ HEADERS  += mainwindow.h \
     ruledefinitions.h \
     rules.h \
     testfilecreator.h \
+    threadsmanager.h \
     worker.h \
     topframeform.h
 

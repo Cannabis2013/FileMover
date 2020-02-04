@@ -10,15 +10,21 @@ MainApplication::MainApplication(const QString &appName,
     fManager = new FileInformationManager(appName,orgName);
     fWorker = new FileOperationWorker();
     fWatcher = new FileSystemWatcher(sManager->paths());
+    tManager = new ThreadsManager();
     fileWorkerThread = new QThread();
     queueThread = new QThread();
 
     QString ressourceFolderPath = "Ressources";
 
 
-    // Move classes to their respective threads
+    // Assign objects to threads
+    tManager->createThread(entityManager);
+    tManager->createThread(fWorker);
+
+    /*
     entityManager->moveToThread(queueThread);
     fWorker->moveToThread(fileWorkerThread);
+    */
 
     // Register custom types that is not recognised by Qt per default
     qRegisterMetaType<DirectoryItem>("DirectoryItem");
@@ -54,13 +60,11 @@ MainApplication::MainApplication(const QString &appName,
     connect(fWorker,&fW::jobDone,this,&AbstractCoreApplication::stateChanged);
 
     // Start threads
-    fileWorkerThread->start();
-    queueThread->start();
+    tManager->startAllThreads();
 
-
-    auto folders = QStringList() << watchFolders();
-    auto delegate =  DelegateBuilder::buildFileInformationEntity<EntityModel>(folders);
-    emit sManager->processPath(delegate);
+    emit sManager->processPath(
+                DelegateBuilder::buildFileInformationEntity<EntityModel>(
+                    QStringList() << watchFolders()));
 }
 
 MainApplication::~MainApplication()
@@ -68,6 +72,7 @@ MainApplication::~MainApplication()
     delete sManager;
     delete fManager;
     delete rManager;
+    delete tManager;
 }
 
 void MainApplication::clearFolders(QStringList paths)
@@ -91,14 +96,12 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         for(SubRule sR : r.subRules)
             allFiles = fWorker->processFileObjects(allFiles,sR);
 
-        auto directoryPaths = paths;
-        auto destinations = r.destinationPaths;
-        auto files = allFiles;
-        auto fileRule = r.actionRuleEntity;
-
-        auto delegate = DelegateBuilder::buildFileActionEntity<EntityModel>(directoryPaths,files,fileRule,destinations);
-
-        emit sendEntity(delegate);
+        emit sendEntity(
+                    DelegateBuilder::buildFileActionEntity<EntityModel>(
+                        paths,
+                        allFiles,
+                        r.actionRuleEntity,
+                        r.destinationPaths));
     }
 }
 
@@ -151,9 +154,8 @@ void MainApplication::calculateFolderSize(QString path)
     auto directoryPath = fInfo.absoluteFilePath();
     auto directoryName = fInfo.fileName();
 
-    auto delegate = DelegateBuilder::buildDirectoryCountEntity<EntityModel>(0,directoryName,directoryPath);
 
-    entityManager->addEntity(delegate);
+    entityManager->addEntity(DelegateBuilder::buildDirectoryCountEntity<EntityModel>(0,directoryName,directoryPath));
 }
 
 void MainApplication::removeWatchFolderAt(int index)

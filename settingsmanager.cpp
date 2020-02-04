@@ -36,10 +36,10 @@ settingsManager::~settingsManager()
 void settingsManager::insertPath(QString path)
 {
     watchFolders << path;
-    QStringList filePaths = QStringList() << path;
-    auto delegate = DelegateBuilder::buildFileInformationEntity<EntityModel>(filePaths);
 
-    emit processPath(delegate);
+    emit processPath(
+                DelegateBuilder::buildFileInformationEntity<EntityModel>(
+                    QStringList() << path));
     emit stateChanged();
 }
 
@@ -47,10 +47,9 @@ void settingsManager::insertPath(const QStringList& paths)
 {
     watchFolders << paths;
 
-    auto filePaths = QStringList() << paths;
-    auto delegate = DelegateBuilder::buildFileInformationEntity<EntityModel>(filePaths);
-
-    emit processPath(delegate);
+    emit processPath(
+                DelegateBuilder::buildFileInformationEntity<EntityModel>(
+                    QStringList() << paths));
     emit stateChanged();
 }
 

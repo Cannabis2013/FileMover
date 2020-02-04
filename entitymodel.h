@@ -8,6 +8,8 @@
 #include <iostream>
 #include "modeldelegates.h"
 
+#define THROW_MSG_INHERIT "Template argument not direct base of Model"
+
 using namespace std;
 
 struct EntityModel : public Model
@@ -45,7 +47,10 @@ template<class T>
 class EntityModelDelegate : public IModelDelegate<T>
 {
 public:
-    ~EntityModelDelegate() {delete _model;}
+    ~EntityModelDelegate()
+    {
+        delete _model;
+    }
 
     QUuid modelId(){return _model->id;}
 
@@ -62,7 +67,7 @@ private:
     EntityModelDelegate(const EntityModel *model)
     {
         if(!std::is_base_of_v<EntityModel,T>)
-            throw "Delegate can't be instantiated with class T not direct base of EntityModel";
+            throw THROW_MSG_INHERIT;
 
         _model = model;
     }
@@ -79,7 +84,7 @@ public:
     static EntityModelDelegate<T>* buildDelegate(const EntityModel* entity)
     {
         if(!std::is_base_of_v<EntityModel,T>)
-            throw "Template class not direct base of Model";
+            throw THROW_MSG_INHERIT;
 
         return new EntityModelDelegate<T>(entity);
     }
@@ -88,7 +93,7 @@ public:
     static EntityModelDelegate<T>* buildErrorEntity(const QString &err)
     {
         if(!std::is_base_of_v<EntityModel,T>)
-            throw "Template class not direct base of Model";
+            throw THROW_MSG_INHERIT;
 
         DelegateBuilder builder;
         auto entity =
@@ -102,7 +107,7 @@ public:
     {
         DelegateBuilder builder;
         if(!std::is_base_of_v<EntityModel,T>)
-            throw "Template class not direct base of Model";
+            throw THROW_MSG_INHERIT;
 
         FileInformationEntity *entity =
                 builder.buildEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
@@ -118,7 +123,7 @@ public:
                                                      const QStringList &destinations)
     {
         if(!std::is_base_of_v<EntityModel,T>)
-            throw "Template class not direct base of Model";
+            throw THROW_MSG_INHERIT;
 
         DelegateBuilder builder;
         FileRuleEntity *entity =
@@ -138,7 +143,7 @@ public:
                                                      const QString &path)
     {
         if(!std::is_base_of_v<EntityModel,T>)
-            throw "Template class not direct base of Model";
+            throw THROW_MSG_INHERIT;
 
         DelegateBuilder builder;
         auto *entity =

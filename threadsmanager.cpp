@@ -6,7 +6,6 @@ ThreadsManager::ThreadsManager()
 
 ThreadsManager::~ThreadsManager()
 {
-    terminateAll();
 }
 
 const ThreadDescriptor *ThreadsManager::createThread(QObject * o)
@@ -43,11 +42,6 @@ void ThreadsManager::startAllThreads(QThread::Priority priority)
 {
     for (auto t : _threads)
         t->start(priority);
-}
-void ThreadsManager::terminateAll()
-{
-    for (auto t : _threads)
-        t->terminate();
 }
 
 

@@ -72,7 +72,6 @@ MainApplication::~MainApplication()
     delete sManager;
     delete fManager;
     delete rManager;
-    delete tManager;
 }
 
 void MainApplication::clearFolders(QStringList paths)

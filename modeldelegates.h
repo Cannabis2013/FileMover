@@ -17,7 +17,7 @@ struct TreeModel : public Model
     QList<TreeModel*>_children;
 };
 
-template<class TModel = Model>
+template<class TModel, typename TModelType>
 class IModelDelegate
 {
 public:
@@ -25,10 +25,11 @@ public:
     virtual ~IModelDelegate() = default;
     virtual QUuid modelId() = 0;
     virtual const TModel* model() const= 0;
+    virtual TModelType type() = 0;
 
 };
-template<class TModel = TreeModel>
-class ITreeModelDelegate : public IModelDelegate<TModel>
+template<class TModel, class TModelType>
+class ITreeModelDelegate : public IModelDelegate<TModel,TModelType>
 {
 public:
     virtual ITreeModelDelegate *parentModelDelegate() const = 0;
@@ -37,6 +38,7 @@ public:
     virtual void setChildren(const QList<ITreeModelDelegate*> &newChildren)=0;
     virtual void appendChild(ITreeModelDelegate *const &object)=0;
     virtual bool hasChildren() const = 0;
+    virtual TModelType type() = 0;
 };
 
 #endif // MODELDELEGATES_H

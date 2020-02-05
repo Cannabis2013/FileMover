@@ -43,8 +43,8 @@ struct FileInformationEntity : public EntityModel
     QStringList filePaths;
 };
 
-template<class T>
-class EntityModelDelegate : public IModelDelegate<T>
+template<class ModelType>
+class EntityModelDelegate : public IModelDelegate<ModelType,EntityModel::typeMode>
 {
 public:
     ~EntityModelDelegate()
@@ -54,9 +54,9 @@ public:
 
     QUuid modelId(){return _model->id;}
 
-    const T *model() const {return static_cast<const T*>(_model);}
+    const ModelType *model() const {return static_cast<const ModelType*>(_model);}
 
-    T* getModelValue() const {return static_cast<T*>(new EntityModel(*_model));}
+    ModelType* getModelValue() const {return static_cast<ModelType*>(new EntityModel(*_model));}
 
     template<class t>
     t* getModelValue() const {return static_cast<t*>(new EntityModel(*_model));}
@@ -66,7 +66,7 @@ public:
 private:
     EntityModelDelegate(const EntityModel *model)
     {
-        if(!std::is_base_of_v<EntityModel,T>)
+        if(!std::is_base_of_v<EntityModel,ModelType>)
             throw THROW_MSG_INHERIT;
 
         _model = model;

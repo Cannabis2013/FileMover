@@ -16,7 +16,7 @@ bool FileOperationWorker::removeFileItems(const FileObjectList& filePaths, QStri
     if(filePaths.isEmpty())
         return true;
 
-    for(ITreeModelDelegate<FileModel>* modelDelegate: filePaths)
+    for(ITreeModelDelegate<FileModel,DefaultModelType>* modelDelegate: filePaths)
     {
         const FileModel *model = static_cast<const FileModel*>(modelDelegate->model());
         QString absoluteFilePath = model->absoluteFilePath();
@@ -51,7 +51,7 @@ bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const 
         if(!dir.exists())
             dir.mkdir(destPath);
 
-        for(ITreeModelDelegate<FileModel>* modelDelegate : fileObjects)
+        for(ITreeModelDelegate<FileModel,DefaultModelType>* modelDelegate : fileObjects)
         {
             bool noErrors = true;
             auto model = static_cast<const FileModel*>(modelDelegate->model());
@@ -92,7 +92,7 @@ bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const 
         if(!dir.exists())
             dir.mkdir(destPath);
 
-        for(const ITreeModelDelegate<FileModel>* modelDelegate : fileObjects)
+        for(const ITreeModelDelegate<FileModel,DefaultModelType>* modelDelegate : fileObjects)
         {
             bool noErrors = true;
             const FileModel* model = static_cast<const FileModel*>(modelDelegate->model());
@@ -335,7 +335,7 @@ QStringList FileOperationWorker::createHeader(QFileInfo fi)
 FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObjects, SubRule rule)
 {
     FileObjectList filesToProcess;
-    for(ITreeModelDelegate<FileModel>* modelDelegate : fileObjects)
+    for(ITreeModelDelegate<FileModel,DefaultModelType>* modelDelegate : fileObjects)
     {
         auto model = modelDelegate->model();
         bool condition = false;

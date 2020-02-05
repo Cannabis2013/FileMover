@@ -29,7 +29,7 @@ public:
 
 public slots:
 
-    void addEntity(EntityModelDelegate<EntityModel> *delegate)
+    void addEntity(IModelDelegate<EntityModel,EntityType> *delegate)
     {
         entityQueue << delegate->model();
         emit wakeUpProcess();
@@ -52,7 +52,7 @@ signals:
     void wakeUpProcess();
     void processFinished();
 
-    void sendEntity(EntityModelDelegate<EntityModel> *delegate);
+    void sendEntity(IModelDelegate<EntityModel,EntityType> *delegate);
 
 private:
     QList<const EntityModel*>entityQueue;

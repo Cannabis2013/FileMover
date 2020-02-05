@@ -25,6 +25,7 @@ public:
     virtual ~IModelDelegate() = default;
     virtual QUuid modelId() = 0;
     virtual const TModel* model() const= 0;
+    virtual TModel *modelValue() const = 0;
     virtual TModelType type() = 0;
 
 };

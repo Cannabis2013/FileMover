@@ -114,9 +114,9 @@ bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const 
     return result;
 }
 
-void FileOperationWorker::processDirectoryCountEntity(const EntityModelDelegate<DirectoryEntity> *delegate)
+void FileOperationWorker::processDirectoryCountEntity(const IModelDelegate<DirectoryEntity, EntityType> *delegate)
 {
-    auto entity = delegate->getModelValue();
+    auto entity = delegate->modelValue();
 
     QFileInfo fInfo = entity->directoryPath;
 
@@ -125,7 +125,7 @@ void FileOperationWorker::processDirectoryCountEntity(const EntityModelDelegate<
     emit sendFolderSizeEntity(entity);
 }
 
-void FileOperationWorker::processEntity(EntityModelDelegate<EntityModel> *delegate)
+void FileOperationWorker::processEntity(IModelDelegate<EntityModel,EntityType> *delegate)
 {
     isBusy = true;
     if(delegate->type() == EntityModel::nullEntity)
@@ -655,7 +655,7 @@ void FileOperationWorker::handleProcessRequest()
 
 }
 
-void FileOperationWorker::processFileInformationEntity(const EntityModelDelegate<FileInformationEntity> *delegate)
+void FileOperationWorker::processFileInformationEntity(const IModelDelegate<FileInformationEntity,EntityType> *delegate)
 {
     auto entity = delegate->model();
 
@@ -700,7 +700,7 @@ void FileOperationWorker::reProcessFileInformationEntity(const QStringList &path
     emit processFinished(directories);
 }
 
-void FileOperationWorker::processFileEntity(const EntityModelDelegate<FileRuleEntity> *delegate)
+void FileOperationWorker::processFileEntity(const IModelDelegate<FileRuleEntity,EntityType> *delegate)
 {
     auto model = delegate->model();
 

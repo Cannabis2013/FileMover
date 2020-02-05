@@ -18,6 +18,8 @@ struct EntityModel : public Model
     typeMode type = nullEntity;
 };
 
+typedef EntityModel::typeMode EntityType;
+
 struct ErrorEntity : public EntityModel
 {
     QString errorDescription = "No error";
@@ -44,7 +46,7 @@ struct FileInformationEntity : public EntityModel
 };
 
 template<class ModelType>
-class EntityModelDelegate : public IModelDelegate<ModelType,EntityModel::typeMode>
+class EntityModelDelegate : public IModelDelegate<ModelType,EntityType>
 {
 public:
     ~EntityModelDelegate()
@@ -56,12 +58,12 @@ public:
 
     const ModelType *model() const {return static_cast<const ModelType*>(_model);}
 
-    ModelType* getModelValue() const {return static_cast<ModelType*>(new EntityModel(*_model));}
+    ModelType* modelValue() const {return static_cast<ModelType*>(new EntityModel(*_model));}
 
     template<class t>
-    t* getModelValue() const {return static_cast<t*>(new EntityModel(*_model));}
+    t* modelValue() const {return static_cast<t*>(new EntityModel(*_model));}
 
-    EntityModel::typeMode type() {return _model->type;}
+    EntityType type() {return _model->type;}
 
 private:
     EntityModelDelegate(const EntityModel *model)
@@ -158,7 +160,7 @@ public:
 
 private:
     template<class T>
-    T *buildEntity(EntityModel::typeMode type)
+    T *buildEntity(EntityType type)
     {
         if(!std::is_base_of_v<EntityModel,T>)
             throw "Class Not direct base of EntityModel";

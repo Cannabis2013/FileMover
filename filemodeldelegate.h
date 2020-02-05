@@ -63,6 +63,11 @@ public:
         return new FileModelDelegate(path);
     }
 
+    FileModel *modelValue() const
+    {
+        return new FileModel(*_model);
+    }
+
     DefaultModelType type()
     {
         return DefaultModelType::Tree;

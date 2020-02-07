@@ -26,7 +26,7 @@ struct VIRTUAL_FILE_OBJECT
     QString filePath;
     myDateTime dateCreated; // Has to be altered to perform tests
     QFileInfo additionalInformation; // Static information not to be altered
-    QString fileName(){return additionalInformation != QFileInfo() ?
+    QString fileName() const {return additionalInformation != QFileInfo() ?
                     additionalInformation.fileName() :
                     QString();}
 };
@@ -35,8 +35,9 @@ class Virtual_Objects
 {
 public:
     explicit Virtual_Objects();
-    VIRTUAL_FILE_OBJECT value(const QString &path) const;
-    VIRTUAL_FILE_OBJECT value(const int &index) const;
+    VIRTUAL_FILE_OBJECT getVirtualObjectFromFilePath(const QString &path) const;
+    VIRTUAL_FILE_OBJECT getVirtualObjectFromIndex(const int &index) const;
+    VIRTUAL_FILE_OBJECT getVirtualObjectFromFileName(const QString &name);
     const Virtual_Objects &operator<<(const VIRTUAL_FILE_OBJECT &obj);
     bool operator==(Virtual_Objects objects) const;
     bool operator!=(Virtual_Objects objects) const;

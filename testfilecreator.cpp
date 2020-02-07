@@ -106,7 +106,7 @@ Virtual_Objects TestFileCreator::VirtualObjects(const QString &directory)
     while (it.hasNext()) {
         QFileInfo file = it.next();
         try {
-            resultingList << _virtualObjects.value(file.absoluteFilePath());
+            resultingList << _virtualObjects.getVirtualObjectFromFilePath(file.absoluteFilePath());
         }  catch (const char *msg) {
             continue;
         }
@@ -152,7 +152,7 @@ Virtual_Objects::Virtual_Objects()
 
 }
 
-VIRTUAL_FILE_OBJECT Virtual_Objects::value(const QString &path) const
+VIRTUAL_FILE_OBJECT Virtual_Objects::getVirtualObjectFromFilePath(const QString &path) const
 {
     VIRTUAL_FILE_OBJECT item;
     for (int i = 0; i < _objects.count(); ++i) {
@@ -164,12 +164,24 @@ VIRTUAL_FILE_OBJECT Virtual_Objects::value(const QString &path) const
     throw "Not found";
 }
 
-VIRTUAL_FILE_OBJECT Virtual_Objects::value(const int &index) const
+VIRTUAL_FILE_OBJECT Virtual_Objects::getVirtualObjectFromIndex(const int &index) const
 {
     if(index < 0 || index >= _objects.count())
         throw std::out_of_range("OUT_OF_RANGE");
 
     return _objects.value(index);
+}
+
+VIRTUAL_FILE_OBJECT Virtual_Objects::getVirtualObjectFromFileName(const QString &name)
+{
+    VIRTUAL_FILE_OBJECT item;
+    for (int i = 0; i < _objects.count(); ++i) {
+        const VIRTUAL_FILE_OBJECT obj = _objects.at(i);
+        if(obj.fileName() == name)
+            return obj;
+    }
+
+    throw "Not found";
 }
 
 const Virtual_Objects &Virtual_Objects::operator<<(const VIRTUAL_FILE_OBJECT &obj)
@@ -185,7 +197,7 @@ bool Virtual_Objects::operator==(Virtual_Objects objects) const
 
     for (VIRTUAL_FILE_OBJECT obj : _objects) {
         try {
-            objects.value(obj.filePath);
+            objects.getVirtualObjectFromFileName(obj.fileName());
         }  catch (char *msg) {
             Q_UNUSED(msg)
             return false;
@@ -201,7 +213,7 @@ bool Virtual_Objects::operator!=(Virtual_Objects objects) const
 
     for (VIRTUAL_FILE_OBJECT obj : _objects) {
         try {
-            objects.value(obj.filePath);
+            objects.getVirtualObjectFromFileName(obj.fileName());
         }  catch (char *msg) {
             Q_UNUSED(msg)
             return true;

@@ -1,96 +1,14 @@
-#include "testfilecreator.h"
-
+#include "TestRuleHelper.h"
 #ifdef TEST_MODE
 #include <QtTest>
-#include <QCoreApplication>
-
-
 #define SLEEP_SEC 1
 #define DELETE_STATUS "Some files/folders not deleted"
-
-class RuleTools
-{
-public:
-    static bool SubRuleEquals(const SubRule &compOne, const SubRule &compTwo)
-    {
-        if(compOne.copymode != compTwo.copymode ||
-                compOne.compareCriteria != compTwo.compareCriteria ||
-                compOne.criteria != compTwo.criteria ||
-                compOne.matchWholeWords != compTwo.matchWholeWords ||
-                compOne.keyWords != compTwo.keyWords)
-        {
-            return false;
-        }
-
-        if(compOne.sizeLimit.first != compTwo.sizeLimit.first ||
-                compOne.sizeLimit.second != compTwo.sizeLimit.second)
-        {
-            return false;
-        }
-
-        QPair<int,QString> sIntFirst1 = compOne.sizeInterval.first;
-        QPair<int,QString> sIntSecond1 = compOne.sizeInterval.second;
-
-        QPair<int,QString> sIntFirst2 = compTwo.sizeInterval.first;
-        QPair<int,QString> sIntSecond2 = compTwo.sizeInterval.second;
-
-        if(sIntFirst1.first != sIntFirst2.first ||
-                sIntFirst1.second != sIntFirst2.second)
-        {
-            return false;
-        }
-
-        if(sIntSecond1.first != sIntSecond2.first ||
-                sIntSecond1.second != sIntSecond2.second)
-        {
-            return false;
-        }
-
-        if(compOne.date != compTwo.date)
-        {
-            return false;
-        }
-
-        if(compOne.dateIntervals.first != compTwo.dateIntervals.first ||
-                compOne.dateIntervals.second != compTwo.dateIntervals.second)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    static bool SubRuleNotEqual(const SubRule &compOne, const SubRule &compTwo)
-    {
-        return !SubRuleEquals(compOne,compTwo);
-    }
-
-    static bool RuleEquals(const Rule &compOne, const Rule &compTwo)
-    {
-        if(compOne.title != compTwo.title ||
-                compOne.typeFilter != compTwo.typeFilter ||
-                compOne.actionRuleEntity != compTwo.actionRuleEntity ||
-                compOne.destinationPaths != compTwo.destinationPaths ||
-                compOne.appliesToPath != compTwo.appliesToPath ||
-                compOne.deepScanMode != compTwo.deepScanMode)
-        {
-            return false;
-        }
-
-        for (int i = 0; i < compOne.subRules.count(); ++i) {
-            SubRule sR1 = compOne.subRules.at(i), sR2 = compTwo.subRules.at(i);
-
-            if(!SubRuleEquals(sR1,sR2))
-                return false;
-        }
-        return true;
-    }
-};
 
 #ifdef __WIN64__
 #define TEST_WORKING_PATH QDir::homePath() + "/Test_folder/"
 #elif __GNUC__
     #define TEST_WORKING_PATH QDir::homePath() + "/MyDocs/Programming/Test/FileMover_Test_Folder/"
+    #define TEST_SECONDARY_PATH QDir::homePath() + "/MyDocs/Programming/Test/FileMover_New_Test_Folder/"
 #endif
 
 const QStringList test_file_set_1 = {"test.fdl",
@@ -150,17 +68,17 @@ private slots:
      * Delete
      */
 
-    // FilePathMode
+    // Filepath mode
     void operation_filepath_match_success_1();
     void operation_filepath_match_fail_1();
     void operation_filepath_contain_success_1();
     void operation_filepath_contain_fail_1();
 
-    // FileExtensionMode
+    // File extension mode
 
     void operation_extension_match_success_1();
 
-    // FileSizeMode
+    // Filesize mode
     void operation_size_less_than_success_1();
     void operation_size_equal_success_1();
     void operation_size_equal_or_lesser_than_success_1();
@@ -168,8 +86,22 @@ private slots:
     void operation_size_greater_than_success_1();
     void operation_size_interval_success_1();
 
+    /*
+     * Move
+     */
+
+    // Filepath Mode
+
+    void operation_move_filepath_match_success_1();
+
 private:
+
     AbstractCoreApplication *mApp;
+    const Virtual_Objects *initialize_pre_state(ruleDefinitions::ruleAction ruleAction,
+                                                ruleDefinitions::ruleCriteria criteria,
+                                                ruleDefinitions::ruleCompareCriteria compareCriteria, QStringList test_elements,
+                                                QString filepath,
+                                                TestFileCreator *file_creator, QStringList destinations = QStringList());
 };
 Core_functionality::Core_functionality()
 {
@@ -268,7 +200,7 @@ void Core_functionality::insert_rule_filepath_match_success_1()
     // Post section
 
     Rule postRule = mApp->rule(preTitle);
-    QVERIFY(RuleTools::RuleEquals(preRule,postRule));
+    QVERIFY(TestRuleHelper::RuleEquals(preRule,postRule));
 }
 
 void Core_functionality::insert_rule_filepath_match_fail_1()
@@ -315,7 +247,7 @@ void Core_functionality::insert_rule_filepath_match_fail_1()
 
     Rule postRule = mApp->rule(preTitle);
 
-    QVERIFY(!RuleTools::RuleEquals(compareRule,postRule));
+    QVERIFY(!TestRuleHelper::RuleEquals(compareRule,postRule));
 }
 
 void Core_functionality::insert_rule_filepath_match_fail_2()
@@ -362,7 +294,7 @@ void Core_functionality::insert_rule_filepath_match_fail_2()
 
     Rule postRule = mApp->rule(preTitle);
 
-    QVERIFY(!RuleTools::RuleEquals(compareRule,postRule));
+    QVERIFY(!TestRuleHelper::RuleEquals(compareRule,postRule));
 }
 
 void Core_functionality::insert_rule_datecreated_before_succes1()
@@ -388,7 +320,7 @@ void Core_functionality::insert_rule_datecreated_before_succes1()
 
     Rule postRule = mApp->rule(title);
 
-    QVERIFY(RuleTools::RuleEquals(preRule,postRule));
+    QVERIFY(TestRuleHelper::RuleEquals(preRule,postRule));
 }
 
 void Core_functionality::insert_rule_datecreated_after_succes1()
@@ -414,7 +346,7 @@ void Core_functionality::insert_rule_datecreated_after_succes1()
 
     Rule postRule = mApp->rule(title);
 
-    QVERIFY(RuleTools::RuleEquals(preRule,postRule));
+    QVERIFY(TestRuleHelper::RuleEquals(preRule,postRule));
 }
 
 void Core_functionality::insert_rule_datecreated_before_fail1()
@@ -450,7 +382,7 @@ void Core_functionality::insert_rule_datecreated_before_fail1()
 
     Rule postRule = mApp->rule(title);
 
-    QVERIFY(!RuleTools::RuleEquals(compareRule,postRule));
+    QVERIFY(!TestRuleHelper::RuleEquals(compareRule,postRule));
 }
 
 void Core_functionality::insert_rule_datecreated_before_fail2()
@@ -485,7 +417,7 @@ void Core_functionality::insert_rule_datecreated_before_fail2()
 
     Rule postRule = mApp->rule(title);
 
-    QVERIFY(!RuleTools::RuleEquals(compareRule,postRule));
+    QVERIFY(!TestRuleHelper::RuleEquals(compareRule,postRule));
 }
 
 void Core_functionality::insert_rule_sizeinterval_success_1()
@@ -510,7 +442,7 @@ void Core_functionality::insert_rule_sizeinterval_success_1()
 
     Rule postRule = mApp->rule(title);
 
-    QVERIFY(RuleTools::RuleEquals(preRule,postRule));
+    QVERIFY(TestRuleHelper::RuleEquals(preRule,postRule));
 }
 
 void Core_functionality::insert_rule_sizeinterval_fail_1()
@@ -544,7 +476,7 @@ void Core_functionality::insert_rule_sizeinterval_fail_1()
 
     Rule postRule = mApp->rule(title);
 
-    QVERIFY(!RuleTools::RuleEquals(compareRule,postRule));
+    QVERIFY(!TestRuleHelper::RuleEquals(compareRule,postRule));
 }
 
 void Core_functionality::operation_filepath_match_success_1()
@@ -563,34 +495,16 @@ void Core_functionality::operation_filepath_match_success_1()
         return;
     }
 
-    // Pre-state variables
-
-    const QString preTitle = "Test1";
     QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::filepathMode;
-    rD::ruleCompareCriteria preComp = rD::match;
-    Rule preRule;
-
-    // Initialize pre-state
-
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
-
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.keyWords = prekWrds;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
 
     const Virtual_Objects *objects;
     try {
-        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+        objects = initialize_pre_state(rD::Delete,
+                                       rD::filepathMode,
+                                       rD::match,
+                                       prekWrds,
+                                       TEST_WORKING_PATH,
+                                       f_creator);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -603,7 +517,7 @@ void Core_functionality::operation_filepath_match_success_1()
         VIRTUAL_FILE_OBJECT obj;
         try {
 
-            obj = objects->value(i);
+            obj = objects->getVirtualObjectFromIndex(i);
         }  catch (std::out_of_range *e) {
             cout << e->what() << endl;
             return Q_ASSERT(false);
@@ -679,41 +593,20 @@ void Core_functionality::operation_filepath_match_fail_1()
         return;
     }
 
-
-
-    // Pre-state variables
-
-    const QString preTitle = "Test1";
     QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::filepathMode;
-    rD::ruleCompareCriteria preComp = rD::match;
-    Rule preRule;
-
-    // Initialize pre-state
-
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
-
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.keyWords = prekWrds;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
 
     const Virtual_Objects *objects;
     try {
-        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+        objects = initialize_pre_state(rD::Delete,
+                                       rD::filepathMode,
+                                       rD::match,
+                                       prekWrds,
+                                       TEST_WORKING_PATH,
+                                       f_creator);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
     }
-    Q_UNUSED(objects)
 
     // Initialize reference list with expected/control elements
     Virtual_Objects referenceList;
@@ -721,7 +614,7 @@ void Core_functionality::operation_filepath_match_fail_1()
     QStringList chosenList = QStringList() << prekWrds.first();
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         QFileInfo info = obj.additionalInformation;
         bool match = true;
         QString fName = info.fileName();
@@ -792,36 +685,16 @@ void Core_functionality::operation_filepath_contain_success_1()
         return;
     }
 
-
-
-    // Pre-state variables
-
-    const QString preTitle = "Test1";
-    QStringList prekWrds = QStringList() << "Notes" << "FCK";
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::filepathMode;
-    rD::ruleCompareCriteria preComp = rD::contains;
-    Rule preRule;
-
-    // Initialize pre-state
-
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
-
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.keyWords = prekWrds;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
+    QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
 
     const Virtual_Objects *objects;
     try {
-        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+        objects = initialize_pre_state(rD::Delete,
+                                       rD::filepathMode,
+                                       rD::contains,
+                                       prekWrds,
+                                       TEST_WORKING_PATH,
+                                       f_creator);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -830,7 +703,7 @@ void Core_functionality::operation_filepath_contain_success_1()
     Virtual_Objects referenceList;
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         QFileInfo info = obj.additionalInformation;
         bool contains = false;
         for (QString str : prekWrds) {
@@ -844,7 +717,6 @@ void Core_functionality::operation_filepath_contain_success_1()
     }
 
     mApp->clearFoldersAccordingToRules(mApp->watchFolders());
-
 
     /*
      * Note regard async call:
@@ -863,7 +735,6 @@ void Core_functionality::operation_filepath_contain_success_1()
     {
         throw e;
     }
-
 
     /*
      * END STATE:
@@ -899,36 +770,16 @@ void Core_functionality::operation_filepath_contain_fail_1()
         return;
     }
 
-
-
-    // Pre-state variables
-
-    const QString preTitle = "Test1";
-    QStringList prekWrds = QStringList() << "Notes" << "FCK";
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::filepathMode;
-    rD::ruleCompareCriteria preComp = rD::contains;
-    Rule preRule;
-
-    // Initialize pre-state
-
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
-
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.keyWords = prekWrds;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
+    QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
 
     const Virtual_Objects *objects;
     try {
-        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+        objects = initialize_pre_state(rD::Delete,
+                                       rD::filepathMode,
+                                       rD::contains,
+                                       prekWrds,
+                                       TEST_WORKING_PATH,
+                                       f_creator);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -939,7 +790,7 @@ void Core_functionality::operation_filepath_contain_fail_1()
     QStringList chosenList = QStringList() << prekWrds.first();
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         QFileInfo info = obj.additionalInformation;
         QString fName = info.fileName();
         bool contains = false;
@@ -1044,7 +895,7 @@ void Core_functionality::operation_extension_match_success_1()
     Virtual_Objects referenceList;
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         QFileInfo info = obj.additionalInformation;
         bool match = false;
         for (QString str : prekWrds) {
@@ -1151,7 +1002,7 @@ void Core_functionality::operation_size_less_than_success_1()
     qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         qint64 sz = obj.additionalInformation.size();
         if(sz >= bytes)
             referenceList << obj;
@@ -1257,7 +1108,7 @@ void Core_functionality::operation_size_equal_success_1()
     qint64 bytes = sR.sizeLimit.first;
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         qint64 sz = obj.additionalInformation.size();
         if(sz != bytes)
             referenceList << obj;
@@ -1359,7 +1210,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
     qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         qint64 sz = obj.additionalInformation.size();
         if(sz > bytes)
             referenceList << obj;
@@ -1460,7 +1311,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
     qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         qint64 sz = obj.additionalInformation.size();
         if(sz < bytes)
             referenceList << obj;
@@ -1562,7 +1413,7 @@ void Core_functionality::operation_size_greater_than_success_1()
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj;
         try {
-            obj = objects->value(i);
+            obj = objects->getVirtualObjectFromIndex(i);
         }  catch (std::out_of_range *e) {
             cout << e->what() << endl;
             return Q_ASSERT(false);
@@ -1675,7 +1526,7 @@ void Core_functionality::operation_size_interval_success_1()
     Virtual_Objects referenceList;
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->value(i);
+        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         qint64 sz = obj.additionalInformation.size();
         if(sz <= fW::convertToBytes(lowerLimit.first,lowerLimit.second) || sz >= fW::convertToBytes(upperLimit.first,lowerLimit.second))
             referenceList << obj;
@@ -1719,6 +1570,104 @@ void Core_functionality::operation_size_interval_success_1()
 
     QVERIFY(referenceList == actualList);
 }
+
+void Core_functionality::operation_move_filepath_match_success_1()
+{
+    TestFileCreator *f_creator;
+    try {
+        f_creator = new TestFileCreator();
+    }  catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
+    QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
+
+    const Virtual_Objects *objects;
+    try {
+        objects = initialize_pre_state(rD::Move,
+                                       rD::filepathMode,
+                                       rD::match,
+                                       prekWrds,
+                                       TEST_WORKING_PATH,
+                                       f_creator,
+                                       QStringList() << TEST_SECONDARY_PATH);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        return;
+    }
+
+    Virtual_Objects referenceList;
+
+    // Initialize reference list with expected elements
+    for (int i = 0; i < objects->count(); ++i) {
+        VIRTUAL_FILE_OBJECT obj;
+        try {
+
+            obj = objects->getVirtualObjectFromIndex(i);
+        }  catch (std::out_of_range *e) {
+            cout << e->what() << endl;
+            return Q_ASSERT(false);
+        }
+        QFileInfo info = obj.additionalInformation;
+        bool match = false;
+        for (QString str : prekWrds) {
+            QString fName = info.fileName();
+
+            if(fName == str)
+               match = true;
+        }
+        if(!match)
+            referenceList << obj;
+    }
+
+
+
+
+}
+
+const Virtual_Objects *Core_functionality::initialize_pre_state(ruleDefinitions::ruleAction ruleAction,
+                                                                ruleDefinitions::ruleCriteria criteria,
+                                                                ruleDefinitions::ruleCompareCriteria compareCriteria,
+                                                                QStringList test_elements,QString filepath,
+                                                                TestFileCreator *file_creator,QStringList destinations)
+{
+    // Pre-state variables
+
+    const QString preTitle = "Test1";
+    QStringList prekWrds = test_elements;
+    rD::ruleAction preAction = ruleAction;
+    rD::ruleCriteria preCond = criteria;
+    rD::ruleCompareCriteria preComp = compareCriteria;
+    Rule preRule;
+
+    // Initialize pre-state
+
+    preRule.title = preTitle;
+    preRule.actionRuleEntity = preAction;
+
+    // Create rule
+    SubRule sR;
+    preRule.appliesToPath = filepath;
+    sR.keyWords = prekWrds;
+    sR.criteria = preCond;
+    sR.compareCriteria = preComp;
+
+    preRule.subRules << sR;
+    preRule.destinationPaths = destinations;
+
+    mApp->insertRule(preRule);
+
+    const Virtual_Objects *objects;
+    try {
+        objects = file_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+    } catch (const char *msg) {
+        printf("%s\n",msg);
+        throw "Creating files failed.";
+    }
+
+    return objects;
+}
+
 
     QTEST_MAIN(Core_functionality)
 

@@ -68,6 +68,7 @@ SOURCES += main.cpp\
     topframeform.cpp
 
 HEADERS  += mainwindow.h \
+    TestRuleHelper.h \
     abstractcoreapplication.h \
     abstractruledialog.h \
     abstractframeimplementable.h \

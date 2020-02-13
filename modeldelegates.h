@@ -29,7 +29,7 @@ public:
     virtual TModelType type() = 0;
 
 };
-template<class TModel, class TModelType>
+template<class TModel, class TModelType = DefaultModelType>
 class ITreeModelDelegate : public IModelDelegate<TModel,TModelType>
 {
 public:

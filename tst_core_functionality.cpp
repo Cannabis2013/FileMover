@@ -5,7 +5,8 @@
 #define DELETE_STATUS "Some files/folders not deleted"
 
 #ifdef __WIN64__
-#define TEST_WORKING_PATH QDir::homePath() + "/Test_folder/"
+    #define TEST_WORKING_PATH QDir::homePath() + "/test_folder/"
+    #define TEST_SECONDARY_PATH QDir::homePath() + "/test_folder_copy"
 #elif __GNUC__
     #define TEST_WORKING_PATH QDir::homePath() + "/MyDocs/Programming/Test/FileMover_Test_Folder/"
     #define TEST_SECONDARY_PATH QDir::homePath() + "/MyDocs/Programming/Test/FileMover_New_Test_Folder/"

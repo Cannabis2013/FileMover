@@ -9,7 +9,7 @@ class
         AddRuleDialog : public AbstractRuleDialog
 {
 public:
-    explicit AddRuleDialog(QStringList watchFolders);
+    explicit AddRuleDialog(QStringList watchFolders, IRuleDefinitions<RRT::RuleType, RRT::RuleAction, RRT::RuleCriteria, RRT::RuleCompareCriteria, RRT::FileTypeEntity> *service);
 public slots:
 signals:
 

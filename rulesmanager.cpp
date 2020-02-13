@@ -45,17 +45,17 @@ QStringList rulesManager::splitString(const QString split)
 
 QString rulesManager::ruleKeyWordToString(SubRule sRule)
 {
-    if(sRule.criteria == rD::fileSize &&
-            sRule.compareCriteria != rD::interval)
+    if(sRule.criteria == RRT::fileSize &&
+            sRule.compareCriteria != RRT::interval)
         return QString::number(sRule.sizeLimit.first) + " " + sRule.sizeLimit.second;
-    else if(sRule.criteria == rD::fileSize &&
-            sRule.compareCriteria == rD::interval)
+    else if(sRule.criteria == RRT::fileSize &&
+            sRule.compareCriteria == RRT::interval)
         return rulesManager::ruleSizeLimitsToString(sRule);
-    else if((sRule.criteria == rD::fileCreatedMode || sRule.criteria == rD::fileModifiedMode) &&
-            sRule.compareCriteria != rD::interval)
+    else if((sRule.criteria == RRT::fileCreatedMode || sRule.criteria == RRT::fileModifiedMode) &&
+            sRule.compareCriteria != RRT::interval)
         return sRule.date.toString("dd.MM.yyyy");
-    else if((sRule.criteria == rD::fileCreatedMode || sRule.criteria == rD::fileModifiedMode) &&
-            sRule.compareCriteria == rD::interval)
+    else if((sRule.criteria == RRT::fileCreatedMode || sRule.criteria == RRT::fileModifiedMode) &&
+            sRule.compareCriteria == RRT::interval)
         return rulesManager::ruleDateLimitsToString(sRule);
     else
         return Worker::mergeStringList(sRule.keyWords);
@@ -81,7 +81,7 @@ QString rulesManager::ruleDateLimitsToString(SubRule sRule)
 
 QList<QTreeWidgetItem *> rulesManager::ruleItems() const
 {
-    rD rDefs;
+    RuleDefinitions rDefs;
     QList<QTreeWidgetItem*>resultingList;
     for(Rule r : rules)
     {
@@ -92,7 +92,7 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
         for(SubRule sRule : r.subRules)
         {
             QStringList hData;
-            hData << rDefs.fileConditionEntityToString(sRule.criteria) <<
+            hData << rDefs.buildStringFromCriteria(sRule.criteria) <<
                      rDefs.buildStringFromCompareCriteria(sRule.compareCriteria) <<
                      rulesManager::ruleKeyWordToString(sRule);
 
@@ -155,9 +155,9 @@ void rulesManager::readSettings()
         Rule r;
         pSettings->setArrayIndex(i);
         r.title = pSettings->value("Title","Title").toString();
-        r.actionRuleEntity = static_cast<rD::ruleAction>(pSettings->value("Action","").toInt());
+        r.actionRuleEntity = static_cast<RRT::RuleAction>(pSettings->value("Action","").toInt());
         r.appliesToPath = pSettings->value("ApplyPath","Alle").toString();
-        r.typeFilter = static_cast<rD::fileTypeEntity>(pSettings->value("Scan type filter","").toInt());
+        r.typeFilter = static_cast<RRT::FileTypeEntity>(pSettings->value("Scan type filter","").toInt());
         r.destinationPaths = Worker::splitString(pSettings->value("Destination paths","").toString());
         int count = pSettings->beginReadArray("Subrules");
         for (int j = 0; j < count; ++j)
@@ -165,9 +165,9 @@ void rulesManager::readSettings()
             SubRule sRule;
             pSettings->setArrayIndex(j);
 
-            sRule.copymode = static_cast<rD::copyMode>(pSettings->value("Copymode",0).toInt());
-            sRule.criteria = static_cast<rD::ruleCriteria>(pSettings->value("Condition","").toInt());
-            sRule.compareCriteria = static_cast<rD::ruleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
+            sRule.copymode = static_cast<RRT::CopyMode>(pSettings->value("Copymode",0).toInt());
+            sRule.criteria = static_cast<RRT::RuleCriteria>(pSettings->value("Condition","").toInt());
+            sRule.compareCriteria = static_cast<RRT::RuleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
 
             sRule.matchWholeWords = pSettings->value("Matchwholewords",false).toBool();
             sRule.keyWords = Worker::splitString(pSettings->value("Keywords","").toString());

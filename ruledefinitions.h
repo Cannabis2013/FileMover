@@ -4,6 +4,8 @@
 #include <qlist.h>
 #include <qtranslator.h>
 
+#include "iruledefinitions.h"
+#include "TypeDefinitions.h"
 
 /*
  * Mappings:
@@ -70,165 +72,100 @@
  *      typeMode
  */
 
-struct ruleDefinitions
+class RuleDefinitions : public IRuleDefinitions<RRT::RuleType,
+        RRT::RuleAction,
+        RRT::RuleCriteria,
+        RRT::RuleCompareCriteria,
+        RRT::FileTypeEntity>
 {
+public:
     // Enumerated variables..
-    enum ruleType {action,
-                   criteria,
-                   compareCriteria,
-                   all};
 
-    enum ruleAction{Move,
-                    Delete,
-                    Copy,
-                    none};
-
-    enum ruleCriteria{notDefined,
-                             fileBaseMode,
-                             filepathMode,
-                             fileExtensionMode,
-                             fileSize,
-                             fileParentMode,
-                             fileCreatedMode, // FileDateMode
-                             fileModifiedMode, // FileDateMode
-                             nonConditionalMode};
-
-
-    enum ruleCompareCriteria{match,           // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
-                     dontMatch,             // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
-                     contains,              // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
-                     dontContain,           // FilePathMode/FileNameMode/FileBaseMode/FileExtensionMode
-                     lesserThan,            // Filesize
-                     lesserOrEqualThan,     // Filesize
-                     equal,                 // Filesize
-                     greaterOrEqualThan,    // Filesize
-                     greaterThan,           // Filesize
-                     interval,              // Filesize/date interval
-                     olderThan,             // FileDateMode {fileCreatedMode,fileModifiedMode}
-                     exactDate,             // FileDateMode {fileCreatedMode,fileModifiedMode}
-                     youngerThan,           // FileDateMode {fileCreatedMode,fileModifiedMode}
-                     noDateSet,             // FileDateMode {fileCreatedMode,fileModifiedMode}
-                     noCompareModeSet};
-
-    enum fileTypeEntity {Folder, File, unresolved};
-
-    enum copyMode{move,copy,noMode};
 
     QString nonIntervalString = "Enkel grænse", intervalString = "Interval grænse";
     QStringList intervalConditionalList {"Enkel grænse","Interval grænse"};
 
     // List variables..
-    static QStringList sizeUnits(){return {"b","kb","mb","gb"};}
+    QStringList sizeUnits(){return {"b","kb","mb","gb"};}
 
 
     /*
-     * Mappings
+     * Mapping methods
      *      - actionMappings
      *      - conditionMappings
      *      - compareMappings
      *      - fileTypeFilterMappings
      */
 
-    const QList<QPair<QString,ruleAction> > actionMappings {
-        QPair<QString,ruleAction>(("Move content"),ruleAction::Move),
-        QPair<QString,ruleAction>("Delete content",ruleAction::Delete),
-        QPair<QString,ruleAction>("Copy content",ruleAction::Copy),
-        QPair<QString,ruleAction>("Do nothing",ruleAction::none)};
-
-    const QList<QPair<QString,ruleCriteria> > criteriaMappings {
-        QPair<QString,ruleCriteria>("Base name",ruleCriteria::fileBaseMode),
-        QPair<QString,ruleCriteria>("File name",ruleCriteria::filepathMode),
-        QPair<QString,ruleCriteria>("File suffix",ruleCriteria::fileExtensionMode),
-        QPair<QString,ruleCriteria>("File size",ruleCriteria::fileSize),
-        QPair<QString,ruleCriteria>("In folder",ruleCriteria::fileParentMode),
-        QPair<QString,ruleCriteria>("Date created",ruleCriteria::fileCreatedMode),
-        QPair<QString,ruleCriteria>("Date edited",ruleCriteria::fileModifiedMode),
-        QPair<QString,ruleCriteria>("No conditions",ruleCriteria::nonConditionalMode)};
-
-    const QList<QPair<QString,ruleCompareCriteria> > compareCriteriaMappings {
-        QPair<QString,ruleCompareCriteria>("Contains",ruleCompareCriteria::contains),
-                QPair<QString,ruleCompareCriteria>("Does not contain",ruleCompareCriteria::dontMatch),
-                QPair<QString,ruleCompareCriteria>("Matching",ruleCompareCriteria::match),
-                QPair<QString,ruleCompareCriteria>("Does not match",ruleCompareCriteria::dontMatch),
-                QPair<QString,ruleCompareCriteria>("Greater than",ruleCompareCriteria::greaterThan),
-                QPair<QString,ruleCompareCriteria>("Greater or equal than",ruleCompareCriteria::greaterOrEqualThan),
-                QPair<QString,ruleCompareCriteria>("Equal",ruleCompareCriteria::equal),
-                QPair<QString,ruleCompareCriteria>("Less or equal than",ruleCompareCriteria::lesserOrEqualThan),
-                QPair<QString,ruleCompareCriteria>("Equal than",ruleCompareCriteria::lesserThan),
-                QPair<QString,ruleCompareCriteria>("Older than",ruleCompareCriteria::olderThan),
-                QPair<QString,ruleCompareCriteria>("Extact date",ruleCompareCriteria::exactDate),
-                QPair<QString,ruleCompareCriteria>("Younger than",ruleCompareCriteria::youngerThan)};
-
-    const QList<QPair<QString,fileTypeEntity> > fileTypeFilterMappings
-    {
-        QPair<QString,fileTypeEntity>("Files", fileTypeEntity::File),
-                QPair<QString,fileTypeEntity>("Folders", fileTypeEntity::Folder),
-                QPair<QString,fileTypeEntity>("Undetermined", fileTypeEntity::unresolved)
-    };
 
     // Retrieve list methods
 
-    const QStringList buildStringListFromEntity(ruleType property = ruleType::all)
+    QString buildDefaultStringValue()
+    {
+        return "No criterias";
+    }
+
+    const QStringList buildStringListFromEntity(RRT::RuleType property = RRT::all)
     {
         QStringList resultingList;
-        if(property == ruleType::action || property == ruleType::all)
+        if(property == RRT::action || property == RRT::all)
         {
-            for ( QPair<QString,ruleAction> actionMapping : actionMappings)
+            for ( QPair<QString,RRT::RuleAction> actionMapping : actionMappings())
                 resultingList << actionMapping.first;
         }
-        if(property == ruleType::criteria || property == ruleType::all)
+        if(property == RRT::criteria || property == RRT::all)
         {
-            for ( QPair<QString,ruleCriteria> pair : criteriaMappings)
+            for ( QPair<QString,RRT::RuleCriteria> pair : criteriaMappings())
                 resultingList << pair.first;
         }
-        if(property == ruleType::compareCriteria || property == ruleType::all)
+        if(property == RRT::compareCriteria || property == RRT::all)
         {
-            for ( QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings)
+            for ( QPair<QString,RRT::RuleCompareCriteria> pair : compareCriteriaMappings())
                 resultingList << pair.first;
         }
 
         return resultingList;
     }
 
-    const QStringList fileCompareModesToStringList(ruleCriteria condition)
+    const QStringList fileCompareModesToStringList(RRT::RuleCriteria condition)
     {
         QStringList resultingList;
-        if(condition == ruleCriteria::fileBaseMode ||
-                condition == ruleCriteria::filepathMode ||
-                condition == ruleCriteria::fileExtensionMode)
+        if(condition == RRT::fileBaseMode ||
+                condition == RRT::filepathMode ||
+                condition == RRT::fileExtensionMode)
         {
-            for(QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings) {
-                if(pair.second == ruleCompareCriteria::contains ||
-                        pair.second == ruleCompareCriteria::dontMatch ||
-                        pair.second == ruleCompareCriteria::match ||
-                        pair.second == ruleCompareCriteria::dontMatch)
+            for(QPair<QString,RRT::RuleCompareCriteria> pair : compareCriteriaMappings()) {
+                if(pair.second == RRT::contains ||
+                        pair.second == RRT::dontMatch ||
+                        pair.second == RRT::match ||
+                        pair.second == RRT::dontMatch)
                 {
                     resultingList << pair.first;
                 }
             }
         }
-        else if(condition == ruleCriteria::fileSize)
+        else if(condition == RRT::fileSize)
         {
-            for(QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings)
+            for(QPair<QString,RRT::RuleCompareCriteria> pair : compareCriteriaMappings())
             {
-                if(pair.second == ruleCompareCriteria::greaterThan ||
-                        pair.second ==ruleCompareCriteria::greaterOrEqualThan ||
-                        pair.second ==ruleCompareCriteria::equal ||
-                        pair.second ==ruleCompareCriteria::lesserOrEqualThan ||
-                        pair.second == ruleCompareCriteria::lesserThan)
+                if(pair.second == RRT::greaterThan ||
+                        pair.second ==RRT::greaterOrEqualThan ||
+                        pair.second ==RRT::equal ||
+                        pair.second ==RRT::lesserOrEqualThan ||
+                        pair.second == RRT::lesserThan)
                 {
                     resultingList << pair.first;
                 }
             }
         }
-        else if(condition == ruleCriteria::fileCreatedMode ||
-                condition == ruleCriteria::fileModifiedMode)
+        else if(condition == RRT::fileCreatedMode ||
+                condition == RRT::fileModifiedMode)
         {
-            for(QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings)
+            for(QPair<QString,RRT::RuleCompareCriteria> pair : compareCriteriaMappings())
             {
-                if(pair.second == ruleCompareCriteria::olderThan ||
-                        pair.second == ruleCompareCriteria::exactDate ||
-                        pair.second == ruleCompareCriteria::youngerThan)
+                if(pair.second == RRT::olderThan ||
+                        pair.second == RRT::exactDate ||
+                        pair.second == RRT::youngerThan)
                 {
                     resultingList << pair.first;
                 }
@@ -242,7 +179,7 @@ struct ruleDefinitions
     {
         QStringList resultingList;
 
-        for (QPair<QString,fileTypeEntity> pair : fileTypeFilterMappings)
+        for (QPair<QString,RRT::FileTypeEntity> pair : fileTypeFilterMappings())
             resultingList << pair.first;
 
         return resultingList;
@@ -250,9 +187,9 @@ struct ruleDefinitions
 
     // From type1 to type2 methods
 
-    QString fileActionEntityToString(const ruleAction mode)
+    QString fileActionEntityToString(const RRT::RuleAction mode)
     {
-        for(QPair<QString,ruleAction> pair : actionMappings)
+        for(QPair<QString,RRT::RuleAction> pair : actionMappings())
         {
             if(pair.second == mode)
                 return pair.first;
@@ -260,19 +197,19 @@ struct ruleDefinitions
         return QString();
     }
 
-    ruleAction fileActionEntityFromString(const QString mode)
+    RRT::RuleAction fileActionEntityFromString(const QString mode)
     {
-        for(QPair<QString,ruleAction> pair : actionMappings)
+        for(QPair<QString,RRT::RuleAction> pair : actionMappings())
         {
             if(pair.first == mode)
                 return pair.second;
         }
-        return ruleAction::none;
+        return RRT::none;
     }
 
-    QString fileConditionEntityToString(const ruleCriteria mode)
+    QString buildStringFromCriteria(const RRT::RuleCriteria mode)
     {
-        for(QPair<QString,ruleCriteria> pair : criteriaMappings)
+        for(QPair<QString,RRT::RuleCriteria> pair : criteriaMappings())
         {
             if(pair.second == mode)
                 return pair.first;
@@ -280,19 +217,19 @@ struct ruleDefinitions
         return QString();
     }
 
-    ruleCriteria buildCriteriaFromString(const QString string)
+    RRT::RuleCriteria buildCriteriaFromString(const QString string)
     {
-        for(QPair<QString,ruleCriteria> pair : criteriaMappings)
+        for(QPair<QString,RRT::RuleCriteria> pair : criteriaMappings())
         {
             if(pair.first == string)
                 return pair.second;
         }
-        return ruleCriteria::notDefined;
+        return RRT::notDefined;
     }
 
-    QString buildStringFromCompareCriteria(const ruleCompareCriteria mode)
+    QString buildStringFromCompareCriteria(const RRT::RuleCompareCriteria mode)
     {
-        for(QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings)
+        for(QPair<QString,RRT::RuleCompareCriteria> pair : compareCriteriaMappings())
         {
             if(pair.second == mode)
                 return pair.first;
@@ -300,19 +237,19 @@ struct ruleDefinitions
         return QString();
     }
 
-    ruleCompareCriteria fileCompareEntityFromString(const QString string)
+    RRT::RuleCompareCriteria fileCompareEntityFromString(const QString string)
     {
-        for(QPair<QString,ruleCompareCriteria> pair : compareCriteriaMappings)
+        for(QPair<QString,RRT::RuleCompareCriteria> pair : compareCriteriaMappings())
         {
             if(pair.first == string)
                 return pair.second;
         }
-        return ruleCompareCriteria::noCompareModeSet;
+        return RRT::noCompareModeSet;
     }
 
-    QString fileTypeEntityToString(fileTypeEntity type)
+    QString fileTypeEntityToString(RRT::FileTypeEntity type)
     {
-        for (QPair<QString,fileTypeEntity> pair : fileTypeFilterMappings)
+        for (QPair<QString,RRT::FileTypeEntity> pair : fileTypeFilterMappings())
         {
             if(pair.second == type)
                 return pair.first;
@@ -321,17 +258,65 @@ struct ruleDefinitions
         return QString();
     }
 
-    fileTypeEntity fileTypeEntityFromString(QString string)
+    RRT::FileTypeEntity fileTypeEntityFromString(const QString &string)
     {
-        for (QPair<QString,fileTypeEntity> pair : fileTypeFilterMappings)
+        for (QPair<QString,RRT::FileTypeEntity> pair : fileTypeFilterMappings())
         {
             if(pair.first == string)
                 return pair.second;
         }
 
-        return fileTypeEntity::unresolved;
+        return RRT::unresolved;
     }
+
+private:
+    const QList<QPair<QString,RRT::RuleAction> > actionMappings() {
+        return {
+            QPair<QString,RRT::RuleAction>(("Move content"),RRT::RuleAction::Move),
+            QPair<QString,RRT::RuleAction>("Delete content",RRT::Delete),
+            QPair<QString,RRT::RuleAction>("Copy content",RRT::Copy),
+            QPair<QString,RRT::RuleAction>("Do nothing",RRT::none)};
+        }
+
+    const QList<QPair<QString,RRT::RuleCriteria> > criteriaMappings() {
+        return {
+            QPair<QString,RRT::RuleCriteria>("Base name",RRT::fileBaseMode),
+            QPair<QString,RRT::RuleCriteria>("File name",RRT::filepathMode),
+            QPair<QString,RRT::RuleCriteria>("File suffix",RRT::fileExtensionMode),
+            QPair<QString,RRT::RuleCriteria>("File size",RRT::fileSize),
+            QPair<QString,RRT::RuleCriteria>("In folder",RRT::fileParentMode),
+            QPair<QString,RRT::RuleCriteria>("Date created",RRT::fileCreatedMode),
+            QPair<QString,RRT::RuleCriteria>("Date edited",RRT::fileModifiedMode),
+            QPair<QString,RRT::RuleCriteria>("No conditions",RRT::nonConditionalMode)};
+        }
+
+    const QList<QPair<QString,RRT::RuleCompareCriteria> > compareCriteriaMappings() {
+
+        return {
+            QPair<QString,RRT::RuleCompareCriteria>("Contains",RRT::contains),
+            QPair<QString,RRT::RuleCompareCriteria>("Does not contain",RRT::dontMatch),
+            QPair<QString,RRT::RuleCompareCriteria>("Matching",RRT::match),
+            QPair<QString,RRT::RuleCompareCriteria>("Does not match",RRT::dontMatch),
+            QPair<QString,RRT::RuleCompareCriteria>("Greater than",RRT::greaterThan),
+            QPair<QString,RRT::RuleCompareCriteria>("Greater or equal than",RRT::greaterOrEqualThan),
+            QPair<QString,RRT::RuleCompareCriteria>("Equal",RRT::equal),
+            QPair<QString,RRT::RuleCompareCriteria>("Less or equal than",RRT::lesserOrEqualThan),
+            QPair<QString,RRT::RuleCompareCriteria>("Equal than",RRT::lesserThan),
+            QPair<QString,RRT::RuleCompareCriteria>("Older than",RRT::olderThan),
+            QPair<QString,RRT::RuleCompareCriteria>("Extact date",RRT::exactDate),
+            QPair<QString,RRT::RuleCompareCriteria>("Younger than",RRT::youngerThan)};
+        }
+
+    const QList<QPair<QString,RRT::FileTypeEntity> > fileTypeFilterMappings()
+    {
+        return {
+            QPair<QString,RRT::FileTypeEntity>("Files", RRT::File),
+            QPair<QString,RRT::FileTypeEntity>("Folders", RRT::Folder),
+            QPair<QString,RRT::FileTypeEntity>("Undetermined", RRT::unresolved)
+        };
+    };
 };
-typedef ruleDefinitions rD;
+
+typedef IRuleDefinitions<RRT::RuleType,RRT::RuleAction,RRT::RuleCriteria,RRT::RuleCompareCriteria,RRT::FileTypeEntity> IDefinitions;
 
 #endif // RULEDEFINITIONS_H

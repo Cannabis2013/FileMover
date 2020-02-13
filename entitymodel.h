@@ -36,7 +36,7 @@ struct FileRuleEntity : public EntityModel
 {
     QStringList directoryPaths;
     FileObjectList allFiles;
-    rD::ruleAction fileActionRule = rD::none;
+    RRT::RuleAction fileActionRule = RRT::none;
     QStringList fileDestinations = QStringList();
 };
 
@@ -121,7 +121,7 @@ public:
     template<class T>
     static EntityModelDelegate<T>* buildFileActionEntity(const QStringList &dirPaths,
                                                      const FileObjectList &allFiles,
-                                                     const rD::ruleAction &fileActionRule,
+                                                     const RRT::RuleAction &fileActionRule,
                                                      const QStringList &destinations)
     {
         if(!std::is_base_of_v<EntityModel,T>)

@@ -1,16 +1,34 @@
 #include "addruledialog.h"
 
-AddRuleDialog::AddRuleDialog(QStringList watchFolders):
-    AbstractRuleDialog(watchFolders)
-{}
+AddRuleDialog::AddRuleDialog(QStringList watchFolders, IRuleDefinitions<RRT::RuleType,
+                             RRT::RuleAction,
+                             RRT::RuleCriteria,
+                             RRT::RuleCompareCriteria,
+                             RRT::FileTypeEntity> *service):
+    AbstractRuleDialog(watchFolders, service)
+{
+    QStringList actionList = ruleService->buildStringListFromEntity(RRT::action),
+            conditionList = ruleService->buildStringListFromEntity(RRT::criteria),
+            unitList = ruleService->sizeUnits();
+
+    actionBox->addItems(actionList);
+    conditionBox->addItems(conditionList);
+
+    applySelector->addItem( "Alle");
+    applySelector->addItems(watchFolders);
+    applySelector->setCurrentText("Alle");
+
+    conditionBox->setCurrentText(ruleService->buildDefaultStringValue());
+    conditionBox->currentTextChanged(ruleService->buildDefaultStringValue());
+    fileTypeSelector->addItems(ruleService->allFileTypeEntitiesToStrings());
+}
 
 
 void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
-    rD rDefs;
     int row = index.row();
     SubRule sRule = subRules.at(row);
-    QString condText = rDefs.fileConditionEntityToString(sRule.criteria);
+    QString condText = ruleService->buildStringFromCriteria(sRule.criteria);
     conditionBox->setCurrentText(condText);
     conditionBox->currentTextChanged(condText);
 }
@@ -19,36 +37,35 @@ void AddRuleDialog::on_addSubRule_clicked()
 {
     SubRule sRule;
 
-    rD rDefs;
     QString cText = conditionBox->currentText();
-    rD::ruleCriteria criteria = rDefs.buildCriteriaFromString(cText);
-    rD::ruleCompareCriteria compareCriteria = condWidget->currentCompareMode();
-    sRule.criteria = rDefs.buildCriteriaFromString(cText);
+    RRT::RuleCriteria criteria = ruleService->buildCriteriaFromString(cText);
+    RRT::RuleCompareCriteria compareCriteria = condWidget->currentCompareMode();
+    sRule.criteria = ruleService->buildCriteriaFromString(cText);
     sRule.compareCriteria = condWidget->currentCompareMode();
-    if(criteria == rD::fileBaseMode || criteria == rD::filepathMode|| criteria == rD::fileExtensionMode)
+    if(criteria == RRT::fileBaseMode || criteria == RRT::filepathMode|| criteria == RRT::fileExtensionMode)
     {
         sRule.keyWords = Worker::splitString(condWidget->keyWordValues());
 
     }
-    else if(criteria == rD::fileSize &&
-            compareCriteria != rD::interval)
+    else if(criteria == RRT::fileSize &&
+            compareCriteria != RRT::interval)
     {
         sRule.sizeLimit = condWidget->fixedSizeValues();
     }
-    else if(criteria == rD::fileSize &&
-            compareCriteria == rD::interval)
+    else if(criteria == RRT::fileSize &&
+            compareCriteria == RRT::interval)
     {
         sRule.sizeInterval = condWidget->intervalSizeValues();
     }
-    else if((criteria == rD::fileCreatedMode ||
-             criteria == rD::fileModifiedMode) &&
-            compareCriteria != rD::interval)
+    else if((criteria == RRT::fileCreatedMode ||
+             criteria == RRT::fileModifiedMode) &&
+            compareCriteria != RRT::interval)
     {
         sRule.date = condWidget->fixedConditionalDate();
     }
-    else if((criteria == rD::fileCreatedMode ||
-             criteria == rD::fileModifiedMode) &&
-            compareCriteria == rD::interval)
+    else if((criteria == RRT::fileCreatedMode ||
+             criteria == RRT::fileModifiedMode) &&
+            compareCriteria == RRT::interval)
     {
         sRule.dateIntervals = condWidget->intervalDates();
     }
@@ -74,7 +91,7 @@ void AddRuleDialog::on_addButton_clicked()
         }
     }
 
-    rD rDefs;
+    RuleDefinitions rDefs;
     Rule r;
     r.title = titleSelector->text();
     r.appliesToPath = applySelector->currentText();

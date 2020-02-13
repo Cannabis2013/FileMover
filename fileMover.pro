@@ -69,6 +69,7 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     TestRuleHelper.h \
+    TypeDefinitions.h \
     abstractcoreapplication.h \
     abstractruledialog.h \
     abstractframeimplementable.h \
@@ -87,7 +88,9 @@ HEADERS  += mainwindow.h \
     fileoperationworker.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
+    genericserviceinjector.h \
     imutableobject.h \
+    iruledefinitions.h \
     mainapplication.h \
     messageBox.h \
     modeldelegates.h \

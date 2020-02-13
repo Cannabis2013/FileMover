@@ -24,7 +24,7 @@ public:
 
     static FileObjectList generateFileObjects(const QStringList &paths,
                                               const QString &rPath = QString(),
-                                              rD::fileTypeEntity filter = rD::File);
+                                              RRT::FileTypeEntity filter = RRT::File);
 
 public slots:
 

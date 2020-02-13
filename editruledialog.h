@@ -7,7 +7,7 @@
 class EditRuleDialog : public AbstractRuleDialog
 {
 public:
-    EditRuleDialog(Rule editRule, QStringList watchFolders);
+    EditRuleDialog(const Rule editRule, QStringList watchFolders,IDefinitions *ruleService);
 
 
 protected slots:
@@ -16,6 +16,8 @@ protected slots:
     void on_removeSubRule_clicked();
 
 private:
+
+    void initializeInterface();
     Rule tempRule;
     QString originalRuleTitle;
 

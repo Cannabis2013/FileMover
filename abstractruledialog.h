@@ -31,7 +31,7 @@ class AbstractRuleDialog : public AbstractFrameImplementable
 {
     Q_OBJECT
 public:
-    explicit AbstractRuleDialog(QStringList watchFolders);
+    explicit AbstractRuleDialog(QStringList watchFolders, IDefinitions *rService);
     ~AbstractRuleDialog();
 
 signals:
@@ -45,7 +45,7 @@ protected slots:
     void on_conditionComboBox_currentIndexChanged(const QString &arg1);
 
     /*
-     * The following methods is pure virtual and needs to be implemented by its subclasses.
+     * Pure virtual methods
      */
 
     // Add rule button..
@@ -88,6 +88,7 @@ protected:
         *fixedSizeSelector;
     QStackedWidget *keywordViewer;
     QTreeWidget *subRuleView;
+    IDefinitions *ruleService;
 
     void updateView();
     void resetSubForm();

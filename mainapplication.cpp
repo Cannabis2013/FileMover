@@ -79,7 +79,7 @@ void MainApplication::clearFolders(QStringList paths)
     auto directoryPaths = paths;
     auto allFiles = fW::generateFileObjects(paths);
 
-    auto delegate = DelegateBuilder::buildFileActionEntity<EntityModel>(paths,allFiles,rD::Delete,QStringList());
+    auto delegate = DelegateBuilder::buildFileActionEntity<EntityModel>(paths,allFiles,RRT::Delete,QStringList());
 
     entityManager->addEntity(delegate);
 }

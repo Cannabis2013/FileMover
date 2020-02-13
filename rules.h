@@ -12,9 +12,9 @@ typedef QPair<IntervalUnit,IntervalUnit> SizeLimits;
 struct SubRule
 {
     // Enumerated values..
-    rD::copyMode copymode = rD::noMode;
-    rD::ruleCompareCriteria compareCriteria = rD::noCompareModeSet;
-    rD::ruleCriteria criteria = rD::nonConditionalMode;
+    RRT::CopyMode copymode = RRT::noMode;
+    RRT::RuleCompareCriteria compareCriteria = RRT::noCompareModeSet;
+    RRT::RuleCriteria criteria = RRT::nonConditionalMode;
 
     QPair<uint,QString>sizeLimit;
     SizeLimits sizeInterval;
@@ -30,8 +30,8 @@ typedef QPair<QPair<int,QString>,QPair<int,QString>> SizeInterval;
 struct Rule
 {
     QString title = "title";
-    rD::fileTypeEntity typeFilter = rD::File;
-    rD::ruleAction actionRuleEntity;
+    RRT::FileTypeEntity typeFilter = RRT::File;
+    RRT::RuleAction actionRuleEntity;
     QStringList destinationPaths;
     QString appliesToPath = "Alle";
     bool deepScanMode = false;

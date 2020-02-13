@@ -11,6 +11,7 @@
 #include <QTextCodec>
 #include <QDateEdit>
 
+#include "genericserviceinjector.h"
 #include "rulesmanager.h"
 
 
@@ -18,13 +19,14 @@ namespace Ui {
 class conditionWidget;
 }
 
-class conditionWidget : public QWidget
+class conditionWidget : public QWidget, GenericServiceInjector<IDefinitions>
 {
     Q_OBJECT
 
 public:
     explicit conditionWidget(QWidget *parent = nullptr);
     ~conditionWidget();
+
 
 private slots:
 
@@ -38,7 +40,7 @@ private:
     // Editrule related..
 
     void setKeyWords(QString kW);
-    void setConditionalFixedSize(QPair<int,QString>fSize, rD::ruleCompareCriteria cMode);
+    void setConditionalFixedSize(QPair<int,QString>fSize, RRT::RuleCompareCriteria cMode);
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
     void setFixedDate(myDateTime &dateTime);
     void setIntervalDate(QPair<myDateTime,myDateTime> iDate);
@@ -59,7 +61,7 @@ private:
     // Set the index of QStackWidget prior to the argument.
     void setCurrentView(int index);
 
-    void setCompareView(rD::ruleCompareCriteria compare);
+    void setCompareView(RRT::RuleCompareCriteria compare);
 
     // General values and other..
     void initDefaultOperators();
@@ -69,7 +71,7 @@ private:
 
     // non-void members..
     //  Comparemode
-    rD::ruleCompareCriteria currentCompareMode();
+    RRT::RuleCompareCriteria currentCompareMode();
     QString currentMode() const {return mainModeSelector->currentText();}
 
 
@@ -98,7 +100,7 @@ private:
     QPair<int,int>indexRange;
     QSpinBox *fixedSizeSelector,*minIntervalSizeSelector,*maxIntervalSizeSelector;
     QStackedWidget *mainModeView;
-    rD::ruleCriteria currentFileModeRule;
+    RRT::RuleCriteria currentFileModeRule;
     Ui::conditionWidget *ui;
 
     friend class AbstractRuleDialog;

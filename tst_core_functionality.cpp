@@ -98,9 +98,9 @@ private slots:
 private:
 
     AbstractCoreApplication *mApp;
-    const Virtual_Objects *initialize_pre_state(ruleDefinitions::ruleAction ruleAction,
-                                                ruleDefinitions::ruleCriteria criteria,
-                                                ruleDefinitions::ruleCompareCriteria compareCriteria, QStringList test_elements,
+    const Virtual_Objects *initialize_pre_state(RRT::RuleAction ruleAction,
+                                                RRT::RuleCriteria criteria,
+                                                RRT::RuleCompareCriteria compareCriteria, QStringList test_elements,
                                                 QString filepath,
                                                 TestFileCreator *file_creator, QStringList destinations = QStringList());
 };
@@ -181,8 +181,8 @@ void Core_functionality::insert_rule_filepath_match_success_1()
 
     QString preAPath = "/testpath", preTitle = "Test1";
     QStringList prekWrds = QStringList() << "T1" << "T2";
-    rD::ruleCriteria preCond = rD::filepathMode;
-    rD::ruleCompareCriteria preComp = rD::match;
+    RRT::RuleCriteria preCond = RRT::filepathMode;
+    RRT::RuleCompareCriteria preComp = RRT::match;
     Rule preRule;
 
     // Initialize pre-state
@@ -210,8 +210,8 @@ void Core_functionality::insert_rule_filepath_match_fail_1()
 
     QString preAPath = "/testpath", preTitle = "Test2";
     QStringList prekWrds = QStringList() << "T1" << "T2";
-    rD::ruleCriteria preCond = rD::filepathMode;
-    rD::ruleCompareCriteria preComp = rD::match;
+    RRT::RuleCriteria preCond = RRT::filepathMode;
+    RRT::RuleCompareCriteria preComp = RRT::match;
     Rule preRule;
 
     // Initialize pre-state
@@ -231,8 +231,8 @@ void Core_functionality::insert_rule_filepath_match_fail_1()
 
     QString postAPath = "/testpath", postTitle = "NotInTest";
     QStringList postkWrds = QStringList() << "T1" << "T2";
-    rD::ruleCriteria postCond = rD::filepathMode;
-    rD::ruleCompareCriteria postComp = rD::match;
+    RRT::RuleCriteria postCond = RRT::filepathMode;
+    RRT::RuleCompareCriteria postComp = RRT::match;
     Rule compareRule;
 
     // Post-state
@@ -257,8 +257,8 @@ void Core_functionality::insert_rule_filepath_match_fail_2()
 
     QString preAPath = "/testpath", preTitle = "Test3";
     QStringList prekWrds = QStringList() << "T1" << "T2";
-    rD::ruleCriteria preCond = rD::filepathMode;
-    rD::ruleCompareCriteria preComp = rD::match;
+    RRT::RuleCriteria preCond = RRT::filepathMode;
+    RRT::RuleCompareCriteria preComp = RRT::match;
     Rule preRule;
 
     // Initialize pre-state
@@ -278,8 +278,8 @@ void Core_functionality::insert_rule_filepath_match_fail_2()
 
     QString postAPath = "/testpath", postTitle = "Test3";
     QStringList postkWrds = QStringList() << "T1" << "T2";
-    rD::ruleCriteria postCond = rD::fileExtensionMode;
-    rD::ruleCompareCriteria postComp = rD::match;
+    RRT::RuleCriteria postCond = RRT::fileExtensionMode;
+    RRT::RuleCompareCriteria postComp = RRT::match;
     Rule compareRule;
 
     // Post-state
@@ -304,15 +304,15 @@ void Core_functionality::insert_rule_datecreated_before_succes1()
     QString title = "Date rule";
     Rule preRule;
     preRule.title = title;
-    preRule.actionRuleEntity = rD::Delete;
+    preRule.actionRuleEntity = RRT::Delete;
 
     SubRule sR;
 
     myDateTime mDate;
     mDate.setDate(QDate(2017,6,3));
 
-    sR.criteria = rD::fileCreatedMode;
-    sR.compareCriteria = rD::olderThan;
+    sR.criteria = RRT::fileCreatedMode;
+    sR.compareCriteria = RRT::olderThan;
     sR.date = mDate;
 
     preRule.subRules << sR;
@@ -330,15 +330,15 @@ void Core_functionality::insert_rule_datecreated_after_succes1()
     QString title = "Date rule2";
     Rule preRule;
     preRule.title = title;
-    preRule.actionRuleEntity = rD::Delete;
+    preRule.actionRuleEntity = RRT::Delete;
 
     SubRule sR;
 
     myDateTime mDate;
     mDate.setDate(QDate(2017,6,3));
 
-    sR.criteria = rD::fileCreatedMode;
-    sR.compareCriteria = rD::youngerThan;
+    sR.criteria = RRT::fileCreatedMode;
+    sR.compareCriteria = RRT::youngerThan;
     sR.date = mDate;
 
     preRule.subRules << sR;
@@ -356,7 +356,7 @@ void Core_functionality::insert_rule_datecreated_before_fail1()
     QString title = "Date rule";
     Rule preRule;
     preRule.title = title;
-    preRule.actionRuleEntity = rD::Delete;
+    preRule.actionRuleEntity = RRT::Delete;
 
     Rule compareRule = preRule;
 
@@ -366,14 +366,14 @@ void Core_functionality::insert_rule_datecreated_before_fail1()
     originalDate.setDate(QDate(2017,6,3));
     compareDate.setDate(QDate(2015,4,2));
 
-    sR1.criteria = rD::fileCreatedMode;
-    sR1.compareCriteria = rD::olderThan;
+    sR1.criteria = RRT::fileCreatedMode;
+    sR1.compareCriteria = RRT::olderThan;
     sR1.date = originalDate;
 
     preRule.subRules << sR1;
 
-    sR2.criteria = rD::fileCreatedMode;
-    sR2.compareCriteria = rD::olderThan;
+    sR2.criteria = RRT::fileCreatedMode;
+    sR2.compareCriteria = RRT::olderThan;
     sR2.date = compareDate;
 
     compareRule.subRules << sR2;
@@ -392,7 +392,7 @@ void Core_functionality::insert_rule_datecreated_before_fail2()
     QString title = "Date rule";
     Rule preRule;
     preRule.title = title;
-    preRule.actionRuleEntity = rD::Delete;
+    preRule.actionRuleEntity = RRT::Delete;
 
     Rule compareRule = preRule;
 
@@ -401,14 +401,14 @@ void Core_functionality::insert_rule_datecreated_before_fail2()
     myDateTime originalDate;
     originalDate.setDate(QDate(2017,6,3));
 
-    sR1.criteria = rD::fileCreatedMode;
-    sR1.compareCriteria = rD::olderThan;
+    sR1.criteria = RRT::fileCreatedMode;
+    sR1.compareCriteria = RRT::olderThan;
     sR1.date = originalDate;
 
     preRule.subRules << sR1;
 
-    sR2.criteria = rD::fileCreatedMode;
-    sR2.compareCriteria = rD::youngerThan;
+    sR2.criteria = RRT::fileCreatedMode;
+    sR2.compareCriteria = RRT::youngerThan;
     sR2.date = originalDate;
 
     compareRule.subRules << sR2;
@@ -427,12 +427,12 @@ void Core_functionality::insert_rule_sizeinterval_success_1()
     QString title = "Size interval rule 1";
     Rule preRule;
     preRule.title = title;
-    preRule.actionRuleEntity = rD::Delete;
+    preRule.actionRuleEntity = RRT::Delete;
 
     SubRule sR;
 
-    sR.criteria = rD::fileSize;
-    sR.compareCriteria = rD::interval;
+    sR.criteria = RRT::fileSize;
+    sR.compareCriteria = RRT::interval;
 
     SizeOperand minSize(244,"kb"),maxSize(512,"kb");
     sR.sizeInterval = SizeInterval(minSize,maxSize);
@@ -452,17 +452,17 @@ void Core_functionality::insert_rule_sizeinterval_fail_1()
     QString title = "Size interval rule 2";
     Rule preRule, compareRule;
     preRule.title = title;
-    preRule.actionRuleEntity = rD::Delete;
+    preRule.actionRuleEntity = RRT::Delete;
 
     compareRule = preRule;
 
     SubRule sR1,sR2;
 
-    sR1.criteria = rD::fileSize;
-    sR1.compareCriteria = rD::interval;
+    sR1.criteria = RRT::fileSize;
+    sR1.compareCriteria = RRT::interval;
 
-    sR2.criteria = rD::fileSize;
-    sR2.compareCriteria = rD::interval;
+    sR2.criteria = RRT::fileSize;
+    sR2.compareCriteria = RRT::interval;
 
 
     SizeOperand minSize1(244,"kb"),maxSize1(512,"kb");
@@ -500,9 +500,9 @@ void Core_functionality::operation_filepath_match_success_1()
 
     const Virtual_Objects *objects;
     try {
-        objects = initialize_pre_state(rD::Delete,
-                                       rD::filepathMode,
-                                       rD::match,
+        objects = initialize_pre_state(RRT::Delete,
+                                       RRT::filepathMode,
+                                       RRT::match,
                                        prekWrds,
                                        TEST_WORKING_PATH,
                                        f_creator);
@@ -598,9 +598,9 @@ void Core_functionality::operation_filepath_match_fail_1()
 
     const Virtual_Objects *objects;
     try {
-        objects = initialize_pre_state(rD::Delete,
-                                       rD::filepathMode,
-                                       rD::match,
+        objects = initialize_pre_state(RRT::Delete,
+                                       RRT::filepathMode,
+                                       RRT::match,
                                        prekWrds,
                                        TEST_WORKING_PATH,
                                        f_creator);
@@ -690,9 +690,9 @@ void Core_functionality::operation_filepath_contain_success_1()
 
     const Virtual_Objects *objects;
     try {
-        objects = initialize_pre_state(rD::Delete,
-                                       rD::filepathMode,
-                                       rD::contains,
+        objects = initialize_pre_state(RRT::Delete,
+                                       RRT::filepathMode,
+                                       RRT::contains,
                                        prekWrds,
                                        TEST_WORKING_PATH,
                                        f_creator);
@@ -775,9 +775,9 @@ void Core_functionality::operation_filepath_contain_fail_1()
 
     const Virtual_Objects *objects;
     try {
-        objects = initialize_pre_state(rD::Delete,
-                                       rD::filepathMode,
-                                       rD::contains,
+        objects = initialize_pre_state(RRT::Delete,
+                                       RRT::filepathMode,
+                                       RRT::contains,
                                        prekWrds,
                                        TEST_WORKING_PATH,
                                        f_creator);
@@ -864,9 +864,9 @@ void Core_functionality::operation_extension_match_success_1()
 
     const QString preTitle = "Test1";
     QStringList prekWrds = QStringList() << "txt" << "jpg";
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::fileExtensionMode;
-    rD::ruleCompareCriteria preComp = rD::match;
+    RRT::RuleAction preAction = RRT::Delete;
+    RRT::RuleCriteria preCond = RRT::fileExtensionMode;
+    RRT::RuleCompareCriteria preComp = RRT::match;
     Rule preRule;
 
     // Initialize pre-state
@@ -970,9 +970,9 @@ void Core_functionality::operation_size_less_than_success_1()
     uint sizeUnits = 100;
     QString unit = "kb";
     const QPair<uint,QString> upperLimit(sizeUnits,unit);
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::fileSize;
-    rD::ruleCompareCriteria preComp = rD::lesserThan;
+    RRT::RuleAction preAction = RRT::Delete;
+    RRT::RuleCriteria preCond = RRT::fileSize;
+    RRT::RuleCompareCriteria preComp = RRT::lesserThan;
     Rule preRule;
 
     // Initialize pre-state
@@ -1076,9 +1076,9 @@ void Core_functionality::operation_size_equal_success_1()
     // Pre-state variables
 
     const QString preTitle = "Test1";
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::fileSize;
-    rD::ruleCompareCriteria preComp = rD::equal;
+    RRT::RuleAction preAction = RRT::Delete;
+    RRT::RuleCriteria preCond = RRT::fileSize;
+    RRT::RuleCompareCriteria preComp = RRT::equal;
     Rule preRule;
 
     QString randomElement = test_file_set_1.value(qrand() % test_file_set_1.count() + 1);
@@ -1185,9 +1185,9 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
     uint sizeUnits = 100;
     QString unit = "kb";
     const QPair<uint,QString> lowerLimit(sizeUnits,unit);
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::fileSize;
-    rD::ruleCompareCriteria preComp = rD::lesserOrEqualThan;
+    RRT::RuleAction preAction = RRT::Delete;
+    RRT::RuleCriteria preCond = RRT::fileSize;
+    RRT::RuleCompareCriteria preComp = RRT::lesserOrEqualThan;
     Rule preRule;
 
     // Initialize pre-state
@@ -1279,9 +1279,9 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
     uint sizeUnits = 100;
     QString unit = "kb";
     const QPair<uint,QString> lowerLimit(sizeUnits,unit);
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::fileSize;
-    rD::ruleCompareCriteria preComp = rD::greaterOrEqualThan;
+    RRT::RuleAction preAction = RRT::Delete;
+    RRT::RuleCriteria preCond = RRT::fileSize;
+    RRT::RuleCompareCriteria preComp = RRT::greaterOrEqualThan;
     Rule preRule;
 
     // Initialize pre-state
@@ -1380,9 +1380,9 @@ void Core_functionality::operation_size_greater_than_success_1()
     uint sizeUnits = 100;
     QString unit = "kb";
     const QPair<uint,QString> lowerLimit(sizeUnits,unit);
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::fileSize;
-    rD::ruleCompareCriteria preComp = rD::greaterThan;
+    RRT::RuleAction preAction = RRT::Delete;
+    RRT::RuleCriteria preCond = RRT::fileSize;
+    RRT::RuleCompareCriteria preComp = RRT::greaterThan;
     Rule preRule;
 
     // Initialize pre-state
@@ -1490,9 +1490,9 @@ void Core_functionality::operation_size_interval_success_1()
     // Pre-state variables
 
     const QString preTitle = "Test1";
-    rD::ruleAction preAction = rD::Delete;
-    rD::ruleCriteria preCond = rD::fileSize;
-    rD::ruleCompareCriteria preComp = rD::interval;
+    RRT::RuleAction preAction = RRT::Delete;
+    RRT::RuleCriteria preCond = RRT::fileSize;
+    RRT::RuleCompareCriteria preComp = RRT::interval;
     SizeLimits interval;
     IntervalUnit lowerLimit, upperLimit;
 
@@ -1585,9 +1585,9 @@ void Core_functionality::operation_move_filepath_match_success_1()
 
     const Virtual_Objects *objects;
     try {
-        objects = initialize_pre_state(rD::Move,
-                                       rD::filepathMode,
-                                       rD::match,
+        objects = initialize_pre_state(RRT::Move,
+                                       RRT::filepathMode,
+                                       RRT::match,
                                        prekWrds,
                                        TEST_WORKING_PATH,
                                        f_creator,
@@ -1626,9 +1626,9 @@ void Core_functionality::operation_move_filepath_match_success_1()
 
 }
 
-const Virtual_Objects *Core_functionality::initialize_pre_state(ruleDefinitions::ruleAction ruleAction,
-                                                                ruleDefinitions::ruleCriteria criteria,
-                                                                ruleDefinitions::ruleCompareCriteria compareCriteria,
+const Virtual_Objects *Core_functionality::initialize_pre_state(RRT::RuleAction ruleAction,
+                                                                RRT::RuleCriteria criteria,
+                                                                RRT::RuleCompareCriteria compareCriteria,
                                                                 QStringList test_elements,QString filepath,
                                                                 TestFileCreator *file_creator,QStringList destinations)
 {
@@ -1636,9 +1636,9 @@ const Virtual_Objects *Core_functionality::initialize_pre_state(ruleDefinitions:
 
     const QString preTitle = "Test1";
     QStringList prekWrds = test_elements;
-    rD::ruleAction preAction = ruleAction;
-    rD::ruleCriteria preCond = criteria;
-    rD::ruleCompareCriteria preComp = compareCriteria;
+    RRT::RuleAction preAction = ruleAction;
+    RRT::RuleCriteria preCond = criteria;
+    RRT::RuleCompareCriteria preComp = compareCriteria;
     Rule preRule;
 
     // Initialize pre-state

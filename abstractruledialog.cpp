@@ -54,32 +54,32 @@ void AbstractRuleDialog::resetAllForm()
 
 void AbstractRuleDialog::updateConditionView(SubRule &sR)
 {
-    RRT::RuleCriteria cond = sR.criteria;
-    RRT::RuleCompareCriteria comp = sR.compareCriteria;
+    RRT::RuleCriteria cond = sR.criteria();
+    RRT::RuleCompareCriteria comp = sR.compareCriteria();
 
     if(cond == RRT::fileSize && comp != RRT::interval)
     {
-        condWidget->setConditionalFixedSize(sR.sizeLimit,sR.compareCriteria);
+        condWidget->setConditionalFixedSize(sR.sizeLimit(),sR.compareCriteria());
     }
     else if(cond == RRT::fileSize && comp== RRT::interval)
     {
-        condWidget->setConditionalIntervalSize(sR.sizeInterval);
+        condWidget->setConditionalIntervalSize(sR.sizeInterval());
     }
     else if((cond == RRT::fileCreatedMode || cond == RRT::fileModifiedMode) &&
             comp != RRT::interval)
     {
-        condWidget->setFixedDate(sR.date);
-        condWidget->setCompareView(sR.compareCriteria);
+        condWidget->setFixedDate(sR.date());
+        condWidget->setCompareView(sR.compareCriteria());
     }
     else if((cond == RRT::fileCreatedMode || cond == RRT::fileModifiedMode) &&
             comp == RRT::interval)
     {
-        condWidget->setIntervalDate(sR.dateIntervals);
+        condWidget->setIntervalDate(sR.dateIntervals());
     }
     else
     {
         condWidget->setKeyWords(rulesManager::ruleKeyWordToString(sR));
-        condWidget->setCompareView(sR.compareCriteria);
+        condWidget->setCompareView(sR.compareCriteria());
     }
 }
 
@@ -93,8 +93,8 @@ void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
     int rowIndex = index.row();
     RuleDefinitions rDefs;
     SubRule clickedSubRule = subRules.at(rowIndex);
-    conditionBox->setCurrentText(rDefs.buildStringFromCriteria(clickedSubRule.criteria));
-    conditionBox->currentTextChanged(rDefs.buildStringFromCriteria( clickedSubRule.criteria));
+    conditionBox->setCurrentText(rDefs.buildStringFromCriteria(clickedSubRule.criteria()));
+    conditionBox->currentTextChanged(rDefs.buildStringFromCriteria( clickedSubRule.criteria()));
 
     updateConditionView(clickedSubRule);
 }
@@ -119,34 +119,34 @@ void AbstractRuleDialog::updateView()
     {
         QStringList headerData;
         SubRule sRule = subRules.at(i);
-        RRT::RuleCriteria condition = sRule.criteria;
+        RRT::RuleCriteria condition = sRule.criteria();
 
         headerData << ruleService->buildStringFromCriteria(condition);
-        headerData << ruleService->buildStringFromCompareCriteria(sRule.compareCriteria);
+        headerData << ruleService->buildStringFromCompareCriteria(sRule.compareCriteria());
 
         if((condition == RRT::fileCreatedMode || condition == RRT::fileModifiedMode) &&
-                sRule.compareCriteria != RRT::interval)
+                sRule.compareCriteria() != RRT::interval)
         {
             headerData << rulesManager::ruleKeyWordToString(sRule);
         }
         else if((condition == RRT::fileCreatedMode || condition == RRT::fileModifiedMode) &&
-                sRule.compareCriteria == RRT::interval)
+                sRule.compareCriteria() == RRT::interval)
         {
             headerData << rulesManager::ruleDateLimitsToString(sRule);
         }
         else if(condition == RRT::fileSize &&
-                sRule.compareCriteria != RRT::interval)
+                sRule.compareCriteria() != RRT::interval)
         {
            headerData << rulesManager::ruleKeyWordToString(sRule);
         }
         else if(condition == RRT::fileSize &&
-                sRule.compareCriteria == RRT::interval)
+                sRule.compareCriteria() == RRT::interval)
         {
             headerData << rulesManager::ruleSizeLimitsToString(sRule);
         }
         else
         {
-            headerData << rulesManager::mergeStringList(sRule.keyWords);
+            headerData << rulesManager::mergeStringList(sRule.keyWords());
         }
 
         new QTreeWidgetItem(subRuleView,headerData);

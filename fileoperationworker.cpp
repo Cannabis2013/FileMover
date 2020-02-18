@@ -340,11 +340,11 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         auto model = modelDelegate->model();
         bool condition = false;
         // Evaluating filename patterns
-        if(rule.criteria == RRT::fileBaseMode)
+        if(rule.criteria() == RRT::fileBaseMode)
         {
-            if(rule.compareCriteria == RRT::contains)
+            if(rule.compareCriteria() == RRT::contains)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                 {
                     if(model->baseName().contains(kWord))
                     {
@@ -353,9 +353,9 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                     }
                 }
             }
-            else if(rule.compareCriteria == RRT::dontContain)
+            else if(rule.compareCriteria() == RRT::dontContain)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                 {
                     if(model->baseName().contains(kWord))
                     {
@@ -364,9 +364,9 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                     }
                 }
             }
-            else if(rule.compareCriteria == RRT::match)
+            else if(rule.compareCriteria() == RRT::match)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                 {
                     if(model->baseName() == kWord)
                     {
@@ -375,20 +375,20 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                     }
                 }
             }
-            else if(rule.compareCriteria == RRT::dontMatch)
+            else if(rule.compareCriteria() == RRT::dontMatch)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                     if(model->baseName() == kWord)
                         condition = true;
                 if(!condition)
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
         }
-        else if(rule.criteria == RRT::filepathMode)
+        else if(rule.criteria() == RRT::filepathMode)
         {
-            if(rule.compareCriteria == RRT::contains)
+            if(rule.compareCriteria() == RRT::contains)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                 {
                     if(model->fileName().contains(kWord))
                     {
@@ -397,9 +397,9 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                     }
                 }
             }
-            else if(rule.compareCriteria == RRT::dontContain)
+            else if(rule.compareCriteria() == RRT::dontContain)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                 {
                     if(model->fileName().contains(kWord))
                         condition = true;
@@ -407,18 +407,18 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                 if(!condition)
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
-            else if(rule.compareCriteria == RRT::match)
+            else if(rule.compareCriteria() == RRT::match)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                     if(model->fileName() == kWord)
                     {
                         filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                         break;
                     }
             }
-            else if(rule.compareCriteria == RRT::dontMatch)
+            else if(rule.compareCriteria() == RRT::dontMatch)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                     if(model->fileName() == kWord)
                         condition = true;
                 if(!condition)
@@ -427,37 +427,37 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         }
 
         // Evaluating file extension related patterns
-        else if(rule.criteria == RRT::fileExtensionMode && model->isFile())
+        else if(rule.criteria() == RRT::fileExtensionMode && model->isFile())
         {
-            if(rule.compareCriteria == RRT::contains)
+            if(rule.compareCriteria() == RRT::contains)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                     if(model->suffix().contains(kWord))
                     {
                         filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                         break;
                     }
             }
-            else if(rule.compareCriteria == RRT::dontContain)
+            else if(rule.compareCriteria() == RRT::dontContain)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                     if(model->suffix().contains(kWord))
                         condition = true;
                 if(!condition)
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
-            else if(rule.compareCriteria == RRT::match)
+            else if(rule.compareCriteria() == RRT::match)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                     if(model->suffix() == kWord)
                     {
                         filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                         break;
                     }
             }
-            else if(rule.compareCriteria == RRT::dontMatch)
+            else if(rule.compareCriteria() == RRT::dontMatch)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                     if(model->suffix() == kWord)
                         condition = true;
                 if(!condition)
@@ -468,28 +468,28 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
          * Check if parent folder name meets the criterias set
          */
 
-        else if(rule.criteria == RRT::fileParentMode)
+        else if(rule.criteria() == RRT::fileParentMode)
         {
-            if(rule.compareCriteria == RRT::contains)
+            if(rule.compareCriteria() == RRT::contains)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                     if(static_cast<FileModel*>(model->_parent)->fileName().contains(kWord))
                         condition = true;
 
                 if(condition)
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
-            else if(rule.compareCriteria == RRT::dontContain)
+            else if(rule.compareCriteria() == RRT::dontContain)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                     if(static_cast<FileModel*>(model->_parent)->fileName().contains(kWord))
                         condition = true;
                 if(!condition)
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
-            else if(rule.compareCriteria == RRT::match)
+            else if(rule.compareCriteria() == RRT::match)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                 {
                     if(static_cast<FileModel*>(model->_parent)->fileName() == kWord)
                         condition = true;
@@ -497,9 +497,9 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                 if(condition)
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
-            else if(rule.compareCriteria == RRT::dontMatch)
+            else if(rule.compareCriteria() == RRT::dontMatch)
             {
-                for(QString kWord : rule.keyWords)
+                for(QString kWord : rule.keyWords())
                 {
                     if(static_cast<FileModel*>(model->_parent)->fileName() == kWord)
                         condition = true;
@@ -508,66 +508,66 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
         }
-        else if(rule.criteria == RRT::fileSize)
+        else if(rule.criteria() == RRT::fileSize)
         {
-            if(rule.compareCriteria != RRT::interval)
+            if(rule.compareCriteria() != RRT::interval)
             {
-                if(rule.compareCriteria == RRT::lesserThan && model->size() < fW::convertToBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                if(rule.compareCriteria() == RRT::lesserThan && model->size() < fW::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria == RRT::lesserOrEqualThan &&
-                        model->size() <= fW::convertToBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                else if(rule.compareCriteria() == RRT::lesserOrEqualThan &&
+                        model->size() <= fW::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria == RRT::equal &&
-                        model->size() == fW::convertToBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                else if(rule.compareCriteria() == RRT::equal &&
+                        model->size() == fW::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria == RRT::greaterOrEqualThan &&
-                        model->size() >= fW::convertToBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                else if(rule.compareCriteria() == RRT::greaterOrEqualThan &&
+                        model->size() >= fW::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria == RRT::greaterThan &&
-                        model->size() > fW::convertToBytes(rule.sizeLimit.first,rule.sizeLimit.second))
+                else if(rule.compareCriteria() == RRT::greaterThan &&
+                        model->size() > fW::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
-            else if(rule.compareCriteria == RRT::interval &&
-                    model->size() >= fW::convertToBytes(rule.sizeInterval.first.first,rule.sizeInterval.first.second) &&
-                    model->size() <= fW::convertToBytes(rule.sizeInterval.second.first,rule.sizeInterval.second.second))
+            else if(rule.compareCriteria() == RRT::interval &&
+                    model->size() >= fW::convertToBytes(rule.sizeInterval().first.first,rule.sizeInterval().first.second) &&
+                    model->size() <= fW::convertToBytes(rule.sizeInterval().second.first,rule.sizeInterval().second.second))
                 filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
         }
-        else if(rule.criteria == RRT::fileCreatedMode)
+        else if(rule.criteria() == RRT::fileCreatedMode)
         {
-            if(rule.compareCriteria == RRT::interval)
+            if(rule.compareCriteria() == RRT::interval)
             {
-                if(rule.dateIntervals.first > model->birthTime() && rule.dateIntervals.second < model->birthTime())
+                if(rule.dateIntervals().first > model->birthTime() && rule.dateIntervals().second < model->birthTime())
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
-            else if(rule.compareCriteria != RRT::interval)
+            else if(rule.compareCriteria() != RRT::interval)
             {
-                if(rule.compareCriteria == RRT::youngerThan && rule.date > model->birthTime())
+                if(rule.compareCriteria() == RRT::youngerThan && rule.date() > model->birthTime())
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria == RRT::exactDate && rule.date == model->birthTime())
+                else if(rule.compareCriteria() == RRT::exactDate && rule.date() == model->birthTime())
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria == RRT::olderThan && rule.date < model->birthTime())
+                else if(rule.compareCriteria() == RRT::olderThan && rule.date() < model->birthTime())
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
 
         }
-        else if(rule.criteria == RRT::fileModifiedMode)
+        else if(rule.criteria() == RRT::fileModifiedMode)
         {
-            if(rule.compareCriteria == RRT::interval)
+            if(rule.compareCriteria() == RRT::interval)
             {
-                if(rule.dateIntervals.first > model->lastModified() && rule.dateIntervals.second < model->lastModified())
+                if(rule.dateIntervals().first > model->lastModified() && rule.dateIntervals().second < model->lastModified())
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
-            else if(rule.compareCriteria != RRT::interval)
+            else if(rule.compareCriteria() != RRT::interval)
             {
-                if(rule.compareCriteria == RRT::youngerThan && rule.date > model->lastModified())
+                if(rule.compareCriteria() == RRT::youngerThan && rule.date() > model->lastModified())
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria == RRT::exactDate && rule.date == model->lastModified())
+                else if(rule.compareCriteria() == RRT::exactDate && rule.date() == model->lastModified())
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria == RRT::olderThan && rule.date < model->lastModified())
+                else if(rule.compareCriteria() == RRT::olderThan && rule.date() < model->lastModified())
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
         }
-        else if(rule.criteria == RRT::nonConditionalMode)
+        else if(rule.criteria() == RRT::nonConditionalMode)
         {
             filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
         }

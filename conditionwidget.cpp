@@ -77,7 +77,7 @@ void conditionWidget::setConditionalIntervalSize(QPair<QPair<int, QString>, QPai
     ui->sizeIntervalMaxUnit->setCurrentText(maxSize.second);
 }
 
-void conditionWidget::setFixedDate(myDateTime &dateTime)
+void conditionWidget::setFixedDate(const myDateTime &dateTime)
 {
     RuleDefinitions rDefs;
     ui->modeSelector->setCurrentText(rDefs.intervalConditionalList.at(0));
@@ -262,9 +262,9 @@ QString conditionWidget::keyWordValues() const
     return ui->keyWordSelector->text();
 }
 
-QPair<uint, QString> conditionWidget::fixedSizeValues() const
+QPair<quint64, QString> conditionWidget::fixedSizeValues() const
 {
-    QPair<uint,QString> result;
+    QPair<quint64,QString> result;
     uint val = fixedSizeSelector->value();
     QString unit = fixedSizeUnitSelector->currentText();
 
@@ -274,9 +274,9 @@ QPair<uint, QString> conditionWidget::fixedSizeValues() const
     return result;
 }
 
-QPair<QPair<int, QString>, QPair<int, QString> > conditionWidget::intervalSizeValues() const
+QPair<QPair<quint64, QString>, QPair<quint64, QString> > conditionWidget::intervalSizeValues() const
 {
-    QPair<QPair<int,QString>,QPair<int,QString>> result;
+    QPair<QPair<quint64,QString>,QPair<quint64,QString>> result;
 
     QPair<int,QString>minValues;
     QPair<int,QString>maxValues;

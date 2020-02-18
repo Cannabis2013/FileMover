@@ -91,16 +91,16 @@ void MainApplication::clearFoldersAccordingToRules(QStringList paths)
         clearFolders(paths);
     for(const Rule &r : rules)
     {
-        FileObjectList allFiles = fW::generateFileObjects(paths,r.appliesToPath,r.typeFilter);
-        for(SubRule sR : r.subRules)
+        FileObjectList allFiles = fW::generateFileObjects(paths,r.appliesToPath(),r.typeFilter());
+        for(SubRule sR : r.subRules())
             allFiles = fWorker->processFileObjects(allFiles,sR);
 
         emit sendEntity(
                     DelegateBuilder::buildFileActionEntity<EntityModel>(
                         paths,
                         allFiles,
-                        r.actionRuleEntity,
-                        r.destinationPaths));
+                        r.actionRuleEntity(),
+                        r.destinationPaths()));
     }
 }
 

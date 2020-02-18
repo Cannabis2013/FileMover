@@ -45,37 +45,37 @@ QStringList rulesManager::splitString(const QString split)
 
 QString rulesManager::ruleKeyWordToString(SubRule sRule)
 {
-    if(sRule.criteria == RRT::fileSize &&
-            sRule.compareCriteria != RRT::interval)
-        return QString::number(sRule.sizeLimit.first) + " " + sRule.sizeLimit.second;
-    else if(sRule.criteria == RRT::fileSize &&
-            sRule.compareCriteria == RRT::interval)
+    if(sRule.criteria() == RRT::fileSize &&
+            sRule.compareCriteria() != RRT::interval)
+        return QString::number(sRule.sizeLimit().first) + " " + sRule.sizeLimit().second;
+    else if(sRule.criteria() == RRT::fileSize &&
+            sRule.compareCriteria() == RRT::interval)
         return rulesManager::ruleSizeLimitsToString(sRule);
-    else if((sRule.criteria == RRT::fileCreatedMode || sRule.criteria == RRT::fileModifiedMode) &&
-            sRule.compareCriteria != RRT::interval)
-        return sRule.date.toString("dd.MM.yyyy");
-    else if((sRule.criteria == RRT::fileCreatedMode || sRule.criteria == RRT::fileModifiedMode) &&
-            sRule.compareCriteria == RRT::interval)
+    else if((sRule.criteria() == RRT::fileCreatedMode || sRule.criteria() == RRT::fileModifiedMode) &&
+            sRule.compareCriteria() != RRT::interval)
+        return sRule.date().toString("dd.MM.yyyy");
+    else if((sRule.criteria() == RRT::fileCreatedMode || sRule.criteria() == RRT::fileModifiedMode) &&
+            sRule.compareCriteria() == RRT::interval)
         return rulesManager::ruleDateLimitsToString(sRule);
     else
-        return Worker::mergeStringList(sRule.keyWords);
+        return Worker::mergeStringList(sRule.keyWords());
 }
 
 
 QString rulesManager::ruleSizeLimitsToString(SubRule sRule)
 {
-    QString minSize = QString::number(sRule.sizeInterval.first.first),
-            maxSize = QString::number(sRule.sizeInterval.second.first);
-    QString sizeUnitMin = sRule.sizeInterval.first.second,
-            sizeUnitMax = sRule.sizeInterval.second.second;
+    QString minSize = QString::number(sRule.sizeInterval().first.first),
+            maxSize = QString::number(sRule.sizeInterval().second.first);
+    QString sizeUnitMin = sRule.sizeInterval().first.second,
+            sizeUnitMax = sRule.sizeInterval().second.second;
     return "Min: " + minSize + " " + sizeUnitMin
             + " " + "max: " + maxSize + " " + sizeUnitMax;
 }
 
 QString rulesManager::ruleDateLimitsToString(SubRule sRule)
 {
-    QString startDate = sRule.dateIntervals.first.date().toString("dd.MM.yyyy"),
-            endDate = sRule.dateIntervals.second.date().toString("dd.MM.yyyy");
+    QString startDate = sRule.dateIntervals().first.date().toString("dd.MM.yyyy"),
+            endDate = sRule.dateIntervals().second.date().toString("dd.MM.yyyy");
     return "Start dato: " + startDate + " slut dato: " + endDate;
 }
 
@@ -85,15 +85,16 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     QList<QTreeWidgetItem*>resultingList;
     for(Rule r : rules)
     {
-        QStringList headerData {r.title,rDefs.fileActionEntityToString(r.actionRuleEntity),Worker::mergeStringList(r.destinationPaths)};
+        QStringList headerData {r.title(),rDefs.fileActionEntityToString(r.actionRuleEntity()),
+                    Worker::mergeStringList(r.destinationPaths())};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         QIcon itemIcon = QIcon(":/My Images/Ressources/rule_icon.png");
         pItem->setIcon(0,itemIcon);
-        for(SubRule sRule : r.subRules)
+        for(SubRule sRule : r.subRules())
         {
             QStringList hData;
-            hData << rDefs.buildStringFromCriteria(sRule.criteria) <<
-                     rDefs.buildStringFromCompareCriteria(sRule.compareCriteria) <<
+            hData << rDefs.buildStringFromCriteria(sRule.criteria()) <<
+                     rDefs.buildStringFromCompareCriteria(sRule.compareCriteria()) <<
                      rulesManager::ruleKeyWordToString(sRule);
 
             QTreeWidgetItem *cItem = new QTreeWidgetItem(hData);
@@ -124,7 +125,7 @@ void rulesManager::removeRule(const QString title)
 {
     for (int i = 0; i < rules.count(); ++i) {
         Rule r = rules.at(i);
-        if(r.title == title)
+        if(r.title() == title)
         {
             rules.removeAt(i);
             emit stateChanged();
@@ -138,7 +139,7 @@ const Rule rulesManager::rule(QString title)
 {
     for(Rule rule : rules)
     {
-        if(rule.title == title)
+        if(rule.title() == title)
             return Rule(rule);
     }
 
@@ -152,49 +153,64 @@ void rulesManager::readSettings()
     int total = pSettings->beginReadArray("Rules");
     for (int i = 0; i < total; ++i)
     {
-        Rule r;
         pSettings->setArrayIndex(i);
-        r.title = pSettings->value("Title","Title").toString();
-        r.actionRuleEntity = static_cast<RRT::RuleAction>(pSettings->value("Action","").toInt());
-        r.appliesToPath = pSettings->value("ApplyPath","Alle").toString();
-        r.typeFilter = static_cast<RRT::FileTypeEntity>(pSettings->value("Scan type filter","").toInt());
-        r.destinationPaths = Worker::splitString(pSettings->value("Destination paths","").toString());
+        auto title = pSettings->value("Title","Title").toString();
+        auto action = static_cast<RRT::RuleAction>(pSettings->value("Action","").toInt());
+        auto appliesTo = pSettings->value("ApplyPath","Alle").toString();
+        auto type = static_cast<RRT::FileTypeEntity>(pSettings->value("Scan type filter","").toInt());
+        auto destinations = Worker::splitString(pSettings->value("Destination paths","").toString());
         int count = pSettings->beginReadArray("Subrules");
+        auto r = RuleBuilder::buildOrdinaryRule(title,appliesTo,destinations,action,type);
         for (int j = 0; j < count; ++j)
         {
-            SubRule sRule;
             pSettings->setArrayIndex(j);
 
-            sRule.copymode = static_cast<RRT::CopyMode>(pSettings->value("Copymode",0).toInt());
-            sRule.criteria = static_cast<RRT::RuleCriteria>(pSettings->value("Condition","").toInt());
-            sRule.compareCriteria = static_cast<RRT::RuleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
+            //auto mode = static_cast<RRT::CopyMode>(pSettings->value("Copymode",0).toInt());
+            auto criteria = static_cast<RRT::RuleCriteria>(pSettings->value("Condition","").toInt());
+            auto compareCriteria = static_cast<RRT::RuleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
 
-            sRule.matchWholeWords = pSettings->value("Matchwholewords",false).toBool();
-            sRule.keyWords = Worker::splitString(pSettings->value("Keywords","").toString());
+            auto matchWholeWords = pSettings->value("Matchwholewords",false).toBool();
+            auto keyWords = Worker::splitString(pSettings->value("Keywords","").toString());
 
-            sRule.sizeLimit.first = pSettings->value("Sizelimit",0).toInt();
-            sRule.sizeLimit.second = pSettings->value("Sizelimitunit","kb").toString();
+            auto sLimit = pSettings->value("Sizelimit",0).toInt();
+            auto sizeUnit = pSettings->value("Sizelimitunit","kb").toString();
+            auto sizeLimit = SizeLimit(sLimit,sizeUnit);
 
             pSettings->beginGroup("Sizelimits");
-            sRule.sizeInterval.first.first = pSettings->value("Minsizeinterval",0).toInt();
-            sRule.sizeInterval.first.second = pSettings->value("Minsizeunitinterval","kb").toString();
-            sRule.sizeInterval.second.first = pSettings->value("Maxsizeinterval",0).toInt();
-            sRule.sizeInterval.second.second = pSettings->value("Maxsizeunitinterval","kb").toString();
+
+            auto lowerSizeLimit = pSettings->value("Minsizeinterval",0).toInt();
+            auto lowerSizeUnit = pSettings->value("Minsizeunitinterval","kb").toString();
+            auto upperSizeLimit = pSettings->value("Maxsizeinterval",0).toInt();
+            auto upperSizeUnit = pSettings->value("Maxsizeunitinterval","kb").toString();
+            auto lowerInterval = SizeLimit(lowerSizeLimit,lowerSizeUnit);
+            auto upperInterval = SizeLimit(upperSizeLimit,upperSizeUnit);
+            auto sizeLimits = SizeLimits(lowerInterval,upperInterval);
+
             pSettings->endGroup();
             QDateTime persistedDate = QDateTime::fromString(pSettings->value("Datetime","").toString(),"dd.MM.yyyy");
-            sRule.date = static_cast<myDateTime>(persistedDate);
+            auto date = static_cast<myDateTime>(persistedDate);
 
             pSettings->beginGroup("Datelimits");
 
             QDateTime persistedStartDate = myDateTime::fromString(pSettings->value("Startdate","01.01.2000").toString());
             QDateTime persistedEndDate = myDateTime::fromString(pSettings->value("Enddate","01.01.2000").toString());
 
-            sRule.dateIntervals.first = static_cast<myDateTime>(persistedStartDate);
-            sRule.dateIntervals.second = static_cast<myDateTime>(persistedEndDate);
-
+            auto lowerDate = static_cast<myDateTime>(persistedStartDate);
+            auto upperDate = static_cast<myDateTime>(persistedEndDate);
+            auto dates = DateInterval(lowerDate,upperDate);
             pSettings->endGroup();
 
-            r.subRules.append(sRule);
+            auto sRule = RuleBuilder::buildSubRule(criteria,
+                                                   compareCriteria,
+                                                   keyWords,
+                                                   sizeLimit,
+                                                   date,
+                                                   sizeLimits,
+                                                   dates,
+                                                   matchWholeWords);
+
+            RuleBuilder::attachCriteria(sRule,r);
+
         }
         pSettings->endArray();
         rules << r;
@@ -213,14 +229,14 @@ void rulesManager::writeSettings()
     {
         pSettings->setArrayIndex(i);
         Rule r = rules.at(i);
-        pSettings->setValue("Title",r.title);
-        pSettings->setValue("Action",r.actionRuleEntity);
-        pSettings->setValue("Scan type filter",r.typeFilter);
-        pSettings->setValue("ApplyPath",r.appliesToPath);
+        pSettings->setValue("Title",r.title());
+        pSettings->setValue("Action",r.actionRuleEntity());
+        pSettings->setValue("Scan type filter",r.typeFilter());
+        pSettings->setValue("ApplyPath",r.appliesToPath());
         pSettings->setValue("Destination paths",
-                   mergeStringList(r.destinationPaths));
-        pSettings->setValue("Scan Mode",r.deepScanMode);
-        QList<SubRule>sRules = r.subRules;
+                   mergeStringList(r.destinationPaths()));
+        pSettings->setValue("Scan Mode",r.deepScanMode());
+        QList<SubRule>sRules = r.subRules();
         int total = sRules.count();
         pSettings->beginWriteArray("Subrules",total);
         for (int j = 0; j < total; ++j)
@@ -228,28 +244,28 @@ void rulesManager::writeSettings()
             SubRule sRule = sRules.at(j);
             pSettings->setArrayIndex(j);
 
-            pSettings->setValue("Copymode",sRule.copymode);
-            pSettings->setValue("Condition",sRule.criteria);
-            pSettings->setValue("Comparemode",sRule.compareCriteria);
+            pSettings->setValue("Copymode",sRule.copyMode());
+            pSettings->setValue("Condition",sRule.criteria());
+            pSettings->setValue("Comparemode",sRule.compareCriteria());
 
-            pSettings->setValue("Matchwholewords",sRule.matchWholeWords);
-            pSettings->setValue("Keywords",Worker::mergeStringList(sRule.keyWords));
+            pSettings->setValue("Matchwholewords",sRule.matchWholeWords());
+            pSettings->setValue("Keywords",Worker::mergeStringList(sRule.keyWords()));
 
-            pSettings->setValue("Sizelimit",sRule.sizeLimit.first);
-            pSettings->setValue("Sizelimitunit",sRule.sizeLimit.second);
+            pSettings->setValue("Sizelimit",sRule.sizeLimit().first);
+            pSettings->setValue("Sizelimitunit",sRule.sizeLimit().second);
 
             pSettings->beginGroup("Sizelimits");
-            pSettings->setValue("Minsizeinterval",sRule.sizeInterval.first.first);
-            pSettings->setValue("Minsizeunitinterval",sRule.sizeInterval.first.second);
-            pSettings->setValue("Maxsizeinterval",sRule.sizeInterval.second.first);
-            pSettings->setValue("Maxsizeunitinterval",sRule.sizeInterval.second.second);
+            pSettings->setValue("Minsizeinterval",sRule.sizeInterval().first.first);
+            pSettings->setValue("Minsizeunitinterval",sRule.sizeInterval().first.second);
+            pSettings->setValue("Maxsizeinterval",sRule.sizeInterval().second.first);
+            pSettings->setValue("Maxsizeunitinterval",sRule.sizeInterval().second.second);
             pSettings->endGroup();
 
-            pSettings->setValue("Datetime",sRule.date.toString("dd.MM.yyyy"));
+            pSettings->setValue("Datetime",sRule.date().toString("dd.MM.yyyy"));
 
             pSettings->beginGroup("Datelimits");
-            pSettings->setValue("Startdate",sRule.dateIntervals.first.toString("dd.MM.yyyy"));
-            pSettings->setValue("Enddate",sRule.dateIntervals.second.toString("dd.MM.yyyy"));
+            pSettings->setValue("Startdate",sRule.dateIntervals().first.toString("dd.MM.yyyy"));
+            pSettings->setValue("Enddate",sRule.dateIntervals().second.toString("dd.MM.yyyy"));
             pSettings->endGroup();
         }
         pSettings->endArray();
@@ -267,7 +283,7 @@ void rulesManager::replaceRule(const Rule r, QString title)
 {
     for (int i = 0; i < rules.count(); ++i) {
         Rule currentRule = rules.at(i);
-        if(currentRule.title == title)
+        if(currentRule.title() == title)
         {
             rules.replace(i,r);
             emit stateChanged();

@@ -42,7 +42,7 @@ private:
     void setKeyWords(QString kW);
     void setConditionalFixedSize(QPair<int,QString>fSize, RRT::RuleCompareCriteria cMode);
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
-    void setFixedDate(myDateTime &dateTime);
+    void setFixedDate(const myDateTime &dateTime);
     void setIntervalDate(QPair<myDateTime,myDateTime> iDate);
     void setTypeValues(Worker::iteratorMode tMode);
 
@@ -80,8 +80,8 @@ private:
     // Filename/filepath related..
     QString keyWordValues() const;
     // Get size values..
-    QPair<uint, QString> fixedSizeValues() const;
-    QPair<QPair<int,QString>,QPair<int,QString>> intervalSizeValues() const;
+    QPair<quint64, QString> fixedSizeValues() const;
+    QPair<QPair<quint64,QString>,QPair<quint64,QString>> intervalSizeValues() const;
     // Get Date values..
     myDateTime fixedConditionalDate() const;
     QPair<myDateTime,myDateTime>intervalDates() const;
@@ -91,11 +91,11 @@ private:
     // Member variables...
     QCheckBox *folderCheckBox,*fileCheckBox;
     QComboBox *mainModeSelector,
-    *fixedSizeUnitSelector,
-    *fixedSizeModeSelector,
-    *sizeMinIntervalUnitSelector,
-    *sizeMaxIntervalUnitSelector,
-    *dateOperatorSelector;
+        *fixedSizeUnitSelector,
+        *fixedSizeModeSelector,
+        *sizeMinIntervalUnitSelector,
+        *sizeMaxIntervalUnitSelector,
+        *dateOperatorSelector;
     QLineEdit *keyWordSelector;
     QPair<int,int>indexRange;
     QSpinBox *fixedSizeSelector,*minIntervalSizeSelector,*maxIntervalSizeSelector;

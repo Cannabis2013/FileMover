@@ -28,47 +28,33 @@ void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     int row = index.row();
     SubRule sRule = subRules.at(row);
-    QString condText = ruleService->buildStringFromCriteria(sRule.criteria);
+    QString condText = ruleService->buildStringFromCriteria(sRule.criteria());
     conditionBox->setCurrentText(condText);
     conditionBox->currentTextChanged(condText);
 }
 
 void AddRuleDialog::on_addSubRule_clicked()
 {
-    SubRule sRule;
+    auto cText = conditionBox->currentText();
+    auto criteria = ruleService->buildCriteriaFromString(cText);
+    auto compareCriteria = condWidget->currentCompareMode();
+    auto keyWords = Worker::splitString(condWidget->keyWordValues());
+    auto sizeLimit = condWidget->fixedSizeValues();
+    auto sizeLimits = condWidget->intervalSizeValues();
+    auto date = condWidget->fixedConditionalDate();
+    auto dates = condWidget->intervalDates();
+    auto matchWholeWords = compareCriteria == RRT::match;
 
-    QString cText = conditionBox->currentText();
-    RRT::RuleCriteria criteria = ruleService->buildCriteriaFromString(cText);
-    RRT::RuleCompareCriteria compareCriteria = condWidget->currentCompareMode();
-    sRule.criteria = ruleService->buildCriteriaFromString(cText);
-    sRule.compareCriteria = condWidget->currentCompareMode();
-    if(criteria == RRT::fileBaseMode || criteria == RRT::filepathMode|| criteria == RRT::fileExtensionMode)
-    {
-        sRule.keyWords = Worker::splitString(condWidget->keyWordValues());
 
-    }
-    else if(criteria == RRT::fileSize &&
-            compareCriteria != RRT::interval)
-    {
-        sRule.sizeLimit = condWidget->fixedSizeValues();
-    }
-    else if(criteria == RRT::fileSize &&
-            compareCriteria == RRT::interval)
-    {
-        sRule.sizeInterval = condWidget->intervalSizeValues();
-    }
-    else if((criteria == RRT::fileCreatedMode ||
-             criteria == RRT::fileModifiedMode) &&
-            compareCriteria != RRT::interval)
-    {
-        sRule.date = condWidget->fixedConditionalDate();
-    }
-    else if((criteria == RRT::fileCreatedMode ||
-             criteria == RRT::fileModifiedMode) &&
-            compareCriteria == RRT::interval)
-    {
-        sRule.dateIntervals = condWidget->intervalDates();
-    }
+    auto sRule = RuleBuilder::buildSubRule(criteria,
+                                           compareCriteria,
+                                           keyWords,
+                                           sizeLimit,
+                                           date,
+                                           sizeLimits,
+                                           dates,
+                                           matchWholeWords);
+
     subRules << sRule;
     updateView();
 }
@@ -91,15 +77,13 @@ void AddRuleDialog::on_addButton_clicked()
         }
     }
 
-    RuleDefinitions rDefs;
-    Rule r;
-    r.title = titleSelector->text();
-    r.appliesToPath = applySelector->currentText();
-    r.actionRuleEntity = rDefs.fileActionEntityFromString(actionBox->currentText());
-    r.destinationPaths = Worker::splitString(pathSelector->text());
-    r.typeFilter = rDefs.fileTypeEntityFromString(fileTypeSelector->currentText());
+    auto title = titleSelector->text();
+    auto appliesTo = applySelector->currentText();
+    auto action = ruleService->fileActionEntityFromString(actionBox->currentText());
+    auto destinations = Worker::splitString(pathSelector->text());
+    auto typeFilter = ruleService->fileTypeEntityFromString(fileTypeSelector->currentText());
 
-    r.subRules = subRules;
+    auto r = RuleBuilder::buildOrdinaryRule(title,appliesTo,destinations,action,typeFilter,subRules);
     emit sendRule(r);
     close();
 }

@@ -1,7 +1,7 @@
 #ifndef TYPEDEFINITIONS_H
 #define TYPEDEFINITIONS_H
 
-namespace RRT
+namespace RRT // Rule Related Types namespace
 {
     enum RuleType {action,
                    criteria,

@@ -14,10 +14,8 @@
 #include "imutableobject.h"
 #include <qdatastream.h>
 
-class settingsManager :
-        public QObject,
-        public IMutableObject,
-        private AbstractPersistence
+class settingsManager : public QObject,
+                        private AbstractPersistence
 {
     Q_OBJECT
 public:
@@ -38,12 +36,12 @@ public:
     void insertIcon(const MyIcon ic){trayIconList << ic;}
     void insertIcons(QList<MyIcon>icons){trayIconList << icons;}
 
-    SettingsDelegate settingsState();
+    SettingsDelegate settingsState() const;
     void setSettings(SettingsDelegate s);
 
     // Path Related..
 
-    int folderCount(){return watchFolders.count();}
+    int folderCount() const {return watchFolders.count();}
 
     void insertPath(QString path);
     void insertPath(const QStringList& paths);
@@ -56,13 +54,13 @@ public:
 
     void requestProcess();
 
-    QStringList paths() {return watchFolders;}
-    QList<QTreeWidgetItem*> pathItems();
+    QStringList paths() const {return watchFolders;}
+    QList<QTreeWidgetItem*> pathItems() const;
 
-    bool closeOnQuit() {return _settings->closeOnExit;}
-    bool isRulesEnabled() {return _settings->rulesEnabled;}
-    bool countTimerEnabled() {return _settings->ruleTimerEnabled;}
-    QString countTimerInterval() {return QString::number(_settings->ruleCountInterval);}
+    bool closeOnQuit() const {return _settings->closeOnExit;}
+    bool isRulesEnabled() const {return _settings->rulesEnabled;}
+    bool countTimerEnabled() const {return _settings->ruleTimerEnabled;}
+    QString countTimerInterval() const {return QString::number(_settings->ruleCountInterval);}
 
     // Icons related..
     QList<MyIcon>allIcons() const {return trayIconList;}
@@ -70,8 +68,8 @@ public:
 signals:
     void processPath(EntityModelDelegate<EntityModel> *delegate);
     void removeItem(QString path);
-
     void stateChanged();
+
 private:
     QList<MyIcon> scanForIcons(QString path);
     QStringList watchFolders;

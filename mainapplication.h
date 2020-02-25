@@ -1,7 +1,7 @@
 #ifndef MAINAPPLICATION_H
 #define MAINAPPLICATION_H
 
-//#define TEST_MODE
+#define TEST_MODE
 
 #include <qthread.h>
 #include "settingsmanager.h"
@@ -70,13 +70,15 @@ public slots:
     void removeRule(QString title){rManager->removeRule(title);}
 
 private:
-    EntityQueueManager *entityManager;
     FileOperationWorker *fWorker;
-    rulesManager *rManager;
-    FileInformationManager *fManager;
     FileSystemWatcher *fWatcher;
+
+    rulesManager *rManager;
+    EntityQueueManager *entityManager;
+    FileInformationManager *fManager;
     settingsManager *sManager;
     ThreadsManager *tManager;
+
     QThread *fileWorkerThread, *queueThread;
 
 };

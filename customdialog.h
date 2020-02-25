@@ -15,7 +15,7 @@
 
 #include "ui_customdialog.h"
 #include "imutableobject.h"
-#include "abstractframeimplementable.h"
+#include "abstractframe.h"
 
 using namespace std;
 
@@ -31,7 +31,7 @@ class CustomDialog :
 
 public:
     enum widget_Location {center_on_screen,center_according_to_parent, default_location};
-    explicit CustomDialog(AbstractFrameImplementable *implementable,
+    explicit CustomDialog(AbstractFrame *implementable,
                           bool applicationModal = true, widget_Location location = center_on_screen,
                           QWidget *parent = nullptr);
     ~CustomDialog();
@@ -39,9 +39,9 @@ public:
     void setFrameTitle(QString title);
     QString FrameTitle();
 
-    AbstractFrameImplementable *containedWidget(){return mainWidget;}
+    AbstractFrame *containedWidget(){return mainWidget;}
 
-    void setWidget(AbstractFrameImplementable *implementable);
+    void setWidget(AbstractFrame *implementable);
 
 signals:
     void stateChanged();
@@ -69,7 +69,7 @@ private:
     QFrame *widgetContainer;
     int eventThreshold;
     TopFrameForm *topFrame;
-    QPointer<AbstractFrameImplementable> mainWidget;
+    QPointer<AbstractFrame> mainWidget;
     QGridLayout *widgetGridLayout;
     QVBoxLayout *mainLayout;
 

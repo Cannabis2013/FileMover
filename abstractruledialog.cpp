@@ -3,7 +3,7 @@
 
 AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders,
                                        IDefinitions *rService) :
-    AbstractFrameImplementable(),
+    AbstractFrame(),
     ui(new Ui::AbstractRuleDialog)
 {
     ui->setupUi(this);

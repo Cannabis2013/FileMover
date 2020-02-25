@@ -2,7 +2,7 @@
 #include "ui_filepathselectordialog.h"
 
 filepathDialogWidget::filepathDialogWidget(Qt::WindowModality modality) :
-    AbstractFrameImplementable(),
+    AbstractFrame(),
     ui(new Ui::filepathSelectorDialog)
 {
     ui->setupUi(this);

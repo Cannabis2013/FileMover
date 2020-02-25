@@ -1,5 +1,5 @@
-#ifdef TEST_MODE
 #include "TestRuleHelper.h"
+#ifdef TEST_MODE
 #include <QtTest>
 #define SLEEP_SEC 1
 #define DELETE_STATUS "Some files/folders not deleted"

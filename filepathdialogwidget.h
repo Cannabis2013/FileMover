@@ -5,14 +5,14 @@
 #include <qtreeview.h>
 #include <iostream>
 #include <QDialog>
-#include "abstractframeimplementable.h"
+#include "abstractframe.h"
 
 
 namespace Ui {
 class filepathSelectorDialog;
 }
 
-class filepathDialogWidget : public AbstractFrameImplementable
+class filepathDialogWidget : public AbstractFrame
 {
     Q_OBJECT
 

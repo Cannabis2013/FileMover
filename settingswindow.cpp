@@ -2,7 +2,7 @@
 #include "ui_settingswindow.h"
 
 SettingsWindow::SettingsWindow(AbstractCoreApplication *coreApplication, IDefinitions *ruleService, QWidget *parent):
-    AbstractFrameImplementable(parent),
+    AbstractFrame(parent),
     ui(new Ui::SettingsWindow)
 {
     ui->setupUi(this);

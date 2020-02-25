@@ -5,20 +5,20 @@
 #include <QMouseEvent>
 #include "imutableobject.h"
 
-class AbstractFrameImplementable :
+class AbstractFrame :
         public QWidget,
         public IMutableObject
 {
     Q_OBJECT
 public:
-    AbstractFrameImplementable(QWidget *parent = nullptr);
+    AbstractFrame(QWidget *parent = nullptr);
 
-    bool isResizeable(){return resizeable;}
-    void setResizeable(bool resizeMode){resizeable = resizeMode;}
+    bool resizeable(){return _resizeable;}
+    void setResizeable(bool resizeMode){_resizeable = resizeMode;}
 
     void setWidgetTitle(QString title);
 
-    QString getWidgetTitle() {return widgetTitle;}
+    QString widgetTitle() {return _widgetTitle;}
 
 signals:
     void sizeChanged(QSize newSize);
@@ -33,8 +33,8 @@ protected:
     virtual void resizeNotify(QSize newSize) = 0;
 
 private:
-    bool resizeable = true;
-    QString widgetTitle = "Frametitle";
+    bool _resizeable = true;
+    QString _widgetTitle = "Title";
 
 public:
 };

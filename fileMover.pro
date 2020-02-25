@@ -37,8 +37,8 @@ TEMPLATE = app
 RC_ICONS = xIcon.ico
 
 SOURCES += main.cpp\
+    abstractframe.cpp \
     abstractruledialog.cpp \
-    abstractframeimplementable.cpp \
     abstracttextselectordialog.cpp \
     conditionwidget.cpp \
     customdialog.cpp \
@@ -71,8 +71,8 @@ HEADERS  += mainwindow.h \
     TestRuleHelper.h \
     TypeDefinitions.h \
     abstractcoreapplication.h \
+    abstractframe.h \
     abstractruledialog.h \
-    abstractframeimplementable.h \
     abstractpersistence.h \
     abstracttextselectordialog.h \
     conditionwidget.h \

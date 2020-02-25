@@ -79,7 +79,7 @@ void settingsManager::requestProcess()
 
 }
 
-QList<QTreeWidgetItem *> settingsManager::pathItems()
+QList<QTreeWidgetItem *> settingsManager::pathItems() const
 {
     QList<QTreeWidgetItem*> items;
     for (const QString &path : watchFolders) {
@@ -189,7 +189,7 @@ void settingsManager::setTimerInterval(int msec)
     _settings->ruleCountInterval = msec;
 }
 
-SettingsDelegate settingsManager::settingsState()
+SettingsDelegate settingsManager::settingsState() const
 {
     return *_settings;
 }

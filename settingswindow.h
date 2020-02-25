@@ -32,7 +32,7 @@ namespace Ui {
 class SettingsWindow;
 }
 
-class SettingsWindow : public AbstractFrameImplementable
+class SettingsWindow : public AbstractFrame
 {
     Q_OBJECT
 

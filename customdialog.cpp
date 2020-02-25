@@ -1,6 +1,6 @@
 #include "customdialog.h"
 
-CustomDialog::CustomDialog(AbstractFrameImplementable *implementable, bool applicationModal, widget_Location location, QWidget *parent) :
+CustomDialog::CustomDialog(AbstractFrame *implementable, bool applicationModal, widget_Location location, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CustomDialog)
 {
@@ -30,7 +30,7 @@ CustomDialog::~CustomDialog()
     delete ui;
 }
 
-void CustomDialog::setWidget(AbstractFrameImplementable *implementable)
+void CustomDialog::setWidget(AbstractFrame *implementable)
 {
     mainWidget = implementable;
     widgetSize = mainWidget->size();
@@ -40,11 +40,11 @@ void CustomDialog::setWidget(AbstractFrameImplementable *implementable)
         widgetGridLayout->removeItem(item);
     }
 
-    connect(mainWidget,&AbstractFrameImplementable::destroyed,this,&CustomDialog::close);
-    connect(mainWidget,&AbstractFrameImplementable::sizeChanged,this,&CustomDialog::widgetSizeChanged);
+    connect(mainWidget,&AbstractFrame::destroyed,this,&CustomDialog::close);
+    connect(mainWidget,&AbstractFrame::sizeChanged,this,&CustomDialog::widgetSizeChanged);
 
     widgetGridLayout->addWidget(mainWidget,0,0);
-    setFrameTitle(mainWidget->getWidgetTitle());
+    setFrameTitle(mainWidget->widgetTitle());
 }
 
 void CustomDialog::setFrameTitle(QString title)
@@ -72,7 +72,7 @@ void CustomDialog::closeEvent(QCloseEvent *event)
 void CustomDialog::mousePressEvent(QMouseEvent *event)
 {
     int rightBorder = width() - eventThreshold, southBorder = height() - eventThreshold;
-    if((event->pos().x() >= rightBorder && event->pos().y() >= southBorder) && mainWidget->isResizeable())
+    if((event->pos().x() >= rightBorder && event->pos().y() >= southBorder) && mainWidget->resizeable())
     {
         mousePressPosition = event->pos();
         tempGeometry = geometry();
@@ -92,7 +92,7 @@ void CustomDialog::mouseMoveEvent(QMouseEvent *event)
             lowerBorder = height() - eventThreshold;
 
 
-    if((event->pos().x() >= rightBorder && event->pos().y() >= lowerBorder) && mainWidget->isResizeable())
+    if((event->pos().x() >= rightBorder && event->pos().y() >= lowerBorder) && mainWidget->resizeable())
     {
         QCursor cursor = QCursor(Qt::SizeFDiagCursor);
         setCursor(cursor);

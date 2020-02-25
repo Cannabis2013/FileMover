@@ -21,13 +21,13 @@
 #include "rulepathselector.h"
 #include "conditionwidget.h"
 #include "abstractcoreapplication.h"
-#include "abstractframeimplementable.h"
+#include "abstractframe.h"
 
 namespace Ui {
 class AbstractRuleDialog;
 }
 
-class AbstractRuleDialog : public AbstractFrameImplementable
+class AbstractRuleDialog : public AbstractFrame
 {
     Q_OBJECT
 public:

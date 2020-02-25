@@ -2,7 +2,7 @@
 #include "ui_addfolderwidget.h"
 
 AddFolderWidget::AddFolderWidget() :
-    AbstractFrameImplementable(),
+    AbstractFrame(),
     ui(new Ui::AddFolderWidget)
 {
     ui->setupUi(this);

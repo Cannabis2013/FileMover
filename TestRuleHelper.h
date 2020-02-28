@@ -3,7 +3,7 @@
 
 #include <QCoreApplication>
 #include "testfilecreator.h"
-
+#ifdef TEST_MODE
 class TestRuleHelper
 {
 public:
@@ -82,5 +82,5 @@ public:
         return true;
     }
 };
-
+#endif
 #endif // TESTRULEHELPER_H

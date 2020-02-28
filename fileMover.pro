@@ -89,19 +89,20 @@ HEADERS  += mainwindow.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
     genericserviceinjector.h \
+    icon.h \
     imutableobject.h \
+    inheritexceptiondelegate.h \
     iruledefinitions.h \
+    isettingsdelegate.h \
     mainapplication.h \
     messageBox.h \
     modeldelegates.h \
-    myicon.h \
-    myicon.h \
-    myicon.h \
     rulesmanager.h \
     myscreendimensions.h \
     mydatetime.h \
     settingsdelegate.h \
     settingsmanager.h \
+    settingsmodel.h \
     settingswindow.h \
     fileinformationview.h \
     addfolderwidget.h \

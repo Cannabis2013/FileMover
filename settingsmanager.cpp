@@ -3,9 +3,10 @@
 settingsManager::settingsManager(const QString &appName, const QString &orgName):
     AbstractPersistence (appName,orgName)
 {
-    QList<MyIcon> trayIconList = scanForIcons(ressourceFolder);
+    QList<const AbstractIcon*> trayIconList = scanForIcons(ressourceFolder);
 
-    _settings = new SettingsDelegate;
+    // Allocate memmory and initialize later
+    _settings = SettingsDelegateBuilder::buildDefaultDelegate();
 
     QDir dir;
     if(!dir.exists(ressourceFolder))
@@ -14,7 +15,7 @@ settingsManager::settingsManager(const QString &appName, const QString &orgName)
         dir.mkdir(fileIconPath);
 
     if(trayIconList.count() == 0)
-        currentTrayIcon = QIcon(":/My Images/Ressources/Hdd-icon.png");
+        currentTrayIcon = new Icon(":/My Images/Ressources/Hdd-icon.png");
     else
     {
         insertIcons(trayIconList);
@@ -92,9 +93,9 @@ QList<QTreeWidgetItem *> settingsManager::pathItems() const
     return items;
 }
 
-QList<MyIcon> settingsManager::scanForIcons(QString path)
+QList<const AbstractIcon*> settingsManager::scanForIcons(QString path)
 {
-    QList<MyIcon>icons;
+    QList<const AbstractIcon *>icons;
     QDirIterator iT(path);
     while(iT.hasNext())
     {
@@ -103,8 +104,8 @@ QList<MyIcon> settingsManager::scanForIcons(QString path)
         if(file.suffix() == "ico" || file.suffix() == "png")
         {
             QString fP = file.absoluteFilePath(),fN = file.fileName();
-            MyIcon ico(fP);
-            ico.setName(fN);
+            auto ico = new Icon(fP);
+            ico->setName(fN);
             icons << ico;
         }
 #elif defined Q_OS_MAC
@@ -125,13 +126,19 @@ void settingsManager::readSettings()
     QSettings *pSettings = persistenceSettings();
     pSettings->beginGroup("Basic settings");
 
-    _settings->closeOnExit = pSettings->value("Close on exit",true).toBool();
-    _settings->ruleCountInterval = pSettings->value("Count timer interval", 2000).toInt();
-    _settings->rulesEnabled = pSettings->value("Rules enabled", false).toBool();
-    _settings->ruleTimerEnabled = pSettings->value("Timer enabled",false).toBool();
-    _settings->mainGuiGeometry = pSettings->value("Main gui geometry",QRect()).toRect();
+    auto closeOnExit = pSettings->value("Close on exit",true).toBool();
+    auto ruleCountInterval = pSettings->value("Count timer interval", 2000).toInt();
+    auto rulesEnabled = pSettings->value("Rules enabled", false).toBool();
+    auto ruleTimerEnabled = pSettings->value("Timer enabled",false).toBool();
+    auto mainGuiGeometry = pSettings->value("Main gui geometry",QRect()).toRect();
 
     pSettings->endGroup();
+
+    _settings = SettingsDelegateBuilder::buildSettingsDelegate(closeOnExit,
+                                                               ruleTimerEnabled,
+                                                               rulesEnabled,
+                                                               ruleCountInterval,
+                                                               mainGuiGeometry);
 
     int count = pSettings->beginReadArray("Watchfolders");
     QStringList folders;
@@ -151,11 +158,11 @@ void settingsManager::writeSettings()
 
     pSettings->beginGroup("Basic settings");
     pSettings->clear();
-    pSettings->setValue("Close on exit", _settings->closeOnExit);
-    pSettings->setValue("Count timer interval", _settings->ruleCountInterval);
-    pSettings->setValue("Rules enabled", _settings->rulesEnabled);
-    pSettings->setValue("Timer enabled",_settings->ruleTimerEnabled);
-    pSettings->setValue("Main gui geometry",_settings->mainGuiGeometry);
+    pSettings->setValue("Close on exit", _settings->closeOnExit());
+    pSettings->setValue("Count timer interval", _settings->ruleCountInterval());
+    pSettings->setValue("Rules enabled", _settings->rulesEnabled());
+    pSettings->setValue("Timer enabled",_settings->ruleTimerEnabled());
+    pSettings->setValue("Main gui geometry",_settings->mainGuiGeometry());
     pSettings->endGroup();
     pSettings->beginWriteArray("Watchfolders", watchFolders.count());
 
@@ -171,30 +178,46 @@ void settingsManager::writeSettings()
 
 void settingsManager::setCloseOnExit(bool enable)
 {
-    _settings->closeOnExit = enable;
+    _settings = SettingsDelegateBuilder::buildSettingsDelegate(enable,
+                                                            _settings->ruleTimerEnabled(),
+                                                            _settings->rulesEnabled(),
+                                                            _settings->ruleCountInterval(),
+                                                            _settings->mainGuiGeometry());
 }
 
 void settingsManager::setRulesEnabled(bool enable)
 {
-    _settings->rulesEnabled = enable;
+    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->closeOnExit(),
+                                                            _settings->ruleTimerEnabled(),
+                                                            enable,
+                                                            _settings->ruleCountInterval(),
+                                                            _settings->mainGuiGeometry());
 }
 
 void settingsManager::setTimerEnabled(bool enable)
 {
-    _settings->ruleTimerEnabled = enable;
+    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->closeOnExit(),
+                                                            enable,
+                                                            _settings->rulesEnabled(),
+                                                            _settings->ruleCountInterval(),
+                                                            _settings->mainGuiGeometry());
 }
 
 void settingsManager::setTimerInterval(int msec)
 {
-    _settings->ruleCountInterval = msec;
+    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->closeOnExit(),
+                                                            _settings->ruleTimerEnabled(),
+                                                            _settings->rulesEnabled(),
+                                                            msec,
+                                                            _settings->mainGuiGeometry());
 }
 
-SettingsDelegate settingsManager::settingsState() const
+const ISettingsDelegate *settingsManager::settingsState() const
 {
-    return *_settings;
+    return _settings;
 }
 
-void settingsManager::setSettings(SettingsDelegate s)
+void settingsManager::setSettings(const ISettingsDelegate *s)
 {
-    *_settings = s;
+    _settings = s;
 }

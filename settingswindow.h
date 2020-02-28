@@ -21,7 +21,7 @@
 #include "customcombobox.h"
 #include "addruledialog.h"
 #include "editruledialog.h"
-#include "myicon.h"
+#include "icon.h"
 #include "mainapplication.h"
 #include "customdialog.h"
 
@@ -46,7 +46,7 @@ public:
     // Void public functions..
 
     // Icons related..
-    void setIconList(QList<MyIcon>list);
+    void setIconList(QList<Icon>list);
 
     //Rules related..
     void setRulesEnabled(bool r);
@@ -106,7 +106,7 @@ private:
     void initializeState();
 
     // Icons..
-    void insertIcons(QList<MyIcon>ic);
+    void insertIcons(QList<Icon>ic);
 
     // Member variables..
     Ui::SettingsWindow *ui;

@@ -3,9 +3,9 @@
 
 #include <qstring.h>
 #include "fileoperationworker.h"
-#include "myicon.h"
+#include "icon.h"
 #include "rulesmanager.h"
-#include "settingsdelegate.h"
+#include "isettingsdelegate.h"
 #include "imutableobject.h"
 
 class AbstractCoreApplication :
@@ -34,10 +34,10 @@ public:
 
     virtual QList<QTreeWidgetItem*> suffixList(QString path) = 0;
 
-    virtual QList<MyIcon> icons() = 0;
+    virtual QList<const AbstractIcon*> icons() = 0;
 
-    virtual SettingsDelegate settingsState() = 0;
-    virtual void setSettings(SettingsDelegate s) =0;
+    virtual const ISettingsDelegate* settingsState() = 0;
+    virtual void setSettings(const ISettingsDelegate *s) =0;
 
     virtual bool closeOnExit() = 0;
 

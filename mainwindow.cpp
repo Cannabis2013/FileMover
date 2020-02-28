@@ -454,15 +454,21 @@ QString mainWindow::currentMainFolderPath() const
 
 void mainWindow::writeSettings()
 {
-    SettingsDelegate sDelegate = this->coreApplication->settingsState();
-    sDelegate.mainGuiGeometry = geometry();
-    this->coreApplication->setSettings(sDelegate);
+    auto currentSettings = this->coreApplication->settingsState();
+
+    auto newSettings = SettingsDelegateBuilder::buildSettingsDelegate(currentSettings->closeOnExit(),
+                                                                      currentSettings->ruleTimerEnabled(),
+                                                                      currentSettings->rulesEnabled(),
+                                                                      currentSettings->ruleCountInterval(),
+                                                                      this->geometry());
+
+    this->coreApplication->setSettings(newSettings);
 }
 
 void mainWindow::readSettings()
 {
-    SettingsDelegate sDelegate = this->coreApplication->settingsState();
-    setGeometry(sDelegate.mainGuiGeometry);
+    auto settings = this->coreApplication->settingsState();
+    setGeometry(settings->mainGuiGeometry());
 }
 
 void mainWindow::showSystemMessage(const QString &title,const QString &msg)
@@ -509,8 +515,8 @@ QFont mainWindow::createFont(fontType ft, QString family, bool bold, bool italic
 
 void mainWindow::on_clearButt_clicked()
 {
-    SettingsDelegate sDelegate = coreApplication->settingsState();
-    if(sDelegate.rulesEnabled)
+    auto settings = coreApplication->settingsState();
+    if(settings->rulesEnabled())
     {
         if(messageBox::customBox(this,
                                 "Advarsel","Sikker på du vil gøre dette?",

@@ -47,9 +47,9 @@ SettingsWindow::~SettingsWindow()
     delete this;
 }
 
-void SettingsWindow::setIconList(QList<MyIcon> list)
+void SettingsWindow::setIconList(QList<Icon> list)
 {
-    for(MyIcon icon : list)
+    for(Icon icon : list)
         new QListWidgetItem(icon,icon.name(),view);
 }
 
@@ -164,21 +164,29 @@ void SettingsWindow::on_countTImerIntervalEdit_2_returnPressed()
 
 void SettingsWindow::on_saveButton_clicked()
 {
-    SettingsDelegate currentState;
-    currentState.closeOnExit = closeOnBox->isChecked();
-    currentState.rulesEnabled = enableRules->isChecked();
-    currentState.ruleCountInterval = countTimerInterval->text().toInt();
+    // Get current settings
+    auto currentSettings = coreApplication->settingsState();
 
-    coreApplication->setSettings(currentState);
+    // Initialize variables
+    auto closeOnExit = closeOnBox->isChecked();
+    auto rulesEnabled = enableRules->isChecked();
+    auto ruleCountInterval = countTimerInterval->text().toInt();
+
+    //Build new settings based on current and variables
+    auto settings = SettingsDelegateBuilder::buildSettingsDelegate(closeOnExit,
+                                                                   currentSettings->ruleTimerEnabled(),
+                                                                   rulesEnabled,ruleCountInterval,
+                                                                   currentSettings->mainGuiGeometry());
+    coreApplication->setSettings(settings);
     close();
 }
 
 void SettingsWindow::initializeState()
 {
-    SettingsDelegate state = coreApplication->settingsState();
-    closeOnBox->setChecked(state.closeOnExit);
-    enableRules->setChecked(state.rulesEnabled);
-    countTimerInterval->setText(QString::number(state.ruleCountInterval));
+    auto settings = coreApplication->settingsState();
+    closeOnBox->setChecked(settings->closeOnExit());
+    enableRules->setChecked(settings->rulesEnabled());
+    countTimerInterval->setText(QString::number(settings->ruleCountInterval()));
 }
 
 void SettingsWindow::on_countTimerActivateBox_2_toggled(bool checked)

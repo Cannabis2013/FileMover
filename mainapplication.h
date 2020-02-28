@@ -1,7 +1,7 @@
 #ifndef MAINAPPLICATION_H
 #define MAINAPPLICATION_H
 
-#define TEST_MODE
+//#define TEST_MODE
 
 #include <qthread.h>
 #include "settingsmanager.h"
@@ -42,12 +42,12 @@ public:
     void swapRule(int i, int j){rManager->swapRule(i,j);}
     void clearRules() const;
 
-    QList<MyIcon> icons(){return sManager->allIcons();}
+    QList<const AbstractIcon*> icons(){return sManager->allIcons();}
 
     // Basic settings and persistence related
 
-    SettingsDelegate settingsState();
-    void setSettings(SettingsDelegate s);
+    const ISettingsDelegate* settingsState();
+    void setSettings(const ISettingsDelegate *s);
 
     bool closeOnExit(){return sManager->closeOnQuit();}
 

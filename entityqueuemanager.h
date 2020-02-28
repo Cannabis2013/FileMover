@@ -44,7 +44,6 @@ public slots:
         }
 
         auto delegate = DelegateBuilder::buildDelegate(entityQueue.takeFirst());
-
         emit sendEntity(delegate);
     }
 

@@ -6,16 +6,66 @@
 #include <QTreeWidgetItem>
 #include "qlist.h"
 #include "abstractpersistence.h"
-#include "myicon.h"
+#include "icon.h"
 #include <qdir.h>
 #include <qdiriterator.h>
-#include "settingsdelegate.h"
+#include "isettingsdelegate.h"
 #include "entitymodel.h"
 #include "imutableobject.h"
 #include <qdatastream.h>
+#include <settingsdelegate.h>
 
-class settingsManager : public QObject,
-                        private AbstractPersistence
+class ISettingsManagerInterface : public IMutableObject
+{
+public:
+    // Basic settings
+    virtual void setCloseOnExit(bool enable) = 0;
+    virtual void setRulesEnabled(bool enable) = 0;
+    virtual void setTimerEnabled(bool enable) = 0;
+    virtual void setTimerInterval(int msec) = 0;
+
+    virtual void insertIcon(const AbstractIcon *ic) = 0;
+    virtual void insertIcons(const QList<const AbstractIcon*> &icons) = 0;
+
+    virtual const ISettingsDelegate* settingsState() const = 0;
+    virtual void setSettings(const ISettingsDelegate *s) = 0;
+
+    // Path Related..
+
+    virtual int folderCount() const = 0;
+
+    virtual void insertPath(QString path) = 0;
+    virtual void insertPath(const QStringList& paths) = 0;
+
+    virtual void removePath(QString path) = 0;
+    virtual void removePathAt(int index) = 0;
+    virtual void clearPaths() = 0;
+
+    // Request file object processing
+
+    void requestProcess() const;
+
+    virtual QStringList paths() const = 0;
+    virtual QList<QTreeWidgetItem*> pathItems() const = 0;;
+
+    virtual bool closeOnQuit() const = 0;
+    virtual bool isRulesEnabled()  const = 0;
+    virtual bool countTimerEnabled() const = 0;
+    virtual QString countTimerInterval() const = 0;
+
+    // Icons related..
+    virtual QList<const AbstractIcon*>allIcons() const = 0;
+
+    // Virtual signals
+
+    virtual void processPath(IModelDelegate<EntityModel,EntityType> *delegate) = 0;
+    virtual void removeItem(QString path) = 0;
+    virtual void stateChanged() = 0;
+};
+
+class settingsManager : public ISettingsManagerInterface,
+        public QObject,
+        private AbstractPersistence
 {
     Q_OBJECT
 public:
@@ -33,11 +83,11 @@ public:
     void setTimerInterval(int msec);
 
     // Icons
-    void insertIcon(const MyIcon ic){trayIconList << ic;}
-    void insertIcons(QList<MyIcon>icons){trayIconList << icons;}
+    void insertIcon(const AbstractIcon *ic){trayIconList << ic;}
+    void insertIcons(const QList<const AbstractIcon*> &icons){trayIconList << icons;}
 
-    SettingsDelegate settingsState() const;
-    void setSettings(SettingsDelegate s);
+    const ISettingsDelegate* settingsState() const;
+    void setSettings(const ISettingsDelegate *s);
 
     // Path Related..
 
@@ -57,30 +107,30 @@ public:
     QStringList paths() const {return watchFolders;}
     QList<QTreeWidgetItem*> pathItems() const;
 
-    bool closeOnQuit() const {return _settings->closeOnExit;}
-    bool isRulesEnabled() const {return _settings->rulesEnabled;}
-    bool countTimerEnabled() const {return _settings->ruleTimerEnabled;}
-    QString countTimerInterval() const {return QString::number(_settings->ruleCountInterval);}
+    bool closeOnQuit() const {return _settings->closeOnExit();}
+    bool isRulesEnabled() const {return _settings->rulesEnabled();}
+    bool countTimerEnabled() const {return _settings->ruleTimerEnabled();}
+    QString countTimerInterval() const {return QString::number(_settings->ruleCountInterval());}
 
     // Icons related..
-    QList<MyIcon>allIcons() const {return trayIconList;}
+    QList<const AbstractIcon*> allIcons() const {return trayIconList;}
 
 signals:
-    void processPath(EntityModelDelegate<EntityModel> *delegate);
+    void processPath(IModelDelegate<EntityModel,EntityType> *delegate);
     void removeItem(QString path);
     void stateChanged();
 
 private:
-    QList<MyIcon> scanForIcons(QString path);
+    QList<const AbstractIcon *> scanForIcons(QString path);
     QStringList watchFolders;
     QString ressourceFolder = "Ressources";
     QString fileIconPath = "fileIcons";
-    SettingsDelegate *_settings;
+    const ISettingsDelegate* _settings;
     QTimer countTimer;
-    QList<MyIcon> trayIconList;
-    QList<MyIcon> fileIconList;
-    QIcon currentTrayIcon;
-    QIcon fileIconStandard;
+    QList<const AbstractIcon*> trayIconList;
+    QList<const AbstractIcon*> fileIconList;
+    const AbstractIcon *currentTrayIcon;
+    const AbstractIcon * fileIconStandard;
 
 };
 

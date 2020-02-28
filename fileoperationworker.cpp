@@ -136,11 +136,29 @@ void FileOperationWorker::processEntity(IModelDelegate<EntityModel,EntityType> *
     }
 
     if(delegate->type() == EntityModel::fileActionEntity)
-        processFileEntity(DelegateBuilder::buildDelegate<FileRuleEntity>(delegate->model()));
+    {
+        try {
+            processFileEntity(DelegateBuilder::buildDelegate<FileRuleEntity>(delegate->model()));
+        } catch (InheritExceptionDelegate<EntityModel,FileRuleEntity> *e) {
+            throw e->what();
+        }
+    }
     else if(delegate->type() == EntityModel::fileInformationEntity)
-        processFileInformationEntity(DelegateBuilder::buildDelegate<FileInformationEntity>(delegate->model()));
+    {
+        try {
+            processFileInformationEntity(DelegateBuilder::buildDelegate<FileInformationEntity>(delegate->model()));
+        } catch (const InheritExceptionDelegate<EntityModel,FileInformationEntity> *e) {
+            throw e->what();
+        }
+    }
     else if(delegate->type() == EntityModel::directoryCountEntity)
-        processDirectoryCountEntity(DelegateBuilder::buildDelegate<DirectoryEntity>(delegate->model()));
+    {
+        try {
+            processDirectoryCountEntity(DelegateBuilder::buildDelegate<DirectoryEntity>(delegate->model()));
+        } catch (const InheritExceptionDelegate<EntityModel,DirectoryEntity> *e) {
+            throw e->what();
+        }
+    }
 
     delegate = nullptr;
     isBusy = false;

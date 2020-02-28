@@ -136,12 +136,12 @@ void MainApplication::clearRules() const
         rManager->removeRuleAt(i);
 }
 
-SettingsDelegate MainApplication::settingsState()
+const ISettingsDelegate *MainApplication::settingsState()
 {
     return sManager->settingsState();
 }
 
-void MainApplication::setSettings(SettingsDelegate s)
+void MainApplication::setSettings(const ISettingsDelegate *s)
 {
     sManager->setSettings(s);
 }

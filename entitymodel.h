@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "modeldelegates.h"
+#include "inheritexceptiondelegate.h"
 
 #define THROW_MSG_INHERIT "Template argument not direct base of Model"
 
@@ -69,7 +70,7 @@ private:
     EntityModelDelegate(const EntityModel *model)
     {
         if(!std::is_base_of_v<EntityModel,ModelType>)
-            throw THROW_MSG_INHERIT;
+            throw new InheritExceptionDelegate<EntityModel,ModelType>();
 
         _model = model;
     }
@@ -82,27 +83,27 @@ private:
 class DelegateBuilder
 {
 public:
-    template<class T = EntityModel>
-    static EntityModelDelegate<T>* buildDelegate(const EntityModel* entity)
+    template<class TModel = EntityModel>
+    static EntityModelDelegate<TModel>* buildDelegate(const EntityModel* entity)
     {
-        if(!std::is_base_of_v<EntityModel,T>)
-            throw THROW_MSG_INHERIT;
+        if(!std::is_base_of_v<EntityModel,TModel>)
+            throw new InheritExceptionDelegate<EntityModel,TModel>();
 
-        return new EntityModelDelegate<T>(entity);
+        return new EntityModelDelegate<TModel>(entity);
     }
 
-    template<class T = ErrorEntity>
-    static EntityModelDelegate<T>* buildErrorEntity(const QString &err)
+    template<class TModel = ErrorEntity>
+    static EntityModelDelegate<TModel>* buildErrorEntity(const QString &err)
     {
-        if(!std::is_base_of_v<EntityModel,T>)
-            throw THROW_MSG_INHERIT;
+        if(!std::is_base_of_v<EntityModel,TModel>)
+            throw new InheritExceptionDelegate<EntityModel,TModel>();
 
         DelegateBuilder builder;
         auto entity =
                 builder.buildEntity<ErrorEntity>(EntityModel::nullEntity);
 
         entity->errorDescription = err;
-        return new EntityModelDelegate<T>(entity);
+        return new EntityModelDelegate<TModel>(entity);
     }
     template<class T = FileInformationEntity>
     static EntityModelDelegate<T>* buildFileInformationEntity(const QStringList &paths)

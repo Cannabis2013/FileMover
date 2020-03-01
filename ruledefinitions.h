@@ -1,7 +1,6 @@
 #ifndef RULEDEFINITIONS_H
 #define RULEDEFINITIONS_H
 
-#include <qlist.h>
 #include <qtranslator.h>
 
 #include "iruledefinitions.h"

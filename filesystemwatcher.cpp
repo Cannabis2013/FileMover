@@ -1,8 +1,8 @@
 #include "filesystemwatcher.h"
 
 
-FileSystemWatcher::FileSystemWatcher(const QStringList &paths):
-    fWatcher(new QFileSystemWatcher(paths))
+FileSystemWatcher::FileSystemWatcher():
+    fWatcher(new QFileSystemWatcher())
 {
     connect(fWatcher,&QFileSystemWatcher::directoryChanged,this,&FileSystemWatcher::changed);
 }

@@ -26,7 +26,7 @@ void ThreadsManager::startThread(QUuid thread_id,QThread::Priority priority)
 {
     for (auto t : _threads) {
         if(dynamic_cast<ThreadObject*>(t)->thread_id() == thread_id)
-            t->start();
+            t->start(priority);
     }
 }
 
@@ -42,6 +42,10 @@ void ThreadsManager::startAllThreads(QThread::Priority priority)
 {
     for (auto t : _threads)
         t->start(priority);
+}
+
+void ThreadsManager::terminateAll()
+{
 }
 
 

@@ -3,18 +3,17 @@
 
 #include <qicon.h>
 #include <qstring.h>
+#include "abstracticon.h"
 
-class AbstractIcon : public virtual QIcon
-{
-public:
-    virtual void setName(const QString &n) = 0;
-    virtual QString name() const = 0;
-};
 
 class Icon :
         public AbstractIcon
 {
 public:
+    ~Icon()
+    {
+
+    }
     Icon(QString fName = QString()):
         QIcon(fName)
     {

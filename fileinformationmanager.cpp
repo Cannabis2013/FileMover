@@ -11,7 +11,7 @@ FileInformationManager::~FileInformationManager()
     writeSettings();
 }
 
-bool FileInformationManager::directoryExists(QString path)
+bool FileInformationManager::directoryExists(const QString &path)
 {
     for(DirectoryItem item : items)
         if(item.path == path)
@@ -20,27 +20,27 @@ bool FileInformationManager::directoryExists(QString path)
 }
 
 
-DirectoryItem FileInformationManager::item(QString p)
+DirectoryItem FileInformationManager::item(const QString &path) const
 {
     for(DirectoryItem dI : items)
     {
-        if(dI.path == p)
+        if(dI.path == path)
             return dI;
     }
     throw QString("Item not found");
 }
 
-DirectoryItem FileInformationManager::itemRef(QString p)
+DirectoryItem FileInformationManager::itemRef(const QString &path) const
 {
     for (int i = 0;i < items.count();i++) {
         DirectoryItem item = items.at(i);
-        if(item.path == p)
+        if(item.path == path)
             return items.at(i);
     }
     return DirectoryItem();
 }
 
-QList<QTreeWidgetItem*> FileInformationManager::allTreeItems()
+QList<QTreeWidgetItem*> FileInformationManager::allTreeItems() const
 {
     QList<QTreeWidgetItem*> resultingList;
     for (DirectoryItem item : items)
@@ -49,17 +49,17 @@ QList<QTreeWidgetItem*> FileInformationManager::allTreeItems()
     return resultingList;
 }
 
-void FileInformationManager::updateFileInfo(DirectoryItem dI)
+void FileInformationManager::updateFileInfo(const DirectoryItem &item)
 {
-    QString p = dI.path;
+    QString p = item.path;
     for (int var = 0; var < items.count(); ++var)
     {
         if(p == items.at(var).path)
-            items.replace(var,dI);
+            items.replace(var,item);
     }
 }
 
-void FileInformationManager::updateAllFileInfo(QList<DirectoryItem> list)
+void FileInformationManager::updateAllFileInfo(const QList<DirectoryItem> &list)
 {
     items.clear();
     items.append(list);
@@ -70,7 +70,7 @@ void FileInformationManager::flush()
     items.clear();
 }
 
-QString FileInformationManager::createTextBrowserHtml(QString path)
+QString FileInformationManager::createTextBrowserHtml(const QString &path) const
 {
     QFileInfo info = path;
     if(!info.isDir())
@@ -145,7 +145,23 @@ QString FileInformationManager::createTextBrowserHtml(QString path)
 
 }
 
-void FileInformationManager::insertItem(DirectoryItem item)
+QList<QTreeWidgetItem *> FileInformationManager::suffixList(const QString &path)
+{
+    QList<QTreeWidgetItem*> resultingList;
+    for (auto item : items) {
+        if(item.path == path)
+        {
+            for(QPair<QString,int> sufPair : item.sufList)
+                resultingList << new QTreeWidgetItem(QStringList {sufPair.first,QString::number(sufPair.second)});
+
+            return resultingList;
+        }
+    }
+
+    return QList<QTreeWidgetItem*>();
+}
+
+void FileInformationManager::insertItem(const DirectoryItem &item)
 {
     if(isDuplicate(item.path))
         replaceItem(item);
@@ -155,7 +171,7 @@ void FileInformationManager::insertItem(DirectoryItem item)
     emit stateChanged();
 }
 
-void FileInformationManager::insertItems(QList<DirectoryItem> dirItems)
+void FileInformationManager::insertItems(const QList<DirectoryItem> &dirItems)
 {
     for (DirectoryItem dirItem : dirItems)
     {
@@ -167,20 +183,20 @@ void FileInformationManager::insertItems(QList<DirectoryItem> dirItems)
     emit stateChanged();
 }
 
-void FileInformationManager::replaceItem(DirectoryItem newItem)
+void FileInformationManager::replaceItem(const DirectoryItem &item)
 {
     for (int i = 0;i < items.count();i++)
     {
         DirectoryItem item = items.at(i);
-        if(item.path == newItem.path)
+        if(item.path == item.path)
         {
-            items.replace(i,newItem);
+            items.replace(i,item);
             return;
         }
     }
 }
 
-void FileInformationManager::removeItem(QString path)
+void FileInformationManager::removeItem(const QString &path)
 {
     for(int i = 0;i < items.count();i++)
     {
@@ -194,7 +210,7 @@ void FileInformationManager::removeItem(QString path)
     }
 }
 
-void FileInformationManager::requestItem(QString path)
+void FileInformationManager::requestItem(const QString &path)
 {
     for (DirectoryItem item : items)
     {
@@ -206,7 +222,7 @@ void FileInformationManager::requestItem(QString path)
     }
 }
 
-bool FileInformationManager::isDuplicate(QString path)
+bool FileInformationManager::isDuplicate(const QString &path)
 {
     for(DirectoryItem item : items)
     {
@@ -217,16 +233,7 @@ bool FileInformationManager::isDuplicate(QString path)
     return false;
 }
 
-QList<QTreeWidgetItem *> DirectoryItem::suffixItems() const
-{
-    QList<QTreeWidgetItem*> resultingList;
-    for(QPair<QString,int> sufPair : sufList)
-        resultingList << new QTreeWidgetItem(QStringList {sufPair.first,QString::number(sufPair.second)});
-
-    return resultingList;
-}
-
-QTreeWidgetItem *FileInformationManager::assembleTreeItems(QTreeWidgetItem *item)
+QTreeWidgetItem *FileInformationManager::assembleTreeItems(QTreeWidgetItem *item) const
 {
     QTreeWidgetItem *result = new QTreeWidgetItem;
     for (int i = 0; i < item->columnCount(); ++i)

@@ -10,75 +10,51 @@
 #include "imutableobject.h"
 
 #include "abstractpersistence.h"
-
-/*
- * Contains meta information related to directories and their content.
- * It provides data for the "detailedFolderView" and "fileInformationView" classes.
- */
+#include "abstractfileinformationmanager.h"
 
 using namespace std;
 
-/*
- * The model to be presented in view classes.
- */
-
-struct DirectoryItem
-{
-    QFileInfoList directoryContent;
-    QString dirSize = nullptr;
-    int numberOfDirectories;
-    long numberOfFiles;
-    QString path = "Not defined";
-    QList<QPair<QString,int> > sufList;
-    QList<QTreeWidgetItem*> suffixItems() const;
-    QTreeWidgetItem *directoryItemModels;
-};
-
-class FileInformationManager :
-        public QObject,
-        public IMutableObject,
+class FileInformationManager :public AbstractFileInformationManager,
         private AbstractPersistence
 {
-    Q_OBJECT
 public:
     FileInformationManager(QString appName, QString orgName);
     ~FileInformationManager();
 
-    void setItemList(QList<DirectoryItem> nList){items = nList;}
+    void setItemList(const QList<DirectoryItem> &list) override {items = list;}
 
-    bool directoryExists(QString path);
-    QList<DirectoryItem> allItems() {return items;}
-    DirectoryItem item(QString p);
-    DirectoryItem itemRef(QString p);
-    QList<QTreeWidgetItem *> allTreeItems();
+    bool directoryExists(const QString &path) override;
+    QList<DirectoryItem> allItems() const override {return items;}
+    DirectoryItem item(const QString &path) const override;
+    DirectoryItem itemRef(const QString &path) const override;
+    QList<QTreeWidgetItem *> allTreeItems() const override;
 
-    void updateFileInfo(DirectoryItem dI);
-    void updateAllFileInfo(QList<DirectoryItem> list);
-    void flush();
+    void updateFileInfo(const DirectoryItem &item) override;
+    void updateAllFileInfo(const QList<DirectoryItem> &list) override;
+    void flush() override;
 
-    QString createTextBrowserHtml(QString path);
+    QString createTextBrowserHtml(const QString &path) const override;
 
-    void readSettings();
-    void writeSettings();
+    QTreeWidgetItem *assembleTreeItems(QTreeWidgetItem *item) const override;
 
-    static QTreeWidgetItem *assembleTreeItems(QTreeWidgetItem *item);
+    QList<QTreeWidgetItem *> suffixList(const QString &path) override;
+
+    void readSettings() override;
+    void writeSettings() override;
+
 
 public slots:
-    void insertItem(DirectoryItem item);
-    void insertItems(QList<DirectoryItem> dirItems);
+    void insertItem(const DirectoryItem &item) override;
+    void insertItems(const QList<DirectoryItem> &dirItems) override;
 
-    void replaceItem(DirectoryItem newItem);
+    void replaceItem(const DirectoryItem &item) override;
 
-    void removeItem(QString path);
+    void removeItem(const QString &path) override;
 
-    void requestItem(QString path);
+    void requestItem(const QString &path) override;
 
-signals:
-    void sendItem(DirectoryItem item);
-    void stateChanged();
 private:
-
-    bool isDuplicate(QString path);
+    bool isDuplicate(const QString &path) override;
 
     QList<DirectoryItem>items;
 };

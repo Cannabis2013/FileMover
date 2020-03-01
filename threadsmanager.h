@@ -5,11 +5,7 @@
 #include <qlist.h>
 #include <quuid.h>
 
-struct ThreadDescriptor
-{
-    const QThread * thread;
-    QUuid thread_id;
-};
+#include "ithreadmanagerinterface.h"
 
 class ThreadObject : public QThread
 {
@@ -22,17 +18,17 @@ private:
     const QUuid _thread_id;
 };
 
-class ThreadsManager
+class ThreadsManager : public IThreadManagerInterface
 {
 public:
     ThreadsManager();
     ~ThreadsManager();
 
-    const ThreadDescriptor *createThread(QObject *o);
-    void startThread(QUuid thread_id, QThread::Priority priority = QThread::InheritPriority);
-    void terminateThread(QUuid thread_id);
-    void startAllThreads(QThread::Priority priority = QThread::InheritPriority);
-    void terminateAll();
+    const ThreadDescriptor *createThread(QObject *o) override;
+    void startThread(QUuid thread_id, QThread::Priority priority = QThread::InheritPriority) override;
+    void terminateThread(QUuid thread_id) override;
+    void startAllThreads(QThread::Priority priority = QThread::InheritPriority) override;
+    void terminateAll() override;
 private:
     QList<QThread*> _threads;
 };

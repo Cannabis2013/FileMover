@@ -1,60 +1,45 @@
 #ifndef FILEWORKEROPERATOR_H
 #define FILEWORKEROPERATOR_H
 
-#include "rules.h"
-#include "entityqueuemanager.h"
-#include "exceptionhandler.h"
+#include "AbstractFileWorker.h"
 
 #ifdef __MINGW64__
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 #endif
-class FileOperationWorker :
-        public QObject,
-        public Worker,
-        public IBroadcastingObject
+
+namespace FileSpace {
+    class FileOperationWorker;
+}
+
+
+class FileOperationWorker : public AbstractFileWorker
 {
     Q_OBJECT
-
 public:
+    // Public types
+    enum copyMode{move,copy,noMode};
+    enum iteratorMode{filesOnly = 0,folderOnly = 1,allEntries = 2, noTypeSet = 3};
+
+
     FileOperationWorker();
 
-    QStringList static createHeader(QFileInfo fi = QFileInfo());
 
-    static FileObjectList processFileObjects(FileObjectList fileObjects,SubRule rule);
+    FileObjectList processFileObjects(const FileObjectList &fileObjects,const SubRule &rule) override;
 
-    static FileObjectList generateFileObjects(const QStringList &paths,
+    FileObjectList generateFileObjects(const QStringList &paths,
                                               const QString &rPath = QString(),
-                                              RRT::FileTypeEntity filter = RRT::File);
+                                              const RRT::FileTypeEntity &filter = RRT::File)  override;
 
-public slots:
-
-    void countNumberOfFolderItems(QString path,
-                    QDir::Filters f = QDir::NoFilter,
-                    QDirIterator::IteratorFlags i = QDirIterator::NoIteratorFlags);
-    void countFolders(QStringList Path);
+    void countFolderItems(const QString &path,
+                    const QDir::Filters &filters = QDir::NoFilter,
+                    const QDirIterator::IteratorFlags &flags = QDirIterator::NoIteratorFlags) override;
+    void countFolders(const QStringList &Path) override;
 
     // wake-up/Start entity file operations
-    void handleProcessRequest();
-    void processEntity(IModelDelegate<EntityModel, EntityType> *delegate);
-
-signals:
-    void fileCount(long antal);
-    void sendFolderSizeEntity(const DirectoryEntity *fObj);
-    void sendFolderSizeEntities(QList<DirectoryEntity> s);
-
-    void clearFinished(bool a);
-
-    // Queue related..
-    void requestNextEntity();
-    void infoReport(const QString &error);
-    void processFinished(QList<DirectoryItem>items);
-    void jobDone(bool status);
-
-    void sendSystemTrayMessage(const QString &title, const QString &msg);
-    void sendStatusLineMessage(const QString &msg);
+    void handleProcessRequest() override;
+    void processEntity(IModelDelegate<EntityModel, EntityType> *delegate) override;
 
 private:
-
     // File object entity operations
 
     void processFileEntity(const IModelDelegate<FileRuleEntity, EntityType> *delegate);
@@ -67,24 +52,19 @@ private:
     bool copyFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
     bool moveFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
 
-    // Methods to count files and number of contents in folders
+    /* Methods to count files and number of contents in folders
+     *  - Please note they all relies on QObject functionalities
+     */
+
     int folderCount(QString p);
-    int fileCount(QString p);
+    int fileCountFromPath(QString p);
 
     // Methods of calculating size of files and content of folders
 
-    long long folderSize(QString pf);
-
-    // Create a list of suffixes and their occurencies..
-    QList<QPair<QString,int> > getListOfSuffixOccuriencies(QString p);
-
-    // Create a list of treeWidgetItem
-
-    QTreeWidgetItem *assembleItemModelsFromPath(QString p);
+    qint64 folderSize(const QString &path);
 
     QString busyMessage;
     bool isBusy;
-
 };
 
 typedef FileOperationWorker fW;

@@ -11,74 +11,6 @@ rulesManager::~rulesManager()
     writeSettings();
 }
 
-QString rulesManager::mergeStringList(const QStringList strings)
-{
-    if(strings.empty())
-        return QString();
-    else if(strings.count() == 1)
-        return strings.first();
-
-    QString result;
-    for(QString string : strings)
-        result += string + ";";
-    return result;
-}
-
-QStringList rulesManager::splitString(const QString split)
-{
-    QString tempString;
-    QStringList splittetList;
-    int lastLetter = split.count() -1;
-    for(int i = 0;i<split.count();i++)
-    {
-        QChar w = split.at(i);
-        if(w != ';' && lastLetter != i)
-            tempString.append(w);
-        else
-        {
-            splittetList << tempString + w;
-            tempString.clear();
-        }
-    }
-    return splittetList;
-}
-
-QString rulesManager::ruleKeyWordToString(SubRule sRule)
-{
-    if(sRule.criteria() == RRT::fileSize &&
-            sRule.compareCriteria() != RRT::interval)
-        return QString::number(sRule.sizeLimit().first) + " " + sRule.sizeLimit().second;
-    else if(sRule.criteria() == RRT::fileSize &&
-            sRule.compareCriteria() == RRT::interval)
-        return rulesManager::ruleSizeLimitsToString(sRule);
-    else if((sRule.criteria() == RRT::fileCreatedMode || sRule.criteria() == RRT::fileModifiedMode) &&
-            sRule.compareCriteria() != RRT::interval)
-        return sRule.date().toString("dd.MM.yyyy");
-    else if((sRule.criteria() == RRT::fileCreatedMode || sRule.criteria() == RRT::fileModifiedMode) &&
-            sRule.compareCriteria() == RRT::interval)
-        return rulesManager::ruleDateLimitsToString(sRule);
-    else
-        return Worker::mergeStringList(sRule.keyWords());
-}
-
-
-QString rulesManager::ruleSizeLimitsToString(SubRule sRule)
-{
-    QString minSize = QString::number(sRule.sizeInterval().first.first),
-            maxSize = QString::number(sRule.sizeInterval().second.first);
-    QString sizeUnitMin = sRule.sizeInterval().first.second,
-            sizeUnitMax = sRule.sizeInterval().second.second;
-    return "Min: " + minSize + " " + sizeUnitMin
-            + " " + "max: " + maxSize + " " + sizeUnitMax;
-}
-
-QString rulesManager::ruleDateLimitsToString(SubRule sRule)
-{
-    QString startDate = sRule.dateIntervals().first.date().toString("dd.MM.yyyy"),
-            endDate = sRule.dateIntervals().second.date().toString("dd.MM.yyyy");
-    return "Start dato: " + startDate + " slut dato: " + endDate;
-}
-
 QList<QTreeWidgetItem *> rulesManager::ruleItems() const
 {
     RuleDefinitions rDefs;
@@ -86,7 +18,7 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     for(Rule r : rules)
     {
         QStringList headerData {r.title(),rDefs.fileActionEntityToString(r.actionRuleEntity()),
-                    Worker::mergeStringList(r.destinationPaths())};
+                    StaticStringCollections::mergeStringList(r.destinationPaths())};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         QIcon itemIcon = QIcon(":/My Images/Ressources/rule_icon.png");
         pItem->setIcon(0,itemIcon);
@@ -95,7 +27,7 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
             QStringList hData;
             hData << rDefs.buildStringFromCriteria(sRule.criteria()) <<
                      rDefs.buildStringFromCompareCriteria(sRule.compareCriteria()) <<
-                     rulesManager::ruleKeyWordToString(sRule);
+                     StaticStringCollections::ruleKeyWordToString(sRule);
 
             QTreeWidgetItem *cItem = new QTreeWidgetItem(hData);
             cItem->setIcon(0,QIcon(":/My Images/Ressources/sub_rule_icon.png"));
@@ -135,7 +67,7 @@ void rulesManager::removeRule(const QString title)
     throw QString("Item not found.");
 }
 
-const Rule rulesManager::rule(QString title)
+const Rule rulesManager::rule(QString title) const
 {
     for(Rule rule : rules)
     {
@@ -158,7 +90,7 @@ void rulesManager::readSettings()
         auto action = static_cast<RRT::RuleAction>(pSettings->value("Action","").toInt());
         auto appliesTo = pSettings->value("ApplyPath","Alle").toString();
         auto type = static_cast<RRT::FileTypeEntity>(pSettings->value("Scan type filter","").toInt());
-        auto destinations = Worker::splitString(pSettings->value("Destination paths","").toString());
+        auto destinations = StaticStringCollections::splitString(pSettings->value("Destination paths","").toString());
         int count = pSettings->beginReadArray("Subrules");
         auto r = RuleBuilder::buildOrdinaryRule(title,appliesTo,destinations,action,type);
         for (int j = 0; j < count; ++j)
@@ -170,7 +102,7 @@ void rulesManager::readSettings()
             auto compareCriteria = static_cast<RRT::RuleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
 
             auto matchWholeWords = pSettings->value("Matchwholewords",false).toBool();
-            auto keyWords = Worker::splitString(pSettings->value("Keywords","").toString());
+            auto keyWords = StaticStringCollections::splitString(pSettings->value("Keywords","").toString());
 
             auto sLimit = pSettings->value("Sizelimit",0).toInt();
             auto sizeUnit = pSettings->value("Sizelimitunit","kb").toString();
@@ -234,7 +166,7 @@ void rulesManager::writeSettings()
         pSettings->setValue("Scan type filter",r.typeFilter());
         pSettings->setValue("ApplyPath",r.appliesToPath());
         pSettings->setValue("Destination paths",
-                   mergeStringList(r.destinationPaths()));
+                   StaticStringCollections::mergeStringList(r.destinationPaths()));
         pSettings->setValue("Scan Mode",r.deepScanMode());
         QList<SubRule>sRules = r.subRules();
         int total = sRules.count();
@@ -249,7 +181,7 @@ void rulesManager::writeSettings()
             pSettings->setValue("Comparemode",sRule.compareCriteria());
 
             pSettings->setValue("Matchwholewords",sRule.matchWholeWords());
-            pSettings->setValue("Keywords",Worker::mergeStringList(sRule.keyWords()));
+            pSettings->setValue("Keywords",StaticStringCollections::mergeStringList(sRule.keyWords()));
 
             pSettings->setValue("Sizelimit",sRule.sizeLimit().first);
             pSettings->setValue("Sizelimitunit",sRule.sizeLimit().second);

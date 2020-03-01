@@ -1,25 +1,51 @@
 #include "mainapplication.h"
 
-MainApplication::MainApplication(const QString &appName,
-                                 const QString &orgName)
+MainApplication::MainApplication()
 {
-    // Initialize member variables and pointers
-    rManager = new rulesManager(appName,orgName);
-    sManager = new settingsManager(appName,orgName);
-    entityManager = new EntityQueueManager();
-    fManager = new FileInformationManager(appName,orgName);
-    fWorker = new FileOperationWorker();
-    fWatcher = new FileSystemWatcher(sManager->paths());
-    tManager = new ThreadsManager();
-    fileWorkerThread = new QThread();
-    queueThread = new QThread();
+}
 
-    QString ressourceFolderPath = "Ressources";
+MainApplication::~MainApplication()
+{
+    delete settingsManagerService;
+    delete fileManagerService;
+    delete ruleManagerService;
+}
 
+void MainApplication::clearFolders(QStringList paths)
+{
+    auto directoryPaths = paths;
+    auto allFiles = fileOperationsService->generateFileObjects(paths);
 
+    auto delegate = DelegateBuilder::buildFileActionEntity<EntityModel>(paths,allFiles,RRT::Delete,QStringList());
+
+    entityQueueManagerService->addEntity(delegate);
+}
+
+void MainApplication::clearFoldersAccordingToRules(QStringList paths)
+{
+    const QList<Rule>rules = ruleManagerService->ruleslist();
+    if(rules.isEmpty())
+        clearFolders(paths);
+    for(const Rule &r : rules)
+    {
+        FileObjectList allFiles = fileOperationsService->generateFileObjects(paths,r.appliesToPath(),r.typeFilter());
+        for(SubRule sR : r.subRules())
+            allFiles = fileOperationsService->processFileObjects(allFiles,sR);
+
+        emit sendEntity(
+                    DelegateBuilder::buildFileActionEntity<EntityModel>(
+                        paths,
+                        allFiles,
+                        r.actionRuleEntity(),
+                        r.destinationPaths()));
+    }
+}
+
+void MainApplication::configureServices()
+{
     // Assign objects to threads
-    tManager->createThread(entityManager);
-    tManager->createThread(fWorker);
+    threadManagerService->createThread(entityQueueManagerService);
+    threadManagerService->createThread(fileOperationsService);
 
     /*
     entityManager->moveToThread(queueThread);
@@ -37,113 +63,79 @@ MainApplication::MainApplication(const QString &appName,
      */
 
     // Entity queue related..
-    connect(this,&MainApplication::sendEntity,entityManager,&EntityQueueManager::addEntity);
-    connect(entityManager,&EntityQueueManager::wakeUpProcess,fWorker,&fW::handleProcessRequest);
-    connect(fWorker,&fW::requestNextEntity,entityManager,&EntityQueueManager::sendNextEntity);
-    connect(entityManager,&EntityQueueManager::sendEntity,fWorker,&fW::processEntity);
+    connect(this,&MainApplication::sendEntity,entityQueueManagerService,&AbstractQueueManager::addEntity);
+    connect(entityQueueManagerService,&EntityQueueManager::wakeUpProcess,fileOperationsService,&AbstractFileWorker::handleProcessRequest);
+    connect(fileOperationsService,&fW::requestNextEntity,entityQueueManagerService,&AbstractQueueManager::sendNextEntity);
+    connect(entityQueueManagerService,&AbstractQueueManager::sendEntity,fileOperationsService,&AbstractFileWorker::processEntity);
 
     // Detailed directory information..
-    connect(sManager,&settingsManager::processPath,entityManager,&EntityQueueManager::addEntity);
-    connect(fWatcher,&FileSystemWatcher::folderChanged,entityManager,&EntityQueueManager::addEntity);
-    connect(fWatcher,&FileSystemWatcher::sendSystemTrayMessage,this,&MainApplication::sendSystemTrayMessage);
-    connect(sManager,&settingsManager::removeItem,fManager,&FileInformationManager::removeItem);
+    connect(settingsManagerService,&AbstractSettingsManager::processPath,entityQueueManagerService,&AbstractQueueManager::addEntity);
+    connect(fileWatcherService,&FileSystemWatcher::folderChanged,entityQueueManagerService,&AbstractQueueManager::addEntity);
+    connect(fileWatcherService,&FileSystemWatcher::sendSystemTrayMessage,this,&MainApplication::sendSystemTrayMessage);
+    connect(settingsManagerService,&AbstractSettingsManager::removeItem,fileManagerService,&AbstractFileInformationManager::removeItem);
 
-    connect(fWorker,&fW::processFinished,fManager,&FileInformationManager::insertItems);
-    connect(fWorker,&FileOperationWorker::sendFolderSizeEntity,this,&MainApplication::sendFolderSize);
-    connect(fWorker,&FileOperationWorker::sendStatusLineMessage,this,&MainApplication::sendStatusMessage);
+    connect(fileOperationsService,&fW::processFinished,fileManagerService,&AbstractFileInformationManager::insertItems);
+    connect(fileOperationsService,&FileOperationWorker::sendFolderSizeEntity,this,&MainApplication::sendFolderSize);
+    connect(fileOperationsService,&FileOperationWorker::sendStatusLineMessage,this,&MainApplication::sendStatusMessage);
 
     // Notify observers related..
-    connect(sManager,&settingsManager::stateChanged,this,&MainApplication::stateChanged);
-    connect(rManager,&rulesManager::stateChanged,this,&MainApplication::stateChanged);
-    connect(fManager,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);
+    connect(settingsManagerService,&AbstractSettingsManager::stateChanged,this,&MainApplication::stateChanged);
+    connect(ruleManagerService,&rulesManager::stateChanged,this,&MainApplication::stateChanged);
+    connect(fileManagerService,&FileInformationManager::stateChanged,this,&MainApplication::stateChanged);
 
-    connect(fWorker,&fW::jobDone,this,&AbstractCoreApplication::stateChanged);
+    connect(fileOperationsService,&fW::jobDone,this,&AbstractCoreApplication::stateChanged);
+}
 
+void MainApplication::startServices()
+{
     // Start threads
-    tManager->startAllThreads();
+    threadManagerService->startAllThreads();
 
-    emit sManager->processPath(
+    emit settingsManagerService->processPath(
                 DelegateBuilder::buildFileInformationEntity<EntityModel>(
                     QStringList() << watchFolders()));
 }
 
-MainApplication::~MainApplication()
-{
-    delete sManager;
-    delete fManager;
-    delete rManager;
-}
-
-void MainApplication::clearFolders(QStringList paths)
-{
-    auto directoryPaths = paths;
-    auto allFiles = fW::generateFileObjects(paths);
-
-    auto delegate = DelegateBuilder::buildFileActionEntity<EntityModel>(paths,allFiles,RRT::Delete,QStringList());
-
-    entityManager->addEntity(delegate);
-}
-
-void MainApplication::clearFoldersAccordingToRules(QStringList paths)
-{
-    const QList<Rule>rules = rManager->ruleslist();
-    if(rules.isEmpty())
-        clearFolders(paths);
-    for(const Rule &r : rules)
-    {
-        FileObjectList allFiles = fW::generateFileObjects(paths,r.appliesToPath(),r.typeFilter());
-        for(SubRule sR : r.subRules())
-            allFiles = fWorker->processFileObjects(allFiles,sR);
-
-        emit sendEntity(
-                    DelegateBuilder::buildFileActionEntity<EntityModel>(
-                        paths,
-                        allFiles,
-                        r.actionRuleEntity(),
-                        r.destinationPaths()));
-    }
-}
-
 void MainApplication::addWatchFolders(QStringList paths)
 {
-    sManager->insertPath(paths);
+    settingsManagerService->insertPath(paths);
 }
 
 void MainApplication::clearWatchFolders()
 {
-    sManager->clearPaths();
+    settingsManagerService->clearPaths();
 
 }
 
 QString MainApplication::watchFolder(int index) const
 {
-    return sManager->paths().value(index);
+    return settingsManagerService->paths().value(index);
 }
 
 QStringList MainApplication::watchFolders()
 {
-    return sManager->paths();
+    return settingsManagerService->paths();
 }
 
 int MainApplication::watchFolderCount()
 {
-    return sManager->folderCount();
+    return settingsManagerService->folderCount();
 }
 
 void MainApplication::clearRules() const
 {
-    for (int i = 0; i < rManager->ruleCount(); ++i)
-        rManager->removeRuleAt(i);
+    for (int i = 0; i < ruleManagerService->ruleCount(); ++i)
+        ruleManagerService->removeRuleAt(i);
 }
 
 const ISettingsDelegate *MainApplication::settingsState()
 {
-    return sManager->settingsState();
+    return settingsManagerService->settingsState();
 }
 
 void MainApplication::setSettings(const ISettingsDelegate *s)
 {
-    sManager->setSettings(s);
+    settingsManagerService->setSettings(s);
 }
 
 void MainApplication::calculateFolderSize(QString path)
@@ -154,15 +146,15 @@ void MainApplication::calculateFolderSize(QString path)
     auto directoryName = fInfo.fileName();
 
 
-    entityManager->addEntity(DelegateBuilder::buildDirectoryCountEntity<EntityModel>(0,directoryName,directoryPath));
+    entityQueueManagerService->addEntity(DelegateBuilder::buildDirectoryCountEntity<EntityModel>(0,directoryName,directoryPath));
 }
 
 void MainApplication::removeWatchFolderAt(int index)
 {
-    sManager->removePathAt(index);
+    settingsManagerService->removePathAt(index);
 }
 
 void MainApplication::removeWatchFolder(QString path)
 {
-    sManager->removePath(path);
+    settingsManagerService->removePath(path);
 }

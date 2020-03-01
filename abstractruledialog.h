@@ -20,8 +20,8 @@
 #include "abstracttextselectordialog.h"
 #include "rulepathselector.h"
 #include "conditionwidget.h"
-#include "abstractcoreapplication.h"
 #include "abstractframe.h"
+#include "StaticStringsCollection.h"
 
 namespace Ui {
 class AbstractRuleDialog;

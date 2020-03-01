@@ -33,10 +33,21 @@ using namespace std;
 
         processArguments(arguments,argVals);
 
-        MainApplication *mainApplicaton = new MainApplication(argVals.appName,
-                                                              argVals.orgName);
+        AbstractCoreApplication *mainApplicaton = new MainApplication();
 
-        mainWindow *w = new mainWindow(mainApplicaton);
+        mainApplicaton->setFileOperationsService(new FileOperationWorker());
+        mainApplicaton->setRuleManagerService(new rulesManager(argVals.appName,argVals.orgName));
+        mainApplicaton->setThreadManagerService(new ThreadsManager());
+        mainApplicaton->setSettingsManagerService(new settingsManager(argVals.appName,argVals.orgName));
+        mainApplicaton->setFileInformationManagerService(new FileInformationManager(argVals.appName,argVals.orgName));
+        mainApplicaton->setEntityQueueManagerService(new EntityQueueManager());
+        mainApplicaton->setFileWatcherService(new FileSystemWatcher());
+
+        mainApplicaton->configureServices();
+        mainApplicaton->startServices();
+
+
+        QMainWindow *w = new mainWindow(mainApplicaton);
         w->show();
 
         return a.exec();

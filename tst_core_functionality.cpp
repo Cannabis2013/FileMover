@@ -1000,7 +1000,7 @@ void Core_functionality::operation_size_less_than_success_1()
     }
 
     Virtual_Objects referenceList;
-    qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = SBC::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -1208,7 +1208,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
 
 
     Virtual_Objects referenceList;
-    qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = SBC::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -1309,7 +1309,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
     }
 
     Virtual_Objects referenceList;
-    qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = SBC::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -1409,7 +1409,7 @@ void Core_functionality::operation_size_greater_than_success_1()
     }
 
     Virtual_Objects referenceList;
-    qint64 bytes = fW::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = SBC::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj;
@@ -1529,7 +1529,7 @@ void Core_functionality::operation_size_interval_success_1()
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         qint64 sz = obj.additionalInformation.size();
-        if(sz <= fW::convertToBytes(lowerLimit.first,lowerLimit.second) || sz >= fW::convertToBytes(upperLimit.first,lowerLimit.second))
+        if(sz <= SBC::convertToBytes(lowerLimit.first,lowerLimit.second) || sz >= SBC::convertToBytes(upperLimit.first,lowerLimit.second))
             referenceList << obj;
     }
 

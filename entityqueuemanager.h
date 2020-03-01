@@ -3,8 +3,8 @@
 
 #include "mydatetime.h"
 #include "fileinformationmanager.h"
-#include "entitymodel.h"
 #include "exceptionhandler.h"
+#include "abstractqueueManager.h"
 
 /*
  * Queue management of fileoperations and other stuff
@@ -15,27 +15,26 @@
  *  - EntityQueueManager::SendEntity -> FileWorkerOperation::processEntity
 */
 
-class EntityQueueManager : public QObject
+class EntityQueueManager : public AbstractQueueManager
 {
     Q_OBJECT
-
 public:
     ~EntityQueueManager()
     {
         delete this;
     }
 
-    bool isQueueEmpty(){return entityQueue.isEmpty();}
+    bool isQueueEmpty() const override {return entityQueue.isEmpty();}
 
 public slots:
 
-    void addEntity(IModelDelegate<EntityModel,EntityType> *delegate)
+    void addEntity(IModelDelegate<EntityModel,EntityType> *delegate) override
     {
         entityQueue << delegate->model();
         emit wakeUpProcess();
     }
 
-    void sendNextEntity()
+    void sendNextEntity() override
     {
         if(entityQueue.isEmpty())
         {
@@ -46,12 +45,6 @@ public slots:
         auto delegate = DelegateBuilder::buildDelegate(entityQueue.takeFirst());
         emit sendEntity(delegate);
     }
-
-signals:
-    void wakeUpProcess();
-    void processFinished();
-
-    void sendEntity(IModelDelegate<EntityModel,EntityType> *delegate);
 
 private:
     QList<const EntityModel*>entityQueue;

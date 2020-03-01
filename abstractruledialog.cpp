@@ -78,7 +78,7 @@ void AbstractRuleDialog::updateConditionView(SubRule &sR)
     }
     else
     {
-        condWidget->setKeyWords(rulesManager::ruleKeyWordToString(sR));
+        condWidget->setKeyWords(StaticStringCollections::ruleKeyWordToString(sR));
         condWidget->setCompareView(sR.compareCriteria());
     }
 }
@@ -127,26 +127,26 @@ void AbstractRuleDialog::updateView()
         if((condition == RRT::fileCreatedMode || condition == RRT::fileModifiedMode) &&
                 sRule.compareCriteria() != RRT::interval)
         {
-            headerData << rulesManager::ruleKeyWordToString(sRule);
+            headerData << StaticStringCollections::ruleKeyWordToString(sRule);
         }
         else if((condition == RRT::fileCreatedMode || condition == RRT::fileModifiedMode) &&
                 sRule.compareCriteria() == RRT::interval)
         {
-            headerData << rulesManager::ruleDateLimitsToString(sRule);
+            headerData << StaticStringCollections::ruleDateLimitsToString(sRule);
         }
         else if(condition == RRT::fileSize &&
                 sRule.compareCriteria() != RRT::interval)
         {
-           headerData << rulesManager::ruleKeyWordToString(sRule);
+           headerData << StaticStringCollections::ruleKeyWordToString(sRule);
         }
         else if(condition == RRT::fileSize &&
                 sRule.compareCriteria() == RRT::interval)
         {
-            headerData << rulesManager::ruleSizeLimitsToString(sRule);
+            headerData << StaticStringCollections::ruleSizeLimitsToString(sRule);
         }
         else
         {
-            headerData << rulesManager::mergeStringList(sRule.keyWords());
+            headerData << StaticStringCollections::mergeStringList(sRule.keyWords());
         }
 
         new QTreeWidgetItem(subRuleView,headerData);

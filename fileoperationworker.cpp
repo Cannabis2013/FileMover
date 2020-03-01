@@ -8,7 +8,7 @@ FileOperationWorker::FileOperationWorker()
         qt_ntfs_permission_lookup++;
     #elif __WIN64__
         qt_ntfs_permission_lookup++;
-    #endif
+#endif
 }
 
 bool FileOperationWorker::removeFileItems(const FileObjectList& filePaths, QStringList *const err)
@@ -55,7 +55,7 @@ bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const 
         {
             bool noErrors = true;
             auto model = static_cast<const FileModel*>(modelDelegate->model());
-            QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + model->fileName();
+            QString AbsoluteFilePath = StaticStringCollections::checkAndCorrectForBackslash(destPath) + model->fileName();
             if(model->isDir())
             {
                 noErrors = moveFileItems(modelDelegate->children(),QStringList() << AbsoluteFilePath,err);
@@ -85,6 +85,7 @@ bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const 
 bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err)
 {
     // TODO: Implement some error handling when something goes wrong
+    Q_UNUSED(err);
     bool result = true;
     for(QString destPath : destinations)
     {
@@ -96,7 +97,7 @@ bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const 
         {
             bool noErrors = true;
             const FileModel* model = static_cast<const FileModel*>(modelDelegate->model());
-            QString AbsoluteFilePath = checkAndCorrectForBackslash(destPath) + model->fileName();
+            QString AbsoluteFilePath = StaticStringCollections::checkAndCorrectForBackslash(destPath) + model->fileName();
             if(model->isDir())
             {
                 noErrors = copyFileItems(modelDelegate->children(),QStringList() << AbsoluteFilePath);
@@ -184,7 +185,7 @@ int FileOperationWorker::folderCount(QString p)
     return taeller;
 }
 
-int FileOperationWorker::fileCount(QString p)
+int FileOperationWorker::fileCountFromPath(QString p)
 {
     QDirIterator ite(QFileInfo(p).absoluteFilePath(),
                      QDir::NoDotAndDotDot |
@@ -200,50 +201,11 @@ int FileOperationWorker::fileCount(QString p)
     return taeller;
 }
 
-QList<QPair<QString, int> > FileOperationWorker::getListOfSuffixOccuriencies(QString p)
-{
-    QList<QPair<QString, int> > resultingList;
-    QStringList allSufs,tempSufs;
-    QDirIterator ite(p,
-                     QDir::NoDotAndDotDot |
-                     QDir::Files |
-                     QDir::Hidden |
-                     QDir::System,
-                     QDirIterator::Subdirectories);
-    while(ite.hasNext())
-    {
-        QFileInfo i = ite.next();
-        if(i.isFile())
-        {
-            if(i.suffix() == "")
-                allSufs << "Unknown";
-            else
-                allSufs << i.suffix();
-        }
-    }
-
-    tempSufs = allSufs;
-    foreach (QString suf, allSufs)
-    {
-        int taeller = 0;
-        if(tempSufs.contains(suf))
-        {
-            taeller = tempSufs.count(suf);
-            tempSufs.removeAll(suf);
-            QPair<QString,int> sPar;
-            sPar.first = suf;
-            sPar.second = taeller;
-            resultingList.append(sPar);
-        }
-    }
-    return resultingList;
-}
-
-long long FileOperationWorker::folderSize(QString pf)
+qint64 FileOperationWorker::folderSize(const QString &path)
 {
     long long sZ = 0;
 
-    QDirIterator iT(QFileInfo(pf).absoluteFilePath(),
+    QDirIterator iT(QFileInfo(path).absoluteFilePath(),
                     QDir::NoDotAndDotDot |
                     QDir::Files | QDir::System |
                     QDir::Hidden,
@@ -263,94 +225,7 @@ long long FileOperationWorker::folderSize(QString pf)
     return sZ;
 }
 
-QTreeWidgetItem *FileOperationWorker::assembleItemModelsFromPath(QString p)
-{
-    if(!QFileInfo(p).isDir() && !QFileInfo(p).exists())
-        return nullptr;
-
-    QTreeWidgetItem *result = new QTreeWidgetItem(createHeader(p));
-    QDirIterator ite(p,QDir::NoDotAndDotDot | QDir::AllEntries);
-    while(ite.hasNext())
-    {
-        QFileInfo fInfo = ite.next();
-
-        if(fInfo.isDir())
-        {
-            QTreeWidgetItem *dirItem = assembleItemModelsFromPath(fInfo.absoluteFilePath());
-            result->addChild(dirItem);
-        }
-        else if(fInfo.isFile())
-        {
-            result->addChild(new QTreeWidgetItem(createHeader(fInfo)));
-        }
-    }
-    return result;
-}
-
-QStringList FileOperationWorker::createHeader(QFileInfo fi)
-{
-    // Filename/dirname - Filepath - file extension - file type - Filesize - lastModified - Last read
-    QStringList headers;
-    int mp = 1024;
-
-    if(fi.isDir())
-    {
-        double sz = 0;
-        QDirIterator i(fi.filePath(),QDirIterator::Subdirectories);
-        while(i.hasNext())
-            sz += QFile(i.next()).size();
-
-        headers << directoryName(fi.absoluteFilePath())
-                << fi.absoluteFilePath()
-                << ""
-                << "Mappe";
-
-        if(sz <=mp)
-            headers << QString::number(fi.size()) + " b";
-        else if(sz > mp && sz <mp*mp)
-            headers << QString::number(sz/mp) + " kb";
-        else if(sz >= (mp*mp) && sz <(mp*mp*mp))
-            headers << QString::number(sz/(mp*mp)) + " mb";
-        else
-            headers << QString::number(sz/(mp*mp*mp)) + " gb";
-
-        headers << fi.lastModified().toString()
-                << fi.lastRead().toString();
-    }
-    else if(fi.isFile())
-    {
-        headers << fi.fileName()
-                << fi.absoluteFilePath()
-                << fi.suffix()
-                << "Fil";
-
-        if(fi.size() <=mp)
-            headers << QString::number(fi.size()) + " b";
-        else if(fi.size() > mp && fi.size() <mp*mp)
-            headers << QString::number(fi.size()/mp) + " kb";
-        else if(fi.size() >= (mp*mp) && fi.size() <(mp*mp*mp))
-            headers << QString::number(fi.size()/(mp*mp)) + " mb";
-        else
-            headers << QString::number(fi.size()/(mp*mp*mp)) + " gb";
-
-        headers << fi.lastModified().toString()
-                << fi.lastRead().toString();
-    }
-    else
-    {
-
-        headers << "Filename"
-                << "Filepath"
-                << "Suffix"
-                << "Type"
-                << "Size"
-                << "Last modified"
-                << "Last read";
-    }
-    return headers;
-}
-
-FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObjects, SubRule rule)
+FileObjectList FileOperationWorker::processFileObjects(const FileObjectList &fileObjects, const SubRule &rule)
 {
     FileObjectList filesToProcess;
     for(ITreeModelDelegate<FileModel,DefaultModelType>* modelDelegate : fileObjects)
@@ -530,24 +405,24 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
         {
             if(rule.compareCriteria() != RRT::interval)
             {
-                if(rule.compareCriteria() == RRT::lesserThan && model->size() < fW::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
+                if(rule.compareCriteria() == RRT::lesserThan && model->size() < SBC::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                 else if(rule.compareCriteria() == RRT::lesserOrEqualThan &&
-                        model->size() <= fW::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
+                        model->size() <= SBC::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                 else if(rule.compareCriteria() == RRT::equal &&
-                        model->size() == fW::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
+                        model->size() == SBC::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                 else if(rule.compareCriteria() == RRT::greaterOrEqualThan &&
-                        model->size() >= fW::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
+                        model->size() >= SBC::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
                 else if(rule.compareCriteria() == RRT::greaterThan &&
-                        model->size() > fW::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
+                        model->size() > SBC::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
                     filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
             }
             else if(rule.compareCriteria() == RRT::interval &&
-                    model->size() >= fW::convertToBytes(rule.sizeInterval().first.first,rule.sizeInterval().first.second) &&
-                    model->size() <= fW::convertToBytes(rule.sizeInterval().second.first,rule.sizeInterval().second.second))
+                    model->size() >= SBC::convertToBytes(rule.sizeInterval().first.first,rule.sizeInterval().first.second) &&
+                    model->size() <= SBC::convertToBytes(rule.sizeInterval().second.first,rule.sizeInterval().second.second))
                 filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
         }
         else if(rule.criteria() == RRT::fileCreatedMode)
@@ -593,7 +468,7 @@ FileObjectList FileOperationWorker::processFileObjects(FileObjectList fileObject
     return filesToProcess;
 }
 
-FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths, const QString &rPath, RRT::FileTypeEntity filter)
+FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths, const QString &rPath, const RRT::FileTypeEntity &filter)
 {
     FileObjectList resultingList;
 
@@ -634,7 +509,7 @@ FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths
 }
 
 
-void FileOperationWorker::countNumberOfFolderItems(QString path, QDir::Filters f, QDirIterator::IteratorFlags i)
+void FileOperationWorker::countFolderItems(const QString &path, const QDir::Filters &filters, const QDirIterator::IteratorFlags &flags)
 {
     if(isBusy)
     {
@@ -643,7 +518,7 @@ void FileOperationWorker::countNumberOfFolderItems(QString path, QDir::Filters f
     }
     isBusy = true;
     long taeller = 0;
-    QDirIterator iT(path,f,i);
+    QDirIterator iT(path,filters,flags);
     while(iT.hasNext())
     {
         QFileInfo fil = iT.next();
@@ -654,7 +529,7 @@ void FileOperationWorker::countNumberOfFolderItems(QString path, QDir::Filters f
     isBusy = false;
 }
 
-void FileOperationWorker::countFolders(QStringList Path)
+void FileOperationWorker::countFolders(const QStringList &Path)
 {
     long taeller = 0;
     for (QString p : Path)
@@ -684,15 +559,15 @@ void FileOperationWorker::processFileInformationEntity(const IModelDelegate<File
 
         QString denotation;
         item.path = path;
-        double directorySize = convertFromBytes(folderSize(path),denotation);
+        double directorySize = SBC::convertFromBytes(folderSize(path),denotation);
         item.dirSize = QString::number(directorySize) + " " + denotation;
         item.numberOfDirectories = folderCount(path);
-        item.numberOfFiles = fileCount(path);
+        item.numberOfFiles = fileCountFromPath(path);
         item.directoryContent = QDir(path).entryInfoList(QDir::AllEntries |
                                                          QDir::System |
                                                          QDir::Hidden);
-        item.directoryItemModels = assembleItemModelsFromPath(path);
-        item.sufList = getListOfSuffixOccuriencies(path);
+        item.directoryItemModels = ByteCollection::assembleItemModelsFromPath(path);
+        item.sufList = ByteCollection::getListOfSuffixOccuriencies(path);
         directories << item;
     }
 
@@ -707,12 +582,12 @@ void FileOperationWorker::reProcessFileInformationEntity(const QStringList &path
         QString denotation;
         DirectoryItem item;
         item.path = p;
-        double directorySize = convertFromBytes(folderSize(p),denotation);
+        double directorySize = SBC::convertFromBytes(folderSize(p),denotation);
         item.dirSize = QString::number(directorySize) + " " + denotation;
         item.numberOfDirectories = folderCount(p);
-        item.numberOfFiles = fileCount(p);
-        item.directoryItemModels = assembleItemModelsFromPath(p);
-        item.sufList = getListOfSuffixOccuriencies(p);
+        item.numberOfFiles = fileCountFromPath(p);
+        item.directoryItemModels = ByteCollection::assembleItemModelsFromPath(p);
+        item.sufList = ByteCollection::getListOfSuffixOccuriencies(p);
         directories << item;
     }
     emit processFinished(directories);

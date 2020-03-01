@@ -88,7 +88,7 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication) :
 
     // detailedFolderview related..
 
-    QStringList headers = fW::createHeader();
+    QStringList headers = ByteCollection::createHeader();
     detailedFolderView->setColumnCount(headers.count());
     detailedFolderView->setHeaderLabels(headers);
 
@@ -401,7 +401,7 @@ void mainWindow::clearCompleted(bool a)
 void mainWindow::folderContentRecieved(const DirectoryEntity *entity)
 {
     QString sizeNotation;
-    double scaledAndRoundedSize = fW::convertFromBytes(entity->directorySize,sizeNotation,2);
+    double scaledAndRoundedSize = SBC::convertFromBytes(entity->directorySize,sizeNotation,2);
     QString folderName = entity->directoryPath,
             folderSize = QString::number(scaledAndRoundedSize),
             message = QString("Size of folder content is %1 %2").arg(folderSize).arg(sizeNotation);
@@ -424,7 +424,7 @@ void mainWindow::contextMenuCalled(QPoint p)
 void mainWindow::updateDetaileditems()
 {
     detailedFolderView->clear();
-    QList<QTreeWidgetItem*>itemList = coreApplication->detailedWatchFolderItems();
+    auto itemList = coreApplication->detailedWatchFolderItems();
     detailedFolderView->addTopLevelItems(itemList);
 }
 

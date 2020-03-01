@@ -2,11 +2,15 @@
 #define ABSTRACTCOREAPPLICATION_H
 
 #include <qstring.h>
-#include "fileoperationworker.h"
 #include "icon.h"
 #include "rulesmanager.h"
 #include "isettingsdelegate.h"
 #include "imutableobject.h"
+#include "abstractsettingsmanager.h"
+#include "abstractqueueManager.h"
+#include "abstractfileinformationmanager.h"
+#include "ithreadmanagerinterface.h"
+#include "abstractfilewatcher.h"
 
 class AbstractCoreApplication :
         public QObject,
@@ -32,7 +36,7 @@ public:
 
     virtual QString directoryInformationHtml(QString path) = 0;
 
-    virtual QList<QTreeWidgetItem*> suffixList(QString path) = 0;
+    virtual QList<QTreeWidgetItem*> suffixList(const QString &path) = 0;
 
     virtual QList<const AbstractIcon*> icons() = 0;
 
@@ -42,6 +46,21 @@ public:
     virtual bool closeOnExit() = 0;
 
     virtual void calculateFolderSize(QString path) = 0;
+
+    virtual void configureServices() = 0;
+
+    virtual void startServices() = 0;
+
+    // Add services
+
+    virtual void setRuleManagerService(AbstractRulesManager* service) = 0;
+    virtual void setSettingsManagerService(AbstractSettingsManager* service) = 0;
+    virtual void setEntityQueueManagerService(AbstractQueueManager* service) = 0;
+    virtual void setFileInformationManagerService(AbstractFileInformationManager* service) = 0;
+    virtual void setThreadManagerService(IThreadManagerInterface* service) = 0;
+
+    virtual void setFileOperationsService(AbstractFileWorker* service) = 0;
+    virtual void setFileWatcherService(AbstractFileWatcher* service) = 0;
 
 public slots:
     virtual void clearFolders(QStringList paths) = 0;

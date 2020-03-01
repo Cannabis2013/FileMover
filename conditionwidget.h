@@ -44,7 +44,7 @@ private:
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
     void setFixedDate(const myDateTime &dateTime);
     void setIntervalDate(QPair<myDateTime,myDateTime> iDate);
-    void setTypeValues(Worker::iteratorMode tMode);
+    void setTypeValues(fW::iteratorMode tMode);
 
     /*
      * General view related..
@@ -86,7 +86,7 @@ private:
     myDateTime fixedConditionalDate() const;
     QPair<myDateTime,myDateTime>intervalDates() const;
     // Get type values..
-    Worker::iteratorMode typeMode() const;
+    fW::iteratorMode typeMode() const;
 
     // Member variables...
     QCheckBox *folderCheckBox,*fileCheckBox;

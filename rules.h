@@ -1,7 +1,6 @@
 #ifndef RULES_H
 #define RULES_H
 
-#include "worker.h"
 #include "ruledefinitions.h"
 #include <QPair>
 #include <QStringList>

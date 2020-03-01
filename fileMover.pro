@@ -64,22 +64,30 @@ SOURCES += main.cpp\
     testfilecreator.cpp \
     threadsmanager.cpp \
     tst_core_functionality.cpp \
-    worker.cpp \
     topframeform.cpp
 
 HEADERS  += mainwindow.h \
+    AbstractFileWorker.h \
+    StaticStringsCollection.h \
     TestRuleHelper.h \
     TypeDefinitions.h \
     abstractcoreapplication.h \
+    abstractfileinformationmanager.h \
+    abstractfileoperationworker.h \
+    abstractfilewatcher.h \
     abstractframe.h \
+    abstracticon.h \
+    abstractqueueManager.h \
     abstractruledialog.h \
     abstractpersistence.h \
+    abstractsettingsmanager.h \
     abstracttextselectordialog.h \
     conditionwidget.h \
     customcombobox.h \
     customdialog.h \
     customsplitter.h \
     customsplitterhandle.h \
+    directoryitem.h \
     entitymodel.h \
     entityqueuemanager.h \
     exceptionhandler.h \
@@ -94,6 +102,7 @@ HEADERS  += mainwindow.h \
     inheritexceptiondelegate.h \
     iruledefinitions.h \
     isettingsdelegate.h \
+    ithreadmanagerinterface.h \
     mainapplication.h \
     messageBox.h \
     modeldelegates.h \
@@ -113,9 +122,11 @@ HEADERS  += mainwindow.h \
     editruledialog.h \
     ruledefinitions.h \
     rules.h \
+    staticfilehelperoperations.h \
+    staticviewhelpers.h \
     testfilecreator.h \
+    threaddescriptor.h \
     threadsmanager.h \
-    worker.h \
     topframeform.h
 
 FORMS    += mainwindow.ui \

@@ -11,12 +11,12 @@
 #include "threadsmanager.h"
 
 
-class MainApplication : public AbstractApplicationService
+class ApplicationDomain : public AbstractApplicationService
 {
 public:
-    MainApplication();
+    ApplicationDomain();
 
-    ~MainApplication();
+    ~ApplicationDomain();
 
     QString directoryInformationHtml(QString path) override {return fileManagerService->createTextBrowserHtml(path);}
 

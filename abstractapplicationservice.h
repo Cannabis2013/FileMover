@@ -10,7 +10,7 @@
 #include "abstractqueueManager.h"
 #include "abstractfileinformationmanager.h"
 #include "ithreadmanagerinterface.h"
-#include "abstractfilewatcher.h"
+#include "abstractfilesystemwatcher.h"
 
 class AbstractCoreApplication :
         public QObject,
@@ -60,7 +60,7 @@ public:
     virtual void setThreadManagerService(IThreadManagerInterface* service) = 0;
 
     virtual void setFileOperationsService(AbstractFileWorker* service) = 0;
-    virtual void setFileWatcherService(AbstractFileWatcher* service) = 0;
+    virtual void setFileWatcherService(AbstractFileSystemWatcher* service) = 0;
 
 public slots:
     virtual void clearFolders(QStringList paths) = 0;

@@ -8,7 +8,7 @@
 #include <QTreeWidgetItem>
 #include <qpair.h>
 
-namespace FileSpace
+namespace FilesContext
 {
     class StaticItemViewHelper
     {
@@ -142,6 +142,6 @@ namespace FileSpace
     };
 }
 
-typedef FileSpace::StaticItemViewHelper ByteCollection;
+typedef FilesContext::StaticItemViewHelper ByteCollection;
 
 #endif // STATICVIEWHELPERS_H

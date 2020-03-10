@@ -59,10 +59,6 @@ public:
 
     const ModelType *model() const {return static_cast<const ModelType*>(_model);}
 
-    ModelType* modelValue() const {return static_cast<ModelType*>(new EntityModel(*_model));}
-
-    template<class t>
-    t* modelValue() const {return static_cast<t*>(new EntityModel(*_model));}
 
     EntityType type() {return _model->type;}
 

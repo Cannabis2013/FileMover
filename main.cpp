@@ -33,9 +33,9 @@ using namespace std;
 
         processArguments(arguments,argVals);
 
-        AbstractCoreApplication *mainApplicaton = new MainApplication();
+        AbstractApplicationService *mainApplicaton = new ApplicationDomain();
 
-        mainApplicaton->setFileOperationsService(new FileOperationWorker());
+        mainApplicaton->setFileOperationsService(new FileWorker());
         mainApplicaton->setRuleManagerService(new rulesManager(argVals.appName,argVals.orgName));
         mainApplicaton->setThreadManagerService(new ThreadsManager());
         mainApplicaton->setSettingsManagerService(new settingsManager(argVals.appName,argVals.orgName));
@@ -44,6 +44,7 @@ using namespace std;
         mainApplicaton->setFileWatcherService(new FileSystemWatcher());
 
         mainApplicaton->configureServices();
+
         mainApplicaton->startServices();
 
 

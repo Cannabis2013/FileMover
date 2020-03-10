@@ -5,7 +5,7 @@
 #include <math.h>
 #include <StaticStringsCollection.h>
 
-namespace FileSpace {
+namespace FilesContext {
 
     class StaticByteCollection
     {
@@ -86,7 +86,7 @@ namespace FileSpace {
 }
 
 
-typedef FileSpace::StaticByteCollection SBC;
+typedef FilesContext::StaticByteCollection SBC;
 
 
 #endif // STATICFILEHELPEROPERATIONS_H

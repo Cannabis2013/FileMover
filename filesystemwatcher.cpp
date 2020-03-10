@@ -2,14 +2,14 @@
 
 
 FileSystemWatcher::FileSystemWatcher():
-    fWatcher(new QFileSystemWatcher())
+    fileWatcher(new QFileSystemWatcher())
 {
-    connect(fWatcher,&QFileSystemWatcher::directoryChanged,this,&FileSystemWatcher::changed);
+    connect(fileWatcher,&QFileSystemWatcher::directoryChanged,this,&FileSystemWatcher::changed);
 }
 
 void FileSystemWatcher::removePath(const QString &path)
 {
-    QStringList paths = fWatcher->directories();
+    QStringList paths = fileWatcher->directories();
     paths.removeOne(path);
 }
 

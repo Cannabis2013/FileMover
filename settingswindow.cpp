@@ -1,7 +1,7 @@
 ﻿#include "settingswindow.h"
 #include "ui_settingswindow.h"
 
-SettingsWindow::SettingsWindow(AbstractCoreApplication *coreApplication, IDefinitions *ruleService, QWidget *parent):
+SettingsWindow::SettingsWindow(AbstractApplicationService *coreApplication, IDefinitions *ruleService, QWidget *parent):
     AbstractFrame(parent),
     ui(new Ui::SettingsWindow)
 {
@@ -81,7 +81,7 @@ void SettingsWindow::on_insertRule_2_clicked()
     QStringList watchFolders = coreApplication->watchFolders();
     AddRuleDialog *ruleDialog =  new AddRuleDialog(watchFolders,ruleService);
     CustomDialog *dialog = new CustomDialog(ruleDialog,true);
-    connect(ruleDialog,&AddRuleDialog::sendRule,coreApplication,&AbstractCoreApplication::insertRule);
+    connect(ruleDialog,&AddRuleDialog::sendRule,coreApplication,&AbstractApplicationService::insertRule);
     dialog->show();
 }
 
@@ -95,7 +95,7 @@ void SettingsWindow::on_editRule_2_clicked()
 
     EditRuleDialog *ruleDialog = new EditRuleDialog(r,coreApplication->watchFolders(),ruleService);
     CustomDialog *dialog = new CustomDialog(ruleDialog,true);
-    connect(ruleDialog,&AbstractRuleDialog::replaceRule,coreApplication,&AbstractCoreApplication::replaceRule);
+    connect(ruleDialog,&AbstractRuleDialog::replaceRule,coreApplication,&AbstractApplicationService::replaceRule);
 
     dialog->show();
 }

@@ -40,6 +40,7 @@ SOURCES += main.cpp\
     abstractframe.cpp \
     abstractruledialog.cpp \
     abstracttextselectordialog.cpp \
+    applicationdomain.cpp \
     conditionwidget.cpp \
     customdialog.cpp \
     customsplitter.cpp \
@@ -47,10 +48,9 @@ SOURCES += main.cpp\
     exceptionhandler.cpp \
     fileinformationmanager.cpp \
     fileinformationview.cpp \
-    fileoperationworker.cpp \
     filepathdialogwidget.cpp \
     filesystemwatcher.cpp \
-    mainapplication.cpp \
+    fileworker.cpp \
         mainwindow.cpp \
     rulesmanager.cpp \
     mydatetime.cpp \
@@ -71,10 +71,10 @@ HEADERS  += mainwindow.h \
     StaticStringsCollection.h \
     TestRuleHelper.h \
     TypeDefinitions.h \
-    abstractcoreapplication.h \
+    abstractapplicationservice.h \
     abstractfileinformationmanager.h \
     abstractfileoperationworker.h \
-    abstractfilewatcher.h \
+    abstractfilesystemwatcher.h \
     abstractframe.h \
     abstracticon.h \
     abstractqueueManager.h \
@@ -82,6 +82,7 @@ HEADERS  += mainwindow.h \
     abstractpersistence.h \
     abstractsettingsmanager.h \
     abstracttextselectordialog.h \
+    applicationdomain.h \
     conditionwidget.h \
     customcombobox.h \
     customdialog.h \
@@ -93,9 +94,9 @@ HEADERS  += mainwindow.h \
     exceptionhandler.h \
     fileinformationmanager.h \
     filemodeldelegate.h \
-    fileoperationworker.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
+    fileworker.h \
     genericserviceinjector.h \
     icon.h \
     imutableobject.h \
@@ -103,7 +104,6 @@ HEADERS  += mainwindow.h \
     iruledefinitions.h \
     isettingsdelegate.h \
     ithreadmanagerinterface.h \
-    mainapplication.h \
     messageBox.h \
     modeldelegates.h \
     rulesmanager.h \

@@ -7,12 +7,12 @@
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 #endif
 
-namespace FileSpace {
+namespace FilesContext {
     class FileOperationWorker;
 }
 
 
-class FileOperationWorker : public AbstractFileWorker
+class FileWorker : public AbstractFileWorker
 {
     Q_OBJECT
 public:
@@ -20,9 +20,7 @@ public:
     enum copyMode{move,copy,noMode};
     enum iteratorMode{filesOnly = 0,folderOnly = 1,allEntries = 2, noTypeSet = 3};
 
-
-    FileOperationWorker();
-
+    FileWorker();
 
     FileObjectList processFileObjects(const FileObjectList &fileObjects,const SubRule &rule) override;
 
@@ -67,6 +65,6 @@ private:
     bool isBusy;
 };
 
-typedef FileOperationWorker fW;
+typedef FileWorker fW;
 
 #endif // FILEWORKEROPERATOR_H

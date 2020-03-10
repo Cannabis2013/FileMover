@@ -22,7 +22,7 @@
 #include "addruledialog.h"
 #include "editruledialog.h"
 #include "icon.h"
-#include "mainapplication.h"
+#include "applicationdomain.h"
 #include "customdialog.h"
 
 
@@ -37,7 +37,7 @@ class SettingsWindow : public AbstractFrame
     Q_OBJECT
 
 public:
-    explicit SettingsWindow(AbstractCoreApplication *coreApplication, IDefinitions *ruleService,QWidget *parent = nullptr);
+    explicit SettingsWindow(AbstractApplicationService *coreApplication, IDefinitions *ruleService,QWidget *parent = nullptr);
     SettingsWindow();
     ~SettingsWindow();
 
@@ -119,7 +119,7 @@ private:
     QTreeWidget *rulesView;
     QList<Rule>rules;
     QWidget *mView;
-    AbstractCoreApplication *coreApplication;
+    AbstractApplicationService *coreApplication;
     IDefinitions *ruleService;
 
 };

@@ -1,6 +1,6 @@
-#include "fileoperationworker.h"
+#include "fileworker.h"
 
-FileOperationWorker::FileOperationWorker()
+FileWorker::FileWorker()
 {
     busyMessage = "Luke Fileworker is busy. Patience my young padawan.";
     isBusy = false;
@@ -11,7 +11,7 @@ FileOperationWorker::FileOperationWorker()
 #endif
 }
 
-bool FileOperationWorker::removeFileItems(const FileObjectList& filePaths, QStringList *const err)
+bool FileWorker::removeFileItems(const FileObjectList& filePaths, QStringList *const err)
 {
     if(filePaths.isEmpty())
         return true;
@@ -40,7 +40,7 @@ bool FileOperationWorker::removeFileItems(const FileObjectList& filePaths, QStri
     return true;
 }
 
-bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err)
+bool FileWorker::moveFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err)
 {
 
     // TODO: Implement some error handling when something goes wrong
@@ -82,7 +82,7 @@ bool FileOperationWorker::moveFileItems(const FileObjectList fileObjects, const 
     return result;
 }
 
-bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err)
+bool FileWorker::copyFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err)
 {
     // TODO: Implement some error handling when something goes wrong
     Q_UNUSED(err);
@@ -115,9 +115,9 @@ bool FileOperationWorker::copyFileItems(const FileObjectList fileObjects, const 
     return result;
 }
 
-void FileOperationWorker::processDirectoryCountEntity(const IModelDelegate<DirectoryEntity, EntityType> *delegate)
+void FileWorker::processDirectoryCountEntity(const IModelDelegate<DirectoryEntity, EntityType> *delegate)
 {
-    auto entity = delegate->modelValue();
+    auto entity = new DirectoryEntity(*delegate->model());
 
     QFileInfo fInfo = entity->directoryPath;
 
@@ -126,7 +126,7 @@ void FileOperationWorker::processDirectoryCountEntity(const IModelDelegate<Direc
     emit sendFolderSizeEntity(entity);
 }
 
-void FileOperationWorker::processEntity(IModelDelegate<EntityModel,EntityType> *delegate)
+void FileWorker::processEntity(IModelDelegate<EntityModel,EntityType> *delegate)
 {
     isBusy = true;
     if(delegate->type() == EntityModel::nullEntity)
@@ -167,7 +167,7 @@ void FileOperationWorker::processEntity(IModelDelegate<EntityModel,EntityType> *
     emit requestNextEntity();
 }
 
-int FileOperationWorker::folderCount(QString p)
+int FileWorker::folderCount(QString p)
 {
     QFileInfo info = p;
     QDirIterator ite(info.absoluteFilePath(),
@@ -185,7 +185,7 @@ int FileOperationWorker::folderCount(QString p)
     return taeller;
 }
 
-int FileOperationWorker::fileCountFromPath(QString p)
+int FileWorker::fileCountFromPath(QString p)
 {
     QDirIterator ite(QFileInfo(p).absoluteFilePath(),
                      QDir::NoDotAndDotDot |
@@ -201,7 +201,7 @@ int FileOperationWorker::fileCountFromPath(QString p)
     return taeller;
 }
 
-qint64 FileOperationWorker::folderSize(const QString &path)
+qint64 FileWorker::folderSize(const QString &path)
 {
     long long sZ = 0;
 
@@ -225,7 +225,7 @@ qint64 FileOperationWorker::folderSize(const QString &path)
     return sZ;
 }
 
-FileObjectList FileOperationWorker::processFileObjects(const FileObjectList &fileObjects, const SubRule &rule)
+FileObjectList FileWorker::processFileObjects(const FileObjectList &fileObjects, const SubRule &rule)
 {
     FileObjectList filesToProcess;
     for(ITreeModelDelegate<FileModel,DefaultModelType>* modelDelegate : fileObjects)
@@ -468,7 +468,7 @@ FileObjectList FileOperationWorker::processFileObjects(const FileObjectList &fil
     return filesToProcess;
 }
 
-FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths, const QString &rPath, const RRT::FileTypeEntity &filter)
+FileObjectList FileWorker::generateFileObjects(const QStringList &paths, const QString &rPath, const RRT::FileTypeEntity &filter)
 {
     FileObjectList resultingList;
 
@@ -509,7 +509,7 @@ FileObjectList FileOperationWorker::generateFileObjects(const QStringList &paths
 }
 
 
-void FileOperationWorker::countFolderItems(const QString &path, const QDir::Filters &filters, const QDirIterator::IteratorFlags &flags)
+void FileWorker::countFolderItems(const QString &path, const QDir::Filters &filters, const QDirIterator::IteratorFlags &flags)
 {
     if(isBusy)
     {
@@ -529,7 +529,7 @@ void FileOperationWorker::countFolderItems(const QString &path, const QDir::Filt
     isBusy = false;
 }
 
-void FileOperationWorker::countFolders(const QStringList &Path)
+void FileWorker::countFolders(const QStringList &Path)
 {
     long taeller = 0;
     for (QString p : Path)
@@ -539,7 +539,7 @@ void FileOperationWorker::countFolders(const QStringList &Path)
     emit fileCount(taeller);
 }
 
-void FileOperationWorker::handleProcessRequest()
+void FileWorker::handleProcessRequest()
 {
     if(isBusy)
         return;
@@ -548,7 +548,7 @@ void FileOperationWorker::handleProcessRequest()
 
 }
 
-void FileOperationWorker::processFileInformationEntity(const IModelDelegate<FileInformationEntity,EntityType> *delegate)
+void FileWorker::processFileInformationEntity(const IModelDelegate<FileInformationEntity,EntityType> *delegate)
 {
     auto entity = delegate->model();
 
@@ -574,7 +574,7 @@ void FileOperationWorker::processFileInformationEntity(const IModelDelegate<File
     emit processFinished(directories);
 }
 
-void FileOperationWorker::reProcessFileInformationEntity(const QStringList &paths)
+void FileWorker::reProcessFileInformationEntity(const QStringList &paths)
 {
     QList<DirectoryItem>directories;
     for(const QString &p : paths)
@@ -593,7 +593,7 @@ void FileOperationWorker::reProcessFileInformationEntity(const QStringList &path
     emit processFinished(directories);
 }
 
-void FileOperationWorker::processFileEntity(const IModelDelegate<FileRuleEntity,EntityType> *delegate)
+void FileWorker::processFileEntity(const IModelDelegate<FileRuleEntity,EntityType> *delegate)
 {
     auto model = delegate->model();
 

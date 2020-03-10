@@ -6,14 +6,13 @@
 #include <qthread.h>
 #include "settingsmanager.h"
 #include "fileinformationmanager.h"
-#include "abstractcoreapplication.h"
+#include "abstractapplicationservice.h"
 #include "filesystemwatcher.h"
 #include "threadsmanager.h"
 
 
-class MainApplication : public AbstractCoreApplication
+class MainApplication : public AbstractApplicationService
 {
-    Q_OBJECT
 public:
     MainApplication();
 
@@ -21,6 +20,8 @@ public:
 
     QString directoryInformationHtml(QString path) override {return fileManagerService->createTextBrowserHtml(path);}
 
+
+    // Watchfolder and detailed folder interface
     void addWatchFolders(QStringList paths) override;
     void clearWatchFolders() override;
     QString watchFolder(int index) const override;
@@ -32,7 +33,7 @@ public:
     QList<QTreeWidgetItem*> suffixList(const QString &path) override {return fileManagerService->suffixList(path);}
 
     /*
-     * Rules related
+     * Rules interface
      */
 
     Rule ruleAt(int index) override {return ruleManagerService->rule(index);}
@@ -41,14 +42,20 @@ public:
     void swapRule(int i, int j) override {ruleManagerService->swapRule(i,j);}
     void clearRules() const override ;
 
-    QList<const AbstractIcon*> icons() override {return settingsManagerService->allIcons();}
+    void insertRule(Rule r) override {ruleManagerService->addRule(r);}
+    void replaceRule(Rule newRule, QString title) override {ruleManagerService->replaceRule(newRule,title);}
+    void removeRuleAt(int index) override {ruleManagerService->removeRuleAt(index);}
+    void removeRule(QString title) override {ruleManagerService->removeRule(title);}
 
-    // Basic settings and persistence related
+
+    // Persistence interface
 
     const ISettingsDelegate* settingsState() override;
     void setSettings(const ISettingsDelegate *s) override;
 
+    // Basic settings interface
     bool closeOnExit() override {return settingsManagerService->closeOnQuit();}
+    QList<const AbstractIcon*> icons() override {return settingsManagerService->allIcons();}
 
     // File/folder operations
 
@@ -67,21 +74,15 @@ public:
     void setThreadManagerService(IThreadManagerInterface *service) override {threadManagerService = service;}
 
     void setFileOperationsService(AbstractFileWorker *service) override {fileOperationsService = service;}
-    void setFileWatcherService(AbstractFileWatcher *service) override {fileWatcherService = service;}
+    void setFileWatcherService(AbstractFileSystemWatcher *service) override {fileWatcherService = service;}
 
-public slots:
     void addWatchFolder(QString path) override {settingsManagerService->insertPath(path);}
     void removeWatchFolderAt(int index) override;
     void removeWatchFolder(QString path) override;
 
-    void insertRule(Rule r) override {ruleManagerService->addRule(r);}
-    void replaceRule(Rule newRule, QString title) override {ruleManagerService->replaceRule(newRule,title);}
-    void removeRuleAt(int index) override {ruleManagerService->removeRuleAt(index);}
-    void removeRule(QString title) override {ruleManagerService->removeRule(title);}
-
 private:
     AbstractFileWorker *fileOperationsService;
-    AbstractFileWatcher *fileWatcherService;
+    AbstractFileSystemWatcher *fileWatcherService;
 
     // Manager interfaces
     AbstractRulesManager *ruleManagerService;

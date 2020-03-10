@@ -6,7 +6,7 @@
 #include <qapplication.h>
 
 #include "abstractpersistence.h"
-#include "fileoperationworker.h"
+#include "fileworker.h"
 
 
 class AbstractRulesManager : public QObject,

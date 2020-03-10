@@ -8,7 +8,7 @@
 #include <qdiriterator.h>
 #include <QDateTime>
 #include <qmap.h>
-#include "mainapplication.h"
+#include "applicationdomain.h"
 #include <QFileInfoList>
 #include <iterator>
 

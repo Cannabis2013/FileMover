@@ -1,7 +1,7 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-mainWindow::mainWindow(AbstractCoreApplication *coreApplication) :
+mainWindow::mainWindow(AbstractApplicationService *coreApplication) :
     QMainWindow(),
     ui(new Ui::mainWindow)
 {
@@ -154,14 +154,14 @@ mainWindow::mainWindow(AbstractCoreApplication *coreApplication) :
             this,SLOT(tMenuClicked(QAction*)));
     connect(folderTrayMenu,SIGNAL(triggered(QAction*)),
             this,SLOT(explorerMenuTriggered(QAction*)));
-    connect(coreApplication,&AbstractCoreApplication::sendSystemTrayMessage,this,&mainWindow::showSystemMessage);
+    connect(coreApplication,&AbstractApplicationService::sendSystemTrayMessage,this,&mainWindow::showSystemMessage);
 
-    connect(coreApplication,&AbstractCoreApplication::sendFolderSize,this,&mainWindow::folderContentRecieved);
-    connect(coreApplication,&AbstractCoreApplication::sendStatusMessage,this,&mainWindow::setStatusText);
+    connect(coreApplication,&AbstractApplicationService::sendFolderSize,this,&mainWindow::folderContentRecieved);
+    connect(coreApplication,&AbstractApplicationService::sendStatusMessage,this,&mainWindow::setStatusText);
 
     connect(clearStatusTextTimer,&QTimer::timeout,this,&mainWindow::clearStatusLine);
 
-    connect(coreApplication,&AbstractCoreApplication::stateChanged,this,&mainWindow::updateView);
+    connect(coreApplication,&AbstractApplicationService::stateChanged,this,&mainWindow::updateView);
 
     tray->show();
 
@@ -749,7 +749,7 @@ void mainWindow::on_actionIndstillinger_triggered()
     QPointer<SettingsWindow> sWidget = new SettingsWindow(coreApplication,new RuleDefinitions);
     sWidget->setWidgetTitle("Settings and rules");
     QPointer<CustomDialog> dialog = new CustomDialog(sWidget, true);
-    connect(coreApplication,&AbstractCoreApplication::stateChanged,sWidget,&SettingsWindow::updateView);
+    connect(coreApplication,&AbstractApplicationService::stateChanged,sWidget,&SettingsWindow::updateView);
 
     dialog->show();
 }
@@ -764,7 +764,7 @@ void mainWindow::on_addBut_clicked()
 {
     AddFolderWidget *folderWidget = new AddFolderWidget();
     folderWidget->setWidgetTitle("Add folder dialog");
-    connect(folderWidget,&AddFolderWidget::sendPath,coreApplication,&AbstractCoreApplication::addWatchFolder);
+    connect(folderWidget,&AddFolderWidget::sendPath,coreApplication,&AbstractApplicationService::addWatchFolder);
     CustomDialog *dialog = new CustomDialog(folderWidget,true);
     dialog->show();
 }

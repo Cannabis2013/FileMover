@@ -12,14 +12,14 @@
 #include "ithreadmanagerinterface.h"
 #include "abstractfilesystemwatcher.h"
 
-class AbstractCoreApplication :
+class AbstractApplicationService :
         public QObject,
         public IMutableObject,
         public IBroadcastingObject
 {
     Q_OBJECT
 public:
-    virtual ~AbstractCoreApplication() = default;
+    virtual ~AbstractApplicationService() = default;
 
     virtual QString watchFolder(int index) const = 0;
     virtual void clearWatchFolders() = 0;
@@ -82,7 +82,7 @@ signals:
 
     void sendFolderSize(const DirectoryEntity *fObject);
     void sendStatusMessage(const QString &filePath);
-    void sendEntity(EntityModelDelegate<EntityModel> *delegate);
+    void sendEntity(IModelDelegate<EntityModel,EntityType> *delegate);
 
     void stateChanged();
 

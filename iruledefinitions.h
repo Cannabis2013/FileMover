@@ -7,6 +7,8 @@ template<typename TRuleType, typename TRuleAction,typename TRuleCriteria,typenam
 class IRuleDefinitions
 {
 public:
+
+    virtual const QStringList intervalConditionalList() = 0;
     virtual const QList<QPair<QString,TRuleAction> > actionMappings()=0;
     virtual const QList<QPair<QString,TRuleCriteria> > criteriaMappings()=0;
     virtual const QList<QPair<QString,TRuleCompareCriteria> > compareCriteriaMappings() = 0;

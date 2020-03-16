@@ -80,6 +80,7 @@ HEADERS  += \
     abstractqueueManager.h \
     abstractruledialog.h \
     abstractpersistence.h \
+    abstractrulesmanager.h \
     abstractsettingsmanager.h \
     abstracttextselectordialog.h \
     applicationdomain.h \
@@ -94,12 +95,15 @@ HEADERS  += \
     entityqueuemanager.h \
     exceptionhandler.h \
     fileinformationmanager.h \
+    filelistservice.h \
     filemodeldelegate.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
     fileworker.h \
     genericserviceinjector.h \
+    ibroadcastingobject.h \
     icon.h \
+    ifilelistservice.h \
     imutableobject.h \
     inheritexceptiondelegate.h \
     iruledefinitions.h \

@@ -22,6 +22,7 @@
 #include <qstackedwidget.h>
 #include <QSystemTrayIcon>
 #include <iostream>
+#include <qtimer.h>
 
 #include "messageBox.h"
 #include "myscreendimensions.h"

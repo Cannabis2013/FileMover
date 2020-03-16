@@ -3,13 +3,8 @@
 
 //#define TEST_MODE
 
-#include <qthread.h>
-#include "settingsmanager.h"
-#include "fileinformationmanager.h"
 #include "abstractapplicationservice.h"
-#include "filesystemwatcher.h"
-#include "threadsmanager.h"
-
+#include "settingsdelegate.h"
 
 class ApplicationDomain : public AbstractApplicationService
 {
@@ -51,7 +46,11 @@ public:
     // Persistence interface
 
     const ISettingsDelegate* settingsState() override;
-    void setSettings(const ISettingsDelegate *s) override;
+    void setSettings(const bool &closeOnExit,
+                     const bool &ruleTimerEnabled,
+                     const bool &rulesEnabled,
+                     const QRect &geometry,
+                     const int &countInterval) override;
 
     // Basic settings interface
     bool closeOnExit() override {return settingsManagerService->closeOnQuit();}
@@ -74,6 +73,7 @@ public:
     void setThreadManagerService(IThreadManagerInterface *service) override {threadManagerService = service;}
 
     void setFileOperationsService(AbstractFileWorker *service) override {fileOperationsService = service;}
+    void setFileModelBuilderService(IFileListService *service) override {fileModelBuilderService = service;}
     void setFileWatcherService(AbstractFileSystemWatcher *service) override {fileWatcherService = service;}
 
     void addWatchFolder(QString path) override {settingsManagerService->insertPath(path);}
@@ -88,6 +88,8 @@ private:
     AbstractRulesManager *ruleManagerService;
     AbstractQueueManager *entityQueueManagerService;
     AbstractFileInformationManager *fileManagerService;
+    IFileListService *fileModelBuilderService;
+
     AbstractSettingsManager *settingsManagerService;
     IThreadManagerInterface *threadManagerService;
 };

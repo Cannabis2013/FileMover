@@ -1,14 +1,14 @@
 #include "addruledialog.h"
 
-AddRuleDialog::AddRuleDialog(QStringList watchFolders, IRuleDefinitions<RRT::RuleType,
-                             RRT::RuleAction,
-                             RRT::RuleCriteria,
-                             RRT::RuleCompareCriteria,
-                             RRT::FileTypeEntity> *service):
+AddRuleDialog::AddRuleDialog(QStringList watchFolders, IRuleDefinitions<RulesContext::RuleType,
+                             RulesContext::RuleAction,
+                             RulesContext::RuleCriteria,
+                             RulesContext::RuleCompareCriteria,
+                             RulesContext::FileType> *service):
     AbstractRuleDialog(watchFolders, service)
 {
-    QStringList actionList = ruleService->buildStringListFromEntity(RRT::action),
-            conditionList = ruleService->buildStringListFromEntity(RRT::criteria),
+    QStringList actionList = ruleService->buildStringListFromEntity(RulesContext::Action),
+            conditionList = ruleService->buildStringListFromEntity(RulesContext::Criteria),
             unitList = ruleService->sizeUnits();
 
     actionBox->addItems(actionList);
@@ -43,7 +43,7 @@ void AddRuleDialog::on_addSubRule_clicked()
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
     auto dates = condWidget->intervalDates();
-    auto matchWholeWords = compareCriteria == RRT::match;
+    auto matchWholeWords = compareCriteria == RulesContext::match;
 
 
     auto sRule = RuleBuilder::buildSubRule(criteria,

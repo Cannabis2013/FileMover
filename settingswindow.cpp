@@ -171,13 +171,11 @@ void SettingsWindow::on_saveButton_clicked()
     auto closeOnExit = closeOnBox->isChecked();
     auto rulesEnabled = enableRules->isChecked();
     auto ruleCountInterval = countTimerInterval->text().toInt();
-
-    //Build new settings based on current and variables
-    auto settings = SettingsDelegateBuilder::buildSettingsDelegate(closeOnExit,
-                                                                   currentSettings->ruleTimerEnabled(),
-                                                                   rulesEnabled,ruleCountInterval,
-                                                                   currentSettings->mainGuiGeometry());
-    coreApplication->setSettings(settings);
+    auto geo = currentSettings->mainGuiGeometry();
+    coreApplication->setSettings(closeOnExit,
+                                 countTimerEnableBox->isChecked(),
+                                 rulesEnabled,geo,
+                                 ruleCountInterval);
     close();
 }
 

@@ -1,12 +1,10 @@
 #ifndef ENTITYMODEL_H
 #define ENTITYMODEL_H
 
-#include "ruledefinitions.h"
-#include "filemodeldelegate.h"
+#include <iostream>
 #include <QFileInfoList>
 
-#include <iostream>
-#include "modeldelegates.h"
+#include "filemodeldelegate.h"
 #include "inheritexceptiondelegate.h"
 
 #define THROW_MSG_INHERIT "Template argument not direct base of Model"
@@ -36,8 +34,8 @@ struct DirectoryEntity : public EntityModel
 struct FileRuleEntity : public EntityModel
 {
     QStringList directoryPaths;
-    FileObjectList allFiles;
-    RRT::RuleAction fileActionRule = RRT::none;
+    FileModelList allFiles;
+    int fileActionRule = 0x01;
     QStringList fileDestinations = QStringList();
 };
 
@@ -117,8 +115,8 @@ public:
     }
     template<class T>
     static EntityModelDelegate<T>* buildFileActionEntity(const QStringList &dirPaths,
-                                                     const FileObjectList &allFiles,
-                                                     const RRT::RuleAction &fileActionRule,
+                                                     const FileModelList &allFiles,
+                                                     const int &fileActionRule,
                                                      const QStringList &destinations)
     {
         if(!std::is_base_of_v<EntityModel,T>)

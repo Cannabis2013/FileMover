@@ -2,6 +2,15 @@
 #include <qapplication.h>
 #include <iostream>
 
+#include "fileworker.h"
+#include "threadsmanager.h"
+#include "settingsmanager.h"
+#include "applicationdomain.h"
+#include "filesystemwatcher.h"
+#include "fileinformationmanager.h"
+#include "entityqueuemanager.h"
+#include "filelistservice.h"
+
 using namespace std;
 
 #ifndef TEST_MODE
@@ -41,7 +50,7 @@ using namespace std;
         mainApplicaton->setFileInformationManagerService(new FileInformationManager(argVals.appName,argVals.orgName));
         mainApplicaton->setEntityQueueManagerService(new EntityQueueManager());
         mainApplicaton->setFileWatcherService(new FileSystemWatcher());
-
+        mainApplicaton->setFileModelBuilderService(new FileListService());
         mainApplicaton->configureServices();
 
         mainApplicaton->startServices();

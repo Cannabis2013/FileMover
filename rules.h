@@ -59,29 +59,29 @@ public:
         _keyWords = keyWords;
     }
 
-    RRT::CopyMode copyMode() const
+    RulesContext::CopyMode copyMode() const
     {
         return _copyMode;
     }
-    void setCopyMode(const RRT::CopyMode &copymode)
+    void setCopyMode(const RulesContext::CopyMode &copymode)
     {
         _copyMode = copymode;
     }
 
-    RRT::RuleCompareCriteria compareCriteria() const
+    RulesContext::RuleCompareCriteria compareCriteria() const
     {
         return _compareCriteria;
     }
-    void setCompareCriteria(const RRT::RuleCompareCriteria &compareCriteria)
+    void setCompareCriteria(const RulesContext::RuleCompareCriteria &compareCriteria)
     {
         _compareCriteria = compareCriteria;
     }
 
-    RRT::RuleCriteria criteria() const
+    RulesContext::RuleCriteria criteria() const
     {
         return _criteria;
     }
-    void setCriteria(const RRT::RuleCriteria &criteria)
+    void setCriteria(const RulesContext::RuleCriteria &criteria)
     {
         _criteria = criteria;
     }
@@ -96,9 +96,9 @@ public:
     }
 
 private:
-    RRT::CopyMode _copyMode = RRT::noMode;
-    RRT::RuleCompareCriteria _compareCriteria = RRT::noCompareModeSet;
-    RRT::RuleCriteria _criteria = RRT::nonConditionalMode;
+    RulesContext::CopyMode _copyMode = RulesContext::NoMode;
+    RulesContext::RuleCompareCriteria _compareCriteria = RulesContext::noCompareModeSet;
+    RulesContext::RuleCriteria _criteria = RulesContext::nonConditionalMode;
     QPair<quint64,QString>_sizeLimit;
     SizeLimits _sizeInterval;
     myDateTime _date;
@@ -113,20 +113,20 @@ typedef QPair<QPair<int,QString>,QPair<int,QString>> SizeInterval;
 class Rule
 {
 public:
-    RRT::FileTypeEntity typeFilter() const
+    RulesContext::FileType typeFilter() const
     {
         return _typeFilter;
     }
-    void setTypeFilter(const RRT::FileTypeEntity &typeFilter)
+    void setTypeFilter(const RulesContext::FileType &typeFilter)
     {
         _typeFilter = typeFilter;
     }
 
-    RRT::RuleAction actionRuleEntity() const
+    RulesContext::RuleAction actionRuleEntity() const
     {
         return _actionRuleEntity;
     }
-    void setActionRuleEntity(const RRT::RuleAction &actionRuleEntity)
+    void setActionRuleEntity(const RulesContext::RuleAction &actionRuleEntity)
     {
         _actionRuleEntity = actionRuleEntity;
     }
@@ -177,8 +177,8 @@ public:
     }
 
 private:
-    RRT::FileTypeEntity _typeFilter = RRT::File;
-    RRT::RuleAction _actionRuleEntity;
+    RulesContext::FileType _typeFilter = RulesContext::File;
+    RulesContext::RuleAction _actionRuleEntity;
     QString _title = "title";
     QStringList _destinationPaths;
     QString _appliesToPath = "Alle";
@@ -194,8 +194,8 @@ public:
     static Rule buildOrdinaryRule(QString title,
                                   QString appliesTo,
                                   QStringList destinations,
-                                  RRT::RuleAction action,
-                                  RRT::FileTypeEntity type,
+                                  RulesContext::RuleAction action,
+                                  RulesContext::FileType type,
                                   QList<SubRule> subRules = QList<SubRule>(),
                                   bool deepScanMode = false)
     {
@@ -220,8 +220,8 @@ public:
         return r;
     }
 
-    static SubRule buildSubRule(RRT::RuleCriteria criteria,
-                                RRT::RuleCompareCriteria compareCriteria,
+    static SubRule buildSubRule(RulesContext::RuleCriteria criteria,
+                                RulesContext::RuleCompareCriteria compareCriteria,
                                 QStringList keyWords,
                                 SizeLimit sizeLimit,
                                 myDateTime date,
@@ -243,5 +243,76 @@ public:
         return sRule;
     }
 };
+
+
+namespace RulesContext
+{
+    static QString ruleSizeLimitsToString(SubRule sRule)
+    {
+        QString minSize = QString::number(sRule.sizeInterval().first.first),
+                maxSize = QString::number(sRule.sizeInterval().second.first);
+        QString sizeUnitMin = sRule.sizeInterval().first.second,
+                sizeUnitMax = sRule.sizeInterval().second.second;
+        return "Min: " + minSize + " " + sizeUnitMin
+                + " " + "max: " + maxSize + " " + sizeUnitMax;
+    }
+
+    static QString ruleDateLimitsToString(SubRule sRule)
+    {
+        QString startDate = sRule.dateIntervals().first.date().toString("dd.MM.yyyy"),
+                endDate = sRule.dateIntervals().second.date().toString("dd.MM.yyyy");
+        return "Start dato: " + startDate + " slut dato: " + endDate;
+    }
+
+    static QString mergeStringList(const QStringList strings)
+    {
+        if(strings.empty())
+            return QString();
+        else if(strings.count() == 1)
+            return strings.first();
+
+        QString result;
+        for(QString string : strings)
+            result += string + ";";
+        return result;
+    }
+
+    static QStringList splitString(const QString split)
+    {
+        QString tempString;
+        QStringList splittetList;
+        int lastLetter = split.count() -1;
+        for(int i = 0;i<split.count();i++)
+        {
+            QChar w = split.at(i);
+            if(w != ';' && lastLetter != i)
+                tempString.append(w);
+            else
+            {
+                splittetList << tempString + w;
+                tempString.clear();
+            }
+        }
+        return splittetList;
+    }
+
+    static QString ruleKeyWordToString(SubRule sRule)
+    {
+        if(sRule.criteria() == RulesContext::fileSize &&
+                sRule.compareCriteria() != RulesContext::interval)
+            return QString::number(sRule.sizeLimit().first) + " " + sRule.sizeLimit().second;
+        else if(sRule.criteria() == RulesContext::fileSize &&
+                sRule.compareCriteria() == RulesContext::interval)
+            return RulesContext::ruleSizeLimitsToString(sRule);
+        else if((sRule.criteria() == RulesContext::fileCreatedMode || sRule.criteria() == RulesContext::fileModifiedMode) &&
+                sRule.compareCriteria() != RulesContext::interval)
+            return sRule.date().toString("dd.MM.yyyy");
+        else if((sRule.criteria() == RulesContext::fileCreatedMode || sRule.criteria() == RulesContext::fileModifiedMode) &&
+                sRule.compareCriteria() == RulesContext::interval)
+            return RulesContext::ruleDateLimitsToString(sRule);
+        else
+            return RulesContext::mergeStringList(sRule.keyWords());
+    }
+}
 
 

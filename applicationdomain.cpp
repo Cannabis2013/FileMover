@@ -13,29 +13,14 @@ ApplicationDomain::~ApplicationDomain()
 
 void ApplicationDomain::clearFolders(QStringList paths)
 {
-    auto allFiles = fileOperationsService->generateFileObjects(paths);
-    auto delegate = DelegateBuilder::buildFileActionEntity<EntityModel>(paths,allFiles,RRT::Delete,QStringList());
-    entityQueueManagerService->addEntity(delegate);
+    auto models = fileModelBuilderService->fileModelDelegates(paths);
+    auto delegates = DelegateBuilder::buildFileActionEntity<EntityModel>(paths,models,FilesContext::Delete,QStringList());
+    entityQueueManagerService->addEntity(delegates);
 }
 
 void ApplicationDomain::clearFoldersAccordingToRules(QStringList paths)
 {
-    auto rules = ruleManagerService->ruleslist();
-    if(rules.isEmpty())
-        clearFolders(paths);
-    for(const Rule &r : rules)
-    {
-        auto allFiles = fileOperationsService->generateFileObjects(paths,r.appliesToPath(),r.typeFilter());
-        for(SubRule sR : r.subRules())
-            allFiles = fileOperationsService->processFileObjects(allFiles,sR);
 
-        emit sendEntity(
-                    DelegateBuilder::buildFileActionEntity<EntityModel>(
-                        paths,
-                        allFiles,
-                        r.actionRuleEntity(),
-                        r.destinationPaths()));
-    }
 }
 
 void ApplicationDomain::configureServices()
@@ -63,26 +48,26 @@ void ApplicationDomain::configureServices()
 
     // Entity queue related..
     connect(this,&ApplicationDomain::sendEntity,entityQueueManagerService,&AbstractQueueManager::addEntity);
-    connect(entityQueueManagerService,&EntityQueueManager::wakeUpProcess,fileOperationsService,&AbstractFileWorker::handleProcessRequest);
-    connect(fileOperationsService,&fW::requestNextEntity,entityQueueManagerService,&AbstractQueueManager::sendNextEntity);
+    connect(entityQueueManagerService,&AbstractQueueManager::wakeUpProcess,fileOperationsService,&AbstractFileWorker::handleProcessRequest);
+    connect(fileOperationsService,&AbstractFileWorker::requestNextEntity,entityQueueManagerService,&AbstractQueueManager::sendNextEntity);
     connect(entityQueueManagerService,&AbstractQueueManager::sendEntity,fileOperationsService,&AbstractFileWorker::processEntity);
 
     // Detailed directory information..
     connect(settingsManagerService,&AbstractSettingsManager::processPath,entityQueueManagerService,&AbstractQueueManager::addEntity);
-    connect(fileWatcherService,&FileSystemWatcher::folderChanged,entityQueueManagerService,&AbstractQueueManager::addEntity);
-    connect(fileWatcherService,&FileSystemWatcher::sendSystemTrayMessage,this,&ApplicationDomain::sendSystemTrayMessage);
+    connect(fileWatcherService,&AbstractFileSystemWatcher::folderChanged,entityQueueManagerService,&AbstractQueueManager::addEntity);
+    connect(fileWatcherService,&AbstractFileSystemWatcher::sendSystemTrayMessage,this,&ApplicationDomain::sendSystemTrayMessage);
     connect(settingsManagerService,&AbstractSettingsManager::removeItem,fileManagerService,&AbstractFileInformationManager::removeItem);
 
-    connect(fileOperationsService,&fW::processFinished,fileManagerService,&AbstractFileInformationManager::insertItems);
-    connect(fileOperationsService,&FileWorker::sendFolderSizeEntity,this,&ApplicationDomain::sendFolderSize);
-    connect(fileOperationsService,&FileWorker::sendStatusLineMessage,this,&ApplicationDomain::sendStatusMessage);
+    connect(fileOperationsService,&AbstractFileWorker::processFinished,fileManagerService,&AbstractFileInformationManager::insertItems);
+    connect(fileOperationsService,&AbstractFileWorker::sendFolderSizeEntity,this,&ApplicationDomain::sendFolderSize);
+    connect(fileOperationsService,&AbstractFileWorker::sendStatusLineMessage,this,&ApplicationDomain::sendStatusMessage);
 
     // Notify observers related..
     connect(settingsManagerService,&AbstractSettingsManager::stateChanged,this,&ApplicationDomain::stateChanged);
-    connect(ruleManagerService,&rulesManager::stateChanged,this,&ApplicationDomain::stateChanged);
-    connect(fileManagerService,&FileInformationManager::stateChanged,this,&ApplicationDomain::stateChanged);
+    connect(ruleManagerService,&AbstractRulesManager::stateChanged,this,&ApplicationDomain::stateChanged);
+    connect(fileManagerService,&AbstractFileInformationManager::stateChanged,this,&ApplicationDomain::stateChanged);
 
-    connect(fileOperationsService,&fW::jobDone,this,&AbstractApplicationService::stateChanged);
+    connect(fileOperationsService,&AbstractFileWorker::jobDone,this,&AbstractApplicationService::stateChanged);
 }
 
 void ApplicationDomain::startServices()
@@ -123,7 +108,7 @@ int ApplicationDomain::watchFolderCount()
 
 void ApplicationDomain::clearRules() const
 {
-    for (int i = 0; i < ruleManagerService->ruleCount(); ++i)
+    for (int i = 0; i < ruleManagerService->rulesCount(); ++i)
         ruleManagerService->removeRuleAt(i);
 }
 
@@ -132,9 +117,20 @@ const ISettingsDelegate *ApplicationDomain::settingsState()
     return settingsManagerService->settingsState();
 }
 
-void ApplicationDomain::setSettings(const ISettingsDelegate *s)
+void ApplicationDomain::setSettings(const bool &closeOnExit,
+                                    const bool &ruleTimerEnabled,
+                                    const bool &rulesEnabled,
+                                    const QRect &geometry,
+                                    const int &countInterval)
+
 {
-    settingsManagerService->setSettings(s);
+    auto settingsDelegate = SettingsDelegateBuilder::buildSettingsDelegate(closeOnExit,
+                                                                   ruleTimerEnabled,
+                                                                   rulesEnabled,
+                                                                   countInterval,
+                                                                   geometry);
+
+    settingsManagerService->setSettings(settingsDelegate);
 }
 
 void ApplicationDomain::calculateFolderSize(QString path)

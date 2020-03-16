@@ -456,13 +456,12 @@ void ApplicationUI::writeSettings()
 {
     auto currentSettings = this->coreApplication->settingsState();
 
-    auto newSettings = SettingsDelegateBuilder::buildSettingsDelegate(currentSettings->closeOnExit(),
-                                                                      currentSettings->ruleTimerEnabled(),
-                                                                      currentSettings->rulesEnabled(),
-                                                                      currentSettings->ruleCountInterval(),
-                                                                      this->geometry());
 
-    this->coreApplication->setSettings(newSettings);
+    this->coreApplication->setSettings(currentSettings->closeOnExit(),
+                                       currentSettings->ruleTimerEnabled(),
+                                       currentSettings->rulesEnabled(),
+                                       this->geometry(),
+                                       currentSettings->ruleCountInterval());
 }
 
 void ApplicationUI::readSettings()

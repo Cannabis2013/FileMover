@@ -22,8 +22,8 @@
 #include "addruledialog.h"
 #include "editruledialog.h"
 #include "icon.h"
-#include "applicationdomain.h"
 #include "customdialog.h"
+#include "abstractapplicationservice.h"
 
 
 using namespace std;

@@ -6,15 +6,12 @@
 #include <QList>
 #include "modeldelegates.h"
 
-
 struct FileModel : public QFileInfo, public TreeModel{};
 
 template<class T = FileModel>
 class FileModelDelegate : public ITreeModelDelegate<T>
 {
 public:
-
-
     ITreeModelDelegate<T,DefaultModelType> *parentModelDelegate() const
     {
         return new FileModelDelegate(*static_cast<const FileModel*>(_model->_parent));
@@ -58,9 +55,18 @@ public:
         return _model;
     }
 
-    static FileModelDelegate* buildDelegate(const QString &path)
+    static FileModelDelegate* buildFileModelDelegate(const QString &path)
     {
         return new FileModelDelegate(path);
+    }
+
+    static QList<ITreeModelDelegate<FileModel>*> buildFileModelDelegates(const QStringList &filePaths)
+    {
+        QList<ITreeModelDelegate<FileModel>*> fileModelDelegates;
+        for (auto path : filePaths)
+            fileModelDelegates << new FileModelDelegate(path);
+
+        return fileModelDelegates;
     }
 
     FileModel *modelValue() const
@@ -93,7 +99,7 @@ private:
     FileModel *_model = new FileModel;
 
 };
-typedef QList<ITreeModelDelegate<FileModel,DefaultModelType>*> FileObjectList;
+typedef QList<ITreeModelDelegate<FileModel,DefaultModelType>*> FileModelList;
 #endif // FILEOBJECTMODEL_H
 
 

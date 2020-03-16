@@ -4,6 +4,7 @@
 #include <qfilesystemwatcher.h>
 #include "entitymodel.h"
 #include "imutableobject.h"
+#include "ibroadcastingobject.h"
 
 class AbstractFileSystemWatcher :
         public QObject,

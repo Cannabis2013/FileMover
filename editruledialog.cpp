@@ -39,7 +39,7 @@ void EditRuleDialog::on_addSubRule_clicked()
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
     auto dates = condWidget->intervalDates();
-    auto matchWholeWords = currentCompareMode == RRT::match;
+    auto matchWholeWords = currentCompareMode == RulesContext::match;
 
     auto sRule = RuleBuilder::buildSubRule(criteria,
                                            currentCompareMode,

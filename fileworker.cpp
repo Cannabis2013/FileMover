@@ -11,82 +11,7 @@ FileWorker::FileWorker()
 #endif
 }
 
-QStringList FileWorker::filterFilesThatMatch(const QStringList &filePaths, QString &str, bool dontMatch, bool suffix)
-{
-    QStringList result;
-    for (auto path : filePaths) {
-        auto subject = suffix ? QFileInfo(path).suffix() : QFileInfo(path).fileName();
-        if(dontMatch && subject != str)
-            result << path;
-        else if(!dontMatch && subject == str)
-            result << path;
-    }
-
-    return result;
-}
-
-QStringList FileWorker::filterFilesThatContain(const QStringList &filePaths, QString &str, bool dontContain, bool suffix)
-{
-    QStringList result;
-    for (auto path : filePaths) {
-        auto subject = suffix ? QFileInfo(path).suffix() : QFileInfo(path).fileName();
-        if(dontContain && !subject.contains(str))
-            result << path;
-        else if(!dontContain && subject.contains(str))
-            result << path;
-    }
-
-    return result;
-}
-
-QStringList FileWorker::filterFilesAccordingToSize(const QStringList &filePaths, int &size, int mode)
-{
-    QStringList result;
-    for (auto path : filePaths) {
-        auto fileSize = QFileInfo(path).size();
-        if(mode == LesserThan && fileSize < size)
-            result << path;
-        else if(mode == LesserOrEqualThan && fileSize <= size)
-            result << path;
-        else if(mode == Equal && fileSize == size)
-            result << path;
-        else if(mode == greaterOrEqualThan && fileSize >= size)
-            result << path;
-        else if(mode == greaterThan && fileSize > size)
-            result << path;
-    }
-
-    return result;
-}
-
-QStringList FileWorker::filterFilesAccordingToDate(const QStringList &filePaths, int day, int month, int year, const int &mode, const int &dateMode)
-{
-    QStringList result;
-
-    auto date = QDateTime(QDate(year,month,day));
-
-    for (auto path : filePaths) {
-        auto subject = dateMode == DateCreated ? QFileInfo(path).birthTime() :
-                                                 QFileInfo(path).lastModified();
-
-        if(mode == YoungerThan && date < subject)
-            result << path;
-        else if(mode == YoungerOrExactThan && date <= subject)
-            result << path;
-        else if(mode == Exact && date == subject)
-            result << path;
-        else if(mode == OlderOrExtactThan && date >= subject)
-            result << path;
-        else if(mode == OlderThan && date > subject)
-            result << path;
-    }
-
-    return result;
-}
-
-
-
-bool FileWorker::removeFileItems(const FileObjectList& filePaths, QStringList *const err)
+bool FileWorker::removeFileItems(const FileModelList& filePaths, QStringList *const err)
 {
     if(filePaths.isEmpty())
         return true;
@@ -115,7 +40,7 @@ bool FileWorker::removeFileItems(const FileObjectList& filePaths, QStringList *c
     return true;
 }
 
-bool FileWorker::moveFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err)
+bool FileWorker::moveFileItems(const FileModelList fileObjects, const QStringList destinations, QStringList * const err)
 {
 
     // TODO: Implement some error handling when something goes wrong
@@ -151,13 +76,13 @@ bool FileWorker::moveFileItems(const FileObjectList fileObjects, const QStringLi
             else if(!model->exists())
                 continue;
             if(noErrors)
-                removeFileItems(FileObjectList() << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath()),err);
+                removeFileItems(FileModelList() << FileModelDelegate<FileModel>::buildFileModelDelegate(model->absoluteFilePath()),err);
         }
     }
     return result;
 }
 
-bool FileWorker::copyFileItems(const FileObjectList fileObjects, const QStringList destinations, QStringList * const err)
+bool FileWorker::copyFileItems(const FileModelList fileObjects, const QStringList destinations, QStringList * const err)
 {
     // TODO: Implement some error handling when something goes wrong
     Q_UNUSED(err);
@@ -300,320 +225,6 @@ qint64 FileWorker::folderSize(const QString &path)
     return sZ;
 }
 
-FileObjectList FileWorker::processFileObjects(const FileObjectList &fileObjects, const SubRule &rule)
-{
-    FileObjectList filesToProcess;
-    for(ITreeModelDelegate<FileModel,DefaultModelType>* modelDelegate : fileObjects)
-    {
-        auto model = modelDelegate->model();
-        bool condition = false;
-        // Evaluating filename patterns
-        if(rule.criteria() == RRT::fileBaseMode)
-        {
-            if(rule.compareCriteria() == RRT::contains)
-            {
-                for(QString kWord : rule.keyWords())
-                {
-                    if(model->baseName().contains(kWord))
-                    {
-                        filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                        break;
-                    }
-                }
-            }
-            else if(rule.compareCriteria() == RRT::dontContain)
-            {
-                for(QString kWord : rule.keyWords())
-                {
-                    if(model->baseName().contains(kWord))
-                    {
-                        filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                        break;
-                    }
-                }
-            }
-            else if(rule.compareCriteria() == RRT::match)
-            {
-                for(QString kWord : rule.keyWords())
-                {
-                    if(model->baseName() == kWord)
-                    {
-                        filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                        break;
-                    }
-                }
-            }
-            else if(rule.compareCriteria() == RRT::dontMatch)
-            {
-                for(QString kWord : rule.keyWords())
-                    if(model->baseName() == kWord)
-                        condition = true;
-                if(!condition)
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-        }
-        else if(rule.criteria() == RRT::filepathMode)
-        {
-            if(rule.compareCriteria() == RRT::contains)
-            {
-                for(QString kWord : rule.keyWords())
-                {
-                    if(model->fileName().contains(kWord))
-                    {
-                        filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                        break;
-                    }
-                }
-            }
-            else if(rule.compareCriteria() == RRT::dontContain)
-            {
-                for(QString kWord : rule.keyWords())
-                {
-                    if(model->fileName().contains(kWord))
-                        condition = true;
-                }
-                if(!condition)
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-            else if(rule.compareCriteria() == RRT::match)
-            {
-                for(QString kWord : rule.keyWords())
-                    if(model->fileName() == kWord)
-                    {
-                        filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                        break;
-                    }
-            }
-            else if(rule.compareCriteria() == RRT::dontMatch)
-            {
-                for(QString kWord : rule.keyWords())
-                    if(model->fileName() == kWord)
-                        condition = true;
-                if(!condition)
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-        }
-
-        // Evaluating file extension related patterns
-        else if(rule.criteria() == RRT::fileExtensionMode && model->isFile())
-        {
-            if(rule.compareCriteria() == RRT::contains)
-            {
-                for(QString kWord : rule.keyWords())
-                    if(model->suffix().contains(kWord))
-                    {
-                        filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                        break;
-                    }
-            }
-            else if(rule.compareCriteria() == RRT::dontContain)
-            {
-                for(QString kWord : rule.keyWords())
-                    if(model->suffix().contains(kWord))
-                        condition = true;
-                if(!condition)
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-            else if(rule.compareCriteria() == RRT::match)
-            {
-                for(QString kWord : rule.keyWords())
-                    if(model->suffix() == kWord)
-                    {
-                        filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                        break;
-                    }
-            }
-            else if(rule.compareCriteria() == RRT::dontMatch)
-            {
-                for(QString kWord : rule.keyWords())
-                    if(model->suffix() == kWord)
-                        condition = true;
-                if(!condition)
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-        }
-        /*
-         * Check if parent folder name meets the criterias set
-         */
-
-        else if(rule.criteria() == RRT::fileParentMode)
-        {
-            if(rule.compareCriteria() == RRT::contains)
-            {
-                for(QString kWord : rule.keyWords())
-                    if(static_cast<FileModel*>(model->_parent)->fileName().contains(kWord))
-                        condition = true;
-
-                if(condition)
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-            else if(rule.compareCriteria() == RRT::dontContain)
-            {
-                for(QString kWord : rule.keyWords())
-                    if(static_cast<FileModel*>(model->_parent)->fileName().contains(kWord))
-                        condition = true;
-                if(!condition)
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-            else if(rule.compareCriteria() == RRT::match)
-            {
-                for(QString kWord : rule.keyWords())
-                {
-                    if(static_cast<FileModel*>(model->_parent)->fileName() == kWord)
-                        condition = true;
-                }
-                if(condition)
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-            else if(rule.compareCriteria() == RRT::dontMatch)
-            {
-                for(QString kWord : rule.keyWords())
-                {
-                    if(static_cast<FileModel*>(model->_parent)->fileName() == kWord)
-                        condition = true;
-                }
-                if(!condition)
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-        }
-        else if(rule.criteria() == RRT::fileSize)
-        {
-            if(rule.compareCriteria() != RRT::interval)
-            {
-                if(rule.compareCriteria() == RRT::lesserThan && model->size() < SBC::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria() == RRT::lesserOrEqualThan &&
-                        model->size() <= SBC::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria() == RRT::equal &&
-                        model->size() == SBC::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria() == RRT::greaterOrEqualThan &&
-                        model->size() >= SBC::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria() == RRT::greaterThan &&
-                        model->size() > SBC::convertToBytes(rule.sizeLimit().first,rule.sizeLimit().second))
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-            else if(rule.compareCriteria() == RRT::interval &&
-                    model->size() >= SBC::convertToBytes(rule.sizeInterval().first.first,rule.sizeInterval().first.second) &&
-                    model->size() <= SBC::convertToBytes(rule.sizeInterval().second.first,rule.sizeInterval().second.second))
-                filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-        }
-        else if(rule.criteria() == RRT::fileCreatedMode)
-        {
-            if(rule.compareCriteria() == RRT::interval)
-            {
-                if(rule.dateIntervals().first > model->birthTime() && rule.dateIntervals().second < model->birthTime())
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-            else if(rule.compareCriteria() != RRT::interval)
-            {
-                if(rule.compareCriteria() == RRT::youngerThan && rule.date() > model->birthTime())
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria() == RRT::exactDate && rule.date() == model->birthTime())
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria() == RRT::olderThan && rule.date() < model->birthTime())
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-
-        }
-        else if(rule.criteria() == RRT::fileModifiedMode)
-        {
-            if(rule.compareCriteria() == RRT::interval)
-            {
-                if(rule.dateIntervals().first > model->lastModified() && rule.dateIntervals().second < model->lastModified())
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-            else if(rule.compareCriteria() != RRT::interval)
-            {
-                if(rule.compareCriteria() == RRT::youngerThan && rule.date() > model->lastModified())
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria() == RRT::exactDate && rule.date() == model->lastModified())
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-                else if(rule.compareCriteria() == RRT::olderThan && rule.date() < model->lastModified())
-                    filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-            }
-        }
-        else if(rule.criteria() == RRT::nonConditionalMode)
-        {
-            filesToProcess << FileModelDelegate<FileModel>::buildDelegate(model->absoluteFilePath());
-        }
-    }
-    return filesToProcess;
-}
-
-FileObjectList FileWorker::generateFileObjects(const QStringList &paths, const QString &rPath, const RRT::FileTypeEntity &filter)
-{
-    FileObjectList resultingList;
-
-    QStringList rPaths;
-    if(rPath != QString() && rPath != "Alle")
-        rPaths = QStringList(rPath);
-    else
-        rPaths = paths;
-
-    for (QString path : rPaths)
-    {
-        QDirIterator it(path,QDir::AllEntries | QDir::NoDotAndDotDot | QDir::System | QDir::Hidden);
-        while(it.hasNext())
-        {
-            auto modelDelegate = FileModelDelegate<FileModel>::buildDelegate(it.next());
-            auto model = modelDelegate->model();
-            FileModel parentModel;
-            parentModel.setFile(path);
-            modelDelegate->setParentModelDelegate(FileModelDelegate<FileModel>::buildDelegate(path));
-            if(model->isFile() && filter == RRT::File)
-                resultingList << modelDelegate;
-            else if(model->isDir())
-            {
-                FileObjectList list = generateFileObjects(paths,model->absoluteFilePath());
-                if(filter == RRT::Folder)
-                {
-                    modelDelegate->setChildren(list);
-                    resultingList << modelDelegate;
-                }
-                else
-                {
-                    resultingList << list;
-                }
-            }
-        }
-    }
-    return resultingList;
-}
-
-
-void FileWorker::countFolderItems(const QString &path, const QDir::Filters &filters, const QDirIterator::IteratorFlags &flags)
-{
-    if(isBusy)
-    {
-        emit infoReport(busyMessage);
-        return;
-    }
-    isBusy = true;
-    long taeller = 0;
-    QDirIterator iT(path,filters,flags);
-    while(iT.hasNext())
-    {
-        QFileInfo fil = iT.next();
-        if(!fil.isDir())
-            taeller++;
-    }
-    emit fileCount(taeller);
-    isBusy = false;
-}
-
-void FileWorker::countFolders(const QStringList &Path)
-{
-    long taeller = 0;
-    for (QString p : Path)
-    {
-         taeller += folderCount(p);
-    }
-    emit fileCount(taeller);
-}
-
 void FileWorker::handleProcessRequest()
 {
     if(isBusy)
@@ -672,7 +283,7 @@ void FileWorker::processFileEntity(const IModelDelegate<FileRuleEntity,EntityTyp
 {
     auto model = delegate->model();
 
-    if(model->fileActionRule == RRT::Delete || model->fileActionRule == RRT::none)
+    if(model->fileActionRule == FilesContext::Delete || model->fileActionRule == FilesContext::None)
     {
         // TODO: You have to pass an error related stringlist in order to be able to display errors
         removeFileItems(model->allFiles);
@@ -681,7 +292,7 @@ void FileWorker::processFileEntity(const IModelDelegate<FileRuleEntity,EntityTyp
 
         processFileInformationEntity(DelegateBuilder::buildDelegate<FileInformationEntity>(entity));
     }
-    else if(model->fileActionRule == RRT::Move)
+    else if(model->fileActionRule == FilesContext::Move)
     {
         moveFileItems(model->allFiles,model->fileDestinations);
         auto entity = DelegateBuilder::buildFileInformationEntity
@@ -690,7 +301,7 @@ void FileWorker::processFileEntity(const IModelDelegate<FileRuleEntity,EntityTyp
         processFileInformationEntity(DelegateBuilder::buildDelegate<FileInformationEntity>(entity));
 
     }
-    else if(model->fileActionRule == RRT::Copy)
+    else if(model->fileActionRule == FilesContext::Copy)
         copyFileItems(model->allFiles,model->fileDestinations);
 
     model = nullptr;

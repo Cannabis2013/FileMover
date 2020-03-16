@@ -54,31 +54,31 @@ void AbstractRuleDialog::resetAllForm()
 
 void AbstractRuleDialog::updateConditionView(SubRule &sR)
 {
-    RRT::RuleCriteria cond = sR.criteria();
-    RRT::RuleCompareCriteria comp = sR.compareCriteria();
+    RulesContext::RuleCriteria cond = sR.criteria();
+    RulesContext::RuleCompareCriteria comp = sR.compareCriteria();
 
-    if(cond == RRT::fileSize && comp != RRT::interval)
+    if(cond == RulesContext::fileSize && comp != RulesContext::interval)
     {
         condWidget->setConditionalFixedSize(sR.sizeLimit(),sR.compareCriteria());
     }
-    else if(cond == RRT::fileSize && comp== RRT::interval)
+    else if(cond == RulesContext::fileSize && comp== RulesContext::interval)
     {
         condWidget->setConditionalIntervalSize(sR.sizeInterval());
     }
-    else if((cond == RRT::fileCreatedMode || cond == RRT::fileModifiedMode) &&
-            comp != RRT::interval)
+    else if((cond == RulesContext::fileCreatedMode || cond == RulesContext::fileModifiedMode) &&
+            comp != RulesContext::interval)
     {
         condWidget->setFixedDate(sR.date());
         condWidget->setCompareView(sR.compareCriteria());
     }
-    else if((cond == RRT::fileCreatedMode || cond == RRT::fileModifiedMode) &&
-            comp == RRT::interval)
+    else if((cond == RulesContext::fileCreatedMode || cond == RulesContext::fileModifiedMode) &&
+            comp == RulesContext::interval)
     {
         condWidget->setIntervalDate(sR.dateIntervals());
     }
     else
     {
-        condWidget->setKeyWords(StaticStringCollections::ruleKeyWordToString(sR));
+        condWidget->setKeyWords(RulesContext::ruleKeyWordToString(sR));
         condWidget->setCompareView(sR.compareCriteria());
     }
 }
@@ -119,30 +119,30 @@ void AbstractRuleDialog::updateView()
     {
         QStringList headerData;
         SubRule sRule = subRules.at(i);
-        RRT::RuleCriteria condition = sRule.criteria();
+        RulesContext::RuleCriteria condition = sRule.criteria();
 
         headerData << ruleService->buildStringFromCriteria(condition);
         headerData << ruleService->buildStringFromCompareCriteria(sRule.compareCriteria());
 
-        if((condition == RRT::fileCreatedMode || condition == RRT::fileModifiedMode) &&
-                sRule.compareCriteria() != RRT::interval)
+        if((condition == RulesContext::fileCreatedMode || condition == RulesContext::fileModifiedMode) &&
+                sRule.compareCriteria() != RulesContext::interval)
         {
-            headerData << StaticStringCollections::ruleKeyWordToString(sRule);
+            headerData << RulesContext::ruleKeyWordToString(sRule);
         }
-        else if((condition == RRT::fileCreatedMode || condition == RRT::fileModifiedMode) &&
-                sRule.compareCriteria() == RRT::interval)
+        else if((condition == RulesContext::fileCreatedMode || condition == RulesContext::fileModifiedMode) &&
+                sRule.compareCriteria() == RulesContext::interval)
         {
-            headerData << StaticStringCollections::ruleDateLimitsToString(sRule);
+            headerData << RulesContext::ruleDateLimitsToString(sRule);
         }
-        else if(condition == RRT::fileSize &&
-                sRule.compareCriteria() != RRT::interval)
+        else if(condition == RulesContext::fileSize &&
+                sRule.compareCriteria() != RulesContext::interval)
         {
-           headerData << StaticStringCollections::ruleKeyWordToString(sRule);
+           headerData << RulesContext::ruleKeyWordToString(sRule);
         }
-        else if(condition == RRT::fileSize &&
-                sRule.compareCriteria() == RRT::interval)
+        else if(condition == RulesContext::fileSize &&
+                sRule.compareCriteria() == RulesContext::interval)
         {
-            headerData << StaticStringCollections::ruleSizeLimitsToString(sRule);
+            headerData << RulesContext::ruleSizeLimitsToString(sRule);
         }
         else
         {
@@ -156,7 +156,7 @@ void AbstractRuleDialog::updateView()
 void AbstractRuleDialog::on_actionComboBox_currentIndexChanged(const QString &arg1)
 {
     RuleDefinitions rDefs;
-    (rDefs.fileActionEntityFromString(arg1) == RRT::Delete) ?
+    (rDefs.fileActionEntityFromString(arg1) == RulesContext::DeleteAction) ?
                 destinationFrame->hide() :
                 destinationFrame->show();
 }

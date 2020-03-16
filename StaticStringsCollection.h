@@ -1,7 +1,7 @@
 #ifndef STATICSTRINGSCOLLECTION_H
 #define STATICSTRINGSCOLLECTION_H
 
-#include "rules.h"
+#include <qstringlist.h>
 
 class StaticStringCollections
 {
@@ -35,40 +35,6 @@ public:
             }
         }
         return splittetList;
-    }
-
-    // Rule operations
-    static QString ruleKeyWordToString(SubRule sRule)
-    {
-        if(sRule.criteria() == RRT::fileSize &&
-                sRule.compareCriteria() != RRT::interval)
-            return QString::number(sRule.sizeLimit().first) + " " + sRule.sizeLimit().second;
-        else if(sRule.criteria() == RRT::fileSize &&
-                sRule.compareCriteria() == RRT::interval)
-            return StaticStringCollections::ruleSizeLimitsToString(sRule);
-        else if((sRule.criteria() == RRT::fileCreatedMode || sRule.criteria() == RRT::fileModifiedMode) &&
-                sRule.compareCriteria() != RRT::interval)
-            return sRule.date().toString("dd.MM.yyyy");
-        else if((sRule.criteria() == RRT::fileCreatedMode || sRule.criteria() == RRT::fileModifiedMode) &&
-                sRule.compareCriteria() == RRT::interval)
-            return StaticStringCollections::ruleDateLimitsToString(sRule);
-        else
-            return StaticStringCollections::mergeStringList(sRule.keyWords());
-    }
-    static QString ruleSizeLimitsToString(SubRule sRule)
-    {
-        QString minSize = QString::number(sRule.sizeInterval().first.first),
-                maxSize = QString::number(sRule.sizeInterval().second.first);
-        QString sizeUnitMin = sRule.sizeInterval().first.second,
-                sizeUnitMax = sRule.sizeInterval().second.second;
-        return "Min: " + minSize + " " + sizeUnitMin
-                + " " + "max: " + maxSize + " " + sizeUnitMax;
-    }
-    static QString ruleDateLimitsToString(SubRule sRule)
-    {
-        QString startDate = sRule.dateIntervals().first.date().toString("dd.MM.yyyy"),
-                endDate = sRule.dateIntervals().second.date().toString("dd.MM.yyyy");
-        return "Start dato: " + startDate + " slut dato: " + endDate;
     }
 
     static QString checkAndCorrectForBackslash(const QString &path)

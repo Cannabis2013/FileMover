@@ -3,7 +3,7 @@
 
 #include <qstring.h>
 #include "icon.h"
-#include "rulesmanager.h"
+#include "abstractrulesmanager.h"
 #include "isettingsdelegate.h"
 #include "imutableobject.h"
 #include "abstractsettingsmanager.h"
@@ -11,6 +11,8 @@
 #include "abstractfileinformationmanager.h"
 #include "ithreadmanagerinterface.h"
 #include "abstractfilesystemwatcher.h"
+#include "AbstractFileWorker.h"
+#include "ifilelistservice.h"
 
 class AbstractApplicationService :
         public QObject,
@@ -41,7 +43,11 @@ public:
     virtual QList<const AbstractIcon*> icons() = 0;
 
     virtual const ISettingsDelegate* settingsState() = 0;
-    virtual void setSettings(const ISettingsDelegate *s) =0;
+    virtual void setSettings(const bool &closeOnExit,
+                             const bool &ruleTimerEnabled,
+                             const bool &rulesEnabled,
+                             const QRect &geometry,
+                             const int &countInterval) =0;
 
     virtual bool closeOnExit() = 0;
 
@@ -60,6 +66,7 @@ public:
     virtual void setThreadManagerService(IThreadManagerInterface* service) = 0;
 
     virtual void setFileOperationsService(AbstractFileWorker* service) = 0;
+    virtual void setFileModelBuilderService(IFileListService *service) = 0;
     virtual void setFileWatcherService(AbstractFileSystemWatcher* service) = 0;
 
 public slots:

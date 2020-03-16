@@ -123,7 +123,7 @@ void TestFileCreator::fillDateMappings()
         int month = qrand() % 12 + 1;
         int day = (month == 2) ? qrand() % 29 + 1 :
                                (month % 2 != 0 || month == 8) ? qrand() % 31 + 1 :
-                                                                day = qrand() % 30 + 1;
+                                                                qrand() % 30 + 1;
 
         dateMappings[i] = myDateTime(day,month,year);
     }

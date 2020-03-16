@@ -11,6 +11,81 @@ FileWorker::FileWorker()
 #endif
 }
 
+QStringList FileWorker::filterFilesThatMatch(const QStringList &filePaths, QString &str, bool dontMatch, bool suffix)
+{
+    QStringList result;
+    for (auto path : filePaths) {
+        auto subject = suffix ? QFileInfo(path).suffix() : QFileInfo(path).fileName();
+        if(dontMatch && subject != str)
+            result << path;
+        else if(!dontMatch && subject == str)
+            result << path;
+    }
+
+    return result;
+}
+
+QStringList FileWorker::filterFilesThatContain(const QStringList &filePaths, QString &str, bool dontContain, bool suffix)
+{
+    QStringList result;
+    for (auto path : filePaths) {
+        auto subject = suffix ? QFileInfo(path).suffix() : QFileInfo(path).fileName();
+        if(dontContain && !subject.contains(str))
+            result << path;
+        else if(!dontContain && subject.contains(str))
+            result << path;
+    }
+
+    return result;
+}
+
+QStringList FileWorker::filterFilesAccordingToSize(const QStringList &filePaths, int &size, int mode)
+{
+    QStringList result;
+    for (auto path : filePaths) {
+        auto fileSize = QFileInfo(path).size();
+        if(mode == LesserThan && fileSize < size)
+            result << path;
+        else if(mode == LesserOrEqualThan && fileSize <= size)
+            result << path;
+        else if(mode == Equal && fileSize == size)
+            result << path;
+        else if(mode == greaterOrEqualThan && fileSize >= size)
+            result << path;
+        else if(mode == greaterThan && fileSize > size)
+            result << path;
+    }
+
+    return result;
+}
+
+QStringList FileWorker::filterFilesAccordingToDate(const QStringList &filePaths, int day, int month, int year, const int &mode, const int &dateMode)
+{
+    QStringList result;
+
+    auto date = QDateTime(QDate(year,month,day));
+
+    for (auto path : filePaths) {
+        auto subject = dateMode == DateCreated ? QFileInfo(path).birthTime() :
+                                                 QFileInfo(path).lastModified();
+
+        if(mode == YoungerThan && date < subject)
+            result << path;
+        else if(mode == YoungerOrExactThan && date <= subject)
+            result << path;
+        else if(mode == Exact && date == subject)
+            result << path;
+        else if(mode == OlderOrExtactThan && date >= subject)
+            result << path;
+        else if(mode == OlderThan && date > subject)
+            result << path;
+    }
+
+    return result;
+}
+
+
+
 bool FileWorker::removeFileItems(const FileObjectList& filePaths, QStringList *const err)
 {
     if(filePaths.isEmpty())

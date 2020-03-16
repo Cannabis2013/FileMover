@@ -34,13 +34,13 @@ namespace Ui {
 class mainWindow;
 }
 
-class mainWindow : public QMainWindow
+class ApplicationUI : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit mainWindow(AbstractApplicationService *coreApplication);
-    ~mainWindow();
+    explicit ApplicationUI(AbstractApplicationService *coreApplication);
+    ~ApplicationUI();
 
     enum fontType{listFont,detailedList,labelFont,standardFont};
     enum dateSpecifier{day,month,year};

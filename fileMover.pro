@@ -41,6 +41,7 @@ SOURCES += main.cpp\
     abstractruledialog.cpp \
     abstracttextselectordialog.cpp \
     applicationdomain.cpp \
+    applicationui.cpp \
     conditionwidget.cpp \
     customdialog.cpp \
     customsplitter.cpp \
@@ -51,7 +52,6 @@ SOURCES += main.cpp\
     filepathdialogwidget.cpp \
     filesystemwatcher.cpp \
     fileworker.cpp \
-        mainwindow.cpp \
     rulesmanager.cpp \
     mydatetime.cpp \
     settingsmanager.cpp \
@@ -66,7 +66,7 @@ SOURCES += main.cpp\
     tst_core_functionality.cpp \
     topframeform.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     AbstractFileWorker.h \
     StaticStringsCollection.h \
     TestRuleHelper.h \
@@ -83,6 +83,7 @@ HEADERS  += mainwindow.h \
     abstractsettingsmanager.h \
     abstracttextselectordialog.h \
     applicationdomain.h \
+    applicationui.h \
     conditionwidget.h \
     customcombobox.h \
     customdialog.h \

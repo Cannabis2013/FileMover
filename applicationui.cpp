@@ -1,7 +1,7 @@
-﻿#include "mainwindow.h"
+﻿#include "applicationui.h"
 #include "ui_mainwindow.h"
 
-mainWindow::mainWindow(AbstractApplicationService *coreApplication) :
+ApplicationUI::ApplicationUI(AbstractApplicationService *coreApplication) :
     QMainWindow(),
     ui(new Ui::mainWindow)
 {
@@ -142,7 +142,7 @@ mainWindow::mainWindow(AbstractApplicationService *coreApplication) :
 
     // suffixTree..
 
-    connect(suffixHeader,&QHeaderView::sectionDoubleClicked,this,&mainWindow::sortSuffixTreeColumn);
+    connect(suffixHeader,&QHeaderView::sectionDoubleClicked,this,&ApplicationUI::sortSuffixTreeColumn);
 
     // Systemtray..
     connect(tray,SIGNAL(messageClicked()),this,SLOT(trayMsgClicked()));
@@ -154,14 +154,14 @@ mainWindow::mainWindow(AbstractApplicationService *coreApplication) :
             this,SLOT(tMenuClicked(QAction*)));
     connect(folderTrayMenu,SIGNAL(triggered(QAction*)),
             this,SLOT(explorerMenuTriggered(QAction*)));
-    connect(coreApplication,&AbstractApplicationService::sendSystemTrayMessage,this,&mainWindow::showSystemMessage);
+    connect(coreApplication,&AbstractApplicationService::sendSystemTrayMessage,this,&ApplicationUI::showSystemMessage);
 
-    connect(coreApplication,&AbstractApplicationService::sendFolderSize,this,&mainWindow::folderContentRecieved);
-    connect(coreApplication,&AbstractApplicationService::sendStatusMessage,this,&mainWindow::setStatusText);
+    connect(coreApplication,&AbstractApplicationService::sendFolderSize,this,&ApplicationUI::folderContentRecieved);
+    connect(coreApplication,&AbstractApplicationService::sendStatusMessage,this,&ApplicationUI::setStatusText);
 
-    connect(clearStatusTextTimer,&QTimer::timeout,this,&mainWindow::clearStatusLine);
+    connect(clearStatusTextTimer,&QTimer::timeout,this,&ApplicationUI::clearStatusLine);
 
-    connect(coreApplication,&AbstractApplicationService::stateChanged,this,&mainWindow::updateView);
+    connect(coreApplication,&AbstractApplicationService::stateChanged,this,&ApplicationUI::updateView);
 
     tray->show();
 
@@ -169,11 +169,11 @@ mainWindow::mainWindow(AbstractApplicationService *coreApplication) :
 }
 
 
-mainWindow::~mainWindow()
+ApplicationUI::~ApplicationUI()
 {
     delete ui;
 }
-void mainWindow::closeEvent(QCloseEvent *cE)
+void ApplicationUI::closeEvent(QCloseEvent *cE)
 {
     if(coreApplication->closeOnExit()) {
         cE->accept();
@@ -188,23 +188,23 @@ void mainWindow::closeEvent(QCloseEvent *cE)
     }
 }
 
-void mainWindow::keyPressEvent(QKeyEvent *kE)
+void ApplicationUI::keyPressEvent(QKeyEvent *kE)
 {
     tempKey = kE->key();
 }
 
-void mainWindow::keyReleaseEvent(QKeyEvent *kR)
+void ApplicationUI::keyReleaseEvent(QKeyEvent *kR)
 {
     Q_UNUSED(kR)
     tempKey = 0;
 }
 
-void mainWindow::mousePressEvent(QMouseEvent *mp)
+void ApplicationUI::mousePressEvent(QMouseEvent *mp)
 {
     offset = mp->pos();
 }
 
-void mainWindow::mouseMoveEvent(QMouseEvent *e)
+void ApplicationUI::mouseMoveEvent(QMouseEvent *e)
 {
     if(e->buttons() & Qt::LeftButton)
     {
@@ -212,7 +212,7 @@ void mainWindow::mouseMoveEvent(QMouseEvent *e)
     }
 }
 
-void mainWindow::explorerMenuTriggered(QAction *xAction)
+void ApplicationUI::explorerMenuTriggered(QAction *xAction)
 {
     QStringList arg;
     if(xAction->text() != "Alle mapper")
@@ -251,22 +251,22 @@ void mainWindow::explorerMenuTriggered(QAction *xAction)
     }
 }
 
-void mainWindow::trayMsgClicked()
+void ApplicationUI::trayMsgClicked()
 {
     show();
 }
 
-void mainWindow::msgToTray(const QString &msg)
+void ApplicationUI::msgToTray(const QString &msg)
 {
     tray->showMessage("Error",msg,QSystemTrayIcon::Warning);
 }
 
-void mainWindow::iconSelected(QIcon ico)
+void ApplicationUI::iconSelected(QIcon ico)
 {
     tray->setIcon(ico);
 }
 
-void mainWindow::trayClicked(QSystemTrayIcon::ActivationReason res)
+void ApplicationUI::trayClicked(QSystemTrayIcon::ActivationReason res)
 {
     if(res == QSystemTrayIcon::DoubleClick)
     {
@@ -285,20 +285,20 @@ void mainWindow::trayClicked(QSystemTrayIcon::ActivationReason res)
     }
 }
 
-void mainWindow::tMenuClicked(QAction *a)
+void ApplicationUI::tMenuClicked(QAction *a)
 {
     QString txt = a->text();
     if(txt == "Quit")
         close();
 }
 
-void mainWindow::countMenuTriggered(QAction *cAction)
+void ApplicationUI::countMenuTriggered(QAction *cAction)
 {
     QString fPath = cAction->text();
     coreApplication->calculateFolderSize(fPath);
 }
 
-void mainWindow::clearMenuTriggered(QAction *clAction)
+void ApplicationUI::clearMenuTriggered(QAction *clAction)
 {
     if(clAction->text() == "Alle")
     {
@@ -310,7 +310,7 @@ void mainWindow::clearMenuTriggered(QAction *clAction)
     }
 }
 
-void mainWindow::explorerFolder(bool ok)
+void ApplicationUI::explorerFolder(bool ok)
 {
     Q_UNUSED(ok)
     int r = watchFolderView->currentIndex().row();
@@ -333,7 +333,7 @@ void mainWindow::explorerFolder(bool ok)
 #endif
 }
 
-void mainWindow::actionCountFolder(bool f)
+void ApplicationUI::actionCountFolder(bool f)
 {
     Q_UNUSED(f)
     if(watchFolderView->topLevelItemCount() == 0)
@@ -342,13 +342,13 @@ void mainWindow::actionCountFolder(bool f)
     emit StartCount(list);
 }
 
-void mainWindow::setTimerStatus(bool makeActive)
+void ApplicationUI::setTimerStatus(bool makeActive)
 {
     makeActive ? countTimer->start() : countTimer->stop();
 }
 
 
-void mainWindow::detailedFolderMenuCalled(QPoint p)
+void ApplicationUI::detailedFolderMenuCalled(QPoint p)
 {
     if(!detailedFolderView->currentIndex().isValid())
         return;
@@ -360,7 +360,7 @@ void mainWindow::detailedFolderMenuCalled(QPoint p)
     detailedFolderViewMenu->popup(P);
 }
 
-void mainWindow::openFolder(bool ok)
+void ApplicationUI::openFolder(bool ok)
 {
     Q_UNUSED(ok)
 
@@ -386,7 +386,7 @@ void mainWindow::openFolder(bool ok)
     system(command);
 }
 
-void mainWindow::clearCompleted(bool a)
+void ApplicationUI::clearCompleted(bool a)
 {
     QString txt,msg;
     if(a)
@@ -398,7 +398,7 @@ void mainWindow::clearCompleted(bool a)
     tray->showMessage("Removal",msg);
 }
 
-void mainWindow::folderContentRecieved(const DirectoryEntity *entity)
+void ApplicationUI::folderContentRecieved(const DirectoryEntity *entity)
 {
     QString sizeNotation;
     double scaledAndRoundedSize = SBC::convertFromBytes(entity->directorySize,sizeNotation,2);
@@ -409,7 +409,7 @@ void mainWindow::folderContentRecieved(const DirectoryEntity *entity)
     delete entity;
 }
 
-void mainWindow::contextMenuCalled(QPoint p)
+void ApplicationUI::contextMenuCalled(QPoint p)
 {
     if(!watchFolderView->currentIndex().isValid())
         return;
@@ -421,21 +421,21 @@ void mainWindow::contextMenuCalled(QPoint p)
     watchFolderViewMenu->popup(P);
 }
 
-void mainWindow::updateDetaileditems()
+void ApplicationUI::updateDetaileditems()
 {
     detailedFolderView->clear();
     auto itemList = coreApplication->detailedWatchFolderItems();
     detailedFolderView->addTopLevelItems(itemList);
 }
 
-void mainWindow::updateWatchFolderView()
+void ApplicationUI::updateWatchFolderView()
 {
     watchFolderView->clear();
     QList<QTreeWidgetItem*> watchFolders = coreApplication->watchFolderItems();
     watchFolderView->addTopLevelItems(watchFolders);
 }
 
-QString mainWindow::modifyPath(QString s, QString S) const
+QString ApplicationUI::modifyPath(QString s, QString S) const
 {
     for(int a = 0;a <s.count();a++)
     {
@@ -447,12 +447,12 @@ QString mainWindow::modifyPath(QString s, QString S) const
     return s;
 }
 
-QString mainWindow::currentMainFolderPath() const
+QString ApplicationUI::currentMainFolderPath() const
 {
     return watchFolderView->currentItem()->text(0);
 }
 
-void mainWindow::writeSettings()
+void ApplicationUI::writeSettings()
 {
     auto currentSettings = this->coreApplication->settingsState();
 
@@ -465,18 +465,18 @@ void mainWindow::writeSettings()
     this->coreApplication->setSettings(newSettings);
 }
 
-void mainWindow::readSettings()
+void ApplicationUI::readSettings()
 {
     auto settings = this->coreApplication->settingsState();
     setGeometry(settings->mainGuiGeometry());
 }
 
-void mainWindow::showSystemMessage(const QString &title,const QString &msg)
+void ApplicationUI::showSystemMessage(const QString &title,const QString &msg)
 {
     tray->showMessage(title,msg);
 }
 
-QFont mainWindow::createFont(fontType ft, QString family, bool bold, bool italic, int staticSize)
+QFont ApplicationUI::createFont(fontType ft, QString family, bool bold, bool italic, int staticSize)
 {
     QFont result;
     switch(ft)
@@ -513,7 +513,7 @@ QFont mainWindow::createFont(fontType ft, QString family, bool bold, bool italic
     return result;
 }
 
-void mainWindow::on_clearButt_clicked()
+void ApplicationUI::on_clearButt_clicked()
 {
     auto settings = coreApplication->settingsState();
     if(settings->rulesEnabled())
@@ -540,7 +540,7 @@ void mainWindow::on_clearButt_clicked()
     }
 }
 
-void mainWindow::on_delButt_clicked()
+void ApplicationUI::on_delButt_clicked()
 {
     if(watchFolderView->topLevelItemCount() == 0)
         return;
@@ -559,7 +559,7 @@ void mainWindow::on_delButt_clicked()
     fileInfoBrowser->clear();
 }
 
-void mainWindow::updateInfoScreen(QModelIndex index)
+void ApplicationUI::updateInfoScreen(QModelIndex index)
 {
     if(!index.isValid())
         return;
@@ -577,7 +577,7 @@ void mainWindow::updateInfoScreen(QModelIndex index)
     }
 }
 
-void mainWindow::sortSuffixTreeColumn(int c)
+void ApplicationUI::sortSuffixTreeColumn(int c)
 {
     Qt::SortOrder suffixSortMode = suffixHeader->sortIndicatorOrder();
 
@@ -599,13 +599,13 @@ void mainWindow::sortSuffixTreeColumn(int c)
     }
 }
 
-void mainWindow::updateViewIcons(QIcon ico)
+void ApplicationUI::updateViewIcons(QIcon ico)
 {
     for(int a = 0;a <watchFolderView->topLevelItemCount();a++)
         watchFolderView->topLevelItem(a)->setIcon(0,ico);
 }
 
-QFileInfoList mainWindow::fileItemList(const QStringList paths) const
+QFileInfoList ApplicationUI::fileItemList(const QStringList paths) const
 {
     QFileInfoList resultingList;
     for(QString path : paths)
@@ -617,7 +617,7 @@ QFileInfoList mainWindow::fileItemList(const QStringList paths) const
     return resultingList;
 }
 
-QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QTreeWidget *sTree, const int column, Qt::SortOrder sortMode) const
+QList<QTreeWidgetItem *> ApplicationUI::sortSuffixes(QTreeWidget *sTree, const int column, Qt::SortOrder sortMode) const
 {
     unsigned long long total = static_cast<unsigned long long>(sTree->topLevelItemCount());
     QHeaderView *sufHeader = sTree->header();
@@ -681,7 +681,7 @@ QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QTreeWidget *sTree, const int 
     return resultingSuffixes;
 }
 
-QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QList<QTreeWidgetItem *> sItems,Qt::SortOrder order) const
+QList<QTreeWidgetItem *> ApplicationUI::sortSuffixes(QList<QTreeWidgetItem *> sItems,Qt::SortOrder order) const
 {
     int total = sItems.count();
     QList<QTreeWidgetItem*>sortetItems;
@@ -710,7 +710,7 @@ QList<QTreeWidgetItem *> mainWindow::sortSuffixes(QList<QTreeWidgetItem *> sItem
     return sortetItems;
 }
 
-void mainWindow::updateSubTrayMenus()
+void ApplicationUI::updateSubTrayMenus()
 {
     QStringList l = coreApplication->watchFolders();
 
@@ -733,18 +733,18 @@ void mainWindow::updateSubTrayMenus()
     }
 }
 
-void mainWindow::setStatusText(QString txt)
+void ApplicationUI::setStatusText(QString txt)
 {
     statusLine->setText(txt);
     clearStatusTextTimer->start();
 }
 
-void mainWindow::clearStatusLine()
+void ApplicationUI::clearStatusLine()
 {
     statusLine->clear();
 }
 
-void mainWindow::on_actionIndstillinger_triggered()
+void ApplicationUI::on_actionIndstillinger_triggered()
 {
     QPointer<SettingsWindow> sWidget = new SettingsWindow(coreApplication,new RuleDefinitions);
     sWidget->setWidgetTitle("Settings and rules");
@@ -754,13 +754,13 @@ void mainWindow::on_actionIndstillinger_triggered()
     dialog->show();
 }
 
-void mainWindow::on_actionQuit_triggered()
+void ApplicationUI::on_actionQuit_triggered()
 {
     writeSettings();
     close();
 }
 
-void mainWindow::on_addBut_clicked()
+void ApplicationUI::on_addBut_clicked()
 {
     AddFolderWidget *folderWidget = new AddFolderWidget();
     folderWidget->setWidgetTitle("Add folder dialog");
@@ -769,7 +769,7 @@ void mainWindow::on_addBut_clicked()
     dialog->show();
 }
 
-void mainWindow::on_countButt_clicked()
+void ApplicationUI::on_countButt_clicked()
 {
     if(coreApplication->watchFolderCount() <= 0)
         return;
@@ -778,7 +778,7 @@ void mainWindow::on_countButt_clicked()
     coreApplication->calculateFolderSize(path);
 }
 
-void mainWindow::on_actionOpen_current_directory_triggered()
+void ApplicationUI::on_actionOpen_current_directory_triggered()
 {
     QString cmd =  ePath + " " + modifyPath(currentDir,"\\");
 
@@ -787,14 +787,14 @@ void mainWindow::on_actionOpen_current_directory_triggered()
     process->waitForFinished();
 }
 
-void mainWindow::updateView()
+void ApplicationUI::updateView()
 {
     updateWatchFolderView();
     updateSubTrayMenus();
     updateDetaileditems();
 }
 
-void mainWindow::on_detailView_itemDoubleClicked(QTreeWidgetItem *item, int column)
+void ApplicationUI::on_detailView_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
     Q_UNUSED(column)
     if(item->childCount() >0)
@@ -808,7 +808,7 @@ void mainWindow::on_detailView_itemDoubleClicked(QTreeWidgetItem *item, int colu
     process->waitForFinished();
 }
 
-void mainWindow::on_WatchFolderView_doubleClicked(const QModelIndex &index)
+void ApplicationUI::on_WatchFolderView_doubleClicked(const QModelIndex &index)
 {
     if(!index.isValid())
         return;

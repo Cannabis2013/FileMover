@@ -1,7 +1,6 @@
-﻿#include "mainwindow.h"
+﻿#include "applicationui.h"
 #include <qapplication.h>
 #include <iostream>
-
 
 using namespace std;
 
@@ -48,7 +47,7 @@ using namespace std;
         mainApplicaton->startServices();
 
 
-        QMainWindow *w = new mainWindow(mainApplicaton);
+        QMainWindow *w = new ApplicationUI(mainApplicaton);
         w->show();
 
         return a.exec();

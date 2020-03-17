@@ -19,6 +19,8 @@ public:
     rulesManager(const QString &appName, const QString &orgName);
     ~rulesManager();
 
+    FileModelList filterAccordingToCriterias(const FileModelList &list, const Rule &rule,IFileListService *listService) override;
+
     // Persistence
     void readSettings() override;
     void writeSettings() override;

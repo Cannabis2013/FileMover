@@ -81,7 +81,7 @@ protected:
     QLineEdit *titleSelector,
         *keyWordSelector,
         *destinationPathSelector;
-    QList<SubRule> subRules;
+    QList<RuleCondition> subRules;
     QPushButton *addBut;
     QSpinBox *minSizeSelector,
         *maxSizeSelector,
@@ -94,7 +94,7 @@ protected:
     void resetSubForm();
     void resetAllForm();
 
-    void updateConditionView(SubRule &sR);
+    void updateConditionView(RuleCondition &sR);
 
 private:
     Ui::AbstractRuleDialog *ui;

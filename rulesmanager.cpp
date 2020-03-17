@@ -11,6 +11,17 @@ rulesManager::~rulesManager()
     writeSettings();
 }
 
+FileModelList rulesManager::filterAccordingToCriterias(const FileModelList &list, const Rule &rule, IFileListService *listService)
+{
+    for (auto condition : rule.conditions()) {
+        if(condition.criteria() == RulesContext::FileNameMode || condition.criteria() == RulesContext::FileExtensionMode)
+        {
+            auto isSuffix = condition.criteria() == RulesContext::FileNameMode ? false : true;
+
+        }
+    }
+}
+
 QList<QTreeWidgetItem *> rulesManager::ruleItems() const
 {
     RuleDefinitions rDefs;
@@ -22,7 +33,7 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         QIcon itemIcon = QIcon(":/My Images/Ressources/rule_icon.png");
         pItem->setIcon(0,itemIcon);
-        for(SubRule sRule : r.subRules())
+        for(RuleCondition sRule : r.conditions())
         {
             QStringList hData;
             hData << rDefs.buildStringFromCriteria(sRule.criteria()) <<
@@ -153,14 +164,14 @@ void rulesManager::readSettings()
 
 void rulesManager::writeSettings()
 {
-    QList<Rule> allRules = rules();
+    QList<Rule> rules = this->rules();
     QSettings *pSettings = persistenceSettings();
     pSettings->remove("Rules");
-    pSettings->beginWriteArray("Rules",allRules.count());
-    for (int i = 0; i < allRules.count(); ++i)
+    pSettings->beginWriteArray("Rules",rules.count());
+    for (int i = 0; i < rules.count(); ++i)
     {
         pSettings->setArrayIndex(i);
-        Rule r = allRules.at(i);
+        Rule r = rules.at(i);
         pSettings->setValue("Title",r.title());
         pSettings->setValue("Action",r.actionRuleEntity());
         pSettings->setValue("Scan type filter",r.typeFilter());
@@ -168,12 +179,12 @@ void rulesManager::writeSettings()
         pSettings->setValue("Destination paths",
                    RulesContext::mergeStringList(r.destinationPaths()));
         pSettings->setValue("Scan Mode",r.deepScanMode());
-        QList<SubRule>sRules = r.subRules();
+        QList<RuleCondition>sRules = r.conditions();
         int total = sRules.count();
         pSettings->beginWriteArray("Subrules",total);
         for (int j = 0; j < total; ++j)
         {
-            SubRule sRule = sRules.at(j);
+            RuleCondition sRule = sRules.at(j);
             pSettings->setArrayIndex(j);
 
             pSettings->setValue("Copymode",sRule.copyMode());

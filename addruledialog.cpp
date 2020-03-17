@@ -8,7 +8,7 @@ AddRuleDialog::AddRuleDialog(QStringList watchFolders, IRuleDefinitions<RulesCon
     AbstractRuleDialog(watchFolders, service)
 {
     QStringList actionList = ruleService->buildStringListFromEntity(RulesContext::Action),
-            conditionList = ruleService->buildStringListFromEntity(RulesContext::Criteria),
+            conditionList = ruleService->buildStringListFromEntity(RulesContext::Condition),
             unitList = ruleService->sizeUnits();
 
     actionBox->addItems(actionList);
@@ -27,7 +27,7 @@ AddRuleDialog::AddRuleDialog(QStringList watchFolders, IRuleDefinitions<RulesCon
 void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     int row = index.row();
-    SubRule sRule = subRules.at(row);
+    RuleCondition sRule = subRules.at(row);
     QString condText = ruleService->buildStringFromCriteria(sRule.criteria());
     conditionBox->setCurrentText(condText);
     conditionBox->currentTextChanged(condText);
@@ -43,7 +43,7 @@ void AddRuleDialog::on_addSubRule_clicked()
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
     auto dates = condWidget->intervalDates();
-    auto matchWholeWords = compareCriteria == RulesContext::match;
+    auto matchWholeWords = compareCriteria == RulesContext::Match;
 
 
     auto sRule = RuleBuilder::buildSubRule(criteria,

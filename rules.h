@@ -10,7 +10,7 @@ typedef QPair<quint64,QString> SizeLimit;
 typedef QPair<SizeLimit,SizeLimit> SizeLimits;
 typedef QPair<CustomDate,CustomDate> DateInterval;
 
-class SubRule
+class RuleCondition
 {
 public:
 
@@ -97,8 +97,8 @@ public:
 
 private:
     RulesContext::CopyMode _copyMode = RulesContext::NoMode;
-    RulesContext::RuleCompareCriteria _compareCriteria = RulesContext::noCompareModeSet;
-    RulesContext::RuleCriteria _criteria = RulesContext::nonConditionalMode;
+    RulesContext::RuleCompareCriteria _compareCriteria = RulesContext::NoCompareModeSet;
+    RulesContext::RuleCriteria _criteria = RulesContext::NonConditionalMode;
     QPair<quint64,QString>_sizeLimit;
     SizeLimits _sizeInterval;
     CustomDate _date;
@@ -167,11 +167,11 @@ public:
         _deepScanMode = deepScanMode;
     }
 
-    QList<SubRule> subRules() const
+    QList<RuleCondition> conditions() const
     {
         return _subRules;
     }
-    void setSubRules(const QList<SubRule> &subRules)
+    void setSubRules(const QList<RuleCondition> &subRules)
     {
         _subRules = subRules;
     }
@@ -183,7 +183,7 @@ private:
     QStringList _destinationPaths;
     QString _appliesToPath = "Alle";
     bool _deepScanMode = false;
-    QList<SubRule> _subRules;
+    QList<RuleCondition> _subRules;
 };
 
 #endif // RULES_H
@@ -196,7 +196,7 @@ public:
                                   QStringList destinations,
                                   RulesContext::RuleAction action,
                                   RulesContext::FileType type,
-                                  QList<SubRule> subRules = QList<SubRule>(),
+                                  QList<RuleCondition> subRules = QList<RuleCondition>(),
                                   bool deepScanMode = false)
     {
         Rule r;
@@ -211,16 +211,16 @@ public:
         return r;
     }
 
-    static Rule &attachCriteria(SubRule sRule, Rule &r)
+    static Rule &attachCriteria(RuleCondition sRule, Rule &r)
     {
-        QList<SubRule> sRules = r.subRules();
+        QList<RuleCondition> sRules = r.conditions();
         sRules.append(sRule);
         r.setSubRules(sRules);
 
         return r;
     }
 
-    static SubRule buildSubRule(RulesContext::RuleCriteria criteria,
+    static RuleCondition buildSubRule(RulesContext::RuleCriteria criteria,
                                 RulesContext::RuleCompareCriteria compareCriteria,
                                 QStringList keyWords,
                                 SizeLimit sizeLimit,
@@ -229,7 +229,7 @@ public:
                                 DateInterval dates,
                                 bool matchWholeWords = false)
     {
-        SubRule sRule;
+        RuleCondition sRule;
         sRule.setCriteria(criteria);
         sRule.setCompareCriteria(compareCriteria);
         sRule.setKeyWords(keyWords);
@@ -247,7 +247,7 @@ public:
 
 namespace RulesContext
 {
-    static QString ruleSizeLimitsToString(SubRule sRule)
+    static QString ruleSizeLimitsToString(RuleCondition sRule)
     {
         QString minSize = QString::number(sRule.sizeInterval().first.first),
                 maxSize = QString::number(sRule.sizeInterval().second.first);
@@ -257,7 +257,7 @@ namespace RulesContext
                 + " " + "max: " + maxSize + " " + sizeUnitMax;
     }
 
-    static QString ruleDateLimitsToString(SubRule sRule)
+    static QString ruleDateLimitsToString(RuleCondition sRule)
     {
         QString startDate = sRule.dateIntervals().first.date().toString("dd.MM.yyyy"),
                 endDate = sRule.dateIntervals().second.date().toString("dd.MM.yyyy");
@@ -296,19 +296,19 @@ namespace RulesContext
         return splittetList;
     }
 
-    static QString ruleKeyWordToString(SubRule sRule)
+    static QString ruleKeyWordToString(RuleCondition sRule)
     {
-        if(sRule.criteria() == RulesContext::fileSize &&
-                sRule.compareCriteria() != RulesContext::interval)
+        if(sRule.criteria() == RulesContext::FileSize &&
+                sRule.compareCriteria() != RulesContext::Interval)
             return QString::number(sRule.sizeLimit().first) + " " + sRule.sizeLimit().second;
-        else if(sRule.criteria() == RulesContext::fileSize &&
-                sRule.compareCriteria() == RulesContext::interval)
+        else if(sRule.criteria() == RulesContext::FileSize &&
+                sRule.compareCriteria() == RulesContext::Interval)
             return RulesContext::ruleSizeLimitsToString(sRule);
-        else if((sRule.criteria() == RulesContext::fileCreatedMode || sRule.criteria() == RulesContext::fileModifiedMode) &&
-                sRule.compareCriteria() != RulesContext::interval)
+        else if((sRule.criteria() == RulesContext::FileCreatedMode || sRule.criteria() == RulesContext::FileModifiedMode) &&
+                sRule.compareCriteria() != RulesContext::Interval)
             return sRule.date().toString("dd.MM.yyyy");
-        else if((sRule.criteria() == RulesContext::fileCreatedMode || sRule.criteria() == RulesContext::fileModifiedMode) &&
-                sRule.compareCriteria() == RulesContext::interval)
+        else if((sRule.criteria() == RulesContext::FileCreatedMode || sRule.criteria() == RulesContext::FileModifiedMode) &&
+                sRule.compareCriteria() == RulesContext::Interval)
             return RulesContext::ruleDateLimitsToString(sRule);
         else
             return RulesContext::mergeStringList(sRule.keyWords());

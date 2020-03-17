@@ -3,7 +3,6 @@
 
 #include "AbstractFileWorker.h"
 
-
 #ifdef __MINGW64__
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 #endif

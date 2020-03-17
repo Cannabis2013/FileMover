@@ -3,6 +3,7 @@
 CustomSplitterHandle::CustomSplitterHandle(Qt::Orientation direction, QSplitter *parent, QString label):
     QSplitterHandle(direction,parent),handleLabel(label)
 {
+
 }
 
 void CustomSplitterHandle::paintEvent(QPaintEvent *event)

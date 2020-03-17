@@ -12,7 +12,7 @@ class FileListService : public IFileListService
     // IFileListBuilder interface
 public:
 
-    QStringList allFiles(const QStringList &paths, const int &filter, const int &iteratorMode = FilesContext::Recursive)
+    QStringList allFiles(const QStringList &paths, const int &filter)
     {
         QStringList result;
         for (auto path : paths) {
@@ -31,50 +31,30 @@ public:
 
         return result;
     }
-    QStringList filterFilesThatMatch(const QStringList &filePaths, QString &str, bool dontMatch = false, bool suffix = false)
-    {
-        auto fileDelegates = fileModelDelegates(filePaths);
-        auto filteredFileDelegates = filterFileModelsThatMatch(fileDelegates,str,dontMatch,suffix);
-        return modelsToStringList(filteredFileDelegates);
-    }
-
-    QStringList filterFilesThatContain(const QStringList &filePaths, QString &str, bool dontContain, bool suffix)
-    {
-        auto fileDelegates = fileModelDelegates(filePaths);
-        auto filteredFileDelegates = filterFileModelsThatContain(fileDelegates,str,dontContain,suffix);
-        return modelsToStringList(filteredFileDelegates);
-    }
-    QStringList filterFilesAccordingToSize(const QStringList &filePaths, int &size, int mode)
-    {
-        auto fileDelegates = fileModelDelegates(filePaths);
-        auto filteredFileModelDelegates = filterFileModelsAccordingToSize(fileDelegates,size, mode);
-        return modelsToStringList(filteredFileModelDelegates);
-    }
-    QStringList filterFilesAccordingToDate(const QStringList &filePaths, int day, int month, int year, const int &mode, const int &dateMode)
-    {
-        auto fileDelegates = fileModelDelegates(filePaths);
-        auto filteredFileModeldelegates = filterFileModelsAccordingToDate(fileDelegates,day,month,year,mode,dateMode);
-        return modelsToStringList(filteredFileModeldelegates);
-    }
 
     FileModelList fileModelDelegates(const QStringList &paths, const int &filter = FilesContext::All)
     {
         FileModelList resultingList;
 
         for (auto path : paths) {
-            auto delegate = FileModelDelegate<FileModel>::buildFileModelDelegate(path);
-            if(delegate->model()->isFile() && filter != FilesContext::Folder)
-                resultingList << delegate;
-            else if(filter != FilesContext::File)
+            QDirIterator iterator(path,QDir::AllEntries | QDir::NoDotAndDotDot);
+            while(iterator.hasNext())
             {
-                delegate->setChildren(fileModelDelegates(QStringList() << path));
-                resultingList << delegate;
+                QFileInfo file = iterator.next();
+                if(file.isFile())
+                    resultingList << FileModelDelegate<FileModel>::buildFileModelDelegate(file.absoluteFilePath());
+                else if(file.isDir())
+                {
+                    auto folder = FileModelDelegate<FileModel>::buildFileModelDelegate(file.absoluteFilePath());
+                    auto folderContent = modelsFromFolder(file.absoluteFilePath());
+                    folder->setChildren(folderContent);
+                    resultingList << folder;
+                }
             }
         }
 
         return resultingList;
     }
-private:
 
     FileModelList filterFileModelsThatMatch(const FileModelList &fileModelDelegates, QString &str, bool dontMatch = false, bool suffix = false)
     {
@@ -203,6 +183,26 @@ private:
                 result << model->absoluteFilePath() << modelsToStringList(delegate->children());
         }
 
+        return result;
+    }
+
+private:
+    FileModelList modelsFromFolder(const QString &path)
+    {
+        FileModelList result;
+        QDirIterator iterator(path);
+        while (iterator.hasNext()) {
+            QFileInfo file = iterator.next();
+            if(file.isFile())
+                result << FileModelDelegate<FileModel>::buildFileModelDelegate(file.absoluteFilePath());
+            else if(file.isDir())
+            {
+                auto delegate = FileModelDelegate<FileModel>::buildFileModelDelegate(file.absoluteFilePath());
+                auto children = modelsFromFolder(file.absoluteFilePath());
+                delegate->setChildren(children);
+                result << delegate;
+            }
+        }
         return result;
     }
 };

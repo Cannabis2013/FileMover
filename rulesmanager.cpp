@@ -120,15 +120,15 @@ void rulesManager::readSettings()
 
             pSettings->endGroup();
             QDateTime persistedDate = QDateTime::fromString(pSettings->value("Datetime","").toString(),"dd.MM.yyyy");
-            auto date = static_cast<myDateTime>(persistedDate);
+            auto date = static_cast<CustomDate>(persistedDate);
 
             pSettings->beginGroup("Datelimits");
 
-            QDateTime persistedStartDate = myDateTime::fromString(pSettings->value("Startdate","01.01.2000").toString());
-            QDateTime persistedEndDate = myDateTime::fromString(pSettings->value("Enddate","01.01.2000").toString());
+            QDateTime persistedStartDate = CustomDate::fromString(pSettings->value("Startdate","01.01.2000").toString());
+            QDateTime persistedEndDate = CustomDate::fromString(pSettings->value("Enddate","01.01.2000").toString());
 
-            auto lowerDate = static_cast<myDateTime>(persistedStartDate);
-            auto upperDate = static_cast<myDateTime>(persistedEndDate);
+            auto lowerDate = static_cast<CustomDate>(persistedStartDate);
+            auto upperDate = static_cast<CustomDate>(persistedEndDate);
             auto dates = DateInterval(lowerDate,upperDate);
             pSettings->endGroup();
 
@@ -153,14 +153,14 @@ void rulesManager::readSettings()
 
 void rulesManager::writeSettings()
 {
-    QList<Rule> rules = rules();
+    QList<Rule> allRules = rules();
     QSettings *pSettings = persistenceSettings();
     pSettings->remove("Rules");
-    pSettings->beginWriteArray("Rules",rules.count());
-    for (int i = 0; i < rules.count(); ++i)
+    pSettings->beginWriteArray("Rules",allRules.count());
+    for (int i = 0; i < allRules.count(); ++i)
     {
         pSettings->setArrayIndex(i);
-        Rule r = rules.at(i);
+        Rule r = allRules.at(i);
         pSettings->setValue("Title",r.title());
         pSettings->setValue("Action",r.actionRuleEntity());
         pSettings->setValue("Scan type filter",r.typeFilter());

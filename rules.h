@@ -4,11 +4,11 @@
 #include "ruledefinitions.h"
 #include <QPair>
 #include <QStringList>
-#include "mydatetime.h"
+#include "customdate.h"
 
 typedef QPair<quint64,QString> SizeLimit;
 typedef QPair<SizeLimit,SizeLimit> SizeLimits;
-typedef QPair<myDateTime,myDateTime> DateInterval;
+typedef QPair<CustomDate,CustomDate> DateInterval;
 
 class SubRule
 {
@@ -32,20 +32,20 @@ public:
         _sizeInterval = sizeInterval;
     }
 
-    myDateTime date() const
+    CustomDate date() const
     {
         return _date;
     }
-    void setDate(const myDateTime &date)
+    void setDate(const CustomDate &date)
     {
         _date = date;
     }
 
-    QPair<myDateTime, myDateTime> dateIntervals() const
+    QPair<CustomDate, CustomDate> dateIntervals() const
     {
         return _dateIntervals;
     }
-    void setDateIntervals(const QPair<myDateTime, myDateTime> &dateIntervals)
+    void setDateIntervals(const QPair<CustomDate, CustomDate> &dateIntervals)
     {
         _dateIntervals = dateIntervals;
     }
@@ -101,8 +101,8 @@ private:
     RulesContext::RuleCriteria _criteria = RulesContext::nonConditionalMode;
     QPair<quint64,QString>_sizeLimit;
     SizeLimits _sizeInterval;
-    myDateTime _date;
-    QPair<myDateTime,myDateTime> _dateIntervals;
+    CustomDate _date;
+    QPair<CustomDate,CustomDate> _dateIntervals;
     bool _matchWholeWords = false;
     QStringList _keyWords;
 };
@@ -224,7 +224,7 @@ public:
                                 RulesContext::RuleCompareCriteria compareCriteria,
                                 QStringList keyWords,
                                 SizeLimit sizeLimit,
-                                myDateTime date,
+                                CustomDate date,
                                 SizeLimits sizeInterval,
                                 DateInterval dates,
                                 bool matchWholeWords = false)

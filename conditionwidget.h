@@ -45,9 +45,10 @@ private:
     void setKeyWords(QString kW);
     void setConditionalFixedSize(QPair<int,QString>fSize, RulesContext::RuleCompareCriteria cMode);
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
-    void setFixedDate(const myDateTime &dateTime);
-    void setIntervalDate(QPair<myDateTime,myDateTime> iDate);
+
     void setTypeValues(const int &tMode);
+    void setFixedDate(const CustomDate &dateTime);
+    void setIntervalDate(QPair<CustomDate,CustomDate> iDate);
 
     /*
      * General view related..
@@ -86,8 +87,8 @@ private:
     QPair<quint64, QString> fixedSizeValues() const;
     QPair<QPair<quint64,QString>,QPair<quint64,QString>> intervalSizeValues() const;
     // Get Date values..
-    myDateTime fixedConditionalDate() const;
-    QPair<myDateTime,myDateTime>intervalDates() const;
+    CustomDate fixedConditionalDate() const;
+    QPair<CustomDate,CustomDate>intervalDates() const;
     // Get type values..
     int typeMode() const;
 

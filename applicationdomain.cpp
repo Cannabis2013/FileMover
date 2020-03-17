@@ -13,7 +13,7 @@ ApplicationDomain::~ApplicationDomain()
 
 void ApplicationDomain::clearFolders(QStringList paths)
 {
-    auto models = fileModelBuilderService->fileModelDelegates(paths);
+    auto models = fileModelBuilderService->fileModelDelegates(paths,FilesContext::All);
     auto delegates = DelegateBuilder::buildFileActionEntity<EntityModel>(paths,models,FilesContext::Delete,QStringList());
     entityQueueManagerService->addEntity(delegates);
 }

@@ -3,7 +3,7 @@
 
 ApplicationUI::ApplicationUI(AbstractApplicationService *coreApplication) :
     QMainWindow(),
-    ui(new Ui::mainWindow)
+    ui(new Ui::ApplicationUI)
 {
     ui->setupUi(this);
 

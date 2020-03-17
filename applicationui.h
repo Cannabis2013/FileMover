@@ -32,7 +32,7 @@
 #include "customdialog.h"
 
 namespace Ui {
-class mainWindow;
+class ApplicationUI;
 }
 
 class ApplicationUI : public QMainWindow
@@ -154,7 +154,7 @@ private:
     QIcon currentTrayIcon() const {return tray->icon();}
 
     // Member variables..
-    Ui::mainWindow *ui;
+    Ui::ApplicationUI *ui;
 
     AbstractApplicationService *coreApplication;
 

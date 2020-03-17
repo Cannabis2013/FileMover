@@ -1,12 +1,12 @@
-﻿#include "mydatetime.h"
+﻿#include "customdate.h"
 
-myDateTime::myDateTime(const QDateTime &dTime)
+CustomDate::CustomDate(const QDateTime &dTime)
 {
     setDate(dTime.date());
     setTime(dTime.time());
 }
 
-myDateTime::myDateTime(int day, int month, int year, int hour, int minute, int seconds)
+CustomDate::CustomDate(int day, int month, int year, int hour, int minute, int seconds)
 {
     QDate date(year,month,day);
     QTime time;
@@ -16,10 +16,8 @@ myDateTime::myDateTime(int day, int month, int year, int hour, int minute, int s
     setTime(time);
 }
 
-myDateTime::myDateTime()
-= default;
 
-bool myDateTime::operator <(myDateTime compared)
+bool CustomDate::operator <(CustomDate compared)
 {
     if(date().year() > compared.date().year())
         return true;
@@ -37,7 +35,7 @@ bool myDateTime::operator <(myDateTime compared)
         return false;
 }
 
-bool myDateTime::operator >(myDateTime compared)
+bool CustomDate::operator >(CustomDate compared)
 {
     if(date().year() < compared.date().year())
         return true;
@@ -55,7 +53,7 @@ bool myDateTime::operator >(myDateTime compared)
         return false;
 }
 
-bool myDateTime::operator <(QDateTime other)
+bool CustomDate::operator <(QDateTime other)
 {
     if(date().year() > other.date().year())
         return true;
@@ -74,7 +72,7 @@ bool myDateTime::operator <(QDateTime other)
 }
 
 
-bool myDateTime::operator >(QDateTime other)
+bool CustomDate::operator >(QDateTime other)
 {
     QDate otherDate = other.date();
     if(date().year() < otherDate.year())
@@ -93,7 +91,7 @@ bool myDateTime::operator >(QDateTime other)
         return false;
 }
 
-bool myDateTime::operator ==(myDateTime other)
+bool CustomDate::operator ==(CustomDate other)
 {
     QDate otherDate = other.date();
     return date().year() == otherDate.year() &&
@@ -101,7 +99,7 @@ bool myDateTime::operator ==(myDateTime other)
             date().day() == otherDate.day();
 }
 
-bool myDateTime::operator ==(QDateTime other)
+bool CustomDate::operator ==(QDateTime other)
 {
     QDate otherDate = other.date();
     return date().year() == otherDate.year() &&
@@ -109,7 +107,7 @@ bool myDateTime::operator ==(QDateTime other)
             date().day() == otherDate.day();
 }
 
-myDateTime &myDateTime::operator <<(const QDateTime &dTime)
+CustomDate &CustomDate::operator <<(const QDateTime &dTime)
 {
     setDate(dTime.date());
     setTime(dTime.time());
@@ -117,7 +115,7 @@ myDateTime &myDateTime::operator <<(const QDateTime &dTime)
     return *this;
 }
 
-myDateTime &myDateTime::operator <<(const QDateEdit *dEdit)
+CustomDate &CustomDate::operator <<(const QDateEdit *dEdit)
 {
     setDate(dEdit->date());
     setTime(dEdit->time());

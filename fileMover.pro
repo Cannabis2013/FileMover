@@ -43,6 +43,7 @@ SOURCES += main.cpp\
     applicationdomain.cpp \
     applicationui.cpp \
     conditionwidget.cpp \
+    customdate.cpp \
     customdialog.cpp \
     customsplitter.cpp \
     customsplitterhandle.cpp \
@@ -53,7 +54,6 @@ SOURCES += main.cpp\
     filesystemwatcher.cpp \
     fileworker.cpp \
     rulesmanager.cpp \
-    mydatetime.cpp \
     settingsmanager.cpp \
     settingswindow.cpp \
     addfolderwidget.cpp \
@@ -87,6 +87,7 @@ HEADERS  += \
     applicationui.h \
     conditionwidget.h \
     customcombobox.h \
+    customdate.h \
     customdialog.h \
     customsplitter.h \
     customsplitterhandle.h \
@@ -113,7 +114,6 @@ HEADERS  += \
     modeldelegates.h \
     rulesmanager.h \
     myscreendimensions.h \
-    mydatetime.h \
     settingsdelegate.h \
     settingsmanager.h \
     settingsmodel.h \

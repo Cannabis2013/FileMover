@@ -75,13 +75,13 @@ void conditionWidget::setConditionalIntervalSize(QPair<QPair<int, QString>, QPai
     ui->sizeIntervalMaxUnit->setCurrentText(maxSize.second);
 }
 
-void conditionWidget::setFixedDate(const myDateTime &dateTime)
+void conditionWidget::setFixedDate(const CustomDate &dateTime)
 {
     ui->modeSelector->setCurrentText(ruleService->intervalConditionalList().at(0));
     ui->dateFixedSelector->setDate(dateTime.date());
 }
 
-void conditionWidget::setIntervalDate(QPair<myDateTime, myDateTime> iDate)
+void conditionWidget::setIntervalDate(QPair<CustomDate, CustomDate> iDate)
 {
     ui->modeSelector->setCurrentText(ruleService->intervalConditionalList().at(1));
 
@@ -293,16 +293,16 @@ QPair<QPair<quint64, QString>, QPair<quint64, QString> > conditionWidget::interv
     return result;
 }
 
-myDateTime conditionWidget::fixedConditionalDate() const
+CustomDate conditionWidget::fixedConditionalDate() const
 {
     QDateTime dt = ui->dateFixedSelector->dateTime();
-    return myDateTime(dt);
+    return CustomDate(dt);
 }
 
-QPair<myDateTime, myDateTime> conditionWidget::intervalDates() const
+QPair<CustomDate, CustomDate> conditionWidget::intervalDates() const
 {
-    QPair<myDateTime, myDateTime>result;
-    myDateTime minDate(ui->dateMinSelector->dateTime()), maxDate(ui->dateMaxSelector->dateTime());
+    QPair<CustomDate, CustomDate>result;
+    CustomDate minDate(ui->dateMinSelector->dateTime()), maxDate(ui->dateMaxSelector->dateTime());
 
     result.first = minDate;
     result.second = maxDate;

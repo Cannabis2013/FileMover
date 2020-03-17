@@ -11,29 +11,29 @@
  *  - Lesser is younger
  */
 
-class myDateTime : public QDateTime
+class CustomDate : public QDateTime
 {
 public:
 
     // Constructor..
 
-    explicit myDateTime(const QDateTime &dTime);
-    myDateTime(int day,
+    explicit CustomDate(const QDateTime &dTime);
+    CustomDate(int day,
                int month,
                int year,
                int hour = 0,
                int minute = 0,
                int seconds = 0);
-    myDateTime();
+    CustomDate();
     //  Operators..
-    bool operator <(myDateTime compared);
-    bool operator >(myDateTime compared);
+    bool operator <(CustomDate compared);
+    bool operator >(CustomDate compared);
     bool operator <(QDateTime other);
     bool operator >(QDateTime other);
-    bool operator ==(myDateTime other);
+    bool operator ==(CustomDate other);
     bool operator ==(QDateTime other);
-    myDateTime &operator <<(const QDateTime &dTime);
-    myDateTime &operator <<(const QDateEdit *dEdit);
+    CustomDate &operator <<(const QDateTime &dTime);
+    CustomDate &operator <<(const QDateEdit *dEdit);
 };
 
 #endif // MYDATETIME_H

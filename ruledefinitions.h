@@ -116,7 +116,7 @@ public:
             for ( QPair<QString,RulesContext::RuleAction> actionMapping : actionMappings())
                 resultingList << actionMapping.first;
         }
-        if(property == RulesContext::Criteria || property == RulesContext::All)
+        if(property == RulesContext::Condition || property == RulesContext::All)
         {
             for ( QPair<QString,RulesContext::RuleCriteria> pair : criteriaMappings())
                 resultingList << pair.first;
@@ -133,42 +133,42 @@ public:
     const QStringList fileCompareModesToStringList(RulesContext::RuleCriteria condition) override
     {
         QStringList resultingList;
-        if(condition == RulesContext::fileBaseMode ||
-                condition == RulesContext::filepathMode ||
-                condition == RulesContext::fileExtensionMode)
+        if(condition == RulesContext::FileBaseMode ||
+                condition == RulesContext::FileNameMode ||
+                condition == RulesContext::FileExtensionMode)
         {
             for(QPair<QString,RulesContext::RuleCompareCriteria> pair : compareCriteriaMappings()) {
-                if(pair.second == RulesContext::contains ||
-                        pair.second == RulesContext::dontMatch ||
-                        pair.second == RulesContext::match ||
-                        pair.second == RulesContext::dontMatch)
+                if(pair.second == RulesContext::Contain ||
+                        pair.second == RulesContext::DontMatch ||
+                        pair.second == RulesContext::Match ||
+                        pair.second == RulesContext::DontMatch)
                 {
                     resultingList << pair.first;
                 }
             }
         }
-        else if(condition == RulesContext::fileSize)
+        else if(condition == RulesContext::FileSize)
         {
             for(QPair<QString,RulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
             {
-                if(pair.second == RulesContext::greaterThan ||
-                        pair.second ==RulesContext::greaterOrEqualThan ||
-                        pair.second ==RulesContext::equal ||
-                        pair.second ==RulesContext::lesserOrEqualThan ||
-                        pair.second == RulesContext::lesserThan)
+                if(pair.second == RulesContext::GreaterThan ||
+                        pair.second ==RulesContext::GreaterOrEqualThan ||
+                        pair.second ==RulesContext::Equal ||
+                        pair.second ==RulesContext::LesserOrEqualThan ||
+                        pair.second == RulesContext::LesserThan)
                 {
                     resultingList << pair.first;
                 }
             }
         }
-        else if(condition == RulesContext::fileCreatedMode ||
-                condition == RulesContext::fileModifiedMode)
+        else if(condition == RulesContext::FileCreatedMode ||
+                condition == RulesContext::FileModifiedMode)
         {
             for(QPair<QString,RulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
             {
-                if(pair.second == RulesContext::olderThan ||
-                        pair.second == RulesContext::exactDate ||
-                        pair.second == RulesContext::youngerThan)
+                if(pair.second == RulesContext::OlderThan ||
+                        pair.second == RulesContext::ExactDate ||
+                        pair.second == RulesContext::YoungerThan)
                 {
                     resultingList << pair.first;
                 }
@@ -227,7 +227,7 @@ public:
             if(pair.first == string)
                 return pair.second;
         }
-        return RulesContext::notDefined;
+        return RulesContext::NotDefined;
     }
 
     QString buildStringFromCompareCriteria(const RulesContext::RuleCompareCriteria mode) override
@@ -247,7 +247,7 @@ public:
             if(pair.first == string)
                 return pair.second;
         }
-        return RulesContext::noCompareModeSet;
+        return RulesContext::NoCompareModeSet;
     }
 
     QString fileTypeEntityToString(RulesContext::FileType type) override
@@ -283,31 +283,31 @@ private:
 
     const QList<QPair<QString,RulesContext::RuleCriteria> > criteriaMappings() override {
         return {
-            QPair<QString,RulesContext::RuleCriteria>("Base name",RulesContext::fileBaseMode),
-            QPair<QString,RulesContext::RuleCriteria>("File name",RulesContext::filepathMode),
-            QPair<QString,RulesContext::RuleCriteria>("File suffix",RulesContext::fileExtensionMode),
-            QPair<QString,RulesContext::RuleCriteria>("File size",RulesContext::fileSize),
-            QPair<QString,RulesContext::RuleCriteria>("In folder",RulesContext::fileParentMode),
-            QPair<QString,RulesContext::RuleCriteria>("Date created",RulesContext::fileCreatedMode),
-            QPair<QString,RulesContext::RuleCriteria>("Date edited",RulesContext::fileModifiedMode),
-            QPair<QString,RulesContext::RuleCriteria>("No conditions",RulesContext::nonConditionalMode)};
+            QPair<QString,RulesContext::RuleCriteria>("Base name",RulesContext::FileBaseMode),
+            QPair<QString,RulesContext::RuleCriteria>("File name",RulesContext::FileNameMode),
+            QPair<QString,RulesContext::RuleCriteria>("File suffix",RulesContext::FileExtensionMode),
+            QPair<QString,RulesContext::RuleCriteria>("File size",RulesContext::FileSize),
+            QPair<QString,RulesContext::RuleCriteria>("In folder",RulesContext::FileParentMode),
+            QPair<QString,RulesContext::RuleCriteria>("Date created",RulesContext::FileCreatedMode),
+            QPair<QString,RulesContext::RuleCriteria>("Date edited",RulesContext::FileModifiedMode),
+            QPair<QString,RulesContext::RuleCriteria>("No conditions",RulesContext::NonConditionalMode)};
         }
 
     const QList<QPair<QString,RulesContext::RuleCompareCriteria> > compareCriteriaMappings() override {
 
         return {
-            QPair<QString,RulesContext::RuleCompareCriteria>("Contains",RulesContext::contains),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Does not contain",RulesContext::dontMatch),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Matching",RulesContext::match),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Does not match",RulesContext::dontMatch),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Greater than",RulesContext::greaterThan),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Greater or equal than",RulesContext::greaterOrEqualThan),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Equal",RulesContext::equal),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Less or equal than",RulesContext::lesserOrEqualThan),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Equal than",RulesContext::lesserThan),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Older than",RulesContext::olderThan),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Extact date",RulesContext::exactDate),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Younger than",RulesContext::youngerThan)};
+            QPair<QString,RulesContext::RuleCompareCriteria>("Contains",RulesContext::Contain),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Does not contain",RulesContext::DontMatch),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Matching",RulesContext::Match),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Does not match",RulesContext::DontMatch),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Greater than",RulesContext::GreaterThan),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Greater or equal than",RulesContext::GreaterOrEqualThan),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Equal",RulesContext::Equal),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Less or equal than",RulesContext::LesserOrEqualThan),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Equal than",RulesContext::LesserThan),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Older than",RulesContext::OlderThan),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Extact date",RulesContext::ExactDate),
+            QPair<QString,RulesContext::RuleCompareCriteria>("Younger than",RulesContext::YoungerThan)};
         }
 
     const QList<QPair<QString,RulesContext::FileType> > fileTypeFilterMappings() override

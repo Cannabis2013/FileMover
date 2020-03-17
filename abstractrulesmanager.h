@@ -4,12 +4,18 @@
 #include <QTreeWidgetItem>
 #include "rules.h"
 #include "imutableobject.h"
+#include "ifilelistservice.h"
+#include "filemodeldelegate.h"
 
-class AbstractRulesManager : public QObject,
-                                      public IMutableObject
+class AbstractRulesManager :
+        public QObject,
+        public IMutableObject
 {
     Q_OBJECT
 public:
+
+    virtual FileModelList filterAccordingToCriterias(const FileModelList &list,const Rule &rule,IFileListService *listService) = 0;
+
     // State alteration methods
     virtual void swapRule(int i, int j) = 0;
     virtual void addRule(const Rule &r) = 0;

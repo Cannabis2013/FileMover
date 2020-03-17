@@ -39,7 +39,7 @@ void EditRuleDialog::on_addSubRule_clicked()
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
     auto dates = condWidget->intervalDates();
-    auto matchWholeWords = currentCompareMode == RulesContext::match;
+    auto matchWholeWords = currentCompareMode == RulesContext::Match;
 
     auto sRule = RuleBuilder::buildSubRule(criteria,
                                            currentCompareMode,
@@ -69,5 +69,5 @@ void EditRuleDialog::initializeInterface()
     pathSelector->setCurrentFilePath(StaticStringCollections::mergeStringList(tempRule.destinationPaths()));
     fileTypeSelector->addItems(ruleService->allFileTypeEntitiesToStrings());
     fileTypeSelector->setCurrentText(ruleService->fileTypeEntityToString(tempRule.typeFilter()));
-    subRules = tempRule.subRules();
+    subRules = tempRule.conditions();
 }

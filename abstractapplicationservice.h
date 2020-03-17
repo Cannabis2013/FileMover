@@ -12,7 +12,6 @@
 #include "ithreadmanagerinterface.h"
 #include "abstractfilesystemwatcher.h"
 #include "AbstractFileWorker.h"
-#include "ifilelistservice.h"
 
 class AbstractApplicationService :
         public QObject,

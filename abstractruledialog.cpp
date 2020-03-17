@@ -52,27 +52,27 @@ void AbstractRuleDialog::resetAllForm()
     subRuleView->clear();
 }
 
-void AbstractRuleDialog::updateConditionView(SubRule &sR)
+void AbstractRuleDialog::updateConditionView(RuleCondition &sR)
 {
     RulesContext::RuleCriteria cond = sR.criteria();
     RulesContext::RuleCompareCriteria comp = sR.compareCriteria();
 
-    if(cond == RulesContext::fileSize && comp != RulesContext::interval)
+    if(cond == RulesContext::FileSize && comp != RulesContext::Interval)
     {
         condWidget->setConditionalFixedSize(sR.sizeLimit(),sR.compareCriteria());
     }
-    else if(cond == RulesContext::fileSize && comp== RulesContext::interval)
+    else if(cond == RulesContext::FileSize && comp== RulesContext::Interval)
     {
         condWidget->setConditionalIntervalSize(sR.sizeInterval());
     }
-    else if((cond == RulesContext::fileCreatedMode || cond == RulesContext::fileModifiedMode) &&
-            comp != RulesContext::interval)
+    else if((cond == RulesContext::FileCreatedMode || cond == RulesContext::FileModifiedMode) &&
+            comp != RulesContext::Interval)
     {
         condWidget->setFixedDate(sR.date());
         condWidget->setCompareView(sR.compareCriteria());
     }
-    else if((cond == RulesContext::fileCreatedMode || cond == RulesContext::fileModifiedMode) &&
-            comp == RulesContext::interval)
+    else if((cond == RulesContext::FileCreatedMode || cond == RulesContext::FileModifiedMode) &&
+            comp == RulesContext::Interval)
     {
         condWidget->setIntervalDate(sR.dateIntervals());
     }
@@ -92,7 +92,7 @@ void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     int rowIndex = index.row();
     RuleDefinitions rDefs;
-    SubRule clickedSubRule = subRules.at(rowIndex);
+    RuleCondition clickedSubRule = subRules.at(rowIndex);
     conditionBox->setCurrentText(rDefs.buildStringFromCriteria(clickedSubRule.criteria()));
     conditionBox->currentTextChanged(rDefs.buildStringFromCriteria( clickedSubRule.criteria()));
 
@@ -118,29 +118,29 @@ void AbstractRuleDialog::updateView()
     for (int i = 0; i < total; ++i)
     {
         QStringList headerData;
-        SubRule sRule = subRules.at(i);
+        RuleCondition sRule = subRules.at(i);
         RulesContext::RuleCriteria condition = sRule.criteria();
 
         headerData << ruleService->buildStringFromCriteria(condition);
         headerData << ruleService->buildStringFromCompareCriteria(sRule.compareCriteria());
 
-        if((condition == RulesContext::fileCreatedMode || condition == RulesContext::fileModifiedMode) &&
-                sRule.compareCriteria() != RulesContext::interval)
+        if((condition == RulesContext::FileCreatedMode || condition == RulesContext::FileModifiedMode) &&
+                sRule.compareCriteria() != RulesContext::Interval)
         {
             headerData << RulesContext::ruleKeyWordToString(sRule);
         }
-        else if((condition == RulesContext::fileCreatedMode || condition == RulesContext::fileModifiedMode) &&
-                sRule.compareCriteria() == RulesContext::interval)
+        else if((condition == RulesContext::FileCreatedMode || condition == RulesContext::FileModifiedMode) &&
+                sRule.compareCriteria() == RulesContext::Interval)
         {
             headerData << RulesContext::ruleDateLimitsToString(sRule);
         }
-        else if(condition == RulesContext::fileSize &&
-                sRule.compareCriteria() != RulesContext::interval)
+        else if(condition == RulesContext::FileSize &&
+                sRule.compareCriteria() != RulesContext::Interval)
         {
            headerData << RulesContext::ruleKeyWordToString(sRule);
         }
-        else if(condition == RulesContext::fileSize &&
-                sRule.compareCriteria() == RulesContext::interval)
+        else if(condition == RulesContext::FileSize &&
+                sRule.compareCriteria() == RulesContext::Interval)
         {
             headerData << RulesContext::ruleSizeLimitsToString(sRule);
         }

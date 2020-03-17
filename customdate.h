@@ -24,7 +24,8 @@ public:
                int hour = 0,
                int minute = 0,
                int seconds = 0);
-    CustomDate();
+    CustomDate()
+    {}
     //  Operators..
     bool operator <(CustomDate compared);
     bool operator >(CustomDate compared);

@@ -10,6 +10,80 @@ typedef QPair<quint64,QString> SizeLimit;
 typedef QPair<SizeLimit,SizeLimit> SizeLimits;
 typedef QPair<CustomDate,CustomDate> DateInterval;
 
+class IRuleCondition
+{
+public:
+    bool matchWholeWords() const
+    {
+        return _matchWholeWords;
+    }
+    void setMatchWholeWords(bool matchWholeWords)
+    {
+        _matchWholeWords = matchWholeWords;
+    }
+
+    SizeLimits sizeInterval() const
+    {
+        return _sizeInterval;
+    }
+    void setSizeInterval(const SizeLimits &sizeInterval)
+    {
+        _sizeInterval = sizeInterval;
+    }
+
+    CustomDate date() const
+    {
+        return _date;
+    }
+    void setDate(const CustomDate &date)
+    {
+        _date = date;
+    }
+
+    QPair<CustomDate, CustomDate> dateIntervals() const
+    {
+        return _dateIntervals;
+    }
+    void setDateIntervals(const QPair<CustomDate, CustomDate> &dateIntervals)
+    {
+        _dateIntervals = dateIntervals;
+    }
+
+    QStringList keyWords() const
+    {
+        return _keyWords;
+    }
+    void setKeyWords(const QStringList &keyWords) = 0;
+    RulesContext::CopyMode copyMode() const = 0;
+    void setCopyMode(const RulesContext::CopyMode &copymode) = 0;
+    RulesContext::RuleCompareCriteria compareCriteria() const = 0;
+    void setCompareCriteria(const RulesContext::RuleCompareCriteria &compareCriteria) = 0;
+    RulesContext::RuleCriteria criteria() const = 0;
+    void setCriteria(const RulesContext::RuleCriteria &criteria) = 0;
+    QPair<quint64, QString> sizeLimit() const;
+    void setSizeLimit(const QPair<uint, QString> &sizeLimit) = 0;
+};
+
+template<class TConditon>
+class IRule
+{
+public:
+    virtual RulesContext::FileType typeFilter() const = 0;
+    virtual void setTypeFilter(const RulesContext::FileType &typeFilter) = 0;
+    virtual RulesContext::RuleAction actionRuleEntity() const = 0;
+    virtual void setActionRuleEntity(const RulesContext::RuleAction &actionRuleEntity) = 0;
+    virtual QString title() const = 0;
+    virtual void setTitle(const QString &title) = 0;
+    virtual QStringList destinationPaths() const = 0;
+    virtual void setDestinationPaths(const QStringList &destinationPaths) = 0;
+    virtual QString appliesToPath() const = 0;
+    virtual void setAppliesToPath(const QString &appliesToPath) = 0;
+    virtual bool deepScanMode() const = 0;
+    virtual void setDeepScanMode(bool deepScanMode) = 0;
+    virtual QList<TConditon> conditions() const = 0;
+    virtual void setSubRules(const QList<TConditon> &subRules) = 0;
+};
+
 class RuleCondition
 {
 public:

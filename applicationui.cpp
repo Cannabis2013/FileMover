@@ -1,7 +1,7 @@
 ﻿#include "applicationui.h"
 #include "ui_mainwindow.h"
 
-ApplicationUI::ApplicationUI(AbstractApplicationService *coreApplication) :
+ApplicationUI::ApplicationUI(AbstractApplicationService *coreApplication, IDefaultRuleBuilder *ruleBuilderService) :
     QMainWindow(),
     ui(new Ui::ApplicationUI)
 {
@@ -54,6 +54,8 @@ ApplicationUI::ApplicationUI(AbstractApplicationService *coreApplication) :
 #ifdef Q_OS_MAC
     ui->verticalSpacer->changeSize(0,40,QSizePolicy::Ignored,QSizePolicy::Fixed);
 #endif
+
+    setRuleBuilderService(ruleBuilderService);
 
     // Persistent Settings Related..
 
@@ -173,6 +175,7 @@ ApplicationUI::~ApplicationUI()
 {
     delete ui;
 }
+
 void ApplicationUI::closeEvent(QCloseEvent *cE)
 {
     if(coreApplication->closeOnExit()) {
@@ -745,7 +748,7 @@ void ApplicationUI::clearStatusLine()
 
 void ApplicationUI::on_actionIndstillinger_triggered()
 {
-    QPointer<SettingsWindow> sWidget = new SettingsWindow(coreApplication,new RuleDefinitions);
+    QPointer<SettingsWindow> sWidget = new SettingsWindow(coreApplication);
     sWidget->setWidgetTitle("Settings and rules");
     QPointer<CustomDialog> dialog = new CustomDialog(sWidget, true);
     connect(coreApplication,&AbstractApplicationService::stateChanged,sWidget,&SettingsWindow::updateView);

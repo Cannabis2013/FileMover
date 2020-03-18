@@ -24,7 +24,7 @@
 struct VIRTUAL_FILE_OBJECT
 {
     QString filePath;
-    CustomDate dateCreated; // Has to be altered to perform tests
+    QDateTime dateCreated; // Has to be altered to perform tests
     QFileInfo additionalInformation; // Static information not to be altered
     QString fileName() const {return additionalInformation != QFileInfo() ?
                     additionalInformation.fileName() :
@@ -68,7 +68,7 @@ private:
     void fillDateMappings();
     void appendVirtualFileObject(const QFileInfo &file);
     // Member variables
-    QMap<int,CustomDate> dateMappings;
+    QMap<int,QDateTime> dateMappings;
     Virtual_Objects _virtualObjects;
 };
 

@@ -11,16 +11,21 @@
 #include <QTextCodec>
 #include <QDateEdit>
 
-#include "genericserviceinjector.h"
-#include "rulesmanager.h"
+#include "ruleservicesinjector.h"
+#include "iruledefinitions.h"
+#include "TypeDefinitions.h"
 
-
+typedef IRuleDefinitions<RulesContext::RuleType,
+                                RulesContext::RuleAction,
+                                RulesContext::RuleCriteria,
+                                RulesContext::RuleCompareCriteria,
+                                RulesContext::FileType> IDefinitions;
 
 namespace Ui {
 class conditionWidget;
 }
 
-class conditionWidget : public QWidget, GenericServiceInjector<IDefinitions>
+class conditionWidget : public QWidget, RuleServicesInjector<IDefinitions>
 {
     Q_OBJECT
 
@@ -29,6 +34,8 @@ public:
     ~conditionWidget();
 
     enum IteratorMode {filesOnly = 0,folderOnly = 1,allEntries = 2, noTypeSet = 3};
+
+    void setRulesDefinitionsService(IDefinitions *ruleDefinitionsService) override;
 
 
 private slots:
@@ -47,8 +54,8 @@ private:
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
 
     void setTypeValues(const int &tMode);
-    void setFixedDate(const CustomDate &dateTime);
-    void setIntervalDate(QPair<CustomDate,CustomDate> iDate);
+    void setFixedDate(const QDateTime &dateTime);
+    void setIntervalDate(QPair<QDateTime,QDateTime> iDate);
 
     /*
      * General view related..
@@ -87,8 +94,8 @@ private:
     QPair<quint64, QString> fixedSizeValues() const;
     QPair<QPair<quint64,QString>,QPair<quint64,QString>> intervalSizeValues() const;
     // Get Date values..
-    CustomDate fixedConditionalDate() const;
-    QPair<CustomDate,CustomDate>intervalDates() const;
+    QDateTime fixedConditionalDate() const;
+    QPair<QDateTime,QDateTime>intervalDates() const;
     // Get type values..
     int typeMode() const;
 

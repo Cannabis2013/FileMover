@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>mainWindow</class>
- <widget class="QMainWindow" name="applicationui">
+ <class>ApplicationUI</class>
+ <widget class="QMainWindow" name="ApplicationUI">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>mainWindow</string>
+   <string>ApplicationUI</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget
@@ -509,7 +509,7 @@ border-bottom:2px solid black;</string>
   <connection>
    <sender>WatchFolderView</sender>
    <signal>clicked(QModelIndex)</signal>
-   <receiver>mainWindow</receiver>
+   <receiver>ApplicationUI</receiver>
    <slot>updateInfoScreen(QModelIndex)</slot>
    <hints>
     <hint type="sourcelabel">

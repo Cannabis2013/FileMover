@@ -12,6 +12,7 @@
 #include "ithreadmanagerinterface.h"
 #include "abstractfilesystemwatcher.h"
 #include "AbstractFileWorker.h"
+#include "iruledefinitions.h"
 
 class AbstractApplicationService :
         public QObject,
@@ -29,8 +30,8 @@ public:
     virtual QList<QTreeWidgetItem*> watchFolderItems() = 0;
     virtual QList<QTreeWidgetItem*> detailedWatchFolderItems() = 0;
 
-    virtual Rule ruleAt(int index) = 0;
-    virtual Rule rule(QString title) = 0;
+    virtual const IRule<>* ruleAt(int index) = 0;
+    virtual const IRule<>* rule(QString title) = 0;
     virtual QList<QTreeWidgetItem*> ruleItemModels() = 0;
     virtual void swapRule(int i, int j) = 0;
     virtual void clearRules() const = 0;
@@ -68,6 +69,9 @@ public:
     virtual void setFileModelBuilderService(IFileListService *service) = 0;
     virtual void setFileWatcherService(AbstractFileSystemWatcher* service) = 0;
 
+    virtual IDefinitions* RuleDefinitionsService() = 0;
+    virtual void setRuleDefinitionsService(IDefinitions *service) = 0;
+
 public slots:
     virtual void clearFolders(QStringList paths) = 0;
     virtual void clearFoldersAccordingToRules(QStringList paths) = 0;
@@ -78,8 +82,8 @@ public slots:
     virtual void removeWatchFolderAt(int index) = 0;
     virtual void removeWatchFolder(QString path) = 0;
 
-    virtual void insertRule(Rule r) = 0;
-    virtual void replaceRule(Rule newRule, QString title) = 0;
+    virtual void insertRule(const IRule<>* r) = 0;
+    virtual void replaceRule(const IRule<>* newRule, QString title) = 0;
     virtual void removeRuleAt(int index) = 0;
     virtual void removeRule(QString title) = 0;
 

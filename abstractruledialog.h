@@ -22,21 +22,26 @@
 #include "conditionwidget.h"
 #include "abstractframe.h"
 #include "StaticStringsCollection.h"
+#include "defaultinjector.h"
 
 namespace Ui {
 class AbstractRuleDialog;
 }
 
-class AbstractRuleDialog : public AbstractFrame
+class AbstractRuleDialog :
+        public AbstractFrame,
+        public DefaultServiceInjector
 {
     Q_OBJECT
 public:
-    explicit AbstractRuleDialog(QStringList watchFolders, IDefinitions *rService);
+    explicit AbstractRuleDialog(QStringList watchFolders);
     ~AbstractRuleDialog();
 
+    void setRulesDefinitionsService(IDefinitions *service) override;
+
 signals:
-    void sendRule(Rule R);
-    void replaceRule(Rule rule, QString title);
+    void sendRule(const IRule<>*R);
+    void replaceRule(const IRule<>* rule, QString title);
 
 protected slots:
 
@@ -81,7 +86,7 @@ protected:
     QLineEdit *titleSelector,
         *keyWordSelector,
         *destinationPathSelector;
-    QList<RuleCondition> subRules;
+    QList<const IRuleCondition*> subRules;
     QPushButton *addBut;
     QSpinBox *minSizeSelector,
         *maxSizeSelector,
@@ -94,7 +99,7 @@ protected:
     void resetSubForm();
     void resetAllForm();
 
-    void updateConditionView(RuleCondition &sR);
+    void updateConditionView(const IRuleCondition *sR);
 
 private:
     Ui::AbstractRuleDialog *ui;

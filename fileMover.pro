@@ -91,6 +91,8 @@ HEADERS  += \
     customdialog.h \
     customsplitter.h \
     customsplitterhandle.h \
+    defaultRuleConfiguration.h \
+    defaultinjector.h \
     directoryitem.h \
     entitymodel.h \
     entityqueuemanager.h \
@@ -101,17 +103,21 @@ HEADERS  += \
     filepathdialogwidget.h \
     filesystemwatcher.h \
     fileworker.h \
-    genericserviceinjector.h \
     ibroadcastingobject.h \
     icon.h \
     ifilelistservice.h \
     imutableobject.h \
     inheritexceptiondelegate.h \
+    irulebuilder.h \
+    iruleconfiguration.h \
     iruledefinitions.h \
     isettingsdelegate.h \
     ithreadmanagerinterface.h \
     messageBox.h \
     modeldelegates.h \
+    rulebuilder.h \
+    rulescollection.h \
+    ruleservicesinjector.h \
     rulesmanager.h \
     myscreendimensions.h \
     settingsdelegate.h \

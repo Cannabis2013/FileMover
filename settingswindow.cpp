@@ -1,13 +1,11 @@
 ﻿#include "settingswindow.h"
 #include "ui_settingswindow.h"
 
-SettingsWindow::SettingsWindow(AbstractApplicationService *coreApplication, IDefinitions *ruleService, QWidget *parent):
+SettingsWindow::SettingsWindow(AbstractApplicationService *coreApplication, QWidget *parent):
     AbstractFrame(parent),
     ui(new Ui::SettingsWindow)
 {
     ui->setupUi(this);
-
-    this->ruleService = ruleService;
     this->coreApplication = coreApplication;
     closeOnBox = ui->closeOnExitBox_2;
     countTimerEnableBox = ui->countTimerActivateBox_2;
@@ -79,7 +77,7 @@ void SettingsWindow::closeBoxClicked(bool c)
 void SettingsWindow::on_insertRule_2_clicked()
 {
     QStringList watchFolders = coreApplication->watchFolders();
-    AddRuleDialog *ruleDialog =  new AddRuleDialog(watchFolders,ruleService);
+    AddRuleDialog *ruleDialog =  new AddRuleDialog(watchFolders);
     CustomDialog *dialog = new CustomDialog(ruleDialog,true);
     connect(ruleDialog,&AddRuleDialog::sendRule,coreApplication,&AbstractApplicationService::insertRule);
     dialog->show();
@@ -91,9 +89,11 @@ void SettingsWindow::on_editRule_2_clicked()
         return;
 
     QString title = rulesView->currentItem()->text(0);
-    Rule r = coreApplication->rule(title);
+    auto rule = coreApplication->rule(title);
 
-    EditRuleDialog *ruleDialog = new EditRuleDialog(r,coreApplication->watchFolders(),ruleService);
+    EditRuleDialog *ruleDialog = new EditRuleDialog(rule,coreApplication->watchFolders());
+    ruleDialog->setRulesDefinitionsService(ruleDefinitionsService());
+    ruleDialog->setRuleBuilderService(ruleBuilderService());
     CustomDialog *dialog = new CustomDialog(ruleDialog,true);
     connect(ruleDialog,&AbstractRuleDialog::replaceRule,coreApplication,&AbstractApplicationService::replaceRule);
 

@@ -1,15 +1,15 @@
 #ifndef ADDRULEDIALOG_H
 #define ADDRULEDIALOG_H
 
+#include <QTranslator>
 #include "abstractruledialog.h"
 #include "messageBox.h"
-#include <QTranslator>
+#include <defaultRuleConfiguration.h>
 
-class
-        AddRuleDialog : public AbstractRuleDialog
+class AddRuleDialog : public AbstractRuleDialog
 {
 public:
-    explicit AddRuleDialog(QStringList watchFolders, IRuleDefinitions<RulesContext::RuleType, RulesContext::RuleAction, RulesContext::RuleCriteria, RulesContext::RuleCompareCriteria, RulesContext::FileType> *service);
+    explicit AddRuleDialog(QStringList watchFolders);
 public slots:
 signals:
 

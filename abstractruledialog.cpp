@@ -1,8 +1,7 @@
 #include "abstractruledialog.h"
 #include "ui_abstractruledialog.h"
 
-AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders,
-                                       IDefinitions *rService) :
+AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
     AbstractFrame(),
     ui(new Ui::AbstractRuleDialog)
 {
@@ -18,9 +17,9 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders,
     subRuleView = ui->treeWidget;
     titleSelector = ui->titleBox;
     condWidget = ui->conditionView;
-    ruleService = rService;
 
-    qRegisterMetaType<Rule>("Rule");
+
+    qRegisterMetaType<IRule<>*>("IRule");
 
     setResizeable(false);
 }
@@ -29,6 +28,12 @@ AbstractRuleDialog::~AbstractRuleDialog()
 {
     delete ui;
     delete this;
+}
+
+void AbstractRuleDialog::setRulesDefinitionsService(IDefinitions *service)
+{
+    RuleServicesInjector::setRulesDefinitionsService(service);
+    condWidget->setRulesDefinitionsService(service);
 }
 
 void AbstractRuleDialog::resetSubForm()
@@ -52,34 +57,34 @@ void AbstractRuleDialog::resetAllForm()
     subRuleView->clear();
 }
 
-void AbstractRuleDialog::updateConditionView(RuleCondition &sR)
+void AbstractRuleDialog::updateConditionView(const IRuleCondition *sR)
 {
-    RulesContext::RuleCriteria cond = sR.criteria();
-    RulesContext::RuleCompareCriteria comp = sR.compareCriteria();
+    RulesContext::RuleCriteria cond = sR->criteria();
+    RulesContext::RuleCompareCriteria comp = sR->compareCriteria();
 
     if(cond == RulesContext::FileSize && comp != RulesContext::Interval)
     {
-        condWidget->setConditionalFixedSize(sR.sizeLimit(),sR.compareCriteria());
+        condWidget->setConditionalFixedSize(sR->sizeLimit(),sR->compareCriteria());
     }
     else if(cond == RulesContext::FileSize && comp== RulesContext::Interval)
     {
-        condWidget->setConditionalIntervalSize(sR.sizeInterval());
+        condWidget->setConditionalIntervalSize(sR->sizeInterval());
     }
     else if((cond == RulesContext::FileCreatedMode || cond == RulesContext::FileModifiedMode) &&
             comp != RulesContext::Interval)
     {
-        condWidget->setFixedDate(sR.date());
-        condWidget->setCompareView(sR.compareCriteria());
+        condWidget->setFixedDate(sR->date());
+        condWidget->setCompareView(sR->compareCriteria());
     }
     else if((cond == RulesContext::FileCreatedMode || cond == RulesContext::FileModifiedMode) &&
             comp == RulesContext::Interval)
     {
-        condWidget->setIntervalDate(sR.dateIntervals());
+        condWidget->setIntervalDate(sR->dateIntervals());
     }
     else
     {
         condWidget->setKeyWords(RulesContext::ruleKeyWordToString(sR));
-        condWidget->setCompareView(sR.compareCriteria());
+        condWidget->setCompareView(sR->compareCriteria());
     }
 }
 
@@ -91,10 +96,9 @@ void AbstractRuleDialog::on_conditionComboBox_currentIndexChanged(const QString 
 void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     int rowIndex = index.row();
-    RuleDefinitions rDefs;
-    RuleCondition clickedSubRule = subRules.at(rowIndex);
-    conditionBox->setCurrentText(rDefs.buildStringFromCriteria(clickedSubRule.criteria()));
-    conditionBox->currentTextChanged(rDefs.buildStringFromCriteria( clickedSubRule.criteria()));
+    auto clickedSubRule = subRules.at(rowIndex);
+    conditionBox->setCurrentText(ruleService->buildStringFromCriteria(clickedSubRule->criteria()));
+    conditionBox->currentTextChanged(ruleService->buildStringFromCriteria( clickedSubRule->criteria()));
 
     updateConditionView(clickedSubRule);
 }
@@ -118,35 +122,35 @@ void AbstractRuleDialog::updateView()
     for (int i = 0; i < total; ++i)
     {
         QStringList headerData;
-        RuleCondition sRule = subRules.at(i);
-        RulesContext::RuleCriteria condition = sRule.criteria();
+        auto sRule = subRules.at(i);
+        RulesContext::RuleCriteria condition = sRule->criteria();
 
         headerData << ruleService->buildStringFromCriteria(condition);
-        headerData << ruleService->buildStringFromCompareCriteria(sRule.compareCriteria());
+        headerData << ruleService->buildStringFromCompareCriteria(sRule->compareCriteria());
 
         if((condition == RulesContext::FileCreatedMode || condition == RulesContext::FileModifiedMode) &&
-                sRule.compareCriteria() != RulesContext::Interval)
+                sRule->compareCriteria() != RulesContext::Interval)
         {
             headerData << RulesContext::ruleKeyWordToString(sRule);
         }
         else if((condition == RulesContext::FileCreatedMode || condition == RulesContext::FileModifiedMode) &&
-                sRule.compareCriteria() == RulesContext::Interval)
+                sRule->compareCriteria() == RulesContext::Interval)
         {
             headerData << RulesContext::ruleDateLimitsToString(sRule);
         }
         else if(condition == RulesContext::FileSize &&
-                sRule.compareCriteria() != RulesContext::Interval)
+                sRule->compareCriteria() != RulesContext::Interval)
         {
            headerData << RulesContext::ruleKeyWordToString(sRule);
         }
         else if(condition == RulesContext::FileSize &&
-                sRule.compareCriteria() == RulesContext::Interval)
+                sRule->compareCriteria() == RulesContext::Interval)
         {
             headerData << RulesContext::ruleSizeLimitsToString(sRule);
         }
         else
         {
-            headerData << StaticStringCollections::mergeStringList(sRule.keyWords());
+            headerData << StaticStringCollections::mergeStringList(sRule->keyWords());
         }
 
         new QTreeWidgetItem(subRuleView,headerData);
@@ -155,8 +159,7 @@ void AbstractRuleDialog::updateView()
 
 void AbstractRuleDialog::on_actionComboBox_currentIndexChanged(const QString &arg1)
 {
-    RuleDefinitions rDefs;
-    (rDefs.fileActionEntityFromString(arg1) == RulesContext::DeleteAction) ?
+    (ruleService->fileActionEntityFromString(arg1) == RulesContext::DeleteAction) ?
                 destinationFrame->hide() :
                 destinationFrame->show();
 }

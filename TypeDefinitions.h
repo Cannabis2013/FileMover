@@ -1,6 +1,7 @@
     #ifndef TYPEDEFINITIONS_H
 #define TYPEDEFINITIONS_H
 
+#include <QString>
 
 namespace RulesContext // Rule Related Types namespace
 {

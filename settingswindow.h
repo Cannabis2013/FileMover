@@ -24,7 +24,8 @@
 #include "icon.h"
 #include "customdialog.h"
 #include "abstractapplicationservice.h"
-
+#include "rulescollection.h"
+#include "defaultinjector.h"
 
 using namespace std;
 
@@ -32,12 +33,14 @@ namespace Ui {
 class SettingsWindow;
 }
 
-class SettingsWindow : public AbstractFrame
+class SettingsWindow :
+        public AbstractFrame,
+        public DefaultServiceInjector
 {
     Q_OBJECT
 
 public:
-    explicit SettingsWindow(AbstractApplicationService *coreApplication, IDefinitions *ruleService,QWidget *parent = nullptr);
+    explicit SettingsWindow(AbstractApplicationService *coreApplication, QWidget *parent = nullptr);
     SettingsWindow();
     ~SettingsWindow();
 
@@ -117,11 +120,9 @@ private:
     QPoint mOffset;
     QStringList ruleParentHeaderData,ruleChildrenHeaderData;
     QTreeWidget *rulesView;
-    QList<Rule>rules;
+    QList<const IRule<>*>rules;
     QWidget *mView;
     AbstractApplicationService *coreApplication;
-    IDefinitions *ruleService;
-
 };
 
 typedef SettingsWindow sI;

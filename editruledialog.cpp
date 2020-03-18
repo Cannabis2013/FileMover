@@ -1,9 +1,9 @@
 #include "editruledialog.h"
 
-EditRuleDialog::EditRuleDialog(const Rule editRule, QStringList watchFolders, IDefinitions *ruleService):
-    AbstractRuleDialog(watchFolders, ruleService)
+EditRuleDialog::EditRuleDialog(const IRule<> *editRule, QStringList watchFolders):
+    AbstractRuleDialog(watchFolders)
 {
-    originalRuleTitle = editRule.title();
+    originalRuleTitle = editRule->title();
     tempRule = editRule;
 
     addBut->setText(tr("Færdig"));
@@ -18,12 +18,18 @@ void EditRuleDialog::on_addButton_clicked()
     auto appliesTo = applySelector->currentText();
     auto action = ruleService->fileActionEntityFromString(actionBox->currentText());
     auto destinations = StaticStringCollections::splitString(pathSelector->text());
-
     auto typeFilter = ruleService->fileTypeEntityFromString(fileTypeSelector->currentText());
 
-    Rule r = RuleBuilder::buildOrdinaryRule(title,appliesTo,destinations,action,typeFilter,subRules);
+    auto config = new RuleDefaultConfiguration();
 
-    emit replaceRule(r,originalRuleTitle);
+    config->setTitle(title);
+    config->setAction(action);
+    config->setAppliesTo(appliesTo);
+    config->setDestinations(destinations);
+    config->setType(typeFilter);
+
+    auto rule = ruleBuilderService()->buildOrdinaryRule(config);
+    emit replaceRule(rule,originalRuleTitle);
 
     close();
 }
@@ -33,23 +39,26 @@ void EditRuleDialog::on_addSubRule_clicked()
 
     auto currentCondition = conditionBox->currentText();
     auto criteria = ruleService->buildCriteriaFromString(currentCondition);
-    auto currentCompareMode = condWidget->currentCompareMode();
-    auto keyWords = StaticStringCollections::splitString(condWidget->keyWordValues());;
+    auto compareCriteria = condWidget->currentCompareMode();
+    auto keywords = StaticStringCollections::splitString(condWidget->keyWordValues());;
     auto sizeLimit = condWidget->fixedSizeValues();;
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
     auto dates = condWidget->intervalDates();
-    auto matchWholeWords = currentCompareMode == RulesContext::Match;
+    auto matchWholeWords = compareCriteria == RulesContext::Match;
 
-    auto sRule = RuleBuilder::buildSubRule(criteria,
-                                           currentCompareMode,
-                                           keyWords,
-                                           sizeLimit,
-                                           date,
-                                           sizeLimits,
-                                           dates,
-                                           matchWholeWords);
+    auto config = new RuleConditionDefaultConfiguration;
 
+    config->setCriteria(criteria);
+    config->setCompareCriteria(compareCriteria);
+    config->setKeywords(keywords);
+    config->setSizeLimit(sizeLimit);
+    config->setSizeInterval(sizeLimits);
+    config->setDate(date);
+    config->setDates(dates);
+    config->setMatchWholeWords(matchWholeWords);
+
+    auto sRule = ruleBuilderService()->buildSubRule(config);
     subRules << sRule;
     updateView();
 }
@@ -63,11 +72,11 @@ void EditRuleDialog::on_removeSubRule_clicked()
 
 void EditRuleDialog::initializeInterface()
 {
-    actionBox->setCurrentText(ruleService->fileActionEntityToString(tempRule.actionRuleEntity()));
-    titleSelector->setText(tempRule.title());
-    applySelector->setCurrentText(tempRule.appliesToPath());
-    pathSelector->setCurrentFilePath(StaticStringCollections::mergeStringList(tempRule.destinationPaths()));
+    actionBox->setCurrentText(ruleService->fileActionEntityToString(tempRule->actionRuleEntity()));
+    titleSelector->setText(tempRule->title());
+    applySelector->setCurrentText(tempRule->appliesToPath());
+    pathSelector->setCurrentFilePath(StaticStringCollections::mergeStringList(tempRule->destinationPaths()));
     fileTypeSelector->addItems(ruleService->allFileTypeEntitiesToStrings());
-    fileTypeSelector->setCurrentText(ruleService->fileTypeEntityToString(tempRule.typeFilter()));
-    subRules = tempRule.conditions();
+    fileTypeSelector->setCurrentText(ruleService->fileTypeEntityToString(tempRule->typeFilter()));
+    subRules = tempRule->conditions();
 }

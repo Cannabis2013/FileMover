@@ -10,6 +10,9 @@
 #include "fileinformationmanager.h"
 #include "entityqueuemanager.h"
 #include "filelistservice.h"
+#include "rulebuilder.h"
+#include "rulesmanager.h"
+#include "ruledefinitions.h"
 
 using namespace std;
 
@@ -44,19 +47,20 @@ using namespace std;
         AbstractApplicationService *mainApplicaton = new ApplicationDomain();
 
         mainApplicaton->setFileOperationsService(new FileWorker());
-        mainApplicaton->setRuleManagerService(new rulesManager(argVals.appName,argVals.orgName));
+        mainApplicaton->setRuleManagerService(new rulesManager(argVals.appName,argVals.orgName,new RuleBuilder()));
         mainApplicaton->setThreadManagerService(new ThreadsManager());
         mainApplicaton->setSettingsManagerService(new settingsManager(argVals.appName,argVals.orgName));
         mainApplicaton->setFileInformationManagerService(new FileInformationManager(argVals.appName,argVals.orgName));
         mainApplicaton->setEntityQueueManagerService(new EntityQueueManager());
         mainApplicaton->setFileWatcherService(new FileSystemWatcher());
         mainApplicaton->setFileModelBuilderService(new FileListService());
+        mainApplicaton->setRuleDefinitionsService(new RuleDefinitions());
         mainApplicaton->configureServices();
-
         mainApplicaton->startServices();
 
 
-        QMainWindow *w = new ApplicationUI(mainApplicaton);
+        QMainWindow *w = new ApplicationUI(mainApplicaton,new RuleBuilder);
+
         w->show();
 
         return a.exec();

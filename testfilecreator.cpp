@@ -125,7 +125,7 @@ void TestFileCreator::fillDateMappings()
                                (month % 2 != 0 || month == 8) ? qrand() % 31 + 1 :
                                                                 qrand() % 30 + 1;
 
-        dateMappings[i] = CustomDate(day,month,year);
+        dateMappings[i] = QDateTime(QDate(day,month,year));
     }
 }
 

@@ -320,6 +320,6 @@ private:
     };
 };
 
-typedef IRuleDefinitions<RulesContext::RuleType,RulesContext::RuleAction,RulesContext::RuleCriteria,RulesContext::RuleCompareCriteria,RulesContext::FileType> IDefinitions;
+
 
 #endif // RULEDEFINITIONS_H

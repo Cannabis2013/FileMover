@@ -35,16 +35,19 @@ namespace Ui {
 class ApplicationUI;
 }
 
-class ApplicationUI : public QMainWindow
+class ApplicationUI :
+        public QMainWindow,
+        public DefaultServiceInjector
 {
     Q_OBJECT
 
 public:
-    explicit ApplicationUI(AbstractApplicationService *coreApplication);
+    explicit ApplicationUI(AbstractApplicationService *coreApplication, IDefaultRuleBuilder *ruleBuilderService);
     ~ApplicationUI();
 
     enum fontType{listFont,detailedList,labelFont,standardFont};
     enum dateSpecifier{day,month,year};
+
 
 signals:
     void StartCount(QStringList ps);
@@ -101,7 +104,7 @@ private slots:
     void on_WatchFolderView_doubleClicked(const QModelIndex &index);
 
     // Menu actions related..
-    void on_actionIndstillinger_triggered();
+    void on_actionIndstillinger_triggered(); // Launch settings
     void on_actionQuit_triggered();
 
     // settingsWindow related..

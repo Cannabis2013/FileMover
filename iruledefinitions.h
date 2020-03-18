@@ -30,5 +30,4 @@ public:
     virtual QStringList sizeUnits() = 0;
     virtual QString buildDefaultStringValue() = 0;
 };
-
 #endif // IRULEDEFINITIONS_H

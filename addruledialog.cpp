@@ -1,11 +1,7 @@
 #include "addruledialog.h"
 
-AddRuleDialog::AddRuleDialog(QStringList watchFolders, IRuleDefinitions<RulesContext::RuleType,
-                             RulesContext::RuleAction,
-                             RulesContext::RuleCriteria,
-                             RulesContext::RuleCompareCriteria,
-                             RulesContext::FileType> *service):
-    AbstractRuleDialog(watchFolders, service)
+AddRuleDialog::AddRuleDialog(QStringList watchFolders):
+    AbstractRuleDialog(watchFolders)
 {
     QStringList actionList = ruleService->buildStringListFromEntity(RulesContext::Action),
             conditionList = ruleService->buildStringListFromEntity(RulesContext::Condition),
@@ -27,8 +23,8 @@ AddRuleDialog::AddRuleDialog(QStringList watchFolders, IRuleDefinitions<RulesCon
 void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     int row = index.row();
-    RuleCondition sRule = subRules.at(row);
-    QString condText = ruleService->buildStringFromCriteria(sRule.criteria());
+    auto sRule = subRules.at(row);
+    QString condText = ruleService->buildStringFromCriteria(sRule->criteria());
     conditionBox->setCurrentText(condText);
     conditionBox->currentTextChanged(condText);
 }
@@ -38,22 +34,25 @@ void AddRuleDialog::on_addSubRule_clicked()
     auto cText = conditionBox->currentText();
     auto criteria = ruleService->buildCriteriaFromString(cText);
     auto compareCriteria = condWidget->currentCompareMode();
-    auto keyWords = StaticStringCollections::splitString(condWidget->keyWordValues());
+    auto keywords = StaticStringCollections::splitString(condWidget->keyWordValues());
     auto sizeLimit = condWidget->fixedSizeValues();
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
     auto dates = condWidget->intervalDates();
     auto matchWholeWords = compareCriteria == RulesContext::Match;
 
+    auto config = new RuleConditionDefaultConfiguration;
 
-    auto sRule = RuleBuilder::buildSubRule(criteria,
-                                           compareCriteria,
-                                           keyWords,
-                                           sizeLimit,
-                                           date,
-                                           sizeLimits,
-                                           dates,
-                                           matchWholeWords);
+    config->setCriteria(criteria);
+    config->setCompareCriteria(compareCriteria);
+    config->setKeywords(keywords);
+    config->setSizeLimit(sizeLimit);
+    config->setSizeInterval(sizeLimits);
+    config->setDate(date);
+    config->setDates(dates);
+    config->setMatchWholeWords(matchWholeWords);
+
+    auto sRule = ruleBuilderService()->buildSubRule(config);
 
     subRules << sRule;
     updateView();
@@ -83,7 +82,16 @@ void AddRuleDialog::on_addButton_clicked()
     auto destinations = StaticStringCollections::splitString(pathSelector->text());
     auto typeFilter = ruleService->fileTypeEntityFromString(fileTypeSelector->currentText());
 
-    auto r = RuleBuilder::buildOrdinaryRule(title,appliesTo,destinations,action,typeFilter,subRules);
+    auto config = new RuleDefaultConfiguration();
+
+    config->setTitle(title);
+    config->setAction(action);
+    config->setAppliesTo(appliesTo);
+    config->setDestinations(destinations);
+    config->setType(typeFilter);
+
+    auto r = ruleBuilderService()->buildOrdinaryRule(config);
+
     emit sendRule(r);
     close();
 }

@@ -87,7 +87,7 @@ protected:
     QLineEdit *titleSelector,
         *keyWordSelector,
         *destinationPathSelector;
-    QList<const IDefaultRuleCondition*> subRules;
+    QList<const IDefaultRuleCondition*> _ruleConditions;
     QPushButton *addBut;
     QSpinBox *minSizeSelector,
         *maxSizeSelector,

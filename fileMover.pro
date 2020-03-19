@@ -113,6 +113,7 @@ HEADERS  += \
     iruleconfiguration.h \
     iruledefinitions.h \
     isettingsdelegate.h \
+    isettingswindow.h \
     ithreadmanagerinterface.h \
     messageBox.h \
     modeldelegates.h \

@@ -21,11 +21,10 @@
 #include "customcombobox.h"
 #include "addruledialog.h"
 #include "editruledialog.h"
-#include "icon.h"
 #include "customdialog.h"
-#include "abstractapplicationservice.h"
 #include "rulescollection.h"
-#include "defaultinjector.h"
+#include "isettingswindow.h"
+
 
 using namespace std;
 
@@ -34,17 +33,13 @@ class SettingsWindow;
 }
 
 class SettingsWindow :
-        public AbstractFrame,
-        public DefaultServiceInjector
+        public ISettingsWindow
 {
     Q_OBJECT
-
 public:
     explicit SettingsWindow(AbstractApplicationService *coreApplication, QWidget *parent = nullptr);
     SettingsWindow();
     ~SettingsWindow();
-
-    enum ruleMode{ruleOut,parallelMode};
 
     // Void public functions..
 
@@ -52,25 +47,24 @@ public:
     void setIconList(QList<Icon>list);
 
     //Rules related..
-    void setRulesEnabled(bool r);
+    void setRulesEnabled(bool enabled)
+    {
+        enableRules->setChecked(enabled);
+    }
 
     //Non-void public functions..
 
     // Rules Related..
-    bool rulesEnabled();
+    bool rulesEnabled()
+    {
+        return enableRules->isChecked();
+    }
 
 public slots:
 
     // Update rules view
     void updateView();
 
-signals:
-    void countTimerActivated(bool tf);
-    void sendInterval(int minutes);
-    void sendCheckBox(bool a);
-    void iconSelected(QIcon i);
-    void enableTimer(bool et);
-    void widgetHasQuitted();
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);

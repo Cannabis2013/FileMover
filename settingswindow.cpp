@@ -2,7 +2,7 @@
 #include "ui_settingswindow.h"
 
 SettingsWindow::SettingsWindow(AbstractApplicationService *coreApplication, QWidget *parent):
-    AbstractFrame(parent),
+    ISettingsWindow(parent),
     ui(new Ui::SettingsWindow)
 {
     ui->setupUi(this);
@@ -79,7 +79,7 @@ void SettingsWindow::on_insertRule_2_clicked()
     QStringList watchFolders = coreApplication->watchFolders();
     AddRuleDialog *ruleDialog =  new AddRuleDialog(watchFolders,ruleDefinitionsService());
     CustomDialog *dialog = new CustomDialog(ruleDialog,true);
-    connect(ruleDialog,&AddRuleDialog::sendRule,coreApplication,&AbstractApplicationService::insertRule);
+    connect(ruleDialog,&AbstractRuleDialog::sendRule,coreApplication,&AbstractApplicationService::insertRule);
     dialog->show();
 }
 

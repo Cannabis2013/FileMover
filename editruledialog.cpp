@@ -59,14 +59,14 @@ void EditRuleDialog::on_addSubRule_clicked()
     config->setMatchWholeWords(matchWholeWords);
 
     auto condition = ruleBuilderService()->buildSubRule(config);
-    subRules << condition;
+    _ruleConditions << condition;
     updateView();
 }
 
 void EditRuleDialog::on_removeSubRule_clicked()
 {
     int cIndex = subRuleView->currentIndex().row();
-    subRules.removeAt(cIndex);
+    _ruleConditions.removeAt(cIndex);
     updateView();
 }
 
@@ -78,5 +78,5 @@ void EditRuleDialog::initializeInterface()
     pathSelector->setCurrentFilePath(StaticStringCollections::mergeStringList(tempRule->destinationPaths()));
     fileTypeSelector->addItems(ruleDefinitionsService()->allFileTypeEntitiesToStrings());
     fileTypeSelector->setCurrentText(ruleDefinitionsService()->fileTypeCriteriaToString(tempRule->typeFilter()));
-    subRules = tempRule->conditions();
+    _ruleConditions = tempRule->conditions();
 }

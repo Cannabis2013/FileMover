@@ -28,7 +28,7 @@
 #include "myscreendimensions.h"
 #include "fileinformationview.h"
 #include "addfolderwidget.h"
-#include "settingswindow.h"
+#include "isettingswindow.h"
 #include "customdialog.h"
 
 namespace Ui {

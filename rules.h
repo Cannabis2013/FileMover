@@ -3,7 +3,7 @@
 
 #include <QPair>
 #include <QStringList>
-#include "iruleinterfaces.h"
+#include "defaultrulescontext.h"
 
 class RuleCondition : public IDefaultRuleCondition
 {

@@ -25,7 +25,7 @@ AddRuleDialog::AddRuleDialog(QStringList watchFolders,IRuleDefinitions *service)
 void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     int row = index.row();
-    auto condition = subRules.at(row);
+    auto condition = _ruleConditions.at(row);
     QString condText = ruleDefinitionsService()->buildStringFromCriteria(condition->criteria());
     conditionBox->setCurrentText(condText);
     conditionBox->currentTextChanged(condText);
@@ -56,14 +56,14 @@ void AddRuleDialog::on_addSubRule_clicked()
 
     auto condition = ruleBuilderService()->buildSubRule(config);
 
-    subRules << condition;
+    _ruleConditions << condition;
     updateView();
 }
 
 void AddRuleDialog::on_removeSubRule_clicked()
 {
     int cIndex = subRuleView->currentIndex().row();
-    subRules.removeAt(cIndex);
+    _ruleConditions.removeAt(cIndex);
     delete subRuleView->currentItem();
 }
 

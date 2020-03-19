@@ -97,7 +97,7 @@ void AbstractRuleDialog::on_conditionComboBox_currentIndexChanged(const QString 
 void AbstractRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     int rowIndex = index.row();
-    auto clickedSubRule = subRules.at(rowIndex);
+    auto clickedSubRule = _ruleConditions.at(rowIndex);
     conditionBox->setCurrentText(ruleDefinitionsService()->buildStringFromCriteria(clickedSubRule->criteria()));
     conditionBox->currentTextChanged(ruleDefinitionsService()->buildStringFromCriteria( clickedSubRule->criteria()));
 
@@ -119,11 +119,11 @@ void AbstractRuleDialog::resizeNotify(QSize newSize)
 void AbstractRuleDialog::updateView()
 {
     subRuleView->clear();
-    int total = subRules.count();
+    int total = _ruleConditions.count();
     for (int i = 0; i < total; ++i)
     {
         QStringList headerData;
-        auto criteria = subRules.at(i);
+        auto criteria = _ruleConditions.at(i);
         auto condition = criteria->criteria();
 
         headerData << ruleDefinitionsService()->buildStringFromCriteria(condition);

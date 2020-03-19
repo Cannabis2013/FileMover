@@ -15,17 +15,13 @@
 #include "iruledefinitions.h"
 #include "TypeDefinitions.h"
 
-typedef IRuleDefinitions<RulesContext::RuleType,
-                                RulesContext::RuleAction,
-                                RulesContext::RuleCriteria,
-                                RulesContext::RuleCompareCriteria,
-                                RulesContext::FileType> IDefinitions;
 
 namespace Ui {
 class conditionWidget;
 }
 
-class conditionWidget : public QWidget, RuleServicesInjector<IDefinitions>
+class conditionWidget : public QWidget,
+        public RuleServicesInjector<IRuleDefinitions>
 {
     Q_OBJECT
 
@@ -35,7 +31,7 @@ public:
 
     enum IteratorMode {filesOnly = 0,folderOnly = 1,allEntries = 2, noTypeSet = 3};
 
-    void setRulesDefinitionsService(IDefinitions *ruleDefinitionsService) override;
+    void setRulesDefinitionsService(IRuleDefinitions *ruleDefinitionsService) override;
 
 
 private slots:
@@ -50,7 +46,7 @@ private:
     // Editrule related..
 
     void setKeyWords(QString kW);
-    void setConditionalFixedSize(QPair<int,QString>fSize, RulesContext::RuleCompareCriteria cMode);
+    void setConditionalFixedSize(QPair<int,QString>fSize, const int &cMode);
     void setConditionalIntervalSize(QPair<QPair<int,QString>,QPair<int,QString>> iSize);
 
     void setTypeValues(const int &tMode);
@@ -72,7 +68,7 @@ private:
     // Set the index of QStackWidget prior to the argument.
     void setCurrentView(int index);
 
-    void setCompareView(RulesContext::RuleCompareCriteria compare);
+    void setCompareView(const int &compare);
 
     // General values and other..
     void initDefaultOperators();
@@ -82,7 +78,7 @@ private:
 
     // non-void members..
     //  Comparemode
-    RulesContext::RuleCompareCriteria currentCompareMode();
+    int currentCompareMode();
     QString currentMode() const {return mainModeSelector->currentText();}
 
 
@@ -111,7 +107,7 @@ private:
     QPair<int,int>indexRange;
     QSpinBox *fixedSizeSelector,*minIntervalSizeSelector,*maxIntervalSizeSelector;
     QStackedWidget *mainModeView;
-    RulesContext::RuleCriteria currentFileModeRule;
+    int currentFileModeRule;
     Ui::conditionWidget *ui;
 
     friend class AbstractRuleDialog;

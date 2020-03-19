@@ -59,7 +59,7 @@ using namespace std;
         mainApplicaton->startServices();
 
 
-        QMainWindow *w = new ApplicationUI(mainApplicaton,new RuleBuilder);
+        QMainWindow *w = new ApplicationUI(mainApplicaton,new RuleBuilder, new RuleDefinitions);
 
         w->show();
 

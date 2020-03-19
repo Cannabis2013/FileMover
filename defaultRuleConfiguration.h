@@ -2,9 +2,9 @@
 #define DEFAULTRULECONFIGURATION_H
 
 #include "iruleconfiguration.h"
-#include "rules.h"
+#include "iruleinterfaces.h"
 
-class RuleDefaultConfiguration : public IRuleConfiguration<IRuleCondition,RulesContext::FileType,RulesContext::RuleAction>
+class RuleDefaultConfiguration : public IRuleConfiguration<IDefaultRuleCondition>
 {
 public:
     QString appliesTo() const
@@ -25,29 +25,29 @@ public:
         _destinations = destinations;
     }
 
-    RulesContext::RuleAction action() const
+    int action() const
     {
         return _action;
     }
-    void setAction(const RulesContext::RuleAction &action)
+    void setAction(const int &action)
     {
         _action = action;
     }
 
-    RulesContext::FileType type() const
+    int type() const
     {
         return _type;
     }
-    void setType(const RulesContext::FileType &type)
+    void setType(const int &type)
     {
         _type = type;
     }
 
-    QList<const IRuleCondition*> conditions() const
+    QList<const IDefaultRuleCondition*> conditions() const
     {
         return _conditions;
     }
-    void setConditions(const QList<const IRuleCondition *> &conditions)
+    void setConditions(const QList<const IDefaultRuleCondition *> &conditions)
     {
         _conditions = conditions;
     }
@@ -73,33 +73,31 @@ public:
 private:
     QString _title,_appliesTo;
     QStringList _destinations;
-    RulesContext::RuleAction _action;
-    RulesContext::FileType _type;
-    QList<const IRuleCondition*> _conditions;
+    int _action;
+    int _type;
+    QList<const IDefaultRuleCondition*> _conditions;
     bool _deepScanMode;
 };
 
 class RuleConditionDefaultConfiguration :
-        public IRuleConditionConfiguration<RulesContext::RuleCriteria,
-                                            RulesContext::RuleCompareCriteria,
-                                            SizeLimit,SizeLimits,
+        public IRuleConditionConfiguration<SizeLimit,SizeLimits,
                                             QDateTime,DateInterval>
 {
 public:
-    RulesContext::RuleCriteria criteria() const
+    int criteria() const
     {
         return _criteria;
     }
-    void setCriteria(const RulesContext::RuleCriteria &criteria)
+    void setCriteria(const int &criteria)
     {
         _criteria = criteria;
     }
 
-    RulesContext::RuleCompareCriteria compareCriteria() const
+    int compareCriteria() const
     {
         return _compareCriteria;
     }
-    void setCompareCriteria(const RulesContext::RuleCompareCriteria &compareCriteria)
+    void setCompareCriteria(const int &compareCriteria)
     {
         _compareCriteria = compareCriteria;
     }
@@ -159,8 +157,8 @@ public:
     }
 
 private:
-    RulesContext::RuleCriteria _criteria;
-    RulesContext::RuleCompareCriteria _compareCriteria;
+    int _criteria;
+    int _compareCriteria;
     QStringList _keywords;
     SizeLimit _sizeLimit;
     SizeLimits _sizeInterval;

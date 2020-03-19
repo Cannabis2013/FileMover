@@ -77,7 +77,7 @@ void SettingsWindow::closeBoxClicked(bool c)
 void SettingsWindow::on_insertRule_2_clicked()
 {
     QStringList watchFolders = coreApplication->watchFolders();
-    AddRuleDialog *ruleDialog =  new AddRuleDialog(watchFolders);
+    AddRuleDialog *ruleDialog =  new AddRuleDialog(watchFolders,ruleDefinitionsService());
     CustomDialog *dialog = new CustomDialog(ruleDialog,true);
     connect(ruleDialog,&AddRuleDialog::sendRule,coreApplication,&AbstractApplicationService::insertRule);
     dialog->show();

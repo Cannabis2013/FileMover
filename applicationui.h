@@ -42,7 +42,7 @@ class ApplicationUI :
     Q_OBJECT
 
 public:
-    explicit ApplicationUI(AbstractApplicationService *coreApplication, IDefaultRuleBuilder *ruleBuilderService);
+    explicit ApplicationUI(AbstractApplicationService *coreApplication, IDefaultRuleBuilder *ruleBuilderService, IRuleDefinitions *ruleDefinitionsService);
     ~ApplicationUI();
 
     enum fontType{listFont,detailedList,labelFont,standardFont};

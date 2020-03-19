@@ -12,14 +12,41 @@ rulesManager::~rulesManager()
     writeSettings();
 }
 
-FileModelList rulesManager::filterAccordingToCriterias(const FileModelList &list, const IRule<> *rule, IFileListService *listService)
+FileModelList rulesManager::filterAccordingToCriterias(const FileModelList &list, const IRule<IDefaultRuleCondition> *rule, IFileListService *listService)
 {
-    for (auto condition : rule->conditions()) {
-        if(condition->criteria() == RulesContext::FileNameMode || condition->criteria() == RulesContext::FileExtensionMode)
+
+    auto compareStrings = [](const QStringList &strings, const QString &subject, const bool &match = true)->bool
+    {
+        for (auto string : strings) {
+            if(match && string == subject)
+                return true;
+            else if(!match && string.contains(subject))
+                return true;
+        }
+
+        return false;
+    };
+
+    FileModelList filteredList = list, temporaryList;
+
+    for (auto ruleCriteria : rule->conditions()) {
+        if(ruleCriteria->criteria() == DefaultRulesContext::FileNameMode || ruleCriteria->criteria() == DefaultRulesContext::FileExtensionMode)
         {
-            auto isSuffix = condition->criteria() == RulesContext::FileNameMode ? false : true;
+            auto isSuffix = ruleCriteria->criteria() == DefaultRulesContext::FileNameMode ? false : true;
+            auto match = ruleCriteria->compareCriteria() == DefaultRulesContext::Match;
+            for (auto delegate : filteredList) {
+                auto model = delegate->model();
+                auto subject = isSuffix ? model->suffix() : model->filePath();
+                auto keywords = ruleCriteria->keyWords();
+                if(compareStrings(keywords,subject,match))
+                    temporaryList << delegate;
+            }
+        }
+        else if(ruleCriteria->criteria() == DefaultRulesContext::FileSizeMode)
+        {
 
         }
+        filteredList = temporaryList;
     }
 }
 
@@ -29,16 +56,16 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     for(auto r : _rules)
     {
         QStringList headerData {r->title(),ruleDefinitionsService()->fileActionEntityToString(r->actionRuleEntity()),
-                    RulesContext::mergeStringList(r->destinationPaths())};
+                    DefaultRulesContext::mergeStringList(r->destinationPaths())};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         QIcon itemIcon = QIcon(":/My Images/Ressources/rule_icon.png");
         pItem->setIcon(0,itemIcon);
-        for(auto sRule : r->conditions())
+        for(auto condition : r->conditions())
         {
             QStringList hData;
-            hData << ruleDefinitionsService()->buildStringFromCriteria(sRule->criteria()) <<
-                     ruleDefinitionsService()->buildStringFromCompareCriteria(sRule->compareCriteria()) <<
-                     RulesContext::ruleKeyWordToString(sRule);
+            hData << ruleDefinitionsService()->buildStringFromCriteria(condition->criteria()) <<
+                     ruleDefinitionsService()->buildStringFromCompareCriteria(condition->compareCriteria()) <<
+                     DefaultRulesContext::ruleKeyWordToString(condition);
 
             QTreeWidgetItem *cItem = new QTreeWidgetItem(hData);
             cItem->setIcon(0,QIcon(":/My Images/Ressources/sub_rule_icon.png"));
@@ -52,13 +79,13 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     return resultingList;
 }
 
-void rulesManager::addRule(const IRule<> *r)
+void rulesManager::addRule(const IRule<IDefaultRuleCondition> *r)
 {
     _rules << r;
     emit stateChanged();
 }
 
-void rulesManager::addRules(const QList<const IRule<> *> &r)
+void rulesManager::addRules(const QList<const IRule<IDefaultRuleCondition> *> &r)
 {
     _rules << r;
     emit stateChanged();
@@ -78,7 +105,7 @@ void rulesManager::removeRule(const QString &title)
     throw QString("Item not found.");
 }
 
-const IRule<> *rulesManager::rule(const QString &title) const
+const IRule<IDefaultRuleCondition> *rulesManager::rule(const QString &title) const
 {
     for(auto rule : _rules)
     {
@@ -91,17 +118,17 @@ const IRule<> *rulesManager::rule(const QString &title) const
 
 void rulesManager::readSettings()
 {
-    QList<const IRule<>*>rules;
+    QList<const IRule<IDefaultRuleCondition>*>rules;
     QSettings *pSettings = persistenceSettings();
     int total = pSettings->beginReadArray("Rules");
     for (int i = 0; i < total; ++i)
     {
         pSettings->setArrayIndex(i);
         auto title = pSettings->value("Title","Title").toString();
-        auto action = static_cast<RulesContext::RuleAction>(pSettings->value("Action","").toInt());
+        auto action = static_cast<DefaultRulesContext::RuleAction>(pSettings->value("Action","").toInt());
         auto appliesTo = pSettings->value("ApplyPath","Alle").toString();
-        auto type = static_cast<RulesContext::FileType>(pSettings->value("Scan type filter","").toInt());
-        auto destinations = RulesContext::splitString(pSettings->value("Destination paths","").toString());
+        auto type = static_cast<DefaultRulesContext::FileType>(pSettings->value("Scan type filter","").toInt());
+        auto destinations = DefaultRulesContext::splitString(pSettings->value("Destination paths","").toString());
         int count = pSettings->beginReadArray("Subrules");
 
         auto *rConfig = new RuleDefaultConfiguration;
@@ -118,11 +145,11 @@ void rulesManager::readSettings()
             pSettings->setArrayIndex(j);
 
             //auto mode = static_cast<RRT::CopyMode>(pSettings->value("Copymode",0).toInt());
-            auto criteria = static_cast<RulesContext::RuleCriteria>(pSettings->value("Condition","").toInt());
-            auto compareCriteria = static_cast<RulesContext::RuleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
+            auto criteria = static_cast<DefaultRulesContext::RuleCriteria>(pSettings->value("Condition","").toInt());
+            auto compareCriteria = static_cast<DefaultRulesContext::RuleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
 
             auto matchWholeWords = pSettings->value("Matchwholewords",false).toBool();
-            auto keyWords = RulesContext::splitString(pSettings->value("Keywords","").toString());
+            auto keyWords = DefaultRulesContext::splitString(pSettings->value("Keywords","").toString());
 
             auto sLimit = pSettings->value("Sizelimit",0).toInt();
             auto sizeUnit = pSettings->value("Sizelimitunit","kb").toString();
@@ -159,9 +186,9 @@ void rulesManager::readSettings()
             conditionConfiguration->setDates(dates);
             conditionConfiguration->setMatchWholeWords(matchWholeWords);
 
-            auto sRule = ruleBuilderService()->buildSubRule(conditionConfiguration);
+            auto condition = ruleBuilderService()->buildSubRule(conditionConfiguration);
             // Very forbidden move. Need to find a fix.
-            ruleBuilderService()->attachCriteria(sRule,const_cast<IRule<>*>(r));
+            ruleBuilderService()->attachCriteria(condition,const_cast<IRule<IDefaultRuleCondition>*>(r));
 
         }
         pSettings->endArray();
@@ -186,38 +213,38 @@ void rulesManager::writeSettings()
         pSettings->setValue("Scan type filter",r->typeFilter());
         pSettings->setValue("ApplyPath",r->appliesToPath());
         pSettings->setValue("Destination paths",
-                   RulesContext::mergeStringList(r->destinationPaths()));
+                   DefaultRulesContext::mergeStringList(r->destinationPaths()));
         pSettings->setValue("Scan Mode",r->deepScanMode());
-        QList<const IRuleCondition*>sRules = r->conditions();
+        QList<const IDefaultRuleCondition*>sRules = r->conditions();
         int total = sRules.count();
         pSettings->beginWriteArray("Subrules",total);
         for (int j = 0; j < total; ++j)
         {
-            auto sRule = sRules.at(j);
+            auto condition = sRules.at(j);
             pSettings->setArrayIndex(j);
 
-            pSettings->setValue("Copymode",sRule->copyMode());
-            pSettings->setValue("Condition",sRule->criteria());
-            pSettings->setValue("Comparemode",sRule->compareCriteria());
+            pSettings->setValue("Copymode",condition->copyMode());
+            pSettings->setValue("Condition",condition->criteria());
+            pSettings->setValue("Comparemode",condition->compareCriteria());
 
-            pSettings->setValue("Matchwholewords",sRule->matchWholeWords());
-            pSettings->setValue("Keywords",RulesContext::mergeStringList(sRule->keyWords()));
+            pSettings->setValue("Matchwholewords",condition->matchWholeWords());
+            pSettings->setValue("Keywords",DefaultRulesContext::mergeStringList(condition->keyWords()));
 
-            pSettings->setValue("Sizelimit",sRule->sizeLimit().first);
-            pSettings->setValue("Sizelimitunit",sRule->sizeLimit().second);
+            pSettings->setValue("Sizelimit",condition->sizeLimit().first);
+            pSettings->setValue("Sizelimitunit",condition->sizeLimit().second);
 
             pSettings->beginGroup("Sizelimits");
-            pSettings->setValue("Minsizeinterval",sRule->sizeInterval().first.first);
-            pSettings->setValue("Minsizeunitinterval",sRule->sizeInterval().first.second);
-            pSettings->setValue("Maxsizeinterval",sRule->sizeInterval().second.first);
-            pSettings->setValue("Maxsizeunitinterval",sRule->sizeInterval().second.second);
+            pSettings->setValue("Minsizeinterval",condition->sizeInterval().first.first);
+            pSettings->setValue("Minsizeunitinterval",condition->sizeInterval().first.second);
+            pSettings->setValue("Maxsizeinterval",condition->sizeInterval().second.first);
+            pSettings->setValue("Maxsizeunitinterval",condition->sizeInterval().second.second);
             pSettings->endGroup();
 
-            pSettings->setValue("Datetime",sRule->date().toString("dd.MM.yyyy"));
+            pSettings->setValue("Datetime",condition->date().toString("dd.MM.yyyy"));
 
             pSettings->beginGroup("Datelimits");
-            pSettings->setValue("Startdate",sRule->dateIntervals().first.toString("dd.MM.yyyy"));
-            pSettings->setValue("Enddate",sRule->dateIntervals().second.toString("dd.MM.yyyy"));
+            pSettings->setValue("Startdate",condition->dateIntervals().first.toString("dd.MM.yyyy"));
+            pSettings->setValue("Enddate",condition->dateIntervals().second.toString("dd.MM.yyyy"));
             pSettings->endGroup();
         }
         pSettings->endArray();
@@ -225,13 +252,13 @@ void rulesManager::writeSettings()
     pSettings->endArray();
 }
 
-void rulesManager::replaceRule(const IRule<> *r, int index)
+void rulesManager::replaceRule(const IRule<IDefaultRuleCondition> *r, int index)
 {
     _rules.replace(index,r);
     emit stateChanged();
 }
 
-void rulesManager::replaceRule(const IRule<> *r, QString title)
+void rulesManager::replaceRule(const IRule<IDefaultRuleCondition> *r, QString title)
 {
     for (int i = 0; i < _rules.count(); ++i) {
         auto currentRule = _rules.at(i);
@@ -245,7 +272,7 @@ void rulesManager::replaceRule(const IRule<> *r, QString title)
     throw QString("Item not found");
 }
 
-QList<const IRule<> *> rulesManager::rules() const
+QList<const IRule<IDefaultRuleCondition> *> rulesManager::rules() const
 {
     return _rules;
 }

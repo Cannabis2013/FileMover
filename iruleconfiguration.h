@@ -2,8 +2,7 @@
 #define IRULECONFIGURATION_H
 
 #include <qstringlist.h>
-
-template<class TCondition,typename TFileType,typename TFileAction>
+template<class TCondition>
 class IRuleConfiguration
 {
 public:
@@ -11,10 +10,10 @@ public:
     virtual void setAppliesTo(const QString &appliesTo) = 0;
     virtual QStringList destinations() const = 0;
     virtual void setDestinations(const QStringList &destinations) = 0;
-    virtual TFileAction action() const = 0;
-    virtual void setAction(const TFileAction &action) = 0;
-    virtual TFileType type() const = 0;
-    virtual void setType(const TFileType &type) = 0;
+    virtual int action() const = 0;
+    virtual void setAction(const int &action) = 0;
+    virtual int type() const = 0;
+    virtual void setType(const int &type) = 0;
     virtual QList<const TCondition*> conditions() const = 0;
     virtual void setConditions(const QList<const TCondition*> &conditions) = 0;
     virtual bool deepScanMode() const = 0;
@@ -22,14 +21,14 @@ public:
     virtual QString title() const = 0;
     virtual void setTitle(const QString &title) = 0;
 };
-template<typename TCriteria,typename TComparisonCriteria,typename TSizeContainer,typename TSizeIntervals,typename TDate , typename TDateIntervals>
+template<typename TSizeContainer,typename TSizeIntervals,typename TDate , typename TDateIntervals>
 class IRuleConditionConfiguration
 {
 public:
-    virtual TCriteria criteria() const = 0;
-    virtual void setCriteria(const TCriteria &criteria) = 0;
-    virtual TComparisonCriteria compareCriteria() const = 0;
-    virtual void setCompareCriteria(const TComparisonCriteria &compareCriteria) = 0;
+    virtual int criteria() const = 0;
+    virtual void setCriteria(const int &criteria) = 0;
+    virtual int compareCriteria() const = 0;
+    virtual void setCompareCriteria(const int &compareCriteria) = 0;
     virtual QStringList keywords() const = 0;
     virtual void setKeywords(const QStringList &value) = 0;
     virtual TSizeContainer sizeLimit() const = 0;

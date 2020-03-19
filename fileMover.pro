@@ -93,6 +93,7 @@ HEADERS  += \
     customsplitterhandle.h \
     defaultRuleConfiguration.h \
     defaultinjector.h \
+    defaultrulescontext.h \
     directoryitem.h \
     entitymodel.h \
     entityqueuemanager.h \

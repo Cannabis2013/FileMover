@@ -1,6 +1,6 @@
 #include "editruledialog.h"
 
-EditRuleDialog::EditRuleDialog(const IRule<> *editRule, QStringList watchFolders):
+EditRuleDialog::EditRuleDialog(const IRule<IDefaultRuleCondition> *editRule, QStringList watchFolders):
     AbstractRuleDialog(watchFolders)
 {
     originalRuleTitle = editRule->title();
@@ -16,9 +16,9 @@ void EditRuleDialog::on_addButton_clicked()
 {
     auto title = titleSelector->text();
     auto appliesTo = applySelector->currentText();
-    auto action = ruleService->fileActionEntityFromString(actionBox->currentText());
+    auto action = ruleDefinitionsService()->fileActionEntityFromString(actionBox->currentText());
     auto destinations = StaticStringCollections::splitString(pathSelector->text());
-    auto typeFilter = ruleService->fileTypeEntityFromString(fileTypeSelector->currentText());
+    auto typeFilter = ruleDefinitionsService()->fileTypeCriteriaFromString(fileTypeSelector->currentText());
 
     auto config = new RuleDefaultConfiguration();
 
@@ -38,14 +38,14 @@ void EditRuleDialog::on_addSubRule_clicked()
 {
 
     auto currentCondition = conditionBox->currentText();
-    auto criteria = ruleService->buildCriteriaFromString(currentCondition);
+    auto criteria = ruleDefinitionsService()->buildCriteriaFromString(currentCondition);
     auto compareCriteria = condWidget->currentCompareMode();
     auto keywords = StaticStringCollections::splitString(condWidget->keyWordValues());;
     auto sizeLimit = condWidget->fixedSizeValues();;
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
     auto dates = condWidget->intervalDates();
-    auto matchWholeWords = compareCriteria == RulesContext::Match;
+    auto matchWholeWords = compareCriteria == DefaultRulesContext::Match;
 
     auto config = new RuleConditionDefaultConfiguration;
 
@@ -58,8 +58,8 @@ void EditRuleDialog::on_addSubRule_clicked()
     config->setDates(dates);
     config->setMatchWholeWords(matchWholeWords);
 
-    auto sRule = ruleBuilderService()->buildSubRule(config);
-    subRules << sRule;
+    auto condition = ruleBuilderService()->buildSubRule(config);
+    subRules << condition;
     updateView();
 }
 
@@ -72,11 +72,11 @@ void EditRuleDialog::on_removeSubRule_clicked()
 
 void EditRuleDialog::initializeInterface()
 {
-    actionBox->setCurrentText(ruleService->fileActionEntityToString(tempRule->actionRuleEntity()));
+    actionBox->setCurrentText(ruleDefinitionsService()->fileActionEntityToString(tempRule->actionRuleEntity()));
     titleSelector->setText(tempRule->title());
     applySelector->setCurrentText(tempRule->appliesToPath());
     pathSelector->setCurrentFilePath(StaticStringCollections::mergeStringList(tempRule->destinationPaths()));
-    fileTypeSelector->addItems(ruleService->allFileTypeEntitiesToStrings());
-    fileTypeSelector->setCurrentText(ruleService->fileTypeEntityToString(tempRule->typeFilter()));
+    fileTypeSelector->addItems(ruleDefinitionsService()->allFileTypeEntitiesToStrings());
+    fileTypeSelector->setCurrentText(ruleDefinitionsService()->fileTypeCriteriaToString(tempRule->typeFilter()));
     subRules = tempRule->conditions();
 }

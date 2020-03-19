@@ -4,9 +4,8 @@
 #include <QPair>
 #include <QStringList>
 #include "iruleinterfaces.h"
-#include "irulebuilder.h"
 
-class RuleCondition : public IRuleCondition
+class RuleCondition : public IDefaultRuleCondition
 {
 public:
     ~RuleCondition(){}
@@ -56,29 +55,29 @@ public:
         _keyWords = keyWords;
     }
 
-    RulesContext::CopyMode copyMode() const
+    int copyMode() const
     {
         return _copyMode;
     }
-    void setCopyMode(const RulesContext::CopyMode &copymode)
+    void setCopyMode(const int &copymode)
     {
         _copyMode = copymode;
     }
 
-    RulesContext::RuleCompareCriteria compareCriteria() const
+    int compareCriteria() const
     {
         return _compareCriteria;
     }
-    void setCompareCriteria(const RulesContext::RuleCompareCriteria &compareCriteria)
+    void setCompareCriteria(const int &compareCriteria)
     {
         _compareCriteria = compareCriteria;
     }
 
-    RulesContext::RuleCriteria criteria() const
+    int criteria() const
     {
         return _criteria;
     }
-    void setCriteria(const RulesContext::RuleCriteria &criteria)
+    void setCriteria(const int &criteria)
     {
         _criteria = criteria;
     }
@@ -87,15 +86,15 @@ public:
     {
         return _sizeLimit;
     }
-    void setSizeLimit(const QPair<uint, QString> &sizeLimit)
+    void setSizeLimit(const QPair<quint64, QString> &sizeLimit)
     {
         _sizeLimit = sizeLimit;
     }
 
 private:
-    RulesContext::CopyMode _copyMode = RulesContext::NoMode;
-    RulesContext::RuleCompareCriteria _compareCriteria = RulesContext::NoCompareModeSet;
-    RulesContext::RuleCriteria _criteria = RulesContext::NonConditionalMode;
+    int _copyMode = 0x01;
+    int _compareCriteria = 0x01;
+    int _criteria = 0x01;
     QPair<quint64,QString>_sizeLimit;
     SizeLimits _sizeInterval;
     QDateTime _date;
@@ -107,26 +106,26 @@ private:
 typedef QPair<int,QString> SizeOperand;
 typedef QPair<QPair<int,QString>,QPair<int,QString>> SizeInterval;
 
-class Rule : public IRule<>
+class Rule : public IRule<IDefaultRuleCondition>
 {
 public:
     ~Rule()
     {
     }
-    RulesContext::FileType typeFilter() const
+    int typeFilter() const
     {
         return _typeFilter;
     }
-    void setTypeFilter(const RulesContext::FileType &typeFilter)
+    void setTypeFilter(const int &typeFilter)
     {
         _typeFilter = typeFilter;
     }
 
-    RulesContext::RuleAction actionRuleEntity() const
+    int actionRuleEntity() const
     {
         return _actionRuleEntity;
     }
-    void setActionRuleEntity(const RulesContext::RuleAction &actionRuleEntity)
+    void setActionRuleEntity(const int &actionRuleEntity)
     {
         _actionRuleEntity = actionRuleEntity;
     }
@@ -167,23 +166,23 @@ public:
         _deepScanMode = deepScanMode;
     }
 
-    QList<const IRuleCondition*> conditions() const
+    QList<const IDefaultRuleCondition*> conditions() const
     {
         return _subRules;
     }
-    void setSubRules(const QList<const IRuleCondition*> &subRules)
+    void setCriterias(const QList<const IDefaultRuleCondition*> &subRules)
     {
         _subRules = subRules;
     }
 
 private:
-    RulesContext::FileType _typeFilter = RulesContext::File;
-    RulesContext::RuleAction _actionRuleEntity;
+    int _typeFilter = DefaultRulesContext::File;
+    int _actionRuleEntity;
     QString _title = "title";
     QStringList _destinationPaths;
     QString _appliesToPath = "Alle";
     bool _deepScanMode = false;
-    QList<const IRuleCondition*> _subRules;
+    QList<const IDefaultRuleCondition*> _subRules;
 };
 
 #endif // RULES_H

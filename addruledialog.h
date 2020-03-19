@@ -9,7 +9,7 @@
 class AddRuleDialog : public AbstractRuleDialog
 {
 public:
-    explicit AddRuleDialog(QStringList watchFolders);
+    explicit AddRuleDialog(QStringList watchFolders, IRuleDefinitions *service);
 public slots:
 signals:
 

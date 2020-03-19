@@ -3,6 +3,6 @@
 
 #include "rulescollection.h"
 
-typedef RuleServicesInjector<IDefinitions,IDefaultRuleBuilder> DefaultServiceInjector;
+typedef RuleServicesInjector<IRuleDefinitions,IDefaultRuleBuilder> DefaultServiceInjector;
 
 #endif // DEFAULTINJECTOR_H

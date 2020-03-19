@@ -71,11 +71,7 @@
  *      typeMode
  */
 
-class RuleDefinitions : public IRuleDefinitions<RulesContext::RuleType,
-        RulesContext::RuleAction,
-        RulesContext::RuleCriteria,
-        RulesContext::RuleCompareCriteria,
-        RulesContext::FileType>
+class RuleDefinitions : public IRuleDefinitions
 {
 public:
     // Enumerated variables..
@@ -108,67 +104,67 @@ public:
         return "No criterias";
     }
 
-    const QStringList buildStringListFromEntity(RulesContext::RuleType property = RulesContext::All) override
+    const QStringList buildStringListFromEntity(const int &property) override
     {
         QStringList resultingList;
-        if(property == RulesContext::Action || property == RulesContext::All)
+        if(property == DefaultRulesContext::Action || property == DefaultRulesContext::All)
         {
-            for ( QPair<QString,RulesContext::RuleAction> actionMapping : actionMappings())
+            for ( QPair<QString,DefaultRulesContext::RuleAction> actionMapping : actionMappings())
                 resultingList << actionMapping.first;
         }
-        if(property == RulesContext::Condition || property == RulesContext::All)
+        if(property == DefaultRulesContext::Condition || property == DefaultRulesContext::All)
         {
-            for ( QPair<QString,RulesContext::RuleCriteria> pair : criteriaMappings())
+            for ( QPair<QString,DefaultRulesContext::RuleCriteria> pair : criteriaMappings())
                 resultingList << pair.first;
         }
-        if(property == RulesContext::CompareCriteria || property == RulesContext::All)
+        if(property == DefaultRulesContext::CompareCriteria || property == DefaultRulesContext::All)
         {
-            for ( QPair<QString,RulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
+            for ( QPair<QString,DefaultRulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
                 resultingList << pair.first;
         }
 
         return resultingList;
     }
 
-    const QStringList fileCompareModesToStringList(RulesContext::RuleCriteria condition) override
+    const QStringList fileCompareModesToStringList(const int &condition) override
     {
         QStringList resultingList;
-        if(condition == RulesContext::FileBaseMode ||
-                condition == RulesContext::FileNameMode ||
-                condition == RulesContext::FileExtensionMode)
+        if(condition == DefaultRulesContext::FileBaseMode ||
+                condition == DefaultRulesContext::FileNameMode ||
+                condition == DefaultRulesContext::FileExtensionMode)
         {
-            for(QPair<QString,RulesContext::RuleCompareCriteria> pair : compareCriteriaMappings()) {
-                if(pair.second == RulesContext::Contain ||
-                        pair.second == RulesContext::DontMatch ||
-                        pair.second == RulesContext::Match ||
-                        pair.second == RulesContext::DontMatch)
+            for(QPair<QString,DefaultRulesContext::RuleCompareCriteria> pair : compareCriteriaMappings()) {
+                if(pair.second == DefaultRulesContext::Contain ||
+                        pair.second == DefaultRulesContext::DontMatch ||
+                        pair.second == DefaultRulesContext::Match ||
+                        pair.second == DefaultRulesContext::DontMatch)
                 {
                     resultingList << pair.first;
                 }
             }
         }
-        else if(condition == RulesContext::FileSize)
+        else if(condition == DefaultRulesContext::FileSizeMode)
         {
-            for(QPair<QString,RulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
+            for(QPair<QString,DefaultRulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
             {
-                if(pair.second == RulesContext::GreaterThan ||
-                        pair.second ==RulesContext::GreaterOrEqualThan ||
-                        pair.second ==RulesContext::Equal ||
-                        pair.second ==RulesContext::LesserOrEqualThan ||
-                        pair.second == RulesContext::LesserThan)
+                if(pair.second == DefaultRulesContext::GreaterThan ||
+                        pair.second ==DefaultRulesContext::GreaterOrEqualThan ||
+                        pair.second ==DefaultRulesContext::Equal ||
+                        pair.second ==DefaultRulesContext::LesserOrEqualThan ||
+                        pair.second == DefaultRulesContext::LesserThan)
                 {
                     resultingList << pair.first;
                 }
             }
         }
-        else if(condition == RulesContext::FileCreatedMode ||
-                condition == RulesContext::FileModifiedMode)
+        else if(condition == DefaultRulesContext::FileCreatedMode ||
+                condition == DefaultRulesContext::FileModifiedMode)
         {
-            for(QPair<QString,RulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
+            for(QPair<QString,DefaultRulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
             {
-                if(pair.second == RulesContext::OlderThan ||
-                        pair.second == RulesContext::ExactDate ||
-                        pair.second == RulesContext::YoungerThan)
+                if(pair.second == DefaultRulesContext::OlderThan ||
+                        pair.second == DefaultRulesContext::ExactDate ||
+                        pair.second == DefaultRulesContext::YoungerThan)
                 {
                     resultingList << pair.first;
                 }
@@ -182,7 +178,7 @@ public:
     {
         QStringList resultingList;
 
-        for (QPair<QString,RulesContext::FileType> pair : fileTypeFilterMappings())
+        for (QPair<QString,DefaultRulesContext::FileType> pair : fileTypeFilterMappings())
             resultingList << pair.first;
 
         return resultingList;
@@ -190,9 +186,9 @@ public:
 
     // From type1 to type2 methods
 
-    QString fileActionEntityToString(const RulesContext::RuleAction mode) override
+    QString fileActionEntityToString(const int &mode) override
     {
-        for(QPair<QString,RulesContext::RuleAction> pair : actionMappings())
+        for(QPair<QString,DefaultRulesContext::RuleAction> pair : actionMappings())
         {
             if(pair.second == mode)
                 return pair.first;
@@ -200,19 +196,19 @@ public:
         return QString();
     }
 
-    RulesContext::RuleAction fileActionEntityFromString(const QString mode) override
+    int fileActionEntityFromString(const QString mode) override
     {
-        for(QPair<QString,RulesContext::RuleAction> pair : actionMappings())
+        for(QPair<QString,DefaultRulesContext::RuleAction> pair : actionMappings())
         {
             if(pair.first == mode)
                 return pair.second;
         }
-        return RulesContext::NoAction;
+        return DefaultRulesContext::NoAction;
     }
 
-    QString buildStringFromCriteria(const RulesContext::RuleCriteria mode) override
+    QString buildStringFromCriteria(const int &mode) override
     {
-        for(QPair<QString,RulesContext::RuleCriteria> pair : criteriaMappings())
+        for(QPair<QString,DefaultRulesContext::RuleCriteria> pair : criteriaMappings())
         {
             if(pair.second == mode)
                 return pair.first;
@@ -220,19 +216,19 @@ public:
         return QString();
     }
 
-    RulesContext::RuleCriteria buildCriteriaFromString(const QString string) override
+    int buildCriteriaFromString(const QString string) override
     {
-        for(QPair<QString,RulesContext::RuleCriteria> pair : criteriaMappings())
+        for(QPair<QString,DefaultRulesContext::RuleCriteria> pair : criteriaMappings())
         {
             if(pair.first == string)
                 return pair.second;
         }
-        return RulesContext::NotDefined;
+        return DefaultRulesContext::NotDefined;
     }
 
-    QString buildStringFromCompareCriteria(const RulesContext::RuleCompareCriteria mode) override
+    QString buildStringFromCompareCriteria(const int &mode) override
     {
-        for(QPair<QString,RulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
+        for(QPair<QString,DefaultRulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
         {
             if(pair.second == mode)
                 return pair.first;
@@ -240,19 +236,19 @@ public:
         return QString();
     }
 
-    RulesContext::RuleCompareCriteria fileCompareEntityFromString(const QString string) override
+    int fileCompareEntityFromString(const QString string) override
     {
-        for(QPair<QString,RulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
+        for(QPair<QString,DefaultRulesContext::RuleCompareCriteria> pair : compareCriteriaMappings())
         {
             if(pair.first == string)
                 return pair.second;
         }
-        return RulesContext::NoCompareModeSet;
+        return DefaultRulesContext::NoCompareModeSet;
     }
 
-    QString fileTypeEntityToString(RulesContext::FileType type) override
+    QString fileTypeCriteriaToString(const int &type) override
     {
-        for (QPair<QString,RulesContext::FileType> pair : fileTypeFilterMappings())
+        for (QPair<QString,DefaultRulesContext::FileType> pair : fileTypeFilterMappings())
         {
             if(pair.second == type)
                 return pair.first;
@@ -261,61 +257,61 @@ public:
         return QString();
     }
 
-    RulesContext::FileType fileTypeEntityFromString(const QString &string) override
+    int fileTypeCriteriaFromString(const QString &string) override
     {
-        for (QPair<QString,RulesContext::FileType> pair : fileTypeFilterMappings())
+        for (QPair<QString,DefaultRulesContext::FileType> pair : fileTypeFilterMappings())
         {
             if(pair.first == string)
                 return pair.second;
         }
 
-        return RulesContext::Unresolved;
+        return DefaultRulesContext::Unresolved;
     }
 
 private:
-    const QList<QPair<QString,RulesContext::RuleAction> > actionMappings() override {
+    const QList<QPair<QString,DefaultRulesContext::RuleAction> > actionMappings() {
         return {
-            QPair<QString,RulesContext::RuleAction>(("Move content"),RulesContext::RuleAction::MoveAction),
-            QPair<QString,RulesContext::RuleAction>("Delete content",RulesContext::DeleteAction),
-            QPair<QString,RulesContext::RuleAction>("Copy content",RulesContext::CopyAction),
-            QPair<QString,RulesContext::RuleAction>("Do nothing",RulesContext::NoAction)};
+            QPair<QString,DefaultRulesContext::RuleAction>(("Move content"),DefaultRulesContext::RuleAction::MoveAction),
+            QPair<QString,DefaultRulesContext::RuleAction>("Delete content",DefaultRulesContext::DeleteAction),
+            QPair<QString,DefaultRulesContext::RuleAction>("Copy content",DefaultRulesContext::CopyAction),
+            QPair<QString,DefaultRulesContext::RuleAction>("Do nothing",DefaultRulesContext::NoAction)};
         }
 
-    const QList<QPair<QString,RulesContext::RuleCriteria> > criteriaMappings() override {
+    const QList<QPair<QString,DefaultRulesContext::RuleCriteria> > criteriaMappings() {
         return {
-            QPair<QString,RulesContext::RuleCriteria>("Base name",RulesContext::FileBaseMode),
-            QPair<QString,RulesContext::RuleCriteria>("File name",RulesContext::FileNameMode),
-            QPair<QString,RulesContext::RuleCriteria>("File suffix",RulesContext::FileExtensionMode),
-            QPair<QString,RulesContext::RuleCriteria>("File size",RulesContext::FileSize),
-            QPair<QString,RulesContext::RuleCriteria>("In folder",RulesContext::FileParentMode),
-            QPair<QString,RulesContext::RuleCriteria>("Date created",RulesContext::FileCreatedMode),
-            QPair<QString,RulesContext::RuleCriteria>("Date edited",RulesContext::FileModifiedMode),
-            QPair<QString,RulesContext::RuleCriteria>("No conditions",RulesContext::NonConditionalMode)};
+            QPair<QString,DefaultRulesContext::RuleCriteria>("Base name",DefaultRulesContext::FileBaseMode),
+            QPair<QString,DefaultRulesContext::RuleCriteria>("File name",DefaultRulesContext::FileNameMode),
+            QPair<QString,DefaultRulesContext::RuleCriteria>("File suffix",DefaultRulesContext::FileExtensionMode),
+            QPair<QString,DefaultRulesContext::RuleCriteria>("File size",DefaultRulesContext::FileSizeMode),
+            QPair<QString,DefaultRulesContext::RuleCriteria>("In folder",DefaultRulesContext::FileParentMode),
+            QPair<QString,DefaultRulesContext::RuleCriteria>("Date created",DefaultRulesContext::FileCreatedMode),
+            QPair<QString,DefaultRulesContext::RuleCriteria>("Date edited",DefaultRulesContext::FileModifiedMode),
+            QPair<QString,DefaultRulesContext::RuleCriteria>("No conditions",DefaultRulesContext::NonConditionalMode)};
         }
 
-    const QList<QPair<QString,RulesContext::RuleCompareCriteria> > compareCriteriaMappings() override {
+    const QList<QPair<QString,DefaultRulesContext::RuleCompareCriteria> > compareCriteriaMappings(){
 
         return {
-            QPair<QString,RulesContext::RuleCompareCriteria>("Contains",RulesContext::Contain),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Does not contain",RulesContext::DontMatch),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Matching",RulesContext::Match),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Does not match",RulesContext::DontMatch),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Greater than",RulesContext::GreaterThan),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Greater or equal than",RulesContext::GreaterOrEqualThan),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Equal",RulesContext::Equal),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Less or equal than",RulesContext::LesserOrEqualThan),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Equal than",RulesContext::LesserThan),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Older than",RulesContext::OlderThan),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Extact date",RulesContext::ExactDate),
-            QPair<QString,RulesContext::RuleCompareCriteria>("Younger than",RulesContext::YoungerThan)};
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Contains",DefaultRulesContext::Contain),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Does not contain",DefaultRulesContext::DontMatch),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Matching",DefaultRulesContext::Match),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Does not match",DefaultRulesContext::DontMatch),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Greater than",DefaultRulesContext::GreaterThan),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Greater or equal than",DefaultRulesContext::GreaterOrEqualThan),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Equal",DefaultRulesContext::Equal),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Less or equal than",DefaultRulesContext::LesserOrEqualThan),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Equal than",DefaultRulesContext::LesserThan),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Older than",DefaultRulesContext::OlderThan),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Extact date",DefaultRulesContext::ExactDate),
+            QPair<QString,DefaultRulesContext::RuleCompareCriteria>("Younger than",DefaultRulesContext::YoungerThan)};
         }
 
-    const QList<QPair<QString,RulesContext::FileType> > fileTypeFilterMappings() override
+    const QList<QPair<QString,DefaultRulesContext::FileType> > fileTypeFilterMappings()
     {
         return {
-            QPair<QString,RulesContext::FileType>("Files", RulesContext::File),
-            QPair<QString,RulesContext::FileType>("Folders", RulesContext::Folder),
-            QPair<QString,RulesContext::FileType>("Undetermined", RulesContext::Unresolved)
+            QPair<QString,DefaultRulesContext::FileType>("Files", DefaultRulesContext::File),
+            QPair<QString,DefaultRulesContext::FileType>("Folders", DefaultRulesContext::Folder),
+            QPair<QString,DefaultRulesContext::FileType>("Undetermined", DefaultRulesContext::Unresolved)
         };
     };
 };

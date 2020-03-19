@@ -23,6 +23,7 @@
 #include "abstractframe.h"
 #include "StaticStringsCollection.h"
 #include "defaultinjector.h"
+#include "defaultrulescontext.h"
 
 namespace Ui {
 class AbstractRuleDialog;
@@ -37,11 +38,11 @@ public:
     explicit AbstractRuleDialog(QStringList watchFolders);
     ~AbstractRuleDialog();
 
-    void setRulesDefinitionsService(IDefinitions *service) override;
+    void setRulesDefinitionsService(IRuleDefinitions *service) override;
 
 signals:
-    void sendRule(const IRule<>*R);
-    void replaceRule(const IRule<>* rule, QString title);
+    void sendRule(const IRule<IDefaultRuleCondition>*R);
+    void replaceRule(const IRule<IDefaultRuleCondition>* rule, QString title);
 
 protected slots:
 
@@ -67,12 +68,12 @@ protected:
 
     // Event handling
 
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
 
     // Protected methods
     enum buttonType {acceptButton,cancelButton};
     void setButtonText(QString txt,buttonType bType = buttonType::acceptButton);
-    void resizeNotify(QSize newSize);
+    void resizeNotify(QSize newSize) override;
 
     // Protected member variables
     conditionWidget *condWidget;
@@ -86,20 +87,19 @@ protected:
     QLineEdit *titleSelector,
         *keyWordSelector,
         *destinationPathSelector;
-    QList<const IRuleCondition*> subRules;
+    QList<const IDefaultRuleCondition*> subRules;
     QPushButton *addBut;
     QSpinBox *minSizeSelector,
         *maxSizeSelector,
         *fixedSizeSelector;
     QStackedWidget *keywordViewer;
     QTreeWidget *subRuleView;
-    IDefinitions *ruleService;
 
     void updateView();
     void resetSubForm();
     void resetAllForm();
 
-    void updateConditionView(const IRuleCondition *sR);
+    void updateConditionView(const IDefaultRuleCondition *sR);
 
 private:
     Ui::AbstractRuleDialog *ui;

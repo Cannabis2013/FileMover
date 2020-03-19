@@ -3,7 +3,7 @@
 
 #include <QString>
 
-namespace RulesContext // Rule Related Types namespace
+namespace DefaultRulesContext // Rule Related Types namespace
 {
     enum RuleType {Action = 0x020,
                    Condition = 0x021,
@@ -19,7 +19,7 @@ namespace RulesContext // Rule Related Types namespace
                              FileBaseMode = 0x031,
                              FileNameMode = 0x032,
                              FileExtensionMode = 0x033,
-                             FileSize = 0x034,
+                             FileSizeMode = 0x034,
                              FileParentMode = 0x035,
                              FileCreatedMode = 0x036, // FileDateMode
                              FileModifiedMode = 0x037, // FileDateMode

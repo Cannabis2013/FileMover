@@ -31,14 +31,14 @@ public:
      * Rules interface
      */
 
-    const IRule<>* ruleAt(int index) override {return rulesService->rule(index);}
-    const IRule<>* rule(QString title) override {return rulesService->rule(title);}
+    const IRule<IDefaultRuleCondition>* ruleAt(int index) override {return rulesService->rule(index);}
+    const IRule<IDefaultRuleCondition>* rule(QString title) override {return rulesService->rule(title);}
     QList<QTreeWidgetItem*> ruleItemModels() override {return rulesService->ruleItems();}
     void swapRule(int i, int j) override {rulesService->swapRule(i,j);}
     void clearRules() const override ;
 
-    void insertRule(const IRule<>* r) override {rulesService->addRule(r);}
-    void replaceRule(const IRule<>* newRule, QString title) override {rulesService->replaceRule(newRule,title);}
+    void insertRule(const IRule<IDefaultRuleCondition>* r) override {rulesService->addRule(r);}
+    void replaceRule(const IRule<IDefaultRuleCondition>* newRule, QString title) override {rulesService->replaceRule(newRule,title);}
     void removeRuleAt(int index) override {rulesService->removeRuleAt(index);}
     void removeRule(QString title) override {rulesService->removeRule(title);}
 
@@ -76,11 +76,11 @@ public:
     void setFileModelBuilderService(IFileListService *service) override {fileListService = service;}
     void setFileWatcherService(AbstractFileSystemWatcher *service) override {fileWatcherService = service;}
 
-    IDefinitions * RuleDefinitionsService() override
+    IRuleDefinitions * RuleDefinitionsService() override
     {
         return _ruleDefinitionsService;
     }
-    void setRuleDefinitionsService(IDefinitions *service) override
+    void setRuleDefinitionsService(IRuleDefinitions *service) override
     {
         _ruleDefinitionsService = service;
     }
@@ -101,7 +101,7 @@ private:
 
     AbstractSettingsManager *settingsService;
     IThreadManagerInterface *threadingService;
-    IDefinitions *_ruleDefinitionsService;
+    IRuleDefinitions *_ruleDefinitionsService;
 };
 
 #endif // MAINAPPLICATION_H

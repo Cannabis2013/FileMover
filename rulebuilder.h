@@ -3,57 +3,54 @@
 
 #include "irulebuilder.h"
 #include "defaultRuleConfiguration.h"
+#include "rules.h"
 
-typedef IRuleConfiguration<IRuleCondition,
-                            RulesContext::FileType,
-                            RulesContext::RuleAction> IRuleConfigator;
-typedef IRuleConditionConfiguration<RulesContext::RuleCriteria,
-                                    RulesContext::RuleCompareCriteria,
-                                    SizeLimit,SizeLimits,
+typedef IRuleConfiguration<IDefaultRuleCondition> IRuleConfigator;
+typedef IRuleConditionConfiguration<SizeLimit,SizeLimits,
                                     QDateTime,
                                     DateInterval> IRuleConditionConfigurator;
-typedef IRuleBuilder<IRule<>,IRuleCondition,IRuleConfigator,IRuleConditionConfigurator> IDefaultRuleBuilder;
+typedef IRuleBuilder<IRule<IDefaultRuleCondition>,IDefaultRuleCondition,IRuleConfigator,IRuleConditionConfigurator> IDefaultRuleBuilder;
 
 class RuleBuilder :
         public IDefaultRuleBuilder
 {
 public:
-    const IRule<> *buildOrdinaryRule(const IRuleConfigator *configuration) override
+    const IRule<IDefaultRuleCondition> *buildOrdinaryRule(const IRuleConfigator *configuration) override
     {
-        IRule<> *r = new Rule;
+        IRule<IDefaultRuleCondition> *r = new Rule;
         r->setTitle(configuration->title());
         r->setAppliesToPath(configuration->appliesTo());
         r->setDestinationPaths(configuration->destinations());
         r->setActionRuleEntity(configuration->action());
         r->setTypeFilter(configuration->type());
-        r->setSubRules(configuration->conditions());
+        r->setCriterias(configuration->conditions());
         r->setDeepScanMode(configuration->deepScanMode());
 
         return r;
     }
 
-    const IRule<>* attachCriteria(const IRuleCondition *condition, IRule<>* r) override
+    const IRule<IDefaultRuleCondition>* attachCriteria(const IDefaultRuleCondition *condition, IRule<IDefaultRuleCondition>* r) override
     {
-        QList<const IRuleCondition*> ruleConditions = r->conditions();
+        QList<const IDefaultRuleCondition*> ruleConditions = r->conditions();
         ruleConditions.append(condition);
-        r->setSubRules(ruleConditions);
+        r->setCriterias(ruleConditions);
 
         return r;
     }
 
-    const IRuleCondition *buildSubRule(IRuleConditionConfigurator* configurator) override
+    const IDefaultRuleCondition *buildSubRule(IRuleConditionConfigurator* configurator) override
     {
-        IRuleCondition* sRule = new RuleCondition;
-        sRule->setCriteria(configurator->criteria());
-        sRule->setCompareCriteria(configurator->compareCriteria());
-        sRule->setKeyWords(configurator->keywords());
-        sRule->setSizeLimit(configurator->sizeLimit());
-        sRule->setDate(configurator->date());
-        sRule->setSizeInterval(configurator->sizeInterval());
-        sRule->setDateIntervals(configurator->dates());
-        sRule->setMatchWholeWords(configurator->matchWholeWords());
+        IDefaultRuleCondition* condition = new RuleCondition;
+        condition->setCriteria(configurator->criteria());
+        condition->setCompareCriteria(configurator->compareCriteria());
+        condition->setKeyWords(configurator->keywords());
+        condition->setSizeLimit(configurator->sizeLimit());
+        condition->setDate(configurator->date());
+        condition->setSizeInterval(configurator->sizeInterval());
+        condition->setDateIntervals(configurator->dates());
+        condition->setMatchWholeWords(configurator->matchWholeWords());
 
-        return sRule;
+        return condition;
     }
 };
 

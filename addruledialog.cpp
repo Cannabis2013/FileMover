@@ -1,11 +1,13 @@
 #include "addruledialog.h"
 
-AddRuleDialog::AddRuleDialog(QStringList watchFolders):
+AddRuleDialog::AddRuleDialog(QStringList watchFolders,IRuleDefinitions *service):
     AbstractRuleDialog(watchFolders)
 {
-    QStringList actionList = ruleService->buildStringListFromEntity(RulesContext::Action),
-            conditionList = ruleService->buildStringListFromEntity(RulesContext::Condition),
-            unitList = ruleService->sizeUnits();
+    setRulesDefinitionsService(service);
+
+    QStringList actionList = ruleDefinitionsService()->buildStringListFromEntity(DefaultRulesContext::Action),
+            conditionList = ruleDefinitionsService()->buildStringListFromEntity(DefaultRulesContext::Condition),
+            unitList = ruleDefinitionsService()->sizeUnits();
 
     actionBox->addItems(actionList);
     conditionBox->addItems(conditionList);
@@ -14,17 +16,17 @@ AddRuleDialog::AddRuleDialog(QStringList watchFolders):
     applySelector->addItems(watchFolders);
     applySelector->setCurrentText("Alle");
 
-    conditionBox->setCurrentText(ruleService->buildDefaultStringValue());
-    conditionBox->currentTextChanged(ruleService->buildDefaultStringValue());
-    fileTypeSelector->addItems(ruleService->allFileTypeEntitiesToStrings());
+    conditionBox->setCurrentText(ruleDefinitionsService()->buildDefaultStringValue());
+    conditionBox->currentTextChanged(ruleDefinitionsService()->buildDefaultStringValue());
+    fileTypeSelector->addItems(ruleDefinitionsService()->allFileTypeEntitiesToStrings());
 }
 
 
 void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     int row = index.row();
-    auto sRule = subRules.at(row);
-    QString condText = ruleService->buildStringFromCriteria(sRule->criteria());
+    auto condition = subRules.at(row);
+    QString condText = ruleDefinitionsService()->buildStringFromCriteria(condition->criteria());
     conditionBox->setCurrentText(condText);
     conditionBox->currentTextChanged(condText);
 }
@@ -32,14 +34,14 @@ void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 void AddRuleDialog::on_addSubRule_clicked()
 {
     auto cText = conditionBox->currentText();
-    auto criteria = ruleService->buildCriteriaFromString(cText);
+    auto criteria = ruleDefinitionsService()->buildCriteriaFromString(cText);
     auto compareCriteria = condWidget->currentCompareMode();
     auto keywords = StaticStringCollections::splitString(condWidget->keyWordValues());
     auto sizeLimit = condWidget->fixedSizeValues();
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
     auto dates = condWidget->intervalDates();
-    auto matchWholeWords = compareCriteria == RulesContext::Match;
+    auto matchWholeWords = compareCriteria == DefaultRulesContext::Match;
 
     auto config = new RuleConditionDefaultConfiguration;
 
@@ -52,9 +54,9 @@ void AddRuleDialog::on_addSubRule_clicked()
     config->setDates(dates);
     config->setMatchWholeWords(matchWholeWords);
 
-    auto sRule = ruleBuilderService()->buildSubRule(config);
+    auto condition = ruleBuilderService()->buildSubRule(config);
 
-    subRules << sRule;
+    subRules << condition;
     updateView();
 }
 
@@ -78,9 +80,9 @@ void AddRuleDialog::on_addButton_clicked()
 
     auto title = titleSelector->text();
     auto appliesTo = applySelector->currentText();
-    auto action = ruleService->fileActionEntityFromString(actionBox->currentText());
+    auto action = ruleDefinitionsService()->fileActionEntityFromString(actionBox->currentText());
     auto destinations = StaticStringCollections::splitString(pathSelector->text());
-    auto typeFilter = ruleService->fileTypeEntityFromString(fileTypeSelector->currentText());
+    auto typeFilter = ruleDefinitionsService()->fileTypeCriteriaFromString(fileTypeSelector->currentText());
 
     auto config = new RuleDefaultConfiguration();
 

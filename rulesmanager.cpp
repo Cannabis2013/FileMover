@@ -30,7 +30,8 @@ FileModelList rulesManager::filterAccordingToCriterias(const FileModelList &list
     FileModelList filteredList = list, temporaryList;
 
     for (auto ruleCriteria : rule->conditions()) {
-        if(ruleCriteria->criteria() == DefaultRulesContext::FileNameMode || ruleCriteria->criteria() == DefaultRulesContext::FileExtensionMode)
+        if(ruleCriteria->criteria() == DefaultRulesContext::FileNameMode ||
+                ruleCriteria->criteria() == DefaultRulesContext::FileExtensionMode)
         {
             auto isSuffix = ruleCriteria->criteria() == DefaultRulesContext::FileNameMode ? false : true;
             auto match = ruleCriteria->compareCriteria() == DefaultRulesContext::Match;
@@ -42,12 +43,46 @@ FileModelList rulesManager::filterAccordingToCriterias(const FileModelList &list
                     temporaryList << delegate;
             }
         }
-        else if(ruleCriteria->criteria() == DefaultRulesContext::FileSizeMode)
+        else if(ruleCriteria->criteria() == DefaultRulesContext::FileSizeMode &&
+                ruleCriteria->compareCriteria() != DefaultRulesContext::Interval)
+        {
+            auto size = ruleCriteria->sizeLimit();
+        }
+        else if(ruleCriteria->criteria() == DefaultRulesContext::FileSizeMode &&
+                ruleCriteria->compareCriteria() == DefaultRulesContext::Interval)
         {
 
         }
+        else if(ruleCriteria->criteria() == DefaultRulesContext::FileCreatedMode &&
+                ruleCriteria->compareCriteria() != DefaultRulesContext::Interval)
+        {
+
+        }
+        else if(ruleCriteria->criteria() == DefaultRulesContext::FileCreatedMode &&
+                ruleCriteria->compareCriteria() == DefaultRulesContext::Interval)
+        {
+
+        }
+        else if(ruleCriteria->criteria() == DefaultRulesContext::FileModifiedMode &&
+                ruleCriteria->compareCriteria() != DefaultRulesContext::Interval)
+        {
+
+        }
+        else if(ruleCriteria->criteria() == DefaultRulesContext::FileModifiedMode &&
+                ruleCriteria->compareCriteria() == DefaultRulesContext::Interval)
+        {
+
+        }
+        else if(ruleCriteria->criteria() == DefaultRulesContext::FileParentMode)
+        {
+
+        }
+
         filteredList = temporaryList;
+        temporaryList.clear();
     }
+
+    return filteredList;
 }
 
 QList<QTreeWidgetItem *> rulesManager::ruleItems() const

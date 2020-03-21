@@ -68,6 +68,7 @@ SOURCES += main.cpp\
 
 HEADERS  += \
     AbstractFileWorker.h \
+    ISettingsWindowBuilder.h \
     StaticStringsCollection.h \
     TestRuleHelper.h \
     TypeDefinitions.h \
@@ -135,6 +136,7 @@ HEADERS  += \
     editruledialog.h \
     ruledefinitions.h \
     rules.h \
+    settingswindowbuilder.h \
     staticfilehelperoperations.h \
     staticviewhelpers.h \
     testfilecreator.h \

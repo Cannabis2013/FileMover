@@ -30,6 +30,9 @@
 #include "addfolderwidget.h"
 #include "isettingswindow.h"
 #include "customdialog.h"
+#include "ISettingsWindowBuilder.h"
+
+
 
 namespace Ui {
 class ApplicationUI;
@@ -48,8 +51,12 @@ public:
     enum fontType{listFont,detailedList,labelFont,standardFont};
     enum dateSpecifier{day,month,year};
 
+    void setSettingsBuilderService(ISettingsWindowBuilder<ISettingsWindow,AbstractApplicationService> *builder)
+    {
+        _settingsBuilderServce = builder;
+    }
 
-signals:
+    signals:
     void StartCount(QStringList ps);
     void toLog(QString t);
     void toLog(QStringList l);
@@ -163,7 +170,8 @@ private:
 
     bool countTimerStatus;
     fileInformationView *fileInfoBrowser;
-    int tempKey,normalListFontSize, detailedListFontSize, countTimerInterval;    
+    int tempKey,normalListFontSize, detailedListFontSize, countTimerInterval;
+    ISettingsWindowBuilder<ISettingsWindow,AbstractApplicationService> *_settingsBuilderServce;
     myScreenDimension laptopScreenSize, screenSize;
     QFont viewFont;    
     QHeaderView *suffixHeader;

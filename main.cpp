@@ -13,6 +13,7 @@
 #include "rulebuilder.h"
 #include "rulesmanager.h"
 #include "ruledefinitions.h"
+#include "settingswindowbuilder.h"
 
 using namespace std;
 
@@ -59,7 +60,9 @@ using namespace std;
         mainApplicaton->startServices();
 
 
-        QMainWindow *w = new ApplicationUI(mainApplicaton,new RuleBuilder, new RuleDefinitions);
+        auto w = new ApplicationUI(mainApplicaton,new RuleBuilder, new RuleDefinitions);
+
+        w->setSettingsBuilderService(new SettingsWindowBuilder());
 
         w->show();
 

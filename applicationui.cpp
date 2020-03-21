@@ -751,18 +751,14 @@ void ApplicationUI::clearStatusLine()
 
 void ApplicationUI::on_actionIndstillinger_triggered()
 {
-    /*
-     * TODO: You have to implement a builder
-     */
 
-    /*
-     * QPointer<SettingsWindow> sWidget = new SettingsWindow(coreApplication);
-     * sWidget->setRulesDefinitionsService(ruleDefinitionsService());
-     * sWidget->setWidgetTitle("Settings and rules");
-     * QPointer<CustomDialog> dialog = new CustomDialog(sWidget, true);
-     * connect(coreApplication,&AbstractApplicationService::stateChanged,sWidget,&SettingsWindow::updateView);
-     * dialog->show();
-     */
+     auto settingsInterface = _settingsBuilderServce->buildSettingsWindow(coreApplication);
+
+     settingsInterface->setRulesDefinitionsService(ruleDefinitionsService());
+     settingsInterface->setWidgetTitle("Settings and rules");
+     QPointer<CustomDialog> dialog = new CustomDialog(settingsInterface, true);
+     connect(coreApplication,&AbstractApplicationService::stateChanged,settingsInterface,&ISettingsWindow::updateView);
+     dialog->show();
 }
 
 void ApplicationUI::on_actionQuit_triggered()

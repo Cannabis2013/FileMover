@@ -113,6 +113,7 @@ HEADERS  += \
     irulebuilder.h \
     iruleconfiguration.h \
     iruledefinitions.h \
+    iruleinterfaces.h \
     isettingsdelegate.h \
     isettingswindow.h \
     ithreadmanagerinterface.h \

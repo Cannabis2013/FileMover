@@ -15,6 +15,9 @@
 #include "iruledefinitions.h"
 #include "ifiltereringcontext.h"
 
+typedef IFiltereringContext<IRule<IRuleCondition<SizeLimit, SizeLimits, DateInterval>>,
+            ITreeModelDelegate<DefaultFileModel, DefaultModelType>> DefaultFilteringContext;
+
 class AbstractApplicationService :
         public QObject,
         public IMutableObject,
@@ -67,13 +70,13 @@ public:
     virtual void setThreadManagerService(IThreadManagerInterface* service) = 0;
 
     virtual void setFileOperationsService(AbstractFileWorker* service) = 0;
-    virtual void setFileModelBuilderService(IFileListService *service) = 0;
+    virtual void setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<>,QString>> *service) = 0;
     virtual void setFileWatcherService(AbstractFileSystemWatcher* service) = 0;
 
     virtual IRuleDefinitions* RuleDefinitionsService() = 0;
     virtual void setRuleDefinitionsService(IRuleDefinitions *service) = 0;
 
-    virtual void setFilteringContext(IFiltereringContext<IRule<IRuleCondition<SizeLimit,SizeLimits,DateInterval>>,ITreeModelDelegate<FileModel,DefaultModelType>> *service) = 0;
+    virtual void setFilteringContext(DefaultFilteringContext* service) = 0;
 
 public slots:
     virtual void clearFolders(QStringList paths) = 0;

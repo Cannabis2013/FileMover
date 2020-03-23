@@ -12,9 +12,11 @@ rulesManager::~rulesManager()
     writeSettings();
 }
 
-FileModelList rulesManager::filterAccordingToCriterias(const FileModelList &list, const IRule<IDefaultRuleCondition> *rule, IFileListService *listService)
+DefaultFileModelList rulesManager::filterAccordingToCriterias(const DefaultFileModelList &list,
+                                                              const IRule<IDefaultRuleCondition> *rule,
+                                                              ListService *listService)
 {
-
+    /*
     auto compareStrings = [](const QStringList &strings, const QString &subject, const bool &match = true)->bool
     {
         for (auto string : strings) {
@@ -83,6 +85,7 @@ FileModelList rulesManager::filterAccordingToCriterias(const FileModelList &list
     }
 
     return filteredList;
+    */
 }
 
 QList<QTreeWidgetItem *> rulesManager::ruleItems() const

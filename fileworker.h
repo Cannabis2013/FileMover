@@ -2,6 +2,7 @@
 #define FILEWORKEROPERATOR_H
 
 #include "AbstractFileWorker.h"
+#include "imodelbuilder.h"
 
 #ifdef __MINGW64__
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
@@ -32,9 +33,9 @@ private:
     void reProcessFileInformationEntity(const QStringList &paths);
 
     // Fileoperation from QFileinfoList..
-    bool removeFileItems(const FileModelList& filePaths, QStringList * const err = nullptr);
-    bool copyFileItems(const FileModelList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
-    bool moveFileItems(const FileModelList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
+    bool removeFileItems(const DefaultFileModelList& filePaths, QStringList * const err = nullptr);
+    bool copyFileItems(const DefaultFileModelList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
+    bool moveFileItems(const DefaultFileModelList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
 
     /* Methods to count files and number of contents in folders
      *  - Please note they all relies on QObject functionalities
@@ -49,6 +50,8 @@ private:
 
     QString busyMessage;
     bool isBusy;
+    IModelBuilder<IFileModel<QFileInfo>,QString>* fileModelBuilderService;
+
 };
 
 typedef FileWorker fW;

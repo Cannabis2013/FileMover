@@ -7,6 +7,8 @@
 #include "directoryitem.h"
 #include "ibroadcastingobject.h"
 
+#include "imodeldelegates.h"
+
 namespace FilesContext
 {
     enum copyMode{move = 0,copy = 1,noMode = 2};

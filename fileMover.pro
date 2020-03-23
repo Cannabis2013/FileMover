@@ -93,6 +93,7 @@ HEADERS  += \
     customsplitter.h \
     customsplitterhandle.h \
     defaultRuleConfiguration.h \
+    defaultfilemodelscontext.h \
     defaultinjector.h \
     defaultrulescontext.h \
     directoryitem.h \
@@ -101,7 +102,7 @@ HEADERS  += \
     exceptionhandler.h \
     fileinformationmanager.h \
     filelistservice.h \
-    filemodeldelegate.h \
+    filemodelbuilder.h \
     filepathdialogwidget.h \
     filesystemwatcher.h \
     fileworker.h \
@@ -109,7 +110,10 @@ HEADERS  += \
     ibroadcastingobject.h \
     icon.h \
     ifilelistservice.h \
+    ifilemodel.h \
     ifiltereringcontext.h \
+    imodelbuilder.h \
+    imodeldelegates.h \
     imutableobject.h \
     inheritexceptiondelegate.h \
     irulebuilder.h \
@@ -120,7 +124,6 @@ HEADERS  += \
     isettingswindow.h \
     ithreadmanagerinterface.h \
     messageBox.h \
-    modeldelegates.h \
     rulebuilder.h \
     rulescollection.h \
     ruleservicesinjector.h \

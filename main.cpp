@@ -45,7 +45,7 @@ using namespace std;
 
         processArguments(arguments,argVals);
 
-        AbstractApplicationService *mainApplicaton = new ApplicationDomain();
+        auto mainApplicaton = new ApplicationDomain();
 
         mainApplicaton->setFileOperationsService(new FileWorker());
         mainApplicaton->setRuleManagerService(new rulesManager(argVals.appName,argVals.orgName,new RuleBuilder()));

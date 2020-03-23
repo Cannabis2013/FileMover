@@ -5,6 +5,7 @@
 
 #include "abstractapplicationservice.h"
 #include "settingsdelegate.h"
+#include "imodelbuilder.h"
 
 class ApplicationDomain : public AbstractApplicationService
 {
@@ -73,7 +74,7 @@ public:
     void setThreadManagerService(IThreadManagerInterface *service) override {threadingService = service;}
 
     void setFileOperationsService(AbstractFileWorker *service) override {fileOperationsService = service;}
-    void setFileModelBuilderService(IFileListService *service) override {fileListService = service;}
+    void setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<>,QString>> *service) override {fileListService = service;}
     void setFileWatcherService(AbstractFileSystemWatcher *service) override {fileWatcherService = service;}
 
     IRuleDefinitions * RuleDefinitionsService() override
@@ -89,6 +90,8 @@ public:
     void removeWatchFolderAt(int index) override;
     void removeWatchFolder(QString path) override;
 
+    void setFilteringContext(DefaultFilteringContext* service) override;
+
 private:
     AbstractFileWorker *fileOperationsService;
     AbstractFileSystemWatcher *fileWatcherService;
@@ -97,11 +100,12 @@ private:
     AbstractRulesManager *rulesService;
     AbstractQueueManager *queueService;
     AbstractFileInformationManager *informationService;
-    IFileListService *fileListService;
+    IFileListService<IModelBuilder<IFileModel<>,QString>> *fileListService;
 
     AbstractSettingsManager *settingsService;
     IThreadManagerInterface *threadingService;
     IRuleDefinitions *_ruleDefinitionsService;
+    DefaultFilteringContext *filteringService;
 };
 
 #endif // MAINAPPLICATION_H

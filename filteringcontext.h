@@ -3,7 +3,7 @@
 
 #include "iruleinterfaces.h"
 #include "ifiltereringcontext.h"
-#include "filemodeldelegate.h"
+#include "defaultfilemodelscontext.h"
 
 class FilteringContext :
         public IFiltereringContext<IRule<IRuleCondition<SizeLimit,SizeLimits,DateInterval>>,FileModelDelegate<>>

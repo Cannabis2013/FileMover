@@ -2,7 +2,7 @@
 #define ISETTINGSDELEGATE_H
 
 #include <qrect.h>
-#include "modeldelegates.h"
+#include "imodeldelegates.h"
 
 
 class ISettingsDelegate : public IModelDelegate<Model>

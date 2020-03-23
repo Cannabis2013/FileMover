@@ -11,27 +11,27 @@ FileWorker::FileWorker()
 #endif
 }
 
-bool FileWorker::removeFileItems(const FileModelList& filePaths, QStringList *const err)
+bool FileWorker::removeFileItems(const DefaultFileModelList& filePaths, QStringList *const err)
 {
     if(filePaths.isEmpty())
         return true;
 
-    for(ITreeModelDelegate<FileModel,DefaultModelType>* modelDelegate: filePaths)
+    for(auto model: filePaths)
     {
-        const FileModel *model = static_cast<const FileModel*>(modelDelegate->model());
-        QString absoluteFilePath = model->absoluteFilePath();
-        if(model->isFile())
+        auto fileInfo = model->fileInterface();
+        QString absoluteFilePath = fileInfo.absoluteFilePath();
+        if(model->fileInterface().isFile())
         {
-            QFile fileItem(model->absoluteFilePath());
+            QFile fileItem(fileInfo.absoluteFilePath());
             if(!fileItem.remove())
             {
-                *err << "Operation on: " + model->fileName() + " in: " +
-                    model->absolutePath() + " returned: " + fileItem.errorString();
+                *err << "Operation on: " + fileInfo.fileName() + " in: " +
+                    fileInfo.absolutePath() + " returned: " + fileItem.errorString();
             }
         }
-        else if(model->isDir())
+        else if(fileInfo.isDir())
         {
-            removeFileItems(modelDelegate->children(),err);
+            removeFileItems(model->children(),err);
             QDir dir(absoluteFilePath);
             dir.rmdir(absoluteFilePath);
         }
@@ -40,7 +40,7 @@ bool FileWorker::removeFileItems(const FileModelList& filePaths, QStringList *co
     return true;
 }
 
-bool FileWorker::moveFileItems(const FileModelList fileObjects, const QStringList destinations, QStringList * const err)
+bool FileWorker::moveFileItems(const DefaultFileModelList fileObjects, const QStringList destinations, QStringList * const err)
 {
 
     // TODO: Implement some error handling when something goes wrong
@@ -51,38 +51,38 @@ bool FileWorker::moveFileItems(const FileModelList fileObjects, const QStringLis
         if(!dir.exists())
             dir.mkdir(destPath);
 
-        for(ITreeModelDelegate<FileModel,DefaultModelType>* modelDelegate : fileObjects)
+        for(auto model : fileObjects)
         {
             bool noErrors = true;
-            auto model = static_cast<const FileModel*>(modelDelegate->model());
-            QString AbsoluteFilePath = StaticStringCollections::checkAndCorrectForBackslash(destPath) + model->fileName();
-            if(model->isDir())
+            auto fileInfo = model->fileInterface();
+            QString AbsoluteFilePath = StaticStringCollections::checkAndCorrectForBackslash(destPath) + fileInfo.fileName();
+            if(fileInfo.isDir())
             {
-                noErrors = moveFileItems(modelDelegate->children(),QStringList() << AbsoluteFilePath,err);
+                noErrors = moveFileItems(model->children(),QStringList() << AbsoluteFilePath,err);
                 result = noErrors ? result : false;
             }
-            else if(model->isFile())
+            else if(fileInfo.isFile())
             {
-                QFile file(model->absoluteFilePath());
+                QFile file(fileInfo.absoluteFilePath());
                 QString errString;
                 noErrors = file.copy(AbsoluteFilePath);
                 result = noErrors ? result : false;
                 if(!noErrors)
                 {
                     *err << QString("Failed to delete file '%1'. Error provided: %2")
-                            .arg(model->fileName()).arg(file.errorString());
+                            .arg(fileInfo.fileName()).arg(file.errorString());
                 }
             }
-            else if(!model->exists())
+            else if(!fileInfo.exists())
                 continue;
             if(noErrors)
-                removeFileItems(FileModelList() << FileModelDelegate<FileModel>::buildFileModelDelegate(model->absoluteFilePath()),err);
+                removeFileItems(DefaultFileModelList() << fileModelBuilderService->buildModel(new QString(model->filepath())) ,err);
         }
     }
     return result;
 }
 
-bool FileWorker::copyFileItems(const FileModelList fileObjects, const QStringList destinations, QStringList * const err)
+bool FileWorker::copyFileItems(const DefaultFileModelList fileObjects, const QStringList destinations, QStringList * const err)
 {
     // TODO: Implement some error handling when something goes wrong
     Q_UNUSED(err);
@@ -93,22 +93,22 @@ bool FileWorker::copyFileItems(const FileModelList fileObjects, const QStringLis
         if(!dir.exists())
             dir.mkdir(destPath);
 
-        for(const ITreeModelDelegate<FileModel,DefaultModelType>* modelDelegate : fileObjects)
+        for(auto model : fileObjects)
         {
             bool noErrors = true;
-            const FileModel* model = static_cast<const FileModel*>(modelDelegate->model());
-            QString AbsoluteFilePath = StaticStringCollections::checkAndCorrectForBackslash(destPath) + model->fileName();
-            if(model->isDir())
+            auto fileInfo = model->fileInterface();
+            QString AbsoluteFilePath = StaticStringCollections::checkAndCorrectForBackslash(destPath) + fileInfo.fileName();
+            if(fileInfo.isDir())
             {
-                noErrors = copyFileItems(modelDelegate->children(),QStringList() << AbsoluteFilePath);
+                noErrors = copyFileItems(model->children(),QStringList() << AbsoluteFilePath);
                 result = noErrors ? result : false;
             }
-            else if(model->isFile())
+            else if(fileInfo.isFile())
             {
-                noErrors = QFile::copy(model->absoluteFilePath(),AbsoluteFilePath);
+                noErrors = QFile::copy(fileInfo.absoluteFilePath(),AbsoluteFilePath);
                 result = noErrors ? result : false;
             }
-            else if(!model->exists())
+            else if(!fileInfo.exists())
                 continue;
         }
     }

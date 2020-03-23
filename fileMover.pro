@@ -105,9 +105,11 @@ HEADERS  += \
     filepathdialogwidget.h \
     filesystemwatcher.h \
     fileworker.h \
+    filteringcontext.h \
     ibroadcastingobject.h \
     icon.h \
     ifilelistservice.h \
+    ifiltereringcontext.h \
     imutableobject.h \
     inheritexceptiondelegate.h \
     irulebuilder.h \

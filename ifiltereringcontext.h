@@ -7,7 +7,7 @@ template<class TObject,class TSubject, class TFileListServiceProvider>
 class IFiltereringContext
 {
 public:
-    virtual QList<TSubject*> process(const QList<TObject*> objects, const QList<TSubject*> subjects) = 0;
+    virtual QList<const TSubject*> process(const QList<TObject*> objects) = 0;
     virtual void setListService(TFileListServiceProvider *service) = 0;
     virtual TFileListServiceProvider *listService() = 0;
 };

@@ -10,8 +10,6 @@
 #include "defaultRuleConfiguration.h"
 #include "rulescontext.h"
 
-typedef IFileListService<IModelBuilder<IFileModel<QFileInfo>,QString>> ListService;
-
 class rulesManager :
         public AbstractRulesManager,
         private AbstractPersistence

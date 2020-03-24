@@ -31,9 +31,11 @@ public:
         return result;
     }
 
-    DefaultFileModelList fileModelDelegates(const QStringList &paths, const int &filter = FilesContext::All) override
+    DefaultFileModelList buildFileModels(const int &filter = FilesContext::All, const QStringList &paths = QStringList()) override
     {
         DefaultFileModelList resultingList;
+
+        auto filepaths = paths == QStringList() ? _filepaths : paths;
 
         for (auto path : paths) {
             QDirIterator iterator(path,QDir::AllEntries | QDir::NoDotAndDotDot);
@@ -188,6 +190,15 @@ public:
         builderService = service;
     }
 
+    void appendFileLists(const QStringList &filepaths) override
+    {
+        _filepaths = filepaths;
+    }
+    QStringList fileLists() override
+    {
+        return _filepaths;
+    }
+
 private:
 
     const QStringList modelsToStringList(const DefaultFileModelList &models)
@@ -223,6 +234,7 @@ private:
     }
 
     IModelBuilder<IFileModel<QFileInfo>,QString> *builderService;
+    QStringList _filepaths;
 };
 
 #endif // FILELISTBUILDER_H

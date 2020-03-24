@@ -3,7 +3,7 @@
 
 #include <qdatetime.h>
 
-template<typename TSize,typename TSizeIntervals,typename TDate>
+template<typename TSize,typename TSizeIntervals,typename TDateObject>
 class IRuleCondition
 {
 public:
@@ -14,10 +14,10 @@ public:
     virtual void setSizeLimit(const TSize &sizeLimit) = 0;
     virtual TSizeIntervals sizeInterval() const = 0;
     virtual void setSizeInterval(const TSizeIntervals &sizeInterval) = 0;
-    virtual TDate date() const = 0;
-    virtual void setDate(const TDate &date) = 0;
-    virtual QPair<TDate, TDate> dateIntervals() const = 0;
-    virtual void setDateIntervals(const QPair<TDate, TDate> &dateIntervals) = 0;
+    virtual TDateObject date() const = 0;
+    virtual void setDate(const TDateObject &date) = 0;
+    virtual QPair<TDateObject, TDateObject> dateIntervals() const = 0;
+    virtual void setDateIntervals(const QPair<TDateObject, TDateObject> &dateIntervals) = 0;
     virtual QStringList keyWords() const = 0;
     virtual void setKeyWords(const QStringList &keyWords) = 0;
     virtual int copyMode() const = 0;
@@ -53,8 +53,8 @@ typedef QPair<quint64,QString> SizeLimit;
 typedef QPair<SizeLimit,SizeLimit> SizeLimits;
 typedef QPair<QDateTime,QDateTime> DateInterval;
 
-typedef IRule<IRuleCondition<SizeLimit,SizeLimits,DateInterval>> IDefaultRule;
 typedef IRuleCondition<SizeLimit,SizeLimits,QDateTime> IDefaultRuleCondition;
+typedef IRule<IDefaultRuleCondition> IDefaultRule;
 
 
 #endif // IRULEINTERFACES_H

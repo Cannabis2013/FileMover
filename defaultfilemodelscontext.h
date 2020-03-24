@@ -15,7 +15,7 @@ public:
         _filepath = path;
     }
 
-    QList<const IFileModel<> *> children() const override
+    const QList<const IFileModel<> *> children() const override
     {
         return _children;
     }

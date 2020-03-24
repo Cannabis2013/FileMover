@@ -31,9 +31,9 @@ public:
     void removeRuleAt(const int &i) override {_rules.removeAt(i);}
     void removeRule(const QString &title) override;
     // Get
-    QList<const IRule<IDefaultRuleCondition> *> rules() const override;
-    const IRule<IDefaultRuleCondition> *rule(int index)  const override {return _rules.value(index);}
-    const IRule<IDefaultRuleCondition> *rule(const QString &title) const override;
+    QList<const IDefaultRule *> rules() const override;
+    const IDefaultRule *rule(int index)  const override {return _rules.value(index);}
+    const IDefaultRule *rule(const QString &title) const override;
     int rulesCount() const override {return _rules.count();}
 
     // Get generic models

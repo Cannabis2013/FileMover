@@ -20,6 +20,8 @@ void ApplicationDomain::clearFolders(QStringList paths)
 
 void ApplicationDomain::clearFoldersAccordingToRules(QStringList paths)
 {
+    fileListService->appendFileLists(watchFolders());
+    auto list = filteringService->process(rulesService->rules());
 
 }
 
@@ -35,6 +37,8 @@ void ApplicationDomain::configureServices()
     entityManager->moveToThread(queueThread);
     fWorker->moveToThread(fileWorkerThread);
     */
+
+    filteringService->setListService(fileListService);
 
     // Register custom types that is not recognised by Qt per default
     qRegisterMetaType<DirectoryItem>("DirectoryItem");

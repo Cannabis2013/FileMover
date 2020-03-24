@@ -67,7 +67,7 @@ void rulesManager::removeRule(const QString &title)
     throw QString("Item not found.");
 }
 
-const IRule<IDefaultRuleCondition> *rulesManager::rule(const QString &title) const
+const IDefaultRule *rulesManager::rule(const QString &title) const
 {
     for(auto rule : _rules)
     {
@@ -234,7 +234,7 @@ void rulesManager::replaceRule(const IRule<IDefaultRuleCondition> *r, QString ti
     throw QString("Item not found");
 }
 
-QList<const IRule<IDefaultRuleCondition> *> rulesManager::rules() const
+QList<const IDefaultRule *> rulesManager::rules() const
 {
     return _rules;
 }

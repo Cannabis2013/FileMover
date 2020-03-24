@@ -27,9 +27,9 @@ public:
     virtual void removeRule(const QString &title) = 0;
 
     // Get
-    virtual QList<const IRule<IDefaultRuleCondition>*> rules() const = 0;
-    virtual const IRule<IDefaultRuleCondition> *rule(int index) const  = 0;
-    virtual const IRule<IDefaultRuleCondition> *rule(const QString &title) const = 0;
+    virtual QList<const IDefaultRule*> rules() const = 0;
+    virtual const IDefaultRule *rule(int index) const  = 0;
+    virtual const IDefaultRule *rule(const QString &title) const = 0;
     virtual int rulesCount() const = 0;
 
     // Get generic models

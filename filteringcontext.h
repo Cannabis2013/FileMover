@@ -12,7 +12,7 @@ typedef IFiltereringContext<IDefaultRule,IFileModel<>,IDefaultListService> IDefa
 class FilteringContext :
         public IDefaultFilteringContext{
 public:
-    QList<const IFileModel<> *> process(const QList<IDefaultRule*> objects)
+    QList<const IFileModel<> *> process(const QList<const IDefaultRule*> objects)
     {
         auto compareStrings = [](const QStringList &strings, const QString &subject, const bool &match = true)->bool
         {
@@ -120,29 +120,41 @@ private:
                     resultingList << model;
 
             }
-            else if(ruleCriteria->criteria() == RulesContext::FileCreatedMode &&
+            else if((ruleCriteria->criteria() == RulesContext::FileCreatedMode ||
+                     ruleCriteria->criteria() == RulesContext::FileModifiedMode) &&
                     ruleCriteria->compareCriteria() != RulesContext::Interval)
             {
+                auto subject = ruleCriteria->criteria() == RulesContext::FileCreatedMode ? fileInfo.birthTime() :
+                                                                                           fileInfo.lastModified();
+                auto date = ruleCriteria->date();
 
+                if((ruleCriteria->compareCriteria() == RulesContext::YoungerThan && subject < date) ||
+                        (ruleCriteria->compareCriteria() == RulesContext::ExactDate && subject == date) ||
+                        (ruleCriteria->compareCriteria() == RulesContext::OlderThan && subject > date))
+                {
+                    resultingList << model;
+                }
             }
-            else if(ruleCriteria->criteria() == RulesContext::FileCreatedMode &&
+            else if((ruleCriteria->criteria() == RulesContext::FileCreatedMode ||
+                     ruleCriteria->criteria() == RulesContext::FileModifiedMode) &&
                     ruleCriteria->compareCriteria() == RulesContext::Interval)
             {
+                auto subject = ruleCriteria->criteria() == RulesContext::FileCreatedMode ? fileInfo.birthTime() :
+                                                                                           fileInfo.lastModified();
+                auto oldestDate = ruleCriteria->dateIntervals().first;
+                auto earliestDate = ruleCriteria->dateIntervals().second;
 
-            }
-            else if(ruleCriteria->criteria() == RulesContext::FileModifiedMode &&
-                    ruleCriteria->compareCriteria() != RulesContext::Interval)
-            {
-
-            }
-            else if(ruleCriteria->criteria() == RulesContext::FileModifiedMode &&
-                    ruleCriteria->compareCriteria() == RulesContext::Interval)
-            {
-
+                if(subject < oldestDate && subject > earliestDate)
+                    resultingList << model;
             }
             else if(ruleCriteria->criteria() == RulesContext::FileParentMode)
             {
-
+                auto parentModel = model->parent();
+                auto fileInfo =parentModel->fileInterface();
+                auto subject = fileInfo.fileName();
+                auto keywords = ruleCriteria->keyWords();
+                if(compareStrings(keywords,subject,true))
+                    resultingList << model;
             }
         }
         return resultingList;

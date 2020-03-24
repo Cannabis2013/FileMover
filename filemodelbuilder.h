@@ -3,18 +3,17 @@
 
 #include "imodelbuilder.h"
 #include "ifilemodel.h"
+#include "defaultfilemodelscontext.h"
 
-class FileModelBuilder : public IModelBuilder
+class FileModelBuilder : public IModelBuilder<IFileModel<>,QString>
 {
 public:
-
-
-    // IModelBuilder interface
-public:
-    DefaultFileModel *buildModel(const DefaultFileModelArguments *modelArguments) override
+    IFileModel<> *buildModel(const QString *modelArguments) override
     {
         auto model = new DefaultFileModel();
+        model->setFilepath(*modelArguments);
 
+        return model;
     }
 };
 

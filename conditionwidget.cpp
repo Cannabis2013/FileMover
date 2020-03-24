@@ -121,15 +121,15 @@ void conditionWidget::setCurrentView(QString txt)
     currentFileModeRule = conMode;
     mainModeSelector->show();
 
-    if(conMode == DefaultRulesContext::NonConditionalMode)
+    if(conMode == RulesContext::NonConditionalMode)
     {
         mainModeSelector->hide();
         mainModeView->setCurrentIndex(4);
     }
-    else if(conMode == DefaultRulesContext::FileSizeMode)
+    else if(conMode == RulesContext::FileSizeMode)
         mainModeView->setCurrentIndex(1);
-    else if(conMode == DefaultRulesContext::FileCreatedMode ||
-            conMode == DefaultRulesContext::FileModifiedMode)
+    else if(conMode == RulesContext::FileCreatedMode ||
+            conMode == RulesContext::FileModifiedMode)
         mainModeView->setCurrentIndex(2);
     else
         mainModeView->setCurrentIndex(0);
@@ -142,13 +142,13 @@ void conditionWidget::setCurrentView(int index)
 
 void conditionWidget::setCompareView(const int &compare)
 {
-    if(currentFileModeRule == DefaultRulesContext::FileSizeMode && currentCompareMode() != DefaultRulesContext::Interval)
+    if(currentFileModeRule == RulesContext::FileSizeMode && currentCompareMode() != RulesContext::Interval)
     {
         fixedSizeModeSelector->setCurrentText(ruleDefinitionsService()->buildStringFromCompareCriteria(compare));
     }
-    else if((currentFileModeRule == DefaultRulesContext::FileCreatedMode ||
-             currentFileModeRule == DefaultRulesContext::FileModifiedMode) &&
-            currentCompareMode() != DefaultRulesContext::Interval)
+    else if((currentFileModeRule == RulesContext::FileCreatedMode ||
+             currentFileModeRule == RulesContext::FileModifiedMode) &&
+            currentCompareMode() != RulesContext::Interval)
     {
         dateOperatorSelector->setCurrentText(ruleDefinitionsService()->buildStringFromCompareCriteria(compare));
     }
@@ -164,8 +164,8 @@ void conditionWidget::initDefaultOperators()
     dateOperatorSelector->clear();
 
 
-    fixedSizeModeSelector->addItems(ruleDefinitionsService()->fileCompareModesToStringList(DefaultRulesContext::FileSizeMode));
-    dateOperatorSelector->addItems(ruleDefinitionsService()->fileCompareModesToStringList(DefaultRulesContext::FileCreatedMode));
+    fixedSizeModeSelector->addItems(ruleDefinitionsService()->fileCompareModesToStringList(RulesContext::FileSizeMode));
+    dateOperatorSelector->addItems(ruleDefinitionsService()->fileCompareModesToStringList(RulesContext::FileCreatedMode));
 }
 
 void conditionWidget::initDefaultUnits()
@@ -209,47 +209,47 @@ void conditionWidget::setMode(QString condition)
 
     setCurrentView(condition);
 
-    if(currentFileModeRule == DefaultRulesContext::NonConditionalMode)
+    if(currentFileModeRule == RulesContext::NonConditionalMode)
     {
         return;
     }
-    else if(currentFileModeRule == DefaultRulesContext::FileSizeMode)
+    else if(currentFileModeRule == RulesContext::FileSizeMode)
     {
         mainModeSelector->addItems(ruleDefinitionsService()->intervalConditionalList());
         fixedSizeModeSelector->clear();
-        fixedSizeModeSelector->addItem(ruleDefinitionsService()->buildStringFromCriteria(DefaultRulesContext::FileSizeMode));
+        fixedSizeModeSelector->addItem(ruleDefinitionsService()->buildStringFromCriteria(RulesContext::FileSizeMode));
     }
-    else if(currentFileModeRule == DefaultRulesContext::FileCreatedMode ||
-            currentFileModeRule == DefaultRulesContext::FileModifiedMode)
+    else if(currentFileModeRule == RulesContext::FileCreatedMode ||
+            currentFileModeRule == RulesContext::FileModifiedMode)
     {
         mainModeSelector->addItems(ruleDefinitionsService()->intervalConditionalList());
     }
     else
-        mainModeSelector->addItems(ruleDefinitionsService()->fileCompareModesToStringList(DefaultRulesContext::FileNameMode));
+        mainModeSelector->addItems(ruleDefinitionsService()->fileCompareModesToStringList(RulesContext::FileNameMode));
 }
 
 int conditionWidget::currentCompareMode()
 {
     QString modeText = mainModeSelector->currentText();
 
-    if(currentFileModeRule == DefaultRulesContext::FileBaseMode ||
-            currentFileModeRule == DefaultRulesContext::FileNameMode ||
-            currentFileModeRule == DefaultRulesContext::FileExtensionMode)
+    if(currentFileModeRule == RulesContext::FileBaseMode ||
+            currentFileModeRule == RulesContext::FileNameMode ||
+            currentFileModeRule == RulesContext::FileExtensionMode)
         return ruleDefinitionsService()->fileCompareEntityFromString(modeText);
-    else if(currentFileModeRule == DefaultRulesContext::FileSizeMode && modeText == ruleDefinitionsService()->intervalConditionalList().at(0))
+    else if(currentFileModeRule == RulesContext::FileSizeMode && modeText == ruleDefinitionsService()->intervalConditionalList().at(0))
         return ruleDefinitionsService()->fileCompareEntityFromString(ui->fixedSizeOperatorSelector->currentText());
-    else if(currentFileModeRule == DefaultRulesContext::FileSizeMode && modeText == ruleDefinitionsService()->intervalConditionalList().at(1))
-        return DefaultRulesContext::Interval;
-    else if((currentFileModeRule == DefaultRulesContext::FileCreatedMode ||
-             currentFileModeRule == DefaultRulesContext::FileModifiedMode) &&
+    else if(currentFileModeRule == RulesContext::FileSizeMode && modeText == ruleDefinitionsService()->intervalConditionalList().at(1))
+        return RulesContext::Interval;
+    else if((currentFileModeRule == RulesContext::FileCreatedMode ||
+             currentFileModeRule == RulesContext::FileModifiedMode) &&
             modeText == ruleDefinitionsService()->intervalConditionalList().at(0))
         return ruleDefinitionsService()->fileCompareEntityFromString(dateOperatorSelector->currentText());
-    else if((currentFileModeRule == DefaultRulesContext::FileCreatedMode ||
-             currentFileModeRule == DefaultRulesContext::FileModifiedMode) &&
+    else if((currentFileModeRule == RulesContext::FileCreatedMode ||
+             currentFileModeRule == RulesContext::FileModifiedMode) &&
             modeText == ruleDefinitionsService()->intervalConditionalList().at(1))
-        return DefaultRulesContext::Interval;
+        return RulesContext::Interval;
     else
-        return DefaultRulesContext::NoCompareModeSet;
+        return RulesContext::NoCompareModeSet;
 }
 
 QString conditionWidget::keyWordValues() const
@@ -323,10 +323,10 @@ int conditionWidget::typeMode() const
 
 void conditionWidget::on_modeSelector_currentIndexChanged(int index)
 {
-    if(currentFileModeRule == DefaultRulesContext::FileSizeMode)
+    if(currentFileModeRule == RulesContext::FileSizeMode)
         ui->sizeViewSelector->setCurrentIndex(index);
-    if((currentFileModeRule == DefaultRulesContext::FileCreatedMode ||
-        currentFileModeRule == DefaultRulesContext::FileModifiedMode))
+    if((currentFileModeRule == RulesContext::FileCreatedMode ||
+        currentFileModeRule == RulesContext::FileModifiedMode))
         ui->stackedDateView->setCurrentIndex(index);
 }
 

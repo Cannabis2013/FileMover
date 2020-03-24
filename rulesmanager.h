@@ -8,7 +8,7 @@
 #include "abstractrulesmanager.h"
 #include "ifilelistservice.h"
 #include "defaultRuleConfiguration.h"
-#include "defaultrulescontext.h"
+#include "rulescontext.h"
 
 typedef IFileListService<IModelBuilder<IFileModel<QFileInfo>,QString>> ListService;
 
@@ -19,10 +19,6 @@ class rulesManager :
 public:
     rulesManager(const QString &appName, const QString &orgName, IDefaultRuleBuilder *ruleBuilderService);
     ~rulesManager();
-
-    DefaultFileModelList filterAccordingToCriterias(const DefaultFileModelList &list,
-                                                    const IRule<IDefaultRuleCondition> *rule,
-                                                    ListService *listService) override;
 
     // Persistence
     void readSettings() override;

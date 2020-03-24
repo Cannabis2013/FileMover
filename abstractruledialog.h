@@ -21,9 +21,7 @@
 #include "rulepathselector.h"
 #include "conditionwidget.h"
 #include "abstractframe.h"
-#include "StaticStringsCollection.h"
 #include "defaultinjector.h"
-#include "defaultrulescontext.h"
 
 namespace Ui {
 class AbstractRuleDialog;

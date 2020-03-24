@@ -12,89 +12,13 @@ rulesManager::~rulesManager()
     writeSettings();
 }
 
-DefaultFileModelList rulesManager::filterAccordingToCriterias(const DefaultFileModelList &list,
-                                                              const IRule<IDefaultRuleCondition> *rule,
-                                                              ListService *listService)
-{
-    /*
-    auto compareStrings = [](const QStringList &strings, const QString &subject, const bool &match = true)->bool
-    {
-        for (auto string : strings) {
-            if(match && string == subject)
-                return true;
-            else if(!match && string.contains(subject))
-                return true;
-        }
-
-        return false;
-    };
-
-    FileModelList filteredList = list, temporaryList;
-
-    for (auto ruleCriteria : rule->conditions()) {
-        if(ruleCriteria->criteria() == DefaultRulesContext::FileNameMode ||
-                ruleCriteria->criteria() == DefaultRulesContext::FileExtensionMode)
-        {
-            auto isSuffix = ruleCriteria->criteria() == DefaultRulesContext::FileNameMode ? false : true;
-            auto match = ruleCriteria->compareCriteria() == DefaultRulesContext::Match;
-            for (auto delegate : filteredList) {
-                auto model = delegate->model();
-                auto subject = isSuffix ? model->suffix() : model->filePath();
-                auto keywords = ruleCriteria->keyWords();
-                if(compareStrings(keywords,subject,match))
-                    temporaryList << delegate;
-            }
-        }
-        else if(ruleCriteria->criteria() == DefaultRulesContext::FileSizeMode &&
-                ruleCriteria->compareCriteria() != DefaultRulesContext::Interval)
-        {
-            auto size = ruleCriteria->sizeLimit();
-        }
-        else if(ruleCriteria->criteria() == DefaultRulesContext::FileSizeMode &&
-                ruleCriteria->compareCriteria() == DefaultRulesContext::Interval)
-        {
-
-        }
-        else if(ruleCriteria->criteria() == DefaultRulesContext::FileCreatedMode &&
-                ruleCriteria->compareCriteria() != DefaultRulesContext::Interval)
-        {
-
-        }
-        else if(ruleCriteria->criteria() == DefaultRulesContext::FileCreatedMode &&
-                ruleCriteria->compareCriteria() == DefaultRulesContext::Interval)
-        {
-
-        }
-        else if(ruleCriteria->criteria() == DefaultRulesContext::FileModifiedMode &&
-                ruleCriteria->compareCriteria() != DefaultRulesContext::Interval)
-        {
-
-        }
-        else if(ruleCriteria->criteria() == DefaultRulesContext::FileModifiedMode &&
-                ruleCriteria->compareCriteria() == DefaultRulesContext::Interval)
-        {
-
-        }
-        else if(ruleCriteria->criteria() == DefaultRulesContext::FileParentMode)
-        {
-
-        }
-
-        filteredList = temporaryList;
-        temporaryList.clear();
-    }
-
-    return filteredList;
-    */
-}
-
 QList<QTreeWidgetItem *> rulesManager::ruleItems() const
 {
     QList<QTreeWidgetItem*>resultingList;
     for(auto r : _rules)
     {
         QStringList headerData {r->title(),ruleDefinitionsService()->fileActionEntityToString(r->actionRuleEntity()),
-                    DefaultRulesContext::mergeStringList(r->destinationPaths())};
+                    RulesContext::mergeStringList(r->destinationPaths())};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         QIcon itemIcon = QIcon(":/My Images/Ressources/rule_icon.png");
         pItem->setIcon(0,itemIcon);
@@ -103,7 +27,7 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
             QStringList hData;
             hData << ruleDefinitionsService()->buildStringFromCriteria(condition->criteria()) <<
                      ruleDefinitionsService()->buildStringFromCompareCriteria(condition->compareCriteria()) <<
-                     DefaultRulesContext::ruleKeyWordToString(condition);
+                     RulesContext::ruleKeyWordToString(condition);
 
             QTreeWidgetItem *cItem = new QTreeWidgetItem(hData);
             cItem->setIcon(0,QIcon(":/My Images/Ressources/sub_rule_icon.png"));
@@ -163,10 +87,10 @@ void rulesManager::readSettings()
     {
         pSettings->setArrayIndex(i);
         auto title = pSettings->value("Title","Title").toString();
-        auto action = static_cast<DefaultRulesContext::RuleAction>(pSettings->value("Action","").toInt());
+        auto action = static_cast<RulesContext::RuleAction>(pSettings->value("Action","").toInt());
         auto appliesTo = pSettings->value("ApplyPath","Alle").toString();
-        auto type = static_cast<DefaultRulesContext::FileType>(pSettings->value("Scan type filter","").toInt());
-        auto destinations = DefaultRulesContext::splitString(pSettings->value("Destination paths","").toString());
+        auto type = static_cast<RulesContext::FileType>(pSettings->value("Scan type filter","").toInt());
+        auto destinations = RulesContext::splitString(pSettings->value("Destination paths","").toString());
         int count = pSettings->beginReadArray("Subrules");
 
         auto *rConfig = new RuleDefaultConfiguration;
@@ -183,11 +107,11 @@ void rulesManager::readSettings()
             pSettings->setArrayIndex(j);
 
             //auto mode = static_cast<RRT::CopyMode>(pSettings->value("Copymode",0).toInt());
-            auto criteria = static_cast<DefaultRulesContext::RuleCriteria>(pSettings->value("Condition","").toInt());
-            auto compareCriteria = static_cast<DefaultRulesContext::RuleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
+            auto criteria = static_cast<RulesContext::RuleCriteria>(pSettings->value("Condition","").toInt());
+            auto compareCriteria = static_cast<RulesContext::RuleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
 
             auto matchWholeWords = pSettings->value("Matchwholewords",false).toBool();
-            auto keyWords = DefaultRulesContext::splitString(pSettings->value("Keywords","").toString());
+            auto keyWords = RulesContext::splitString(pSettings->value("Keywords","").toString());
 
             auto sLimit = pSettings->value("Sizelimit",0).toInt();
             auto sizeUnit = pSettings->value("Sizelimitunit","kb").toString();
@@ -251,7 +175,7 @@ void rulesManager::writeSettings()
         pSettings->setValue("Scan type filter",r->typeFilter());
         pSettings->setValue("ApplyPath",r->appliesToPath());
         pSettings->setValue("Destination paths",
-                   DefaultRulesContext::mergeStringList(r->destinationPaths()));
+                   RulesContext::mergeStringList(r->destinationPaths()));
         pSettings->setValue("Scan Mode",r->deepScanMode());
         QList<const IDefaultRuleCondition*>sRules = r->conditions();
         int total = sRules.count();
@@ -266,7 +190,7 @@ void rulesManager::writeSettings()
             pSettings->setValue("Comparemode",condition->compareCriteria());
 
             pSettings->setValue("Matchwholewords",condition->matchWholeWords());
-            pSettings->setValue("Keywords",DefaultRulesContext::mergeStringList(condition->keyWords()));
+            pSettings->setValue("Keywords",RulesContext::mergeStringList(condition->keyWords()));
 
             pSettings->setValue("Sizelimit",condition->sizeLimit().first);
             pSettings->setValue("Sizelimitunit",condition->sizeLimit().second);

@@ -6,12 +6,8 @@
 #include "iruleinterfaces.h"
 
 #include "imutableobject.h"
-#include "ifilelistservice.h"
-#include "defaultfilemodelscontext.h"
 
 #include "defaultinjector.h"
-
-typedef IFileListService<IModelBuilder<IFileModel<>,QString>> ListService;
 
 class AbstractRulesManager :
         public QObject,
@@ -20,10 +16,6 @@ class AbstractRulesManager :
 {
     Q_OBJECT
 public:
-
-    virtual DefaultFileModelList filterAccordingToCriterias(const DefaultFileModelList &list,
-                                                            const IRule<IDefaultRuleCondition> *rule,
-                                                            ListService *listService) = 0;
 
     // State alteration methods
     virtual void swapRule(int i, int j) = 0;

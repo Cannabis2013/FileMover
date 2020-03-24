@@ -4,6 +4,8 @@
 #include "AbstractFileWorker.h"
 #include "imodelbuilder.h"
 
+#include "filescontext.h"
+
 #ifdef __MINGW64__
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 #endif

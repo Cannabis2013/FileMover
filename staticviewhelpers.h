@@ -4,7 +4,7 @@
 #include <qfileinfo.h>
 #include <qdatetime.h>
 #include <qdiriterator.h>
-#include <staticfilehelperoperations.h>
+#include <filescontext.h>
 #include <QTreeWidgetItem>
 #include <qpair.h>
 
@@ -27,7 +27,7 @@ namespace FilesContext
                 while(i.hasNext())
                     sz += QFile(i.next()).size();
 
-                headers << SBC::directoryName(fi.absoluteFilePath())
+                headers << FilesContext::directoryName(fi.absoluteFilePath())
                         << fi.absoluteFilePath()
                         << ""
                         << "Mappe";

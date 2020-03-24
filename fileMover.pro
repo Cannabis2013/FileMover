@@ -69,9 +69,7 @@ SOURCES += main.cpp\
 HEADERS  += \
     AbstractFileWorker.h \
     ISettingsWindowBuilder.h \
-    StaticStringsCollection.h \
     TestRuleHelper.h \
-    TypeDefinitions.h \
     abstractapplicationservice.h \
     abstractfileinformationmanager.h \
     abstractfileoperationworker.h \
@@ -95,7 +93,6 @@ HEADERS  += \
     defaultRuleConfiguration.h \
     defaultfilemodelscontext.h \
     defaultinjector.h \
-    defaultrulescontext.h \
     directoryitem.h \
     entitymodel.h \
     entityqueuemanager.h \
@@ -104,6 +101,7 @@ HEADERS  += \
     filelistservice.h \
     filemodelbuilder.h \
     filepathdialogwidget.h \
+    filescontext.h \
     filesystemwatcher.h \
     fileworker.h \
     filteringcontext.h \
@@ -126,6 +124,7 @@ HEADERS  += \
     messageBox.h \
     rulebuilder.h \
     rulescollection.h \
+    rulescontext.h \
     ruleservicesinjector.h \
     rulesmanager.h \
     myscreendimensions.h \
@@ -143,7 +142,6 @@ HEADERS  += \
     ruledefinitions.h \
     rules.h \
     settingswindowbuilder.h \
-    staticfilehelperoperations.h \
     staticviewhelpers.h \
     testfilecreator.h \
     threaddescriptor.h \

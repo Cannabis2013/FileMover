@@ -3,7 +3,7 @@
 
 #include <QPair>
 #include <QStringList>
-#include "defaultrulescontext.h"
+#include "rulescontext.h"
 
 class RuleCondition : public IDefaultRuleCondition
 {
@@ -176,7 +176,7 @@ public:
     }
 
 private:
-    int _typeFilter = DefaultRulesContext::File;
+    int _typeFilter = RulesContext::File;
     int _actionRuleEntity;
     QString _title = "title";
     QStringList _destinationPaths;

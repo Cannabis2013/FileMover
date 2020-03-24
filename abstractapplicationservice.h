@@ -14,9 +14,11 @@
 #include "AbstractFileWorker.h"
 #include "iruledefinitions.h"
 #include "ifiltereringcontext.h"
+#include "ifilelistservice.h"
 
-typedef IFiltereringContext<IRule<IRuleCondition<SizeLimit, SizeLimits, DateInterval>>,
-            ITreeModelDelegate<DefaultFileModel, DefaultModelType>> DefaultFilteringContext;
+typedef IFileListService<IModelBuilder<IFileModel<>,QString>> DefaulFileList;
+typedef IFiltereringContext<IDefaultRule,
+            ITreeModelDelegate<IFileModel<>, DefaultModelType>,DefaulFileList> DefaultFilteringContext;
 
 class AbstractApplicationService :
         public QObject,
@@ -76,7 +78,7 @@ public:
     virtual IRuleDefinitions* RuleDefinitionsService() = 0;
     virtual void setRuleDefinitionsService(IRuleDefinitions *service) = 0;
 
-    virtual void setFilteringContext(DefaultFilteringContext* service) = 0;
+    virtual void setFilteringContext(DefaultFilteringContext* filterService,DefaulFileList* listService) = 0;
 
 public slots:
     virtual void clearFolders(QStringList paths) = 0;

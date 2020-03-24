@@ -5,8 +5,8 @@ AddRuleDialog::AddRuleDialog(QStringList watchFolders,IRuleDefinitions *service)
 {
     setRulesDefinitionsService(service);
 
-    QStringList actionList = ruleDefinitionsService()->buildStringListFromEntity(DefaultRulesContext::Action),
-            conditionList = ruleDefinitionsService()->buildStringListFromEntity(DefaultRulesContext::Condition),
+    QStringList actionList = ruleDefinitionsService()->buildStringListFromEntity(RulesContext::Action),
+            conditionList = ruleDefinitionsService()->buildStringListFromEntity(RulesContext::Condition),
             unitList = ruleDefinitionsService()->sizeUnits();
 
     actionBox->addItems(actionList);
@@ -36,12 +36,12 @@ void AddRuleDialog::on_addSubRule_clicked()
     auto cText = conditionBox->currentText();
     auto criteria = ruleDefinitionsService()->buildCriteriaFromString(cText);
     auto compareCriteria = condWidget->currentCompareMode();
-    auto keywords = StaticStringCollections::splitString(condWidget->keyWordValues());
+    auto keywords = RulesContext::splitString(condWidget->keyWordValues());
     auto sizeLimit = condWidget->fixedSizeValues();
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
     auto dates = condWidget->intervalDates();
-    auto matchWholeWords = compareCriteria == DefaultRulesContext::Match;
+    auto matchWholeWords = compareCriteria == RulesContext::Match;
 
     auto config = new RuleConditionDefaultConfiguration;
 
@@ -81,7 +81,7 @@ void AddRuleDialog::on_addButton_clicked()
     auto title = titleSelector->text();
     auto appliesTo = applySelector->currentText();
     auto action = ruleDefinitionsService()->fileActionEntityFromString(actionBox->currentText());
-    auto destinations = StaticStringCollections::splitString(pathSelector->text());
+    auto destinations = RulesContext::splitString(pathSelector->text());
     auto typeFilter = ruleDefinitionsService()->fileTypeCriteriaFromString(fileTypeSelector->currentText());
 
     auto config = new RuleDefaultConfiguration();

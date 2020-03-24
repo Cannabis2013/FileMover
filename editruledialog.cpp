@@ -17,7 +17,7 @@ void EditRuleDialog::on_addButton_clicked()
     auto title = titleSelector->text();
     auto appliesTo = applySelector->currentText();
     auto action = ruleDefinitionsService()->fileActionEntityFromString(actionBox->currentText());
-    auto destinations = StaticStringCollections::splitString(pathSelector->text());
+    auto destinations = RulesContext::splitString(pathSelector->text());
     auto typeFilter = ruleDefinitionsService()->fileTypeCriteriaFromString(fileTypeSelector->currentText());
 
     auto config = new RuleDefaultConfiguration();
@@ -40,12 +40,12 @@ void EditRuleDialog::on_addSubRule_clicked()
     auto currentCondition = conditionBox->currentText();
     auto criteria = ruleDefinitionsService()->buildCriteriaFromString(currentCondition);
     auto compareCriteria = condWidget->currentCompareMode();
-    auto keywords = StaticStringCollections::splitString(condWidget->keyWordValues());;
+    auto keywords = RulesContext::splitString(condWidget->keyWordValues());;
     auto sizeLimit = condWidget->fixedSizeValues();;
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
     auto dates = condWidget->intervalDates();
-    auto matchWholeWords = compareCriteria == DefaultRulesContext::Match;
+    auto matchWholeWords = compareCriteria == RulesContext::Match;
 
     auto config = new RuleConditionDefaultConfiguration;
 
@@ -75,7 +75,7 @@ void EditRuleDialog::initializeInterface()
     actionBox->setCurrentText(ruleDefinitionsService()->fileActionEntityToString(tempRule->actionRuleEntity()));
     titleSelector->setText(tempRule->title());
     applySelector->setCurrentText(tempRule->appliesToPath());
-    pathSelector->setCurrentFilePath(StaticStringCollections::mergeStringList(tempRule->destinationPaths()));
+    pathSelector->setCurrentFilePath(RulesContext::mergeStringList(tempRule->destinationPaths()));
     fileTypeSelector->addItems(ruleDefinitionsService()->allFileTypeEntitiesToStrings());
     fileTypeSelector->setCurrentText(ruleDefinitionsService()->fileTypeCriteriaToString(tempRule->typeFilter()));
     _ruleConditions = tempRule->conditions();

@@ -155,8 +155,3 @@ void ApplicationDomain::removeWatchFolder(QString path)
 {
     settingsService->removePath(path);
 }
-
-void ApplicationDomain::setFilteringContext(DefaultFilteringContext *service)
-{
-
-}

@@ -5,7 +5,6 @@
 #include <qdatetime.h>
 #include <qdiriterator.h>
 #include "ifilelistservice.h"
-#include "defaultfilemodelscontext.h"
 
 class FileListService : public IFileListService<IModelBuilder<IFileModel<>,QString>>
 {

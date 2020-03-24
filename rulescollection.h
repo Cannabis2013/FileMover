@@ -1,7 +1,6 @@
 #ifndef RULESCOLLECTION_H
 #define RULESCOLLECTION_H
 
-#include "TypeDefinitions.h"
 #include "iruledefinitions.h"
 #include "iruleconfiguration.h"
 #include "iruleinterfaces.h"

@@ -13,8 +13,8 @@
 
 #include "ruleservicesinjector.h"
 #include "iruledefinitions.h"
-#include "TypeDefinitions.h"
 
+#include "rulescontext.h"
 
 namespace Ui {
 class conditionWidget;

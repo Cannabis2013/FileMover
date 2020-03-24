@@ -63,28 +63,28 @@ void AbstractRuleDialog::updateConditionView(const IDefaultRuleCondition *sR)
     auto cond = sR->criteria();
     auto comp = sR->compareCriteria();
 
-    if(cond == DefaultRulesContext::FileSizeMode && comp != DefaultRulesContext::Interval)
+    if(cond == RulesContext::FileSizeMode && comp != RulesContext::Interval)
     {
         condWidget->setConditionalFixedSize(sR->sizeLimit(),sR->compareCriteria());
     }
-    else if(cond == DefaultRulesContext::FileSizeMode && comp== DefaultRulesContext::Interval)
+    else if(cond == RulesContext::FileSizeMode && comp== RulesContext::Interval)
     {
         condWidget->setConditionalIntervalSize(sR->sizeInterval());
     }
-    else if((cond == DefaultRulesContext::FileCreatedMode || cond == DefaultRulesContext::FileModifiedMode) &&
-            comp != DefaultRulesContext::Interval)
+    else if((cond == RulesContext::FileCreatedMode || cond == RulesContext::FileModifiedMode) &&
+            comp != RulesContext::Interval)
     {
         condWidget->setFixedDate(sR->date());
         condWidget->setCompareView(sR->compareCriteria());
     }
-    else if((cond == DefaultRulesContext::FileCreatedMode || cond == DefaultRulesContext::FileModifiedMode) &&
-            comp == DefaultRulesContext::Interval)
+    else if((cond == RulesContext::FileCreatedMode || cond == RulesContext::FileModifiedMode) &&
+            comp == RulesContext::Interval)
     {
         condWidget->setIntervalDate(sR->dateIntervals());
     }
     else
     {
-        condWidget->setKeyWords(DefaultRulesContext::ruleKeyWordToString(sR));
+        condWidget->setKeyWords(RulesContext::ruleKeyWordToString(sR));
         condWidget->setCompareView(sR->compareCriteria());
     }
 }
@@ -129,29 +129,29 @@ void AbstractRuleDialog::updateView()
         headerData << ruleDefinitionsService()->buildStringFromCriteria(condition);
         headerData << ruleDefinitionsService()->buildStringFromCompareCriteria(criteria->compareCriteria());
 
-        if((condition == DefaultRulesContext::FileCreatedMode || condition == DefaultRulesContext::FileModifiedMode) &&
-                criteria->compareCriteria() != DefaultRulesContext::Interval)
+        if((condition == RulesContext::FileCreatedMode || condition == RulesContext::FileModifiedMode) &&
+                criteria->compareCriteria() != RulesContext::Interval)
         {
-            headerData << DefaultRulesContext::ruleKeyWordToString(criteria);
+            headerData << RulesContext::ruleKeyWordToString(criteria);
         }
-        else if((condition == DefaultRulesContext::FileCreatedMode || condition == DefaultRulesContext::FileModifiedMode) &&
-                criteria->compareCriteria() == DefaultRulesContext::Interval)
+        else if((condition == RulesContext::FileCreatedMode || condition == RulesContext::FileModifiedMode) &&
+                criteria->compareCriteria() == RulesContext::Interval)
         {
-            headerData << DefaultRulesContext::ruleDateLimitsToString(criteria);
+            headerData << RulesContext::ruleDateLimitsToString(criteria);
         }
-        else if(condition == DefaultRulesContext::FileSizeMode &&
-                criteria->compareCriteria() != DefaultRulesContext::Interval)
+        else if(condition == RulesContext::FileSizeMode &&
+                criteria->compareCriteria() != RulesContext::Interval)
         {
-           headerData << DefaultRulesContext::ruleKeyWordToString(criteria);
+           headerData << RulesContext::ruleKeyWordToString(criteria);
         }
-        else if(condition == DefaultRulesContext::FileSizeMode &&
-                criteria->compareCriteria() == DefaultRulesContext::Interval)
+        else if(condition == RulesContext::FileSizeMode &&
+                criteria->compareCriteria() == RulesContext::Interval)
         {
-            headerData << DefaultRulesContext::ruleSizeLimitsToString(criteria);
+            headerData << RulesContext::ruleSizeLimitsToString(criteria);
         }
         else
         {
-            headerData << StaticStringCollections::mergeStringList(criteria->keyWords());
+            headerData << RulesContext::mergeStringList(criteria->keyWords());
         }
 
         new QTreeWidgetItem(subRuleView,headerData);
@@ -160,7 +160,7 @@ void AbstractRuleDialog::updateView()
 
 void AbstractRuleDialog::on_actionComboBox_currentIndexChanged(const QString &arg1)
 {
-    (ruleDefinitionsService()->fileActionEntityFromString(arg1) == DefaultRulesContext::DeleteAction) ?
+    (ruleDefinitionsService()->fileActionEntityFromString(arg1) == RulesContext::DeleteAction) ?
                 destinationFrame->hide() :
                 destinationFrame->show();
 }

@@ -90,7 +90,11 @@ public:
     void removeWatchFolderAt(int index) override;
     void removeWatchFolder(QString path) override;
 
-    void setFilteringContext(DefaultFilteringContext* service) override;
+    void setFilteringContext(DefaultFilteringContext* filterService, DefaulFileList* listService) override
+    {
+        filteringService = filteringService;
+
+    }
 
 private:
     AbstractFileWorker *fileOperationsService;

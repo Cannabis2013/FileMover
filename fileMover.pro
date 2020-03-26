@@ -106,6 +106,7 @@ HEADERS  += \
     filteringcontext.h \
     ibroadcastingobject.h \
     icon.h \
+    idefaultrulescollection.h \
     ifilelistservice.h \
     ifilemodel.h \
     ifiltereringcontext.h \
@@ -122,7 +123,6 @@ HEADERS  += \
     ithreadmanagerinterface.h \
     messageBox.h \
     rulebuilder.h \
-    rulescollection.h \
     rulescontext.h \
     ruleservicesinjector.h \
     rulesmanager.h \

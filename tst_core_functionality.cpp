@@ -1,5 +1,8 @@
 #include "applicationdomain.h"
 #include "rulescontext.h"
+#include "testfilecreator.h"
+#include "rulebuilder.h"
+#include "defaultRuleConfiguration.h"
 
 #ifdef TEST_MODE
 #include <QtTest>
@@ -98,6 +101,41 @@ private slots:
     void operation_move_filepath_match_success_1();
 
 private:
+    bool testPersistence(bool rulesEnabled,bool ruleTimerEnabled, bool closeOnExitEnabled, int ruleTimerInterval)
+    {
+        // Pre state variables
+
+        mApp->setSettings(closeOnExitEnabled,ruleTimerEnabled,rulesEnabled,QRect(),ruleTimerInterval);
+        delete mApp;
+
+        mApp = new ApplicationDomain();
+
+        auto postSettings = mApp->settingsState();
+
+        return closeOnExitEnabled == postSettings->closeOnExit() &&
+                ruleTimerEnabled == postSettings->rulesEnabled() &&
+                rulesEnabled == postSettings->ruleTimerEnabled() &&
+                 ruleTimerInterval == postSettings->ruleCountInterval();
+    }
+
+    bool testInsertRule(IDefaultRuleConfigurator *ruleConfig,
+                        IDefaultConditionConfigurator * ruleConditionConfig)
+    {
+        // Pre-state variables
+
+        auto ruleBuilder = new RuleBuilder();
+        auto rule = ruleBuilder->buildRule(ruleConfig,QList<const IDefaultConditionConfigurator*>() << ruleConditionConfig);
+
+
+        // Initialize pre-state
+
+
+        mApp->insertRule(rule);
+
+        // Post section
+
+        auto postRule = mApp->rule(ruleConfig->title());
+    }
 
     AbstractApplicationService *mApp;
 };
@@ -128,46 +166,13 @@ void Core_functionality::cleanupTestCase()
 void Core_functionality::persistence_SettingsManager_Success_1()
 {
     // Pre state variables
-    SettingsDelegate preSettings;
 
-    preSettings.closeOnExit = true;
-    preSettings.rulesEnabled = false;
-    preSettings.ruleCountInterval = 15;
-    preSettings.ruleTimerEnabled = true;
-
-    mApp->setSettings(preSettings);
-    delete mApp;
-
-    mApp = new MainApplication("MHTest","MH");
-
-    SettingsDelegate postSettings = mApp->settingsState();
-
-    QVERIFY(preSettings.closeOnExit == postSettings.closeOnExit &&
-            preSettings.rulesEnabled == postSettings.rulesEnabled &&
-            preSettings.ruleTimerEnabled == postSettings.ruleTimerEnabled &&
-            preSettings.ruleCountInterval == postSettings.ruleCountInterval);
+    QVERIFY(testPersistence(false,true,true,15));
 }
 
 void Core_functionality::persistence_SettingsManager_Success_2()
 {
-    // Pre state variables
-    SettingsDelegate preSettings;
-    preSettings.closeOnExit = true;
-    preSettings.rulesEnabled = true;
-    preSettings.ruleTimerEnabled = false;
-    preSettings.ruleCountInterval = 0;
-
-    mApp->setSettings(preSettings);
-    delete mApp;
-
-    mApp = new MainApplication("MHTest","MH");
-
-    SettingsDelegate postSettings = mApp->settingsState();
-
-    QVERIFY(preSettings.closeOnExit == postSettings.closeOnExit &&
-            preSettings.rulesEnabled == postSettings.rulesEnabled &&
-            preSettings.ruleTimerEnabled == postSettings.ruleTimerEnabled &&
-            preSettings.ruleCountInterval == postSettings.ruleCountInterval);
+    QVERIFY(testPersistence(false,true,true,0));
 }
 
 
@@ -861,9 +866,9 @@ void Core_functionality::operation_extension_match_success_1()
 
     const QString preTitle = "Test1";
     QStringList prekWrds = QStringList() << "txt" << "jpg";
-    RulesContext::RuleAction preAction = RulesContext::Delete;
-    RulesContext::RuleCriteria preCond = RulesContext::fileExtensionMode;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::match;
+    RulesContext::RuleAction preAction = RulesContext::DeleteAction;
+    RulesContext::RuleCriteria preCond = RulesContext::FileExtensionMode;
+    RulesContext::RuleCompareCriteria preComp = RulesContext::Match;
     Rule preRule;
 
     // Initialize pre-state

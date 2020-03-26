@@ -1,7 +1,7 @@
 #ifndef DEFAULTINJECTOR_H
 #define DEFAULTINJECTOR_H
 
-#include "rulescollection.h"
+#include "idefaultrulescollection.h"
 
 typedef RuleServicesInjector<IRuleDefinitions,IDefaultRuleBuilder> DefaultServiceInjector;
 

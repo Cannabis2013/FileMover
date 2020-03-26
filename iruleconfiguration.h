@@ -21,7 +21,7 @@ public:
     virtual QString title() const = 0;
     virtual void setTitle(const QString &title) = 0;
 };
-template<typename TSizeContainer,typename TSizeIntervals,typename TDate , typename TDateIntervals>
+template<typename TSizeContainer,typename TSizeIntervals,typename TDate>
 class IRuleConditionConfiguration
 {
 public:
@@ -37,8 +37,8 @@ public:
     virtual void setDate(const TDate &date) = 0;
     virtual TSizeIntervals sizeInterval() const = 0;
     virtual void setSizeInterval(const TSizeIntervals &sizeInterval) = 0;
-    virtual TDateIntervals dates() const = 0;
-    virtual void setDates(const TDateIntervals &dates) = 0;
+    virtual const QPair<TDate,TDate> dates() const = 0;
+    virtual void setDates(const QPair<TDate,TDate> &dates) = 0;
     virtual bool matchWholeWords() const = 0;
     virtual void setMatchWholeWords(bool matchWholeWords) = 0;
 };

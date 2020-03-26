@@ -57,8 +57,6 @@ typedef QPair<quint64,QString> SizeLimit;
 typedef QPair<SizeLimit,SizeLimit> SizeLimits;
 typedef QPair<QDateTime,QDateTime> DateInterval;
 
-typedef IRuleCondition<SizeLimit,SizeLimits,QDateTime> IDefaultRuleCondition;
-typedef IRule<IDefaultRuleCondition> IDefaultRule;
 
 
 #endif // IRULEINTERFACES_H

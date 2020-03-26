@@ -2,7 +2,7 @@
 #define RULESCONTEXT_H
 
 #include <QStringList>
-#include "iruleinterfaces.h"
+#include "defaultRuleConfiguration.h"
 
 namespace RulesContext
 {
@@ -45,6 +45,16 @@ namespace RulesContext
     enum FileType {Folder = 0x060, File = 0x061,Both = 0x062, Unresolved = 0x01};
     enum CopyMode{Move = 0x065,Copy = 0x066,NoMode = 0x01};
     enum IteratorMode {NonRecursive = 0x080, Recursive = 0x081};
+    static QString ruleSizeLimitsToString(const IDefaultConditionConfigurator *sRule)
+    {
+        QString minSize = QString::number(sRule->sizeInterval().first.first),
+                maxSize = QString::number(sRule->sizeInterval().second.first);
+        QString sizeUnitMin = sRule->sizeInterval().first.second,
+                sizeUnitMax = sRule->sizeInterval().second.second;
+        return "Min: " + minSize + " " + sizeUnitMin
+                + " " + "max: " + maxSize + " " + sizeUnitMax;
+    }
+
     static QString ruleSizeLimitsToString(const IDefaultRuleCondition *sRule)
     {
         QString minSize = QString::number(sRule->sizeInterval().first.first),
@@ -55,10 +65,10 @@ namespace RulesContext
                 + " " + "max: " + maxSize + " " + sizeUnitMax;
     }
 
-    static QString ruleDateLimitsToString(const IDefaultRuleCondition *sRule)
+    static QString ruleDateLimitsToString(const IDefaultConditionConfigurator *sRule)
     {
-        QString startDate = sRule->dateIntervals().first.date().toString("dd.MM.yyyy"),
-                endDate = sRule->dateIntervals().second.date().toString("dd.MM.yyyy");
+        QString startDate = sRule->dates().first.date().toString("dd.MM.yyyy"),
+                endDate = sRule->dates().second.date().toString("dd.MM.yyyy");
         return "Start dato: " + startDate + " slut dato: " + endDate;
     }
 
@@ -94,8 +104,9 @@ namespace RulesContext
         return splittetList;
     }
 
-    static QString ruleKeyWordToString(const IDefaultRuleCondition *sRule)
+    static QString ruleKeyWordToString(const IDefaultConditionConfigurator *sRule)
     {
+
         if(sRule->criteria() == RulesContext::FileSizeMode &&
                 sRule->compareCriteria() != Interval)
             return QString::number(sRule->sizeLimit().first) + " " + sRule->sizeLimit().second;
@@ -109,7 +120,26 @@ namespace RulesContext
                 sRule->compareCriteria() == Interval)
             return ruleDateLimitsToString(sRule);
         else
-            return mergeStringList(sRule->keyWords());
+            return mergeStringList(sRule->keywords());
+    }
+
+    static QString ruleKeyWordToString(const IDefaultRuleCondition *sRule)
+    {
+
+        if(sRule->criteria() == RulesContext::FileSizeMode &&
+                sRule->compareCriteria() != Interval)
+            return QString::number(sRule->sizeLimit().first) + " " + sRule->sizeLimit().second;
+        else if(sRule->criteria() == FileSizeMode &&
+                sRule->compareCriteria() == Interval)
+            return ruleSizeLimitsToString(sRule);
+        else if((sRule->criteria() == FileCreatedMode || sRule->criteria() == FileModifiedMode) &&
+                sRule->compareCriteria() != Interval)
+            return sRule->date().toString("dd.MM.yyyy");
+        else if((sRule->criteria() == FileCreatedMode || sRule->criteria() == FileModifiedMode) &&
+                sRule->compareCriteria() == Interval)
+            return ruleDateLimitsToString(sRule);
+        else
+            return mergeStringList(sRule->keywords());
     }
 }
 

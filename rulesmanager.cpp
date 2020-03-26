@@ -101,7 +101,8 @@ void rulesManager::readSettings()
         rConfig->setType(type);
         rConfig->setDestinations(destinations);
 
-        auto r = ruleBuilderService()->buildOrdinaryRule(rConfig);
+        QList<const IDefaultConditionConfigurator*> criteriaConfigurations;
+
         for (int j = 0; j < count; ++j)
         {
             pSettings->setArrayIndex(j);
@@ -139,20 +140,23 @@ void rulesManager::readSettings()
 
             pSettings->endGroup();
 
-            auto conditionConfiguration = new RuleConditionDefaultConfiguration;
-            conditionConfiguration->setDate(date);
-            conditionConfiguration->setCriteria(criteria);
-            conditionConfiguration->setCompareCriteria(compareCriteria);
-            conditionConfiguration->setSizeLimit(sizeLimit);
-            conditionConfiguration->setSizeInterval(sizeLimits);
-            conditionConfiguration->setDates(dates);
-            conditionConfiguration->setMatchWholeWords(matchWholeWords);
+            auto config = new RuleConditionDefaultConfiguration;
 
-            auto condition = ruleBuilderService()->buildSubRule(conditionConfiguration);
-            // Very forbidden move. Need to find a fix.
-            ruleBuilderService()->attachCriteria(condition,const_cast<IRule<IDefaultRuleCondition>*>(r));
+            config->setDate(date);
+            config->setCriteria(criteria);
+            config->setCompareCriteria(compareCriteria);
+            config->setSizeLimit(sizeLimit);
+            config->setSizeInterval(sizeLimits);
+            config->setDates(dates);
+            config->setMatchWholeWords(matchWholeWords);
+
+            criteriaConfigurations << config;
+
 
         }
+
+        auto r = ruleBuilderService()->buildRule(rConfig,criteriaConfigurations);
+
         pSettings->endArray();
         rules << r;
     }

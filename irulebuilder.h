@@ -1,13 +1,13 @@
 #ifndef IRULEBUILDER_H
 #define IRULEBUILDER_H
 
-template<class TRule, class TCriteria, class TRuleParameters, class TCriteriaParameters>
+#include <qlist.h>
+
+template<class TRule, class TRuleParameters, class TCriteriaParameters>
 class IRuleBuilder
 {
 public:
-    virtual const TRule *buildOrdinaryRule(const TRuleParameters *buildParameters) = 0;
-    virtual const TRule *attachCriteria(const TCriteria *criteria, TRule *r) = 0;
-    virtual const TCriteria* buildSubRule(TCriteriaParameters *buildParameters) = 0;
+    virtual const TRule *buildRule(const TRuleParameters *buildParameters, const QList<const TCriteriaParameters*> &attachedCriterias) = 0;
 };
 
 

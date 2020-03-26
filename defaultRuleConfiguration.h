@@ -2,7 +2,7 @@
 #define DEFAULTRULECONFIGURATION_H
 
 #include "iruleconfiguration.h"
-#include "iruleinterfaces.h"
+#include "idefaultrulescollection.h"
 
 class RuleDefaultConfiguration : public IRuleConfiguration<IDefaultRuleCondition>
 {
@@ -81,7 +81,7 @@ private:
 
 class RuleConditionDefaultConfiguration :
         public IRuleConditionConfiguration<SizeLimit,SizeLimits,
-                                            QDateTime,DateInterval>
+                                            QDateTime>
 {
 public:
     int criteria() const
@@ -138,7 +138,7 @@ public:
         _sizeInterval = sizeInterval;
     }
 
-    DateInterval dates() const
+    const DateInterval dates() const
     {
         return _dates;
     }

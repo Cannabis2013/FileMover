@@ -37,7 +37,7 @@ public:
     virtual QList<QTreeWidgetItem*> detailedWatchFolderItems() = 0;
 
     virtual const IRule<IDefaultRuleCondition>* ruleAt(int index) = 0;
-    virtual const IRule<IDefaultRuleCondition>* rule(QString title) = 0;
+    virtual const IRule<IDefaultRuleCondition>* rule(const QString &title) = 0;
     virtual QList<QTreeWidgetItem*> ruleItemModels() = 0;
     virtual void swapRule(int i, int j) = 0;
     virtual void clearRules() const = 0;

@@ -58,7 +58,7 @@ void AbstractRuleDialog::resetAllForm()
     subRuleView->clear();
 }
 
-void AbstractRuleDialog::updateConditionView(const IDefaultRuleCondition *sR)
+void AbstractRuleDialog::updateConditionView(const IDefaultConditionConfigurator *sR)
 {
     auto cond = sR->criteria();
     auto comp = sR->compareCriteria();
@@ -80,7 +80,7 @@ void AbstractRuleDialog::updateConditionView(const IDefaultRuleCondition *sR)
     else if((cond == RulesContext::FileCreatedMode || cond == RulesContext::FileModifiedMode) &&
             comp == RulesContext::Interval)
     {
-        condWidget->setIntervalDate(sR->dateIntervals());
+        condWidget->setIntervalDate(sR->dates());
     }
     else
     {

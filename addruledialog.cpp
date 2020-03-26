@@ -54,9 +54,8 @@ void AddRuleDialog::on_addSubRule_clicked()
     config->setDates(dates);
     config->setMatchWholeWords(matchWholeWords);
 
-    auto condition = ruleBuilderService()->buildSubRule(config);
 
-    _ruleConditions << condition;
+    _ruleConditions << config;
     updateView();
 }
 
@@ -92,7 +91,7 @@ void AddRuleDialog::on_addButton_clicked()
     config->setDestinations(destinations);
     config->setType(typeFilter);
 
-    auto r = ruleBuilderService()->buildOrdinaryRule(config);
+    auto r = ruleBuilderService()->buildRule(config,_ruleConditions);
 
     emit sendRule(r);
     close();

@@ -22,7 +22,7 @@
 #include "addruledialog.h"
 #include "editruledialog.h"
 #include "customdialog.h"
-#include "rulescollection.h"
+#include "idefaultrulescollection.h"
 #include "isettingswindow.h"
 
 

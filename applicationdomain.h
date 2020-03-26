@@ -33,7 +33,7 @@ public:
      */
 
     const IRule<IDefaultRuleCondition>* ruleAt(int index) override {return rulesService->rule(index);}
-    const IRule<IDefaultRuleCondition>* rule(QString title) override {return rulesService->rule(title);}
+    const IRule<IDefaultRuleCondition>* rule(const QString &title) override {return rulesService->rule(title);}
     QList<QTreeWidgetItem*> ruleItemModels() override {return rulesService->ruleItems();}
     void swapRule(int i, int j) override {rulesService->swapRule(i,j);}
     void clearRules() const override ;

@@ -5,17 +5,18 @@
 #include "defaultRuleConfiguration.h"
 #include "rules.h"
 
-typedef IRuleConfiguration<IDefaultRuleCondition> IRuleConfigator;
+typedef IRuleConfiguration<IDefaultRuleCondition> IDefaultRuleConfigurator;
 typedef IRuleConditionConfiguration<SizeLimit,SizeLimits,
-                                    QDateTime,
-                                    DateInterval> IRuleConditionConfigurator;
-typedef IRuleBuilder<IRule<IDefaultRuleCondition>,IDefaultRuleCondition,IRuleConfigator,IRuleConditionConfigurator> IDefaultRuleBuilder;
+                                    QDateTime> IDefaultConditionConfigurator;
+
+typedef IRuleBuilder<IRule<IDefaultRuleCondition>,IDefaultRuleConfigurator,IDefaultConditionConfigurator> IDefaultRuleBuilder;
 
 class RuleBuilder :
         public IDefaultRuleBuilder
 {
 public:
-    const IRule<IDefaultRuleCondition> *buildOrdinaryRule(const IRuleConfigator *configuration) override
+    const IRule<IDefaultRuleCondition> *buildRule(const IDefaultRuleConfigurator *configuration,
+                                                  const QList<const IDefaultConditionConfigurator*> &conditionConfigurations) override
     {
         IRule<IDefaultRuleCondition> *r = new Rule;
         r->setTitle(configuration->title());
@@ -26,19 +27,20 @@ public:
         r->setCriterias(configuration->conditions());
         r->setDeepScanMode(configuration->deepScanMode());
 
+        QList<const IDefaultRuleCondition*> criterias;
+
+        for (auto config : conditionConfigurations) {
+            auto criteria = buildCriteria(config);
+            criterias << criteria;
+        }
+
+        r->setCriterias(criterias);
+
         return r;
     }
 
-    const IRule<IDefaultRuleCondition>* attachCriteria(const IDefaultRuleCondition *condition, IRule<IDefaultRuleCondition>* r) override
-    {
-        QList<const IDefaultRuleCondition*> ruleConditions = r->conditions();
-        ruleConditions.append(condition);
-        r->setCriterias(ruleConditions);
-
-        return r;
-    }
-
-    const IDefaultRuleCondition *buildSubRule(IRuleConditionConfigurator* configurator) override
+private:
+    const IDefaultRuleCondition *buildCriteria(const IDefaultConditionConfigurator* configurator)
     {
         auto condition = new RuleCondition();
         condition->setCriteria(configurator->criteria());

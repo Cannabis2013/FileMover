@@ -40,7 +40,7 @@ public:
 
     const IDefaultRuleCondition *buildSubRule(IRuleConditionConfigurator* configurator) override
     {
-        IDefaultRuleCondition* condition = new RuleCondition;
+        auto condition = new RuleCondition();
         condition->setCriteria(configurator->criteria());
         condition->setCompareCriteria(configurator->compareCriteria());
         condition->setKeyWords(configurator->keywords());

@@ -1,4 +1,5 @@
-#include "TestRuleHelper.h"
+#include "applicationdomain.h"
+
 #ifdef TEST_MODE
 #include <QtTest>
 #define SLEEP_SEC 1

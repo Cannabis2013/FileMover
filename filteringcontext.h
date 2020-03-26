@@ -5,14 +5,15 @@
 #include "filemodelbuilder.h"
 #include "filelistservice.h"
 #include "rulescontext.h"
+#include "entitymodel.h"
 
 typedef IFileListService<IModelBuilder<IFileModel<>,QString>> IDefaultListService;
-typedef IFiltereringContext<IDefaultRule,IFileModel<>,IDefaultListService> IDefaultFilteringContext;
+typedef IFiltereringContext<IDefaultRule,FileRuleDelegate,IDefaultListService> IDefaultFilteringContext;
 
 class FilteringContext :
         public IDefaultFilteringContext{
 public:
-    QList<const IFileModel<> *> process(const QList<const IDefaultRule*> objects)
+    QList<FileRuleDelegate*> process(const QList<const IDefaultRule*> objects)
     {
         auto compareStrings = [](const QStringList &strings, const QString &subject, const bool &match = true)->bool
         {
@@ -25,16 +26,19 @@ public:
 
             return false;
         };
-
+        QList<FileRuleDelegate*> resultingList;
         auto filteredList = listService()->buildFileModels(RulesContext::All);
 
         for (auto object : objects) {
             for (auto criteria : object->conditions()) {
                 filteredList = processFiles(criteria,filteredList,compareStrings);
             }
+            resultingList << DelegateBuilder::buildFileActionEntity<EntityModel>(listService()->fileLists(),
+                                                                                      filteredList,
+                                                                                      object->actionRuleEntity(),
+                                                                                      object->destinationPaths());
         }
-
-        return filteredList;
+        return resultingList;
     }
 
     void setListService(IDefaultListService *service)

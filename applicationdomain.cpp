@@ -22,7 +22,9 @@ void ApplicationDomain::clearFoldersAccordingToRules(QStringList paths)
 {
     fileListService->appendFileLists(watchFolders());
     auto list = filteringService->process(rulesService->rules());
-
+    for (auto delegate : list) {
+        emit sendEntity(delegate);
+    }
 }
 
 void ApplicationDomain::configureServices()
@@ -32,11 +34,6 @@ void ApplicationDomain::configureServices()
     // Assign objects to threads
     threadingService->createThread(queueService);
     threadingService->createThread(fileOperationsService);
-
-    /*
-    entityManager->moveToThread(queueThread);
-    fWorker->moveToThread(fileWorkerThread);
-    */
 
     filteringService->setListService(fileListService);
 

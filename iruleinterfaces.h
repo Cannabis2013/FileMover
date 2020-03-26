@@ -26,6 +26,7 @@ public:
     virtual void setCompareCriteria(const int &compareCriteria) = 0;
     virtual int criteria() const = 0;
     virtual void setCriteria(const int &criteria) = 0;
+    virtual bool operator==(const IRuleCondition<TSize,TSizeIntervals,TDateObject> &other) = 0;
 };
 
 template<class TConditon>
@@ -47,6 +48,7 @@ public:
     virtual void setDeepScanMode(bool deepScanMode) = 0;
     virtual QList<const TConditon*> conditions() const = 0;
     virtual void setCriterias(const QList<const TConditon*> &subRules) = 0;
+    virtual bool operator==(const IRule<TConditon> &other) = 0;
 };
 
 typedef QPair<quint64,QString> SizeLimit;

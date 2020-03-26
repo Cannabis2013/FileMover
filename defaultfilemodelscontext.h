@@ -44,13 +44,9 @@ private:
 
 };
 
-struct DefaultFileModelArguments
-{
-    QFileInfo fileInfo;
-    QString filepath;
-};
 
-typedef QList<const IFileModel<QFileInfo>*> DefaultFileModelList;
+
+
 #endif // FILEOBJECTMODEL_H
 
 

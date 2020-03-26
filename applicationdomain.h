@@ -1,7 +1,7 @@
 #ifndef MAINAPPLICATION_H
 #define MAINAPPLICATION_H
 
-//#define TEST_MODE
+#define TEST_MODE
 
 #include "abstractapplicationservice.h"
 #include "settingsdelegate.h"
@@ -92,8 +92,9 @@ public:
 
     void setFilteringContext(DefaultFilteringContext* filterService, DefaulFileList* listService) override
     {
-        filteringService = filteringService;
-
+        filteringService = filterService;
+        filteringService->setListService(listService);
+        fileListService = listService;
     }
 
 private:

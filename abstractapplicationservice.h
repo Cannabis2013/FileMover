@@ -18,7 +18,7 @@
 
 typedef IFileListService<IModelBuilder<IFileModel<>,QString>> DefaulFileList;
 typedef IFiltereringContext<IDefaultRule,
-            ITreeModelDelegate<IFileModel<>, DefaultModelType>,DefaulFileList> DefaultFilteringContext;
+            FileRuleDelegate,DefaulFileList> DefaultFilteringContext;
 
 class AbstractApplicationService :
         public QObject,

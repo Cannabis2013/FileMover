@@ -171,4 +171,6 @@ private:
     }
 };
 
+typedef IModelDelegate<EntityModel,EntityType> FileRuleDelegate;
+
 #endif // ENTITYMODEL_H

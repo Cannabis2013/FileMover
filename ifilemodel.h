@@ -16,4 +16,12 @@ public:
     virtual TFileInterface fileInterface() const = 0;
 };
 
+typedef QList<const IFileModel<QFileInfo>*> DefaultFileModelList;
+
+struct DefaultFileModelArguments
+{
+    QFileInfo fileInfo;
+    QString filepath;
+};
+
 #endif // IFILEMODEL_H

@@ -69,7 +69,6 @@ SOURCES += main.cpp\
 HEADERS  += \
     AbstractFileWorker.h \
     ISettingsWindowBuilder.h \
-    TestRuleHelper.h \
     abstractapplicationservice.h \
     abstractfileinformationmanager.h \
     abstractfileoperationworker.h \

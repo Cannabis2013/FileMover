@@ -14,6 +14,8 @@
 #include "rulesmanager.h"
 #include "ruledefinitions.h"
 #include "settingswindowbuilder.h"
+#include "filteringcontext.h"
+#include "filelistservice.h"
 
 using namespace std;
 
@@ -56,6 +58,7 @@ using namespace std;
         mainApplicaton->setFileWatcherService(new FileSystemWatcher());
         mainApplicaton->setFileModelBuilderService(new FileListService());
         mainApplicaton->setRuleDefinitionsService(new RuleDefinitions());
+        mainApplicaton->setFilteringContext(new FilteringContext(),new FileListService());
         mainApplicaton->configureServices();
         mainApplicaton->startServices();
 

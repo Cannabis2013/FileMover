@@ -91,6 +91,74 @@ public:
         _sizeLimit = sizeLimit;
     }
 
+    bool operator==(const IDefaultRuleCondition &other) const
+    {
+        if(copyMode() != other.copyMode())
+            return false;
+        if(compareCriteria() != other.compareCriteria())
+            return false;
+        if(criteria() != other.criteria())
+            return false;
+
+        auto sizeUnit = sizeLimit().first;
+        auto sizeDataStorageUnit = sizeLimit().second;
+
+        auto otherSizeUnit = other.sizeLimit().first;
+        auto otherSizeDataStorageUnit = other.sizeLimit().second;
+
+        if(sizeUnit != otherSizeUnit || sizeDataStorageUnit != otherSizeDataStorageUnit)
+            return false;
+
+        auto lowerSize = sizeInterval().first;
+        auto upperSize = sizeInterval().second;
+
+        auto lowerSizeUnit = lowerSize.first;
+        auto lowerSizeDataStorageUnit = lowerSize.second;
+
+        auto upperSizeUnit = upperSize.first;
+        auto upperSizeDataStorageUnit = upperSize.second;
+
+        auto otherLowerSize = other.sizeInterval().first;
+        auto otherUpperSize = other.sizeInterval().second;
+
+        auto otherLowerSizeUnit = otherLowerSize.first;
+        auto otherLowerSizeDataStorage = otherLowerSize.second;
+
+        auto otherUpperSizeUnit = otherUpperSize.first;
+        auto otherUpperSizeDataStorage = otherUpperSize.second;
+
+        if(lowerSizeUnit != otherLowerSizeUnit)
+            return false;
+        if(lowerSizeDataStorageUnit != otherLowerSizeDataStorage)
+            return false;
+        if(upperSizeUnit != otherUpperSizeUnit)
+            return false;
+        if(upperSizeDataStorageUnit != otherUpperSizeDataStorage)
+            return false;
+
+        if(date() != other.date())
+            return false;
+
+        auto lowerDateLimit = dateIntervals().first;
+        auto upperDateLimit = dateIntervals().second;
+
+        auto otherLowerDateLimit = other.dateIntervals().first;
+        auto otherUpperDateLimit = other.dateIntervals().second;
+
+        if(lowerDateLimit != otherLowerDateLimit)
+            return false;
+        if(upperDateLimit != otherUpperDateLimit)
+            return false;
+
+        if(matchWholeWords() != other.matchWholeWords())
+            return false;
+
+        if(keyWords() != other.keyWords())
+            return false;
+
+        return true;
+    }
+
 private:
     int _copyMode = 0x01;
     int _compareCriteria = 0x01;
@@ -173,6 +241,34 @@ public:
     void setCriterias(const QList<const IDefaultRuleCondition*> &subRules)
     {
         _subRules = subRules;
+    }
+
+    bool operator==(const IDefaultRule &other)
+    {
+        auto compareStrings = [](const QStringList &one, const QStringList &two)->bool
+        {
+            if(one.count() != two.count())
+                return false;
+
+            for (auto s : one) {
+                if(!two.contains(s))
+                    return false;
+            }
+
+            return true;
+        };
+
+        if(typeFilter() != other.typeFilter())
+            return false;
+
+        if(actionRuleEntity() != other.actionRuleEntity())
+            return false;
+
+        if(title() != other.title())
+            return false;
+
+
+        return true;
     }
 
 private:

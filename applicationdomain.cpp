@@ -20,14 +20,15 @@ void ApplicationDomain::clearFolders(QStringList paths)
 
 void ApplicationDomain::clearFoldersAccordingToRules(QStringList paths)
 {
-    fileListService->appendFileLists(watchFolders());
+    auto folders = watchFolders();
+    fileListService->appendFileLists(folders);
     auto list = filteringService->process(rulesService->rules());
     for (auto delegate : list) {
         emit sendEntity(delegate);
     }
 }
 
-void ApplicationDomain::configureServices()
+AbstractApplicationService *ApplicationDomain::configureServices()
 {
     fileWatcherService->addPaths(settingsService->paths());
 
@@ -69,9 +70,11 @@ void ApplicationDomain::configureServices()
     connect(informationService,&AbstractFileInformationManager::stateChanged,this,&ApplicationDomain::stateChanged);
 
     connect(fileOperationsService,&AbstractFileWorker::jobDone,this,&AbstractApplicationService::stateChanged);
+
+    return this;
 }
 
-void ApplicationDomain::startServices()
+AbstractApplicationService* ApplicationDomain::startServices()
 {
     // Start threads
     threadingService->startAllThreads();
@@ -79,6 +82,62 @@ void ApplicationDomain::startServices()
     emit settingsService->processPath(
                 DelegateBuilder::buildFileInformationEntity<EntityModel>(
                     QStringList() << watchFolders()));
+
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setRuleManagerService(AbstractRulesManager *service)
+{
+    rulesService = service;
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setSettingsManagerService(AbstractSettingsManager *service)
+{
+    settingsService = service;
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setEntityQueueManagerService(AbstractQueueManager *service)
+{
+    queueService = service;
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setFileInformationManagerService(AbstractFileInformationManager *service)
+{
+    informationService = service;
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setThreadManagerService(IThreadManagerInterface *service)
+{
+    threadingService = service;
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setFileOperationsService(AbstractFileWorker *service)
+{
+    fileOperationsService = service;
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<>, QString> > *service)
+{
+    fileListService = service;
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setFileWatcherService(AbstractFileSystemWatcher *service)
+{
+    fileWatcherService = service;
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setRuleDefinitionsService(IRuleDefinitions *service)
+{
+    _ruleDefinitionsService = service;
+    return this;
 }
 
 void ApplicationDomain::addWatchFolders(QStringList paths)
@@ -153,4 +212,13 @@ void ApplicationDomain::removeWatchFolderAt(int index)
 void ApplicationDomain::removeWatchFolder(QString path)
 {
     settingsService->removePath(path);
+}
+
+AbstractApplicationService *ApplicationDomain::setFilteringContext(DefaultFilteringContext *filterService, DefaulFileList *listService)
+{
+    filteringService = filterService;
+    filteringService->setListService(listService);
+    fileListService = listService;
+
+    return this;
 }

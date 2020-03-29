@@ -102,7 +102,7 @@ Virtual_Objects TestFileCreator::VirtualObjects(const QString &directory)
         throw new std::domain_error("Directory is not part of the domain!");
 
     Virtual_Objects resultingList;
-    QDirIterator it(directory,QDir::AllEntries, QDirIterator::Subdirectories);
+    QDirIterator it(directory,QDir::AllEntries | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
     while (it.hasNext()) {
         QFileInfo file = it.next();
         try {
@@ -124,8 +124,8 @@ void TestFileCreator::fillDateMappings()
         int day = (month == 2) ? qrand() % 29 + 1 :
                                (month % 2 != 0 || month == 8) ? qrand() % 31 + 1 :
                                                                 qrand() % 30 + 1;
-
-        dateMappings[i] = QDateTime(QDate(day,month,year));
+        auto date = QDateTime(QDate(year,month,day));
+        dateMappings[i] = date;
     }
 }
 

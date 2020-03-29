@@ -61,7 +61,27 @@ private:
         {
 
             auto fileInfo = model->fileInterface();
+            if(ruleCriteria->criteria() == RulesContext::FileBaseMode)
+            {
+                auto match = ruleCriteria->compareCriteria() == RulesContext::Match;
 
+                if(fileInfo.isFile())
+                {
+                    auto subject = fileInfo.baseName();
+                    auto keywords = ruleCriteria->keywords();
+                    if(compareStrings(keywords,subject,match))
+                        resultingList << model;
+                }
+                else if(fileInfo.isDir())
+                {
+                    auto subject = fileInfo.fileName();
+                    auto keywords = ruleCriteria->keywords();
+                    if(compareStrings(keywords,subject,match))
+                        resultingList << model;
+                    else
+                        resultingList << processFiles(ruleCriteria,model->children(),compareStrings);
+                }
+            }
             if(ruleCriteria->criteria() == RulesContext::FileNameMode ||
                     ruleCriteria->criteria() == RulesContext::FileExtensionMode)
             {

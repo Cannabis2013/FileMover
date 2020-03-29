@@ -35,9 +35,10 @@ public:
     {
         DefaultFileModelList resultingList;
 
-        auto filepaths = paths == QStringList() ? _filepaths : paths;
+        auto filepaths = (paths == QStringList()) ? _filepaths : paths;
 
-        for (auto path : paths) {
+        for (auto path : filepaths)
+        {
             QDirIterator iterator(path,QDir::AllEntries | QDir::NoDotAndDotDot);
             while(iterator.hasNext())
             {
@@ -54,7 +55,7 @@ public:
             }
         }
 
-        return resultingList;
+            return resultingList;
     }
 
     DefaultFileModelList filterFileModelsThatMatch(const DefaultFileModelList &fileModelDelegates,
@@ -185,7 +186,7 @@ public:
     {
         return builderService;
     }
-    void setModelBuilderService(IModelBuilder<IFileModel<QFileInfo>,QString> *service) override
+    IFileListService<IModelBuilder<IFileModel<>,QString>>* setModelBuilderService(IModelBuilder<IFileModel<QFileInfo>,QString> *service) override
     {
         builderService = service;
     }

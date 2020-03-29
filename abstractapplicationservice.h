@@ -59,26 +59,26 @@ public:
 
     virtual void calculateFolderSize(QString path) = 0;
 
-    virtual void configureServices() = 0;
+    virtual AbstractApplicationService* configureServices() = 0;
 
-    virtual void startServices() = 0;
+    virtual AbstractApplicationService* startServices() = 0;
 
     // Add services
 
-    virtual void setRuleManagerService(AbstractRulesManager* service) = 0;
-    virtual void setSettingsManagerService(AbstractSettingsManager* service) = 0;
-    virtual void setEntityQueueManagerService(AbstractQueueManager* service) = 0;
-    virtual void setFileInformationManagerService(AbstractFileInformationManager* service) = 0;
-    virtual void setThreadManagerService(IThreadManagerInterface* service) = 0;
+    virtual AbstractApplicationService *setRuleManagerService(AbstractRulesManager* service) = 0;
+    virtual AbstractApplicationService * setSettingsManagerService(AbstractSettingsManager* service) = 0;
+    virtual AbstractApplicationService * setEntityQueueManagerService(AbstractQueueManager* service) = 0;
+    virtual AbstractApplicationService * setFileInformationManagerService(AbstractFileInformationManager* service) = 0;
+    virtual AbstractApplicationService * setThreadManagerService(IThreadManagerInterface* service) = 0;
 
-    virtual void setFileOperationsService(AbstractFileWorker* service) = 0;
-    virtual void setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<>,QString>> *service) = 0;
-    virtual void setFileWatcherService(AbstractFileSystemWatcher* service) = 0;
+    virtual AbstractApplicationService * setFileOperationsService(AbstractFileWorker* service) = 0;
+    virtual AbstractApplicationService * setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<>,QString>> *service) = 0;
+    virtual AbstractApplicationService * setFileWatcherService(AbstractFileSystemWatcher* service) = 0;
 
     virtual IRuleDefinitions* RuleDefinitionsService() = 0;
-    virtual void setRuleDefinitionsService(IRuleDefinitions *service) = 0;
+    virtual AbstractApplicationService* setRuleDefinitionsService(IRuleDefinitions *service) = 0;
 
-    virtual void setFilteringContext(DefaultFilteringContext* filterService,DefaulFileList* listService) = 0;
+    virtual AbstractApplicationService* setFilteringContext(DefaultFilteringContext* filterService,DefaulFileList* listService) = 0;
 
 public slots:
     virtual void clearFolders(QStringList paths) = 0;

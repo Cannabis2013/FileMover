@@ -64,38 +64,28 @@ public:
     void clearFolders(QStringList paths)  override;
     void clearFoldersAccordingToRules(QStringList paths)  override;
 
-    void configureServices()  override;
-    void startServices() override;
+    AbstractApplicationService* configureServices()  override;
+    AbstractApplicationService* startServices() override;
 
-    void setRuleManagerService(AbstractRulesManager* service) override {rulesService = service;}
-    void setSettingsManagerService(AbstractSettingsManager *service) override {settingsService = service;};
-    void setEntityQueueManagerService(AbstractQueueManager* service) override {queueService = service;}
-    void setFileInformationManagerService(AbstractFileInformationManager *service) override {informationService = service;}
-    void setThreadManagerService(IThreadManagerInterface *service) override {threadingService = service;}
+    AbstractApplicationService* setRuleManagerService(AbstractRulesManager* service) override;
+    AbstractApplicationService* setSettingsManagerService(AbstractSettingsManager *service) override;
+    AbstractApplicationService* setEntityQueueManagerService(AbstractQueueManager* service) override;
+    AbstractApplicationService* setFileInformationManagerService(AbstractFileInformationManager *service) override;
+    AbstractApplicationService* setThreadManagerService(IThreadManagerInterface *service) override;
 
-    void setFileOperationsService(AbstractFileWorker *service) override {fileOperationsService = service;}
-    void setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<>,QString>> *service) override {fileListService = service;}
-    void setFileWatcherService(AbstractFileSystemWatcher *service) override {fileWatcherService = service;}
+    AbstractApplicationService* setFileOperationsService(AbstractFileWorker *service) override;
+    AbstractApplicationService* setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<>,QString>> *service) override;
+    AbstractApplicationService* setFileWatcherService(AbstractFileSystemWatcher *service) override;
 
-    IRuleDefinitions * RuleDefinitionsService() override
-    {
-        return _ruleDefinitionsService;
-    }
-    void setRuleDefinitionsService(IRuleDefinitions *service) override
-    {
-        _ruleDefinitionsService = service;
-    }
+    IRuleDefinitions * RuleDefinitionsService() override {return _ruleDefinitionsService;}
+    AbstractApplicationService* setRuleDefinitionsService(IRuleDefinitions *service) override;
+
+    AbstractApplicationService* setFilteringContext(DefaultFilteringContext* filterService, DefaulFileList* listService) override;
 
     void addWatchFolder(QString path) override {settingsService->insertPath(path);}
     void removeWatchFolderAt(int index) override;
     void removeWatchFolder(QString path) override;
 
-    void setFilteringContext(DefaultFilteringContext* filterService, DefaulFileList* listService) override
-    {
-        filteringService = filterService;
-        filteringService->setListService(listService);
-        fileListService = listService;
-    }
 
 private:
     AbstractFileWorker *fileOperationsService;

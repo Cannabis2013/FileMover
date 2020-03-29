@@ -3,6 +3,16 @@
 #include "testfilecreator.h"
 #include "rulebuilder.h"
 #include "defaultRuleConfiguration.h"
+#include "fileworker.h"
+#include "rulesmanager.h"
+#include "threadsmanager.h"
+#include "settingsmanager.h"
+#include "fileinformationmanager.h"
+#include "entityqueuemanager.h"
+#include "filesystemwatcher.h"
+#include "filelistservice.h"
+#include "ruledefinitions.h"
+#include "filteringcontext.h"
 
 #ifdef TEST_MODE
 #include <QtTest>
@@ -95,6 +105,25 @@ private slots:
     void operation_move_filename_match_success_1();
 
 private:
+    AbstractApplicationService *initApplicationState()
+    {
+        auto fileListService = (new FileListService())->setModelBuilderService(new FileModelBuilder());
+
+        return (new ApplicationDomain())->
+                setFileOperationsService(new FileWorker())->
+                setRuleManagerService(new rulesManager("TESTAPP","TESTORG",new RuleBuilder()))->
+                setThreadManagerService(new ThreadsManager())->
+                setSettingsManagerService(new settingsManager("TESTAPP","TESTORG"))->
+                setFileInformationManagerService(new FileInformationManager("TESTAPP","TESTORG"))->
+                setEntityQueueManagerService(new EntityQueueManager())->
+                setFileWatcherService(new FileSystemWatcher())->
+                setFileModelBuilderService(new FileListService())->
+                setRuleDefinitionsService(new RuleDefinitions())->
+                setFilteringContext(new FilteringContext(),fileListService)->
+                configureServices()->
+                startServices();
+    }
+
     bool testPersistence(bool rulesEnabled,bool ruleTimerEnabled, bool closeOnExitEnabled, int ruleTimerInterval)
     {
         // Pre state variables
@@ -102,14 +131,16 @@ private:
         mApp->setSettings(closeOnExitEnabled,ruleTimerEnabled,rulesEnabled,QRect(),ruleTimerInterval);
         delete mApp;
 
-        mApp = new ApplicationDomain();
+        mApp = initApplicationState();
 
         auto postSettings = mApp->settingsState();
 
-        return closeOnExitEnabled == postSettings->closeOnExit() &&
-                ruleTimerEnabled == postSettings->rulesEnabled() &&
-                rulesEnabled == postSettings->ruleTimerEnabled() &&
+        auto result = closeOnExitEnabled == postSettings->closeOnExit() &&
+                rulesEnabled == postSettings->rulesEnabled() &&
+                ruleTimerEnabled == postSettings->ruleTimerEnabled() &&
                  ruleTimerInterval == postSettings->ruleCountInterval();
+
+        return result;
     }
 
     bool testInsertRule(IDefaultRuleConfigurator *ruleConfig,
@@ -134,11 +165,13 @@ private:
     }
 
     AbstractApplicationService *mApp;
-    const Virtual_Objects *initializePreState(const IDefaultRuleConfigurator *ruleConfig, QList<const IDefaultConditionConfigurator *> ruleConditionConfigs);
+    const Virtual_Objects *initializePreState(const IDefaultRuleConfigurator *ruleConfig, QList<const IDefaultConditionConfigurator *> ruleConditionConfigs, TestFileCreator *fileCreator);
 };
 Core_functionality::Core_functionality()
 {
-    mApp = new ApplicationDomain();
+
+    mApp = initApplicationState();
+
     mApp->addWatchFolder(TEST_WORKING_PATH);
 }
 
@@ -148,6 +181,7 @@ void Core_functionality::cleanup()
 {
     // Clear rules
     mApp->clearRules();
+    mApp->clearWatchFolders();
 }
 
 void Core_functionality::cleanupTestCase()
@@ -293,7 +327,7 @@ void Core_functionality::operationFilenameMatchSuccess1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    auto f_creator = new  TestFileCreator();
+    auto fileCreator = new  TestFileCreator();
 
     auto ruleConfig = new DefaultRuleConfiguration();
     ruleConfig->setAction(RulesContext::DeleteAction);
@@ -303,7 +337,7 @@ void Core_functionality::operationFilenameMatchSuccess1()
 
     auto criteriaConfig = new DefaultCriteriaConfiguration();
 
-    criteriaConfig->setCriteria(RulesContext::FileNameMode);
+    criteriaConfig->setCriteria(RulesContext::FileBaseMode);
     criteriaConfig->setCompareCriteria(RulesContext::Match);
 
     auto preKeywords = QStringList() << "FCK" << "README";
@@ -312,7 +346,7 @@ void Core_functionality::operationFilenameMatchSuccess1()
 
     auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    auto objects = initializePreState(ruleConfig,criteriaConfigs);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
 
@@ -329,7 +363,7 @@ void Core_functionality::operationFilenameMatchSuccess1()
         QFileInfo info = obj.additionalInformation;
         bool match = false;
         for (auto preKeyword : preKeywords) {
-            auto subject = info.fileName();
+            auto subject = info.baseName();
 
             if(subject == preKeyword)
                match = true;
@@ -352,7 +386,7 @@ void Core_functionality::operationFilenameMatchSuccess1()
 
     Virtual_Objects actualList;
     try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -368,7 +402,7 @@ void Core_functionality::operationFilenameMatchSuccess1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -388,7 +422,7 @@ void Core_functionality::operationFilenameContainSuccess1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    auto f_creator = new  TestFileCreator();
+    auto fileCreator = new  TestFileCreator();
 
     auto ruleConfig = new DefaultRuleConfiguration();
     ruleConfig->setAction(RulesContext::DeleteAction);
@@ -398,7 +432,7 @@ void Core_functionality::operationFilenameContainSuccess1()
 
     auto criteriaConfig = new DefaultCriteriaConfiguration();
 
-    criteriaConfig->setCriteria(RulesContext::FileNameMode);
+    criteriaConfig->setCriteria(RulesContext::FileBaseMode);
     criteriaConfig->setCompareCriteria(RulesContext::Contain);
 
     auto preKeywords = QStringList() << "FCK" << "README";
@@ -407,7 +441,7 @@ void Core_functionality::operationFilenameContainSuccess1()
 
     auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    auto objects = initializePreState(ruleConfig,criteriaConfigs);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
 
@@ -437,7 +471,7 @@ void Core_functionality::operationFilenameContainSuccess1()
 
     Virtual_Objects actualList;
     try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -451,7 +485,7 @@ void Core_functionality::operationFilenameContainSuccess1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -470,7 +504,7 @@ void Core_functionality::operation_extension_match_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    auto f_creator = new  TestFileCreator();
+    auto fileCreator = new  TestFileCreator();
 
     auto ruleConfig = new DefaultRuleConfiguration();
     ruleConfig->setAction(RulesContext::DeleteAction);
@@ -489,7 +523,7 @@ void Core_functionality::operation_extension_match_success_1()
 
     auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    auto objects = initializePreState(ruleConfig,criteriaConfigs);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
 
@@ -517,7 +551,7 @@ void Core_functionality::operation_extension_match_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -532,7 +566,7 @@ void Core_functionality::operation_extension_match_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -551,7 +585,7 @@ void Core_functionality::operation_size_less_than_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    auto f_creator = new  TestFileCreator();
+    auto fileCreator = new  TestFileCreator();
 
     auto ruleConfig = new DefaultRuleConfiguration();
     ruleConfig->setAction(RulesContext::DeleteAction);
@@ -570,7 +604,7 @@ void Core_functionality::operation_size_less_than_success_1()
 
     auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    auto objects = initializePreState(ruleConfig,criteriaConfigs);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
     qint64 bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
@@ -594,7 +628,7 @@ void Core_functionality::operation_size_less_than_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -608,7 +642,7 @@ void Core_functionality::operation_size_less_than_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -627,7 +661,7 @@ void Core_functionality::operation_size_equal_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    auto f_creator = new  TestFileCreator();
+    auto fileCreator = new  TestFileCreator();
 
     auto ruleConfig = new DefaultRuleConfiguration();
     ruleConfig->setAction(RulesContext::DeleteAction);
@@ -646,7 +680,7 @@ void Core_functionality::operation_size_equal_success_1()
 
     auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    auto objects = initializePreState(ruleConfig,criteriaConfigs);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
     auto bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
@@ -670,7 +704,7 @@ void Core_functionality::operation_size_equal_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -684,7 +718,7 @@ void Core_functionality::operation_size_equal_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -703,7 +737,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    auto f_creator = new  TestFileCreator();
+    auto fileCreator = new  TestFileCreator();
 
     auto ruleConfig = new DefaultRuleConfiguration();
     ruleConfig->setAction(RulesContext::DeleteAction);
@@ -722,7 +756,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
 
     auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    auto objects = initializePreState(ruleConfig,criteriaConfigs);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
 
     Virtual_Objects referenceList;
@@ -747,7 +781,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -761,7 +795,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -780,7 +814,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    auto f_creator = new  TestFileCreator();
+    auto fileCreator = new  TestFileCreator();
 
     auto ruleConfig = new DefaultRuleConfiguration();
     ruleConfig->setAction(RulesContext::DeleteAction);
@@ -799,7 +833,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
 
     auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    auto objects = initializePreState(ruleConfig,criteriaConfigs);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
     auto bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
@@ -823,7 +857,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -837,7 +871,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -856,7 +890,7 @@ void Core_functionality::operation_size_greater_than_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    auto f_creator = new  TestFileCreator();
+    auto fileCreator = new  TestFileCreator();
 
     auto ruleConfig = new DefaultRuleConfiguration();
     ruleConfig->setAction(RulesContext::DeleteAction);
@@ -875,7 +909,7 @@ void Core_functionality::operation_size_greater_than_success_1()
 
     auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    auto objects = initializePreState(ruleConfig,criteriaConfigs);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
     qint64 bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
@@ -888,8 +922,8 @@ void Core_functionality::operation_size_greater_than_success_1()
             cout << e->what() << endl;
             return Q_ASSERT(false);
         }
-        qint64 sz = obj.additionalInformation.size();
-        if(sz <= bytes)
+        qint64 fileSize = obj.additionalInformation.size();
+        if(fileSize > bytes)
             referenceList << obj;
     }
 
@@ -905,7 +939,7 @@ void Core_functionality::operation_size_greater_than_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -920,7 +954,7 @@ void Core_functionality::operation_size_greater_than_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -939,7 +973,7 @@ void Core_functionality::operation_size_interval_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    auto f_creator = new  TestFileCreator();
+    auto fileCreator = new  TestFileCreator();
 
     auto ruleConfig = new DefaultRuleConfiguration();
     ruleConfig->setAction(RulesContext::DeleteAction);
@@ -961,14 +995,14 @@ void Core_functionality::operation_size_interval_success_1()
 
     auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    auto objects = initializePreState(ruleConfig,criteriaConfigs);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
 
     for (int i = 0; i < objects->count(); ++i) {
         auto object = objects->getVirtualObjectFromIndex(i);
         auto subject = object.additionalInformation.size();
-        if(subject >= FilesContext::convertToBytes(lowerSizeUnits,lowerSizeDSU) && subject <= FilesContext::convertToBytes(upperSizeUnits,upperSizeDSU))
+        if(subject < FilesContext::convertToBytes(lowerSizeUnits,lowerSizeDSU) || subject > FilesContext::convertToBytes(upperSizeUnits,upperSizeDSU))
             referenceList << object;
     }
 
@@ -984,7 +1018,7 @@ void Core_functionality::operation_size_interval_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -999,7 +1033,7 @@ void Core_functionality::operation_size_interval_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -1017,11 +1051,14 @@ void Core_functionality::operation_move_filename_match_success_1()
 }
 
 const Virtual_Objects *Core_functionality::initializePreState(const IDefaultRuleConfigurator *ruleConfig,
-                                                                QList<const IDefaultConditionConfigurator *> ruleConditionConfigs)
+                                                              QList<const IDefaultConditionConfigurator *> ruleConditionConfigs,
+                                                              TestFileCreator *fileCreator)
 {
     // Pre-state variables
 
     auto ruleBuilder = new RuleBuilder();
+
+    mApp->addWatchFolder(TEST_WORKING_PATH);
 
     QList<const IDefaultRuleCondition*> criterias;
 
@@ -1032,11 +1069,10 @@ const Virtual_Objects *Core_functionality::initializePreState(const IDefaultRule
 
     mApp->insertRule(preRule);
 
-    TestFileCreator *file_creator;
-
     const Virtual_Objects *objects;
+
     try {
-        objects = file_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+        objects = fileCreator->createFiles(TEST_WORKING_PATH,test_file_set_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         throw "Creating files failed.";

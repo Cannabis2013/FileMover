@@ -47,20 +47,19 @@ using namespace std;
 
         processArguments(arguments,argVals);
 
-        auto mainApplicaton = new ApplicationDomain();
-
-        mainApplicaton->setFileOperationsService(new FileWorker());
-        mainApplicaton->setRuleManagerService(new rulesManager(argVals.appName,argVals.orgName,new RuleBuilder()));
-        mainApplicaton->setThreadManagerService(new ThreadsManager());
-        mainApplicaton->setSettingsManagerService(new settingsManager(argVals.appName,argVals.orgName));
-        mainApplicaton->setFileInformationManagerService(new FileInformationManager(argVals.appName,argVals.orgName));
-        mainApplicaton->setEntityQueueManagerService(new EntityQueueManager());
-        mainApplicaton->setFileWatcherService(new FileSystemWatcher());
-        mainApplicaton->setFileModelBuilderService(new FileListService());
-        mainApplicaton->setRuleDefinitionsService(new RuleDefinitions());
-        mainApplicaton->setFilteringContext(new FilteringContext(),new FileListService());
-        mainApplicaton->configureServices();
-        mainApplicaton->startServices();
+        auto mainApplicaton = (new ApplicationDomain())->
+                setFileOperationsService(new FileWorker())->
+                setRuleManagerService(new rulesManager(argVals.appName,argVals.orgName,new RuleBuilder()))->
+                setThreadManagerService(new ThreadsManager())->
+                setSettingsManagerService(new settingsManager(argVals.appName,argVals.orgName))->
+                setFileInformationManagerService(new FileInformationManager(argVals.appName,argVals.orgName))->
+                setEntityQueueManagerService(new EntityQueueManager())->
+                setFileWatcherService(new FileSystemWatcher())->
+                setFileModelBuilderService(new FileListService())->
+                setRuleDefinitionsService(new RuleDefinitions())->
+                setFilteringContext(new FilteringContext(),new FileListService())->
+                configureServices()->
+                startServices();
 
 
         auto w = new ApplicationUI(mainApplicaton,new RuleBuilder, new RuleDefinitions);

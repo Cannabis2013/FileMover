@@ -31,7 +31,7 @@ public:
     virtual QStringList fileLists() = 0;
 
     virtual TModelBuilder *modelBuilderService() = 0;
-    virtual void setModelBuilderService(TModelBuilder *service) = 0;
+    virtual IFileListService<TModelBuilder> *setModelBuilderService(TModelBuilder *service) = 0;
 };
 
 

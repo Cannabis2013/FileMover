@@ -46,7 +46,7 @@ public:
         _dateIntervals = dateIntervals;
     }
 
-    QStringList keyWords() const override
+    QStringList keywords() const override
     {
         return _keyWords;
     }
@@ -153,7 +153,7 @@ public:
         if(matchWholeWords() != other.matchWholeWords())
             return false;
 
-        if(keyWords() != other.keyWords())
+        if(keywords() != other.keywords())
             return false;
 
         return true;
@@ -245,7 +245,7 @@ public:
     {
         return _criterias;
     }
-    void setCriterias(const QList<const IDefaultRuleCondition*> &subRules)
+    void setCriterias(const QList<const IDefaultRuleCondition*> &subRules) override
     {
         _criterias = subRules;
     }

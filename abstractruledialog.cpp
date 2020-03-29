@@ -58,7 +58,7 @@ void AbstractRuleDialog::resetAllForm()
     subRuleView->clear();
 }
 
-void AbstractRuleDialog::updateConditionView(const IDefaultConditionConfigurator *sR)
+void AbstractRuleDialog::updateConditionView(const IDefaultRuleCondition *sR)
 {
     auto cond = sR->criteria();
     auto comp = sR->compareCriteria();
@@ -80,7 +80,7 @@ void AbstractRuleDialog::updateConditionView(const IDefaultConditionConfigurator
     else if((cond == RulesContext::FileCreatedMode || cond == RulesContext::FileModifiedMode) &&
             comp == RulesContext::Interval)
     {
-        condWidget->setIntervalDate(sR->dates());
+        condWidget->setIntervalDate(sR->dateIntervals());
     }
     else
     {
@@ -151,7 +151,7 @@ void AbstractRuleDialog::updateView()
         }
         else
         {
-            headerData << RulesContext::mergeStringList(criteria->keyWords());
+            headerData << RulesContext::mergeStringList(criteria->keywords());
         }
 
         new QTreeWidgetItem(subRuleView,headerData);

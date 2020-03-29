@@ -9,14 +9,12 @@ typedef IRuleConfiguration<IDefaultRuleCondition> IDefaultRuleConfigurator;
 typedef IRuleConditionConfiguration<SizeLimit,SizeLimits,
                                     QDateTime> IDefaultConditionConfigurator;
 
-typedef IRuleBuilder<IRule<IDefaultRuleCondition>,IDefaultRuleConfigurator,IDefaultConditionConfigurator> IDefaultRuleBuilder;
-
 class RuleBuilder :
         public IDefaultRuleBuilder
 {
 public:
     const IRule<IDefaultRuleCondition> *buildRule(const IDefaultRuleConfigurator *configuration,
-                                                  const QList<const IDefaultConditionConfigurator*> &conditionConfigurations) override
+                                                  const QList<const IDefaultRuleCondition*> &criterias) override
     {
         IRule<IDefaultRuleCondition> *r = new Rule;
         r->setTitle(configuration->title());
@@ -27,20 +25,13 @@ public:
         r->setCriterias(configuration->conditions());
         r->setDeepScanMode(configuration->deepScanMode());
 
-        QList<const IDefaultRuleCondition*> criterias;
-
-        for (auto config : conditionConfigurations) {
-            auto criteria = buildCriteria(config);
-            criterias << criteria;
-        }
 
         r->setCriterias(criterias);
 
         return r;
     }
 
-private:
-    const IDefaultRuleCondition *buildCriteria(const IDefaultConditionConfigurator* configurator)
+    const IDefaultRuleCondition *buildCriteria(const IDefaultConditionConfigurator* configurator) override
     {
         auto condition = new RuleCondition();
         condition->setCriteria(configurator->criteria());

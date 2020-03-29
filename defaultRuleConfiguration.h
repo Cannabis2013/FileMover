@@ -4,7 +4,7 @@
 #include "iruleconfiguration.h"
 #include "idefaultrulescollection.h"
 
-class RuleDefaultConfiguration : public IRuleConfiguration<IDefaultRuleCondition>
+class DefaultRuleConfiguration : public IRuleConfiguration<IDefaultRuleCondition>
 {
 public:
     QString appliesTo() const
@@ -79,7 +79,7 @@ private:
     bool _deepScanMode;
 };
 
-class RuleConditionDefaultConfiguration :
+class DefaultCriteriaConfiguration :
         public IRuleConditionConfiguration<SizeLimit,SizeLimits,
                                             QDateTime>
 {
@@ -133,8 +133,13 @@ public:
     {
         return _sizeInterval;
     }
-    void setSizeInterval(const SizeLimits &sizeInterval)
+    void setSizeInterval(const int &minSize, const QString &minDSU, const int &maxSize, const QString &maxDSU)
     {
+        auto min = SizeLimit(minSize,minDSU);
+        auto max = SizeLimit(maxSize,maxDSU);
+
+        auto sizeInterval = SizeLimits(min,max);
+
         _sizeInterval = sizeInterval;
     }
 

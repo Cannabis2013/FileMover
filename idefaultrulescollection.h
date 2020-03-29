@@ -12,6 +12,6 @@ typedef IRule<IDefaultRuleCondition> IDefaultRule;
 
 typedef IRuleConfiguration<IDefaultRuleCondition> IDefaultRuleConfigurator;
 typedef IRuleConditionConfiguration<SizeLimit,SizeLimits,QDateTime> IDefaultConditionConfigurator;
-typedef IRuleBuilder<IRule<IDefaultRuleCondition>,IDefaultRuleConfigurator,IDefaultConditionConfigurator> IDefaultRuleBuilder;
+typedef IRuleBuilder<IRule<IDefaultRuleCondition>,IDefaultRuleCondition,IDefaultRuleConfigurator,IDefaultConditionConfigurator> IDefaultRuleBuilder;
 
 #endif // IDEFAULTRULESCOLLECTION_H

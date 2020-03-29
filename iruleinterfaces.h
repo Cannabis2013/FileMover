@@ -18,8 +18,8 @@ public:
     virtual void setDate(const TDateObject &date) = 0;
     virtual QPair<TDateObject, TDateObject> dateIntervals() const = 0;
     virtual void setDateIntervals(const QPair<TDateObject, TDateObject> &dateIntervals) = 0;
-    virtual QStringList keyWords() const = 0;
-    virtual void setKeyWords(const QStringList &keyWords) = 0;
+    virtual QStringList keywords() const = 0;
+    virtual void setKeyWords(const QStringList &keywords) = 0;
     virtual int copyMode() const = 0;
     virtual void setCopyMode(const int &copymode) = 0;
     virtual int compareCriteria() const = 0;

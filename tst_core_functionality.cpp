@@ -56,15 +56,11 @@ private slots:
      * Rules section
      */
 
-    void insert_rule_filepath_match_success_1();
-    void insert_rule_filepath_match_fail_1();
-    void insert_rule_filepath_match_fail_2();
-    void insert_rule_datecreated_before_succes1();
+    void insert_rule_filename_match_success_1();
+    void insert_rule_filename_match_succes_2();
+    void insert_rule_created_before_succes1();
     void insert_rule_datecreated_after_succes1();
-    void insert_rule_datecreated_before_fail1();
-    void insert_rule_datecreated_before_fail2();
     void insert_rule_sizeinterval_success_1();
-    void insert_rule_sizeinterval_fail_1();
 
     /*
      * FileOperations section
@@ -75,10 +71,8 @@ private slots:
      */
 
     // Filepath mode
-    void operation_filepath_match_success_1();
-    void operation_filepath_match_fail_1();
-    void operation_filepath_contain_success_1();
-    void operation_filepath_contain_fail_1();
+    void operationFilenameMatchSuccess1();
+    void operationFilenameContainSuccess1();
 
     // File extension mode
 
@@ -98,7 +92,7 @@ private slots:
 
     // Filepath Mode
 
-    void operation_move_filepath_match_success_1();
+    void operation_move_filename_match_success_1();
 
 private:
     bool testPersistence(bool rulesEnabled,bool ruleTimerEnabled, bool closeOnExitEnabled, int ruleTimerInterval)
@@ -119,25 +113,28 @@ private:
     }
 
     bool testInsertRule(IDefaultRuleConfigurator *ruleConfig,
-                        IDefaultConditionConfigurator * ruleConditionConfig)
+                        QList<const IDefaultConditionConfigurator *> ruleConditionConfigs)
     {
-        // Pre-state variables
-
         auto ruleBuilder = new RuleBuilder();
-        auto rule = ruleBuilder->buildRule(ruleConfig,QList<const IDefaultConditionConfigurator*>() << ruleConditionConfig);
+        QList<const IDefaultRuleCondition*> criterias;
+        for (auto config : ruleConditionConfigs) {
+            criterias << ruleBuilder->buildCriteria(config);
+        }
 
+        auto preRule = ruleBuilder->buildRule(ruleConfig, criterias);
 
-        // Initialize pre-state
+        // Insert rule into application domain
+        mApp->insertRule(preRule);
 
-
-        mApp->insertRule(rule);
-
-        // Post section
+        // Retrieve rule from application domain
 
         auto postRule = mApp->rule(ruleConfig->title());
+
+        return preRule == postRule;
     }
 
     AbstractApplicationService *mApp;
+    const Virtual_Objects *initializePreState(const IDefaultRuleConfigurator *ruleConfig, QList<const IDefaultConditionConfigurator *> ruleConditionConfigs);
 };
 Core_functionality::Core_functionality()
 {
@@ -145,10 +142,7 @@ Core_functionality::Core_functionality()
     mApp->addWatchFolder(TEST_WORKING_PATH);
 }
 
-Core_functionality::~Core_functionality()
-{
-
-}
+Core_functionality::~Core_functionality(){}
 
 void Core_functionality::cleanup()
 {
@@ -175,343 +169,150 @@ void Core_functionality::persistence_SettingsManager_Success_2()
     QVERIFY(testPersistence(false,true,true,0));
 }
 
-
-
-void Core_functionality::insert_rule_filepath_match_success_1()
+void Core_functionality::insert_rule_filename_match_success_1()
 {
-    // Pre-state variables
+   auto rConfig = new DefaultRuleConfiguration();
 
-    QString preAPath = "/testpath", preTitle = "Test1";
-    QStringList prekWrds = QStringList() << "T1" << "T2";
-    RulesContext::RuleCriteria preCond = RulesContext::FileNameMode;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::match;
-    Rule preRule;
+    rConfig->setTitle("Test1");
+    rConfig->setAppliesTo(TEST_WORKING_PATH);
+    rConfig->setAction(RulesContext::DeleteAction);
 
-    // Initialize pre-state
+    auto cConfig = new DefaultCriteriaConfiguration();
 
-    preRule.title = preTitle;
-    SubRule sR;
-    preRule.appliesToPath = preAPath;
-    sR.keyWords = prekWrds;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
+    cConfig->setKeywords(QStringList() << "T1" << "T2");
+    cConfig->setCriteria(RulesContext::FileNameMode);
+    cConfig->setCompareCriteria(RulesContext::Match);
 
-    preRule.subRules << sR;
+    auto configs = QList<const IDefaultConditionConfigurator*>() << cConfig;
 
-    mApp->insertRule(preRule);
+    auto result = testInsertRule(rConfig,configs);
 
-    // Post section
-
-    Rule postRule = mApp->rule(preTitle);
-    QVERIFY(TestRuleHelper::RuleEquals(preRule,postRule));
+    QVERIFY(result);
 }
 
-void Core_functionality::insert_rule_filepath_match_fail_1()
+void Core_functionality::insert_rule_filename_match_succes_2()
 {
-    // Pre-state variables
+    auto rConfig = new DefaultRuleConfiguration();
 
-    QString preAPath = "/testpath", preTitle = "Test2";
-    QStringList prekWrds = QStringList() << "T1" << "T2";
-    RulesContext::RuleCriteria preCond = RulesContext::FileNameMode;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::match;
-    Rule preRule;
+    rConfig->setTitle("Test2");
+    rConfig->setAppliesTo(TEST_WORKING_PATH);
+    rConfig->setAction(RulesContext::DeleteAction);
 
-    // Initialize pre-state
-    SubRule sR;
+    auto cConfig = new DefaultCriteriaConfiguration();
 
-    preRule.title = preTitle;
-    preRule.appliesToPath = preAPath;
-    sR.keyWords = prekWrds;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
+    cConfig->setKeywords(QStringList() << "G1" << "G2");
+    cConfig->setCriteria(RulesContext::FileSizeMode);
+    cConfig->setCompareCriteria(RulesContext::Contain);
 
-    preRule.subRules << sR;
+    auto configs = QList<const IDefaultConditionConfigurator*>() << cConfig;
 
-    mApp->insertRule(preRule);
+    auto result = testInsertRule(rConfig,configs);
 
-    // Post section
-
-    QString postAPath = "/testpath", postTitle = "NotInTest";
-    QStringList postkWrds = QStringList() << "T1" << "T2";
-    RulesContext::RuleCriteria postCond = RulesContext::FileNameMode;
-    RulesContext::RuleCompareCriteria postComp = RulesContext::match;
-    Rule compareRule;
-
-    // Post-state
-    SubRule cSR;
-
-    compareRule.title = postTitle;
-    compareRule.appliesToPath = postAPath;
-    cSR.keyWords = postkWrds;
-    cSR.criteria = postCond;
-    cSR.compareCriteria = postComp;
-
-    compareRule.subRules << cSR;
-
-    Rule postRule = mApp->rule(preTitle);
-
-    QVERIFY(!TestRuleHelper::RuleEquals(compareRule,postRule));
+    QVERIFY(result);
 }
 
-void Core_functionality::insert_rule_filepath_match_fail_2()
+
+void Core_functionality::insert_rule_created_before_succes1()
 {
-    // Pre-state variables
+    auto rConfig = new DefaultRuleConfiguration();
 
-    QString preAPath = "/testpath", preTitle = "Test3";
-    QStringList prekWrds = QStringList() << "T1" << "T2";
-    RulesContext::RuleCriteria preCond = RulesContext::FileNameMode;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::match;
-    Rule preRule;
+    rConfig->setTitle("Test3");
+    rConfig->setAppliesTo(TEST_WORKING_PATH);
+    rConfig->setAction(RulesContext::DeleteAction);
 
-    // Initialize pre-state
+    auto cConfig = new DefaultCriteriaConfiguration();
 
-    preRule.title = preTitle;
-    SubRule sR;
-    preRule.appliesToPath = preAPath;
-    sR.keyWords = prekWrds;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
+    cConfig->setKeywords(QStringList() << "G1" << "G2");
+    cConfig->setCriteria(RulesContext::FileCreatedMode);
+    cConfig->setCompareCriteria(RulesContext::OlderThan);
+    cConfig->setDate(QDateTime(QDate(2012,6,3)));
 
-    preRule.subRules << sR;
+    auto configs = QList<const IDefaultConditionConfigurator*>() << cConfig;
 
-    mApp->insertRule(preRule);
+    auto result = testInsertRule(rConfig,configs);
 
-    // Post section
-
-    QString postAPath = "/testpath", postTitle = "Test3";
-    QStringList postkWrds = QStringList() << "T1" << "T2";
-    RulesContext::RuleCriteria postCond = RulesContext::fileExtensionMode;
-    RulesContext::RuleCompareCriteria postComp = RulesContext::match;
-    Rule compareRule;
-
-    // Post-state
-    SubRule cSR;
-
-    compareRule.title = postTitle;
-    compareRule.appliesToPath = postAPath;
-    cSR.keyWords = postkWrds;
-    cSR.criteria = postCond;
-    cSR.compareCriteria = postComp;
-
-    compareRule.subRules << cSR;
-
-    Rule postRule = mApp->rule(preTitle);
-
-    QVERIFY(!TestRuleHelper::RuleEquals(compareRule,postRule));
-}
-
-void Core_functionality::insert_rule_datecreated_before_succes1()
-{
-    // Pre state variables
-    QString title = "Date rule";
-    Rule preRule;
-    preRule.title = title;
-    preRule.actionRuleEntity = RulesContext::Delete;
-
-    SubRule sR;
-
-    myDateTime mDate;
-    mDate.setDate(QDate(2017,6,3));
-
-    sR.criteria = RulesContext::fileCreatedMode;
-    sR.compareCriteria = RulesContext::olderThan;
-    sR.date = mDate;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
-
-    Rule postRule = mApp->rule(title);
-
-    QVERIFY(TestRuleHelper::RuleEquals(preRule,postRule));
+    QVERIFY(result);
 }
 
 void Core_functionality::insert_rule_datecreated_after_succes1()
 {
-    // Pre state variables
-    QString title = "Date rule2";
-    Rule preRule;
-    preRule.title = title;
-    preRule.actionRuleEntity = RulesContext::Delete;
+    auto rConfig = new DefaultRuleConfiguration();
 
-    SubRule sR;
+    rConfig->setTitle("Test4");
+    rConfig->setAppliesTo(TEST_WORKING_PATH);
+    rConfig->setAction(RulesContext::DeleteAction);
 
-    myDateTime mDate;
-    mDate.setDate(QDate(2017,6,3));
+    auto cConfig = new DefaultCriteriaConfiguration();
 
-    sR.criteria = RulesContext::fileCreatedMode;
-    sR.compareCriteria = RulesContext::youngerThan;
-    sR.date = mDate;
+    cConfig->setKeywords(QStringList() << "G1" << "G2");
+    cConfig->setCriteria(RulesContext::FileCreatedMode);
+    cConfig->setCompareCriteria(RulesContext::YoungerThan);
+    cConfig->setDate(QDateTime(QDate(2012,6,3)));
 
-    preRule.subRules << sR;
+    auto configs = QList<const IDefaultConditionConfigurator*>() << cConfig;
 
-    mApp->insertRule(preRule);
+    auto result = testInsertRule(rConfig,configs);
 
-    Rule postRule = mApp->rule(title);
-
-    QVERIFY(TestRuleHelper::RuleEquals(preRule,postRule));
-}
-
-void Core_functionality::insert_rule_datecreated_before_fail1()
-{
-    // Pre state variables
-    QString title = "Date rule";
-    Rule preRule;
-    preRule.title = title;
-    preRule.actionRuleEntity = RulesContext::Delete;
-
-    Rule compareRule = preRule;
-
-    SubRule sR1,sR2;
-
-    myDateTime originalDate,compareDate;
-    originalDate.setDate(QDate(2017,6,3));
-    compareDate.setDate(QDate(2015,4,2));
-
-    sR1.criteria = RulesContext::fileCreatedMode;
-    sR1.compareCriteria = RulesContext::olderThan;
-    sR1.date = originalDate;
-
-    preRule.subRules << sR1;
-
-    sR2.criteria = RulesContext::fileCreatedMode;
-    sR2.compareCriteria = RulesContext::olderThan;
-    sR2.date = compareDate;
-
-    compareRule.subRules << sR2;
-
-
-    mApp->insertRule(preRule);
-
-    Rule postRule = mApp->rule(title);
-
-    QVERIFY(!TestRuleHelper::RuleEquals(compareRule,postRule));
-}
-
-void Core_functionality::insert_rule_datecreated_before_fail2()
-{
-    // Pre state variables
-    QString title = "Date rule";
-    Rule preRule;
-    preRule.title = title;
-    preRule.actionRuleEntity = RulesContext::Delete;
-
-    Rule compareRule = preRule;
-
-    SubRule sR1,sR2;
-
-    myDateTime originalDate;
-    originalDate.setDate(QDate(2017,6,3));
-
-    sR1.criteria = RulesContext::fileCreatedMode;
-    sR1.compareCriteria = RulesContext::olderThan;
-    sR1.date = originalDate;
-
-    preRule.subRules << sR1;
-
-    sR2.criteria = RulesContext::fileCreatedMode;
-    sR2.compareCriteria = RulesContext::youngerThan;
-    sR2.date = originalDate;
-
-    compareRule.subRules << sR2;
-
-
-    mApp->insertRule(preRule);
-
-    Rule postRule = mApp->rule(title);
-
-    QVERIFY(!TestRuleHelper::RuleEquals(compareRule,postRule));
+    QVERIFY(result);
 }
 
 void Core_functionality::insert_rule_sizeinterval_success_1()
 {
-    // Pre state variables
-    QString title = "Size interval rule 1";
-    Rule preRule;
-    preRule.title = title;
-    preRule.actionRuleEntity = RulesContext::Delete;
+    auto rConfig = new DefaultRuleConfiguration();
 
-    SubRule sR;
+    rConfig->setTitle("Test5");
+    rConfig->setAppliesTo(TEST_WORKING_PATH);
+    rConfig->setAction(RulesContext::DeleteAction);
 
-    sR.criteria = RulesContext::fileSize;
-    sR.compareCriteria = RulesContext::interval;
+    auto cConfig = new DefaultCriteriaConfiguration();
 
-    SizeOperand minSize(244,"kb"),maxSize(512,"kb");
-    sR.sizeInterval = SizeInterval(minSize,maxSize);
+    cConfig->setKeywords(QStringList() << "G1" << "G2");
+    cConfig->setCriteria(RulesContext::FileSizeMode);
+    cConfig->setCompareCriteria(RulesContext::Interval);
 
-    preRule.subRules << sR;
+    auto lowUnits = 24;
+    auto lowDSU = "mb";
 
-    mApp->insertRule(preRule);
+    auto highUnits = 48;
+    auto highDSU = "mb";
 
-    Rule postRule = mApp->rule(title);
+    cConfig->setSizeInterval(lowUnits,lowDSU,highUnits,highDSU);
 
-    QVERIFY(TestRuleHelper::RuleEquals(preRule,postRule));
+    auto configs = QList<const IDefaultConditionConfigurator*>() << cConfig;
+
+    auto result = testInsertRule(rConfig,configs);
+
+    QVERIFY(result);
 }
 
-void Core_functionality::insert_rule_sizeinterval_fail_1()
-{
-    // Pre state variables
-    QString title = "Size interval rule 2";
-    Rule preRule, compareRule;
-    preRule.title = title;
-    preRule.actionRuleEntity = RulesContext::Delete;
 
-    compareRule = preRule;
-
-    SubRule sR1,sR2;
-
-    sR1.criteria = RulesContext::fileSize;
-    sR1.compareCriteria = RulesContext::interval;
-
-    sR2.criteria = RulesContext::fileSize;
-    sR2.compareCriteria = RulesContext::interval;
-
-
-    SizeOperand minSize1(244,"kb"),maxSize1(512,"kb");
-    SizeOperand minSize2(384,"kb"),maxSize2(768,"kb");
-    sR1.sizeInterval = SizeInterval(minSize1,maxSize1);
-    sR2.sizeInterval = SizeInterval(minSize2,maxSize2);
-
-    preRule.subRules << sR1;
-    compareRule.subRules << sR2;
-
-    mApp->insertRule(preRule);
-
-    Rule postRule = mApp->rule(title);
-
-    QVERIFY(!TestRuleHelper::RuleEquals(compareRule,postRule));
-}
-
-void Core_functionality::operation_filepath_match_success_1()
+void Core_functionality::operationFilenameMatchSuccess1()
 {
     /*
      * INITIAL STATE:
      *  - Create dummy files in folder 'test_folder'
      */
 
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
+    auto f_creator = new  TestFileCreator();
 
-    QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
+    auto ruleConfig = new DefaultRuleConfiguration();
+    ruleConfig->setAction(RulesContext::DeleteAction);
+    ruleConfig->setDeepScanMode(true);
+    ruleConfig->setType(RulesContext::Action);
+    ruleConfig->setAppliesTo(TEST_WORKING_PATH);
 
-    const Virtual_Objects *objects;
-    try {
-        objects = initialize_pre_state(RulesContext::Delete,
-                                       RulesContext::FileNameMode,
-                                       RulesContext::match,
-                                       prekWrds,
-                                       TEST_WORKING_PATH,
-                                       f_creator);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
+    auto criteriaConfig = new DefaultCriteriaConfiguration();
+
+    criteriaConfig->setCriteria(RulesContext::FileNameMode);
+    criteriaConfig->setCompareCriteria(RulesContext::Match);
+
+    auto preKeywords = QStringList() << "FCK" << "README";
+
+    criteriaConfig->setKeywords(preKeywords);
+
+    auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
+
+    auto objects = initializePreState(ruleConfig,criteriaConfigs);
 
     Virtual_Objects referenceList;
 
@@ -527,10 +328,10 @@ void Core_functionality::operation_filepath_match_success_1()
         }
         QFileInfo info = obj.additionalInformation;
         bool match = false;
-        for (QString str : prekWrds) {
-            QString fName = info.fileName();
+        for (auto preKeyword : preKeywords) {
+            auto subject = info.fileName();
 
-            if(fName == str)
+            if(subject == preKeyword)
                match = true;
         }
         if(!match)
@@ -580,128 +381,33 @@ void Core_functionality::operation_filepath_match_success_1()
     QVERIFY(referenceList == actualList);
 }
 
-void Core_functionality::operation_filepath_match_fail_1()
+void Core_functionality::operationFilenameContainSuccess1()
 {
     /*
      * INITIAL STATE:
      *  - Create dummy files in folder 'test_folder'
      */
 
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
+    auto f_creator = new  TestFileCreator();
 
-    QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
+    auto ruleConfig = new DefaultRuleConfiguration();
+    ruleConfig->setAction(RulesContext::DeleteAction);
+    ruleConfig->setDeepScanMode(true);
+    ruleConfig->setType(RulesContext::Action);
+    ruleConfig->setAppliesTo(TEST_WORKING_PATH);
 
-    const Virtual_Objects *objects;
-    try {
-        objects = initialize_pre_state(RulesContext::Delete,
-                                       RulesContext::FileNameMode,
-                                       RulesContext::match,
-                                       prekWrds,
-                                       TEST_WORKING_PATH,
-                                       f_creator);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
+    auto criteriaConfig = new DefaultCriteriaConfiguration();
 
-    // Initialize reference list with expected/control elements
-    Virtual_Objects referenceList;
+    criteriaConfig->setCriteria(RulesContext::FileNameMode);
+    criteriaConfig->setCompareCriteria(RulesContext::Contain);
 
-    QStringList chosenList = QStringList() << prekWrds.first();
+    auto preKeywords = QStringList() << "FCK" << "README";
 
-    for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
-        QFileInfo info = obj.additionalInformation;
-        bool match = true;
-        QString fName = info.fileName();
-        for (QString str : chosenList)
-        {
-            if(fName != str)
-               match = false;
-            if(!match)
-                referenceList << obj;
-        }
-    }
+    criteriaConfig->setKeywords(preKeywords);
 
-    mApp->clearFoldersAccordingToRules(mApp->watchFolders());
+    auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-
-    /*
-     * Note about async call:
-     *  Due to asynchonously calls to both FileWorkOperationWorker and EntityQueueManager, tests have to wait a little amount of time
-     *  to ensure proper sync between the caller and the called classes
-     */
-
-    QThread::sleep(SLEEP_SEC);
-
-    Virtual_Objects actualList;
-    try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
-    }  catch (const char *msg) {
-        cout << msg << endl;
-    } catch (const std::domain_error *e)
-    {
-        throw e;
-    }
-
-    /*
-     * END STATE:
-     *  - Clear test folder
-     */
-    int cleaned_up = false;
-    try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
-
-    if(!cleaned_up)
-        printf(DELETE_STATUS);
-
-    QVERIFY(referenceList != actualList &&
-            referenceList.count() == test_file_set_1.count() - chosenList.count() &&
-            actualList.count() == test_file_set_1.count() - prekWrds.count());
-}
-
-void Core_functionality::operation_filepath_contain_success_1()
-{
-
-    /*
-     * INITIAL STATE:
-     *  - Create dummy files in folder 'test_folder'
-     */
-
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
-
-    QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
-
-    const Virtual_Objects *objects;
-    try {
-        objects = initialize_pre_state(RulesContext::Delete,
-                                       RulesContext::FileNameMode,
-                                       RulesContext::contains,
-                                       prekWrds,
-                                       TEST_WORKING_PATH,
-                                       f_creator);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
+    auto objects = initializePreState(ruleConfig,criteriaConfigs);
 
     Virtual_Objects referenceList;
 
@@ -709,10 +415,10 @@ void Core_functionality::operation_filepath_contain_success_1()
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         QFileInfo info = obj.additionalInformation;
         bool contains = false;
-        for (QString str : prekWrds) {
-            QString fName = info.fileName();
+        for (auto keyword : preKeywords) {
+            auto subject = info.fileName();
 
-            if(fName.contains(str))
+            if(subject.contains(keyword))
                contains = true;
         }
         if(!contains)
@@ -722,7 +428,7 @@ void Core_functionality::operation_filepath_contain_success_1()
     mApp->clearFoldersAccordingToRules(mApp->watchFolders());
 
     /*
-     * Note regard async call:
+     * Note regarding asynchronious calls:
      *  Due to asynchonously calls to both FileWorkOperationWorker and EntityQueueManager tests have to wait a little amount of time
      *  to ensure proper sync between the caller and the called classes
      */
@@ -757,93 +463,6 @@ void Core_functionality::operation_filepath_contain_success_1()
     QVERIFY(referenceList == actualList);
 }
 
-void Core_functionality::operation_filepath_contain_fail_1()
-{
-    /*
-     * INITIAL STATE:
-     *  - Create dummy files in folder 'test_folder'
-     */
-
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
-
-    QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
-
-    const Virtual_Objects *objects;
-    try {
-        objects = initialize_pre_state(RulesContext::Delete,
-                                       RulesContext::FileNameMode,
-                                       RulesContext::contains,
-                                       prekWrds,
-                                       TEST_WORKING_PATH,
-                                       f_creator);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
-
-    Virtual_Objects referenceList;
-
-    QStringList chosenList = QStringList() << prekWrds.first();
-
-    for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
-        QFileInfo info = obj.additionalInformation;
-        QString fName = info.fileName();
-        bool contains = false;
-        for (QString str : chosenList) {
-            if(fName.contains(str))
-               contains = true;
-        }
-        if(!contains)
-            referenceList << obj;
-    }
-
-    mApp->clearFoldersAccordingToRules(mApp->watchFolders());
-
-    /*
-     * Note regard async call:
-     *  Due to asynchonously calls to both FileWorkOperationWorker and EntityQueueManager tests have to wait a little amount of time
-     *  to ensure proper sync between the caller and the called classes
-     */
-
-    QThread::sleep(SLEEP_SEC);
-
-    Virtual_Objects actualList;
-    try {
-        actualList = f_creator->VirtualObjects(TEST_WORKING_PATH);
-    }  catch (const char *msg) {
-        cout << msg << endl;
-    } catch (const std::domain_error *e)
-    {
-        throw e;
-    }
-
-
-    /*
-     * END STATE:
-     *  - Clear test folder
-     */
-    int cleaned_up = false;
-    try {
-        cleaned_up = f_creator->emptyTestFolder(TEST_WORKING_PATH);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
-
-    if(!cleaned_up)
-        printf(DELETE_STATUS);
-
-    QVERIFY(referenceList != actualList);
-}
-
 void Core_functionality::operation_extension_match_success_1()
 {
     /*
@@ -851,49 +470,26 @@ void Core_functionality::operation_extension_match_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
+    auto f_creator = new  TestFileCreator();
 
+    auto ruleConfig = new DefaultRuleConfiguration();
+    ruleConfig->setAction(RulesContext::DeleteAction);
+    ruleConfig->setDeepScanMode(true);
+    ruleConfig->setType(RulesContext::Action);
+    ruleConfig->setAppliesTo(TEST_WORKING_PATH);
 
+    auto criteriaConfig = new DefaultCriteriaConfiguration();
 
-    // Pre-state variables
+    criteriaConfig->setCriteria(RulesContext::FileExtensionMode);
+    criteriaConfig->setCompareCriteria(RulesContext::Contain);
 
-    const QString preTitle = "Test1";
-    QStringList prekWrds = QStringList() << "txt" << "jpg";
-    RulesContext::RuleAction preAction = RulesContext::DeleteAction;
-    RulesContext::RuleCriteria preCond = RulesContext::FileExtensionMode;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::Match;
-    Rule preRule;
+    auto preKeywords = QStringList() << "txt" << "pdf";
 
-    // Initialize pre-state
+    criteriaConfig->setKeywords(preKeywords);
 
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
+    auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.keyWords = prekWrds;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
-
-    const Virtual_Objects *objects;
-    try {
-        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
+    auto objects = initializePreState(ruleConfig,criteriaConfigs);
 
     Virtual_Objects referenceList;
 
@@ -901,9 +497,9 @@ void Core_functionality::operation_extension_match_success_1()
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
         QFileInfo info = obj.additionalInformation;
         bool match = false;
-        for (QString str : prekWrds) {
-            QString suf = info.suffix();
-            match = (suf == str) ?  true : match;
+        for (auto keyword : preKeywords) {
+            auto subject = info.suffix();
+            match = (subject == keyword) ?  true : match;
         }
         if(!match)
             referenceList << obj;
@@ -955,54 +551,29 @@ void Core_functionality::operation_size_less_than_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
+    auto f_creator = new  TestFileCreator();
 
+    auto ruleConfig = new DefaultRuleConfiguration();
+    ruleConfig->setAction(RulesContext::DeleteAction);
+    ruleConfig->setDeepScanMode(true);
+    ruleConfig->setType(RulesContext::Action);
 
+    auto criteriaConfig = new DefaultCriteriaConfiguration();
 
-    // Pre-state variables
+    criteriaConfig->setCriteria(RulesContext::FileSizeMode);
+    criteriaConfig->setCompareCriteria(RulesContext::LesserThan);
 
-    const QString preTitle = "Test1";
-    uint sizeUnits = 100;
-    QString unit = "kb";
-    const QPair<uint,QString> upperLimit(sizeUnits,unit);
-    RulesContext::RuleAction preAction = RulesContext::Delete;
-    RulesContext::RuleCriteria preCond = RulesContext::fileSize;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::lesserThan;
-    Rule preRule;
+    auto sizeUnits = 256;
+    auto sizeDSU = "kb";
 
-    // Initialize pre-state
+    criteriaConfig->setSizeLimit(SizeLimit(sizeUnits,sizeDSU));
 
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
+    auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-    sR.sizeLimit = upperLimit;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
-
-    const Virtual_Objects *objects;
-    try {
-        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
+    auto objects = initializePreState(ruleConfig,criteriaConfigs);
 
     Virtual_Objects referenceList;
-    qint64 bytes = SBC::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -1056,59 +627,29 @@ void Core_functionality::operation_size_equal_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
+    auto f_creator = new  TestFileCreator();
 
-    const Virtual_Objects *objects;
-    try {
-        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
+    auto ruleConfig = new DefaultRuleConfiguration();
+    ruleConfig->setAction(RulesContext::DeleteAction);
+    ruleConfig->setDeepScanMode(true);
+    ruleConfig->setType(RulesContext::Action);
 
+    auto criteriaConfig = new DefaultCriteriaConfiguration();
 
+    criteriaConfig->setCriteria(RulesContext::FileSizeMode);
+    criteriaConfig->setCompareCriteria(RulesContext::Equal);
 
-    // Pre-state variables
+    auto sizeUnits = 256;
+    auto sizeDSU = "kb";
 
-    const QString preTitle = "Test1";
-    RulesContext::RuleAction preAction = RulesContext::Delete;
-    RulesContext::RuleCriteria preCond = RulesContext::fileSize;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::equal;
-    Rule preRule;
+    criteriaConfig->setSizeLimit(SizeLimit(sizeUnits,sizeDSU));
 
-    QString randomElement = test_file_set_1.value(qrand() % test_file_set_1.count() + 1);
+    auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    VIRTUAL_FILE_OBJECT object = f_creator->VirtualObject(randomElement);
-
-    qint64 sizeUnits = object.additionalInformation.size();
-    QString unit = "b";
-    const QPair<qint64,QString> exactLimit(sizeUnits,unit);
-
-    // Initialize pre-state
-
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
-
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-    sR.sizeLimit = exactLimit;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs);
 
     Virtual_Objects referenceList;
-    qint64 bytes = sR.sizeLimit.first;
+    auto bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -1162,55 +703,30 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
-    Virtual_Objects * objects = nullptr;
+    auto f_creator = new  TestFileCreator();
 
-    try {
-       objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
-    }  catch (const char *msg) {
-        cout << msg << endl;
-        Q_ASSERT(false);
-    }
+    auto ruleConfig = new DefaultRuleConfiguration();
+    ruleConfig->setAction(RulesContext::DeleteAction);
+    ruleConfig->setDeepScanMode(true);
+    ruleConfig->setType(RulesContext::Action);
 
+    auto criteriaConfig = new DefaultCriteriaConfiguration();
 
+    criteriaConfig->setCriteria(RulesContext::FileSizeMode);
+    criteriaConfig->setCompareCriteria(RulesContext::LesserOrEqualThan);
 
-    // Pre-state variables
+    auto sizeUnits = 256;
+    auto sizeDSU = "kb";
 
-    const QString preTitle = "Test1";
-    uint sizeUnits = 100;
-    QString unit = "kb";
-    const QPair<uint,QString> lowerLimit(sizeUnits,unit);
-    RulesContext::RuleAction preAction = RulesContext::Delete;
-    RulesContext::RuleCriteria preCond = RulesContext::fileSize;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::lesserOrEqualThan;
-    Rule preRule;
+    criteriaConfig->setSizeLimit(SizeLimit(sizeUnits,sizeDSU));
 
-    // Initialize pre-state
+    auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
-
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-    sR.sizeLimit = lowerLimit;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
+    auto objects = initializePreState(ruleConfig,criteriaConfigs);
 
 
     Virtual_Objects referenceList;
-    qint64 bytes = SBC::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -1264,54 +780,29 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
+    auto f_creator = new  TestFileCreator();
 
+    auto ruleConfig = new DefaultRuleConfiguration();
+    ruleConfig->setAction(RulesContext::DeleteAction);
+    ruleConfig->setDeepScanMode(true);
+    ruleConfig->setType(RulesContext::Action);
 
+    auto criteriaConfig = new DefaultCriteriaConfiguration();
 
-    // Pre-state variables
+    criteriaConfig->setCriteria(RulesContext::FileSizeMode);
+    criteriaConfig->setCompareCriteria(RulesContext::GreaterOrEqualThan);
 
-    const QString preTitle = "Test1";
-    uint sizeUnits = 100;
-    QString unit = "kb";
-    const QPair<uint,QString> lowerLimit(sizeUnits,unit);
-    RulesContext::RuleAction preAction = RulesContext::Delete;
-    RulesContext::RuleCriteria preCond = RulesContext::fileSize;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::greaterOrEqualThan;
-    Rule preRule;
+    auto sizeUnits = 256;
+    auto sizeDSU = "kb";
 
-    // Initialize pre-state
+    criteriaConfig->setSizeLimit(SizeLimit(sizeUnits,sizeDSU));
 
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
+    auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-    sR.sizeLimit = lowerLimit;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
-
-    const Virtual_Objects *objects;
-    try {
-        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
+    auto objects = initializePreState(ruleConfig,criteriaConfigs);
 
     Virtual_Objects referenceList;
-    qint64 bytes = SBC::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    auto bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -1365,53 +856,29 @@ void Core_functionality::operation_size_greater_than_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
+    auto f_creator = new  TestFileCreator();
 
+    auto ruleConfig = new DefaultRuleConfiguration();
+    ruleConfig->setAction(RulesContext::DeleteAction);
+    ruleConfig->setDeepScanMode(true);
+    ruleConfig->setType(RulesContext::Action);
 
+    auto criteriaConfig = new DefaultCriteriaConfiguration();
 
-    // Pre-state variables
+    criteriaConfig->setCriteria(RulesContext::FileSizeMode);
+    criteriaConfig->setCompareCriteria(RulesContext::GreaterThan);
 
-    const QString preTitle = "Test1";
-    uint sizeUnits = 100;
-    QString unit = "kb";
-    const QPair<uint,QString> lowerLimit(sizeUnits,unit);
-    RulesContext::RuleAction preAction = RulesContext::Delete;
-    RulesContext::RuleCriteria preCond = RulesContext::fileSize;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::greaterThan;
-    Rule preRule;
+    auto sizeUnits = 256;
+    auto sizeDSU = "kb";
 
-    // Initialize pre-state
+    criteriaConfig->setSizeLimit(SizeLimit(sizeUnits,sizeDSU));
 
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
+    auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-    sR.sizeLimit = lowerLimit;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
-    const Virtual_Objects *objects;
-    try {
-        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
+    auto objects = initializePreState(ruleConfig,criteriaConfigs);
 
     Virtual_Objects referenceList;
-    qint64 bytes = SBC::convertToBytes(sR.sizeLimit.first,sR.sizeLimit.second);
+    qint64 bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj;
@@ -1472,67 +939,37 @@ void Core_functionality::operation_size_interval_success_1()
      *  - Create dummy files in folder 'test_folder'
      */
 
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new  TestFileCreator();
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        QVERIFY(false);
-        return;
-    }
+    auto f_creator = new  TestFileCreator();
 
-    const Virtual_Objects *objects;
-    try {
-        objects = f_creator->createFiles(TEST_WORKING_PATH,test_file_set_1);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
+    auto ruleConfig = new DefaultRuleConfiguration();
+    ruleConfig->setAction(RulesContext::DeleteAction);
+    ruleConfig->setDeepScanMode(true);
+    ruleConfig->setType(RulesContext::Action);
 
-    // Pre-state variables
+    auto criteriaConfig = new DefaultCriteriaConfiguration();
 
-    const QString preTitle = "Test1";
-    RulesContext::RuleAction preAction = RulesContext::Delete;
-    RulesContext::RuleCriteria preCond = RulesContext::fileSize;
-    RulesContext::RuleCompareCriteria preComp = RulesContext::interval;
-    SizeLimits interval;
-    IntervalUnit lowerLimit, upperLimit;
+    criteriaConfig->setCriteria(RulesContext::FileSizeMode);
+    criteriaConfig->setCompareCriteria(RulesContext::Interval);
 
-    lowerLimit.first = 60;
-    lowerLimit.second = "kb";
+    auto lowerSizeUnits = 192;
+    auto lowerSizeDSU = "kb";
 
-    upperLimit.first = 125;
-    upperLimit.second = "kb";
+    auto upperSizeUnits = 512;
+    auto upperSizeDSU = "kb";
 
-    interval.first = lowerLimit;
-    interval.second = upperLimit;
+    criteriaConfig->setSizeInterval(lowerSizeUnits,lowerSizeDSU,upperSizeUnits,upperSizeDSU);
 
-    Rule preRule;
+    auto criteriaConfigs = QList<const IDefaultConditionConfigurator*>() << criteriaConfig;
 
-    // Initialize pre-state
-
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
-
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = TEST_WORKING_PATH;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-    sR.sizeInterval = interval;
-
-    preRule.subRules << sR;
-
-    mApp->insertRule(preRule);
-
+    auto objects = initializePreState(ruleConfig,criteriaConfigs);
 
     Virtual_Objects referenceList;
 
     for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
-        qint64 sz = obj.additionalInformation.size();
-        if(sz <= SBC::convertToBytes(lowerLimit.first,lowerLimit.second) || sz >= SBC::convertToBytes(upperLimit.first,lowerLimit.second))
-            referenceList << obj;
+        auto object = objects->getVirtualObjectFromIndex(i);
+        auto subject = object.additionalInformation.size();
+        if(subject >= FilesContext::convertToBytes(lowerSizeUnits,lowerSizeDSU) && subject <= FilesContext::convertToBytes(upperSizeUnits,upperSizeDSU))
+            referenceList << object;
     }
 
     mApp->clearFoldersAccordingToRules(mApp->watchFolders());
@@ -1574,91 +1011,28 @@ void Core_functionality::operation_size_interval_success_1()
     QVERIFY(referenceList == actualList);
 }
 
-void Core_functionality::operation_move_filepath_match_success_1()
+void Core_functionality::operation_move_filename_match_success_1()
 {
-    TestFileCreator *f_creator;
-    try {
-        f_creator = new TestFileCreator();
-    }  catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
-    QStringList prekWrds = QStringList() << "Notes.txt" << "FCK.jpg";
-
-    const Virtual_Objects *objects;
-    try {
-        objects = initialize_pre_state(RulesContext::Move,
-                                       RulesContext::FileNameMode,
-                                       RulesContext::match,
-                                       prekWrds,
-                                       TEST_WORKING_PATH,
-                                       f_creator,
-                                       QStringList() << TEST_SECONDARY_PATH);
-    } catch (const char *msg) {
-        printf("%s\n",msg);
-        return;
-    }
-
-    Virtual_Objects referenceList;
-
-    // Initialize reference list with expected elements
-    for (int i = 0; i < objects->count(); ++i) {
-        VIRTUAL_FILE_OBJECT obj;
-        try {
-
-            obj = objects->getVirtualObjectFromIndex(i);
-        }  catch (std::out_of_range *e) {
-            cout << e->what() << endl;
-            return Q_ASSERT(false);
-        }
-        QFileInfo info = obj.additionalInformation;
-        bool match = false;
-        for (QString str : prekWrds) {
-            QString fName = info.fileName();
-
-            if(fName == str)
-               match = true;
-        }
-        if(!match)
-            referenceList << obj;
-    }
-
-
-
 
 }
 
-const Virtual_Objects *Core_functionality::initialize_pre_state(RulesContext::RuleAction ruleAction,
-                                                                RulesContext::RuleCriteria criteria,
-                                                                RulesContext::RuleCompareCriteria compareCriteria,
-                                                                QStringList test_elements,QString filepath,
-                                                                TestFileCreator *file_creator,QStringList destinations)
+const Virtual_Objects *Core_functionality::initializePreState(const IDefaultRuleConfigurator *ruleConfig,
+                                                                QList<const IDefaultConditionConfigurator *> ruleConditionConfigs)
 {
     // Pre-state variables
 
-    const QString preTitle = "Test1";
-    QStringList prekWrds = test_elements;
-    RulesContext::RuleAction preAction = ruleAction;
-    RulesContext::RuleCriteria preCond = criteria;
-    RulesContext::RuleCompareCriteria preComp = compareCriteria;
-    Rule preRule;
+    auto ruleBuilder = new RuleBuilder();
 
-    // Initialize pre-state
+    QList<const IDefaultRuleCondition*> criterias;
 
-    preRule.title = preTitle;
-    preRule.actionRuleEntity = preAction;
+    for (auto config : ruleConditionConfigs)
+        criterias << ruleBuilder->buildCriteria(config);
 
-    // Create rule
-    SubRule sR;
-    preRule.appliesToPath = filepath;
-    sR.keyWords = prekWrds;
-    sR.criteria = preCond;
-    sR.compareCriteria = preComp;
-
-    preRule.subRules << sR;
-    preRule.destinationPaths = destinations;
+    auto preRule = ruleBuilder->buildRule(ruleConfig,criterias);
 
     mApp->insertRule(preRule);
+
+    TestFileCreator *file_creator;
 
     const Virtual_Objects *objects;
     try {

@@ -71,14 +71,14 @@ private:
                 if(fileInfo.isFile())
                 {
                     auto subject = isSuffix ? fileInfo.suffix() : fileInfo.fileName();
-                    auto keywords = ruleCriteria->keyWords();
+                    auto keywords = ruleCriteria->keywords();
                     if(compareStrings(keywords,subject,match))
                         resultingList << model;
                 }
                 else if(fileInfo.isDir() && ruleCriteria->criteria() != RulesContext::FileExtensionMode)
                 {
                     auto subject = fileInfo.fileName();
-                    auto keywords = ruleCriteria->keyWords();
+                    auto keywords = ruleCriteria->keywords();
                     if(compareStrings(keywords,subject,match))
                         resultingList << model;
                     else
@@ -156,7 +156,7 @@ private:
                 auto parentModel = model->parent();
                 auto fileInfo =parentModel->fileInterface();
                 auto subject = fileInfo.fileName();
-                auto keywords = ruleCriteria->keyWords();
+                auto keywords = ruleCriteria->keywords();
                 if(compareStrings(keywords,subject,true))
                     resultingList << model;
             }

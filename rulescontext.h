@@ -72,7 +72,14 @@ namespace RulesContext
         return "Start dato: " + startDate + " slut dato: " + endDate;
     }
 
-    static QString mergeStringList(const QStringList strings)
+    static QString ruleDateLimitsToString(const IDefaultRuleCondition *sRule)
+    {
+        QString startDate = sRule->dateIntervals().first.date().toString("dd.MM.yyyy"),
+                endDate = sRule->dateIntervals().second.date().toString("dd.MM.yyyy");
+        return "Start dato: " + startDate + " slut dato: " + endDate;
+    }
+
+    static QString mergeStringList(const QStringList &strings)
     {
         if(strings.empty())
             return QString();

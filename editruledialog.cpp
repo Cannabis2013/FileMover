@@ -20,7 +20,7 @@ void EditRuleDialog::on_addButton_clicked()
     auto destinations = RulesContext::splitString(pathSelector->text());
     auto typeFilter = ruleDefinitionsService()->fileTypeCriteriaFromString(fileTypeSelector->currentText());
 
-    auto config = new RuleDefaultConfiguration();
+    auto config = new DefaultRuleConfiguration();
 
     config->setTitle(title);
     config->setAction(action);
@@ -28,7 +28,7 @@ void EditRuleDialog::on_addButton_clicked()
     config->setDestinations(destinations);
     config->setType(typeFilter);
 
-    auto rule = ruleBuilderService()->buildOrdinaryRule(config);
+    auto rule = ruleBuilderService()->buildRule(config,_ruleConditions);
     emit replaceRule(rule,originalRuleTitle);
 
     close();
@@ -47,19 +47,29 @@ void EditRuleDialog::on_addSubRule_clicked()
     auto dates = condWidget->intervalDates();
     auto matchWholeWords = compareCriteria == RulesContext::Match;
 
-    auto config = new RuleConditionDefaultConfiguration;
+    auto config = new DefaultCriteriaConfiguration;
 
     config->setCriteria(criteria);
     config->setCompareCriteria(compareCriteria);
     config->setKeywords(keywords);
     config->setSizeLimit(sizeLimit);
-    config->setSizeInterval(sizeLimits);
+
+    auto lowerSizeLimit = sizeLimits.first;
+    auto upperSizeLimit = sizeLimits.second;
+
+    auto lowerSizeUnits = lowerSizeLimit.first;
+    auto lowerSizeDSU = lowerSizeLimit.second;
+
+    auto upperSizeUnits = upperSizeLimit.first;
+    auto upperSizeSizeDSU = upperSizeLimit.second;
+
+    config->setSizeInterval(lowerSizeUnits,lowerSizeDSU,upperSizeUnits,upperSizeSizeDSU);
+
     config->setDate(date);
     config->setDates(dates);
     config->setMatchWholeWords(matchWholeWords);
 
-    auto condition = ruleBuilderService()->buildSubRule(config);
-    _ruleConditions << condition;
+    _ruleConditions << ruleBuilderService()->buildCriteria(config);
     updateView();
 }
 

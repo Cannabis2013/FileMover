@@ -93,7 +93,7 @@ void rulesManager::readSettings()
         auto destinations = RulesContext::splitString(pSettings->value("Destination paths","").toString());
         int count = pSettings->beginReadArray("Subrules");
 
-        auto *rConfig = new RuleDefaultConfiguration;
+        auto *rConfig = new DefaultRuleConfiguration;
 
         rConfig->setTitle(title);
         rConfig->setAction(action);
@@ -101,7 +101,7 @@ void rulesManager::readSettings()
         rConfig->setType(type);
         rConfig->setDestinations(destinations);
 
-        QList<const IDefaultConditionConfigurator*> criteriaConfigurations;
+        QList<const IDefaultRuleCondition*> criteriaConfigurations;
 
         for (int j = 0; j < count; ++j)
         {
@@ -120,13 +120,10 @@ void rulesManager::readSettings()
 
             pSettings->beginGroup("Sizelimits");
 
-            auto lowerSizeLimit = pSettings->value("Minsizeinterval",0).toInt();
-            auto lowerSizeUnit = pSettings->value("Minsizeunitinterval","kb").toString();
-            auto upperSizeLimit = pSettings->value("Maxsizeinterval",0).toInt();
-            auto upperSizeUnit = pSettings->value("Maxsizeunitinterval","kb").toString();
-            auto lowerInterval = SizeLimit(lowerSizeLimit,lowerSizeUnit);
-            auto upperInterval = SizeLimit(upperSizeLimit,upperSizeUnit);
-            auto sizeLimits = SizeLimits(lowerInterval,upperInterval);
+            auto lowerSizeUnits = pSettings->value("Minsizeinterval",0).toInt();
+            auto lowerSizeDSU = pSettings->value("Minsizeunitinterval","kb").toString();
+            auto upperSizeUnits = pSettings->value("Maxsizeinterval",0).toInt();
+            auto upperSizeDSU = pSettings->value("Maxsizeunitinterval","kb").toString();
 
             pSettings->endGroup();
             auto date = QDateTime::fromString(pSettings->value("Datetime","").toString(),"dd.MM.yyyy");
@@ -140,19 +137,17 @@ void rulesManager::readSettings()
 
             pSettings->endGroup();
 
-            auto config = new RuleConditionDefaultConfiguration;
+            auto config = new DefaultCriteriaConfiguration;
 
             config->setDate(date);
             config->setCriteria(criteria);
             config->setCompareCriteria(compareCriteria);
             config->setSizeLimit(sizeLimit);
-            config->setSizeInterval(sizeLimits);
+            config->setSizeInterval(lowerSizeUnits,lowerSizeDSU,upperSizeUnits,upperSizeDSU);
             config->setDates(dates);
             config->setMatchWholeWords(matchWholeWords);
 
-            criteriaConfigurations << config;
-
-
+            criteriaConfigurations << ruleBuilderService()->buildCriteria(config);
         }
 
         auto r = ruleBuilderService()->buildRule(rConfig,criteriaConfigurations);
@@ -194,7 +189,7 @@ void rulesManager::writeSettings()
             pSettings->setValue("Comparemode",condition->compareCriteria());
 
             pSettings->setValue("Matchwholewords",condition->matchWholeWords());
-            pSettings->setValue("Keywords",RulesContext::mergeStringList(condition->keyWords()));
+            pSettings->setValue("Keywords",RulesContext::mergeStringList(condition->keywords()));
 
             pSettings->setValue("Sizelimit",condition->sizeLimit().first);
             pSettings->setValue("Sizelimitunit",condition->sizeLimit().second);

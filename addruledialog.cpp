@@ -34,7 +34,7 @@ void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 void AddRuleDialog::on_addSubRule_clicked()
 {
     auto cText = conditionBox->currentText();
-    auto criteria = ruleDefinitionsService()->buildCriteriaFromString(cText);
+    auto ruleCriteria = ruleDefinitionsService()->buildCriteriaFromString(cText);
     auto compareCriteria = condWidget->currentCompareMode();
     auto keywords = RulesContext::splitString(condWidget->keyWordValues());
     auto sizeLimit = condWidget->fixedSizeValues();
@@ -43,19 +43,30 @@ void AddRuleDialog::on_addSubRule_clicked()
     auto dates = condWidget->intervalDates();
     auto matchWholeWords = compareCriteria == RulesContext::Match;
 
-    auto config = new RuleConditionDefaultConfiguration;
+    auto config = new DefaultCriteriaConfiguration;
 
-    config->setCriteria(criteria);
+    config->setCriteria(ruleCriteria);
     config->setCompareCriteria(compareCriteria);
     config->setKeywords(keywords);
     config->setSizeLimit(sizeLimit);
-    config->setSizeInterval(sizeLimits);
+
+    auto lowerSizeLimit = sizeLimits.first;
+    auto upperSizeLimit = sizeLimits.second;
+
+    auto lowerSizeUnits = lowerSizeLimit.first;
+    auto lowerSizeDSU = lowerSizeLimit.second;
+
+    auto upperSizeUnits = upperSizeLimit.first;
+    auto upperSizeSizeDSU = upperSizeLimit.second;
+
+    config->setSizeInterval(lowerSizeUnits,lowerSizeDSU,upperSizeUnits,upperSizeSizeDSU);
+
     config->setDate(date);
     config->setDates(dates);
     config->setMatchWholeWords(matchWholeWords);
 
-
-    _ruleConditions << config;
+    auto criteria = ruleBuilderService()->buildCriteria(config);
+    _ruleConditions << criteria;
     updateView();
 }
 
@@ -83,7 +94,7 @@ void AddRuleDialog::on_addButton_clicked()
     auto destinations = RulesContext::splitString(pathSelector->text());
     auto typeFilter = ruleDefinitionsService()->fileTypeCriteriaFromString(fileTypeSelector->currentText());
 
-    auto config = new RuleDefaultConfiguration();
+    auto config = new DefaultRuleConfiguration();
 
     config->setTitle(title);
     config->setAction(action);

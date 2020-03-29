@@ -36,7 +36,7 @@ public:
     virtual TDate date() const = 0;
     virtual void setDate(const TDate &date) = 0;
     virtual TSizeIntervals sizeInterval() const = 0;
-    virtual void setSizeInterval(const TSizeIntervals &sizeInterval) = 0;
+    virtual void setSizeInterval(const int &minSize, const QString &minDSU, const int &maxSize, const QString &maxDSU) = 0;
     virtual const QPair<TDate,TDate> dates() const = 0;
     virtual void setDates(const QPair<TDate,TDate> &dates) = 0;
     virtual bool matchWholeWords() const = 0;

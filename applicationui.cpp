@@ -407,7 +407,7 @@ void ApplicationUI::clearCompleted(bool a)
 void ApplicationUI::folderContentRecieved(const DirectoryEntity *entity)
 {
     QString sizeNotation;
-    double scaledAndRoundedSize = FilesContext::convertFromBytes(entity->directorySize,sizeNotation,2);
+    double scaledAndRoundedSize = FCU::convertFromBytes(entity->directorySize,sizeNotation,2);
     QString folderName = entity->directoryPath,
             folderSize = QString::number(scaledAndRoundedSize),
             message = QString("Size of folder content is %1 %2").arg(folderSize).arg(sizeNotation);

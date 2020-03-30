@@ -8,7 +8,7 @@
 
 namespace FilesContext
 {
-
+    class IFileListService;
 }
 
 template<class TModelBuilder>
@@ -33,6 +33,8 @@ public:
     virtual TModelBuilder *modelBuilderService() = 0;
     virtual IFileListService<TModelBuilder> *setModelBuilderService(TModelBuilder *service) = 0;
 };
+
+typedef IFileListService<IModelBuilder<IFileModel<>,QString>> IDefaultFileListService;
 
 
 #endif // IFILELISTBUILDER_H

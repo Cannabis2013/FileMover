@@ -55,7 +55,7 @@ using namespace std;
                 setFileInformationManagerService(new FileInformationManager(argVals.appName,argVals.orgName))->
                 setEntityQueueManagerService(new EntityQueueManager())->
                 setFileWatcherService(new FileSystemWatcher())->
-                setFileModelBuilderService(new FileListService())->
+                setFileModelBuilderService((new FileListService())->setModelBuilderService(new FileModelBuilder()))->
                 setRuleDefinitionsService(new RuleDefinitions())->
                 setFilteringContext(new FilteringContext(),new FileListService())->
                 configureServices()->

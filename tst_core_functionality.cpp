@@ -607,7 +607,7 @@ void Core_functionality::operation_size_less_than_success_1()
     auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
-    qint64 bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
+    qint64 bytes = FCU::convertToBytes(sizeUnits,sizeDSU);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -683,7 +683,7 @@ void Core_functionality::operation_size_equal_success_1()
     auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
-    auto bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
+    auto bytes = FCU::convertToBytes(sizeUnits,sizeDSU);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -760,7 +760,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
 
 
     Virtual_Objects referenceList;
-    qint64 bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
+    qint64 bytes = FCU::convertToBytes(sizeUnits,sizeDSU);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -836,7 +836,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
     auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
-    auto bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
+    auto bytes = FCU::convertToBytes(sizeUnits,sizeDSU);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj = objects->getVirtualObjectFromIndex(i);
@@ -912,7 +912,7 @@ void Core_functionality::operation_size_greater_than_success_1()
     auto objects = initializePreState(ruleConfig,criteriaConfigs,fileCreator);
 
     Virtual_Objects referenceList;
-    qint64 bytes = FilesContext::convertToBytes(sizeUnits,sizeDSU);
+    qint64 bytes = FCU::convertToBytes(sizeUnits,sizeDSU);
 
     for (int i = 0; i < objects->count(); ++i) {
         VIRTUAL_FILE_OBJECT obj;
@@ -1002,7 +1002,7 @@ void Core_functionality::operation_size_interval_success_1()
     for (int i = 0; i < objects->count(); ++i) {
         auto object = objects->getVirtualObjectFromIndex(i);
         auto subject = object.additionalInformation.size();
-        if(subject < FilesContext::convertToBytes(lowerSizeUnits,lowerSizeDSU) || subject > FilesContext::convertToBytes(upperSizeUnits,upperSizeDSU))
+        if(subject < FCU::convertToBytes(lowerSizeUnits,lowerSizeDSU) || subject > FCU::convertToBytes(upperSizeUnits,upperSizeDSU))
             referenceList << object;
     }
 

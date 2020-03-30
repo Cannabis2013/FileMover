@@ -18,7 +18,7 @@
 
 typedef IFileListService<IModelBuilder<IFileModel<>,QString>> DefaulFileList;
 typedef IFiltereringContext<IDefaultRule,
-            FileRuleDelegate,DefaulFileList> DefaultFilteringContext;
+            FileRuleDelegate,DefaulFileList> IDefaultFilteringContext;
 
 class AbstractApplicationService :
         public QObject,
@@ -78,7 +78,7 @@ public:
     virtual IRuleDefinitions* RuleDefinitionsService() = 0;
     virtual AbstractApplicationService* setRuleDefinitionsService(IRuleDefinitions *service) = 0;
 
-    virtual AbstractApplicationService* setFilteringContext(DefaultFilteringContext* filterService,DefaulFileList* listService) = 0;
+    virtual AbstractApplicationService* setFilteringContext(IDefaultFilteringContext* filterService,DefaulFileList* listService) = 0;
 
 public slots:
     virtual void clearFolders(QStringList paths) = 0;

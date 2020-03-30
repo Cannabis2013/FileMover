@@ -112,7 +112,7 @@ private:
                 auto sizeObject = ruleCriteria->sizeLimit();
                 auto sizeUnits = sizeObject.first;
                 auto sizeDataStorageUnit = sizeObject.second;
-                auto bytes = FilesContext::convertToBytes(sizeUnits,sizeDataStorageUnit);
+                auto bytes = FCU::convertToBytes(sizeUnits,sizeDataStorageUnit);
 
                 if((ruleCriteria->compareCriteria() == RulesContext::LesserThan && fileInfo.size() < bytes) ||
                         (ruleCriteria->compareCriteria() == RulesContext::LesserOrEqualThan && fileInfo.size() <= bytes) ||
@@ -137,8 +137,8 @@ private:
                 auto upperIntervalSizeUnits = upperIntervalObject.first;
                 auto upperIntervalSizeDataStorageUnit = upperIntervalObject.second;
 
-                auto lowerByteLimit = FilesContext::convertToBytes(lowerIntervalSizeUnits,lowerIntervalSizeDataStorageUnit);
-                auto upperByteLimit = FilesContext::convertToBytes(upperIntervalSizeUnits,upperIntervalSizeDataStorageUnit);
+                auto lowerByteLimit = FCU::convertToBytes(lowerIntervalSizeUnits,lowerIntervalSizeDataStorageUnit);
+                auto upperByteLimit = FCU::convertToBytes(upperIntervalSizeUnits,upperIntervalSizeDataStorageUnit);
 
                 if(subject >= lowerByteLimit && subject  <= upperByteLimit)
                     resultingList << model;

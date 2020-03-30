@@ -6,11 +6,10 @@
 #include <qdiriterator.h>
 #include "ifilelistservice.h"
 
-class FileListService : public IFileListService<IModelBuilder<IFileModel<>,QString>>
+class FileListService : public IDefaultFileListService
 {
     // IFileListBuilder interface
 public:
-
     QStringList allFiles(const QStringList &paths, const int &filter) override
     {
         QStringList result;

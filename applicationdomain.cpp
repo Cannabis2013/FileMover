@@ -214,7 +214,7 @@ void ApplicationDomain::removeWatchFolder(QString path)
     settingsService->removePath(path);
 }
 
-AbstractApplicationService *ApplicationDomain::setFilteringContext(DefaultFilteringContext *filterService, DefaulFileList *listService)
+AbstractApplicationService *ApplicationDomain::setFilteringContext(IDefaultFilteringContext *filterService, DefaulFileList *listService)
 {
     filteringService = filterService;
     filteringService->setListService(listService);

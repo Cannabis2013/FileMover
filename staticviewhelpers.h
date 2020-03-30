@@ -27,7 +27,7 @@ namespace FilesContext
                 while(i.hasNext())
                     sz += QFile(i.next()).size();
 
-                headers << FilesContext::directoryName(fi.absoluteFilePath())
+                headers << FCU::directoryName(fi.absoluteFilePath())
                         << fi.absoluteFilePath()
                         << ""
                         << "Mappe";

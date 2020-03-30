@@ -80,7 +80,7 @@ public:
     IRuleDefinitions * RuleDefinitionsService() override {return _ruleDefinitionsService;}
     AbstractApplicationService* setRuleDefinitionsService(IRuleDefinitions *service) override;
 
-    AbstractApplicationService* setFilteringContext(DefaultFilteringContext* filterService, DefaulFileList* listService) override;
+    AbstractApplicationService* setFilteringContext(IDefaultFilteringContext* filterService, DefaulFileList* listService) override;
 
     void addWatchFolder(QString path) override {settingsService->insertPath(path);}
     void removeWatchFolderAt(int index) override;
@@ -100,7 +100,7 @@ private:
     AbstractSettingsManager *settingsService;
     IThreadManagerInterface *threadingService;
     IRuleDefinitions *_ruleDefinitionsService;
-    DefaultFilteringContext *filteringService;
+    IDefaultFilteringContext *filteringService;
 };
 
 #endif // MAINAPPLICATION_H

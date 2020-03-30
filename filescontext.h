@@ -11,6 +11,12 @@ namespace FilesContext {
     enum FileType {Folder = 0x060, File = 0x061,All = 0x062, unresolved = 0x01};
     enum IteratorMode {NonRecursive = 0x080, Recursive = 0x081};
 
+    class FilesContextUtilities;
+}
+
+class FilesContextUtilities
+{
+public:
     static QString mergeStringList(const QStringList strings)
     {
         if(strings.empty())
@@ -128,5 +134,8 @@ namespace FilesContext {
         }
         return result;
     }
-}
+};
+
+typedef FilesContextUtilities FCU;
+
 #endif // STATICFILEHELPEROPERATIONS_H

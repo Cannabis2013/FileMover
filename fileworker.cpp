@@ -55,7 +55,7 @@ bool FileWorker::moveFileItems(const DefaultFileModelList fileObjects, const QSt
         {
             bool noErrors = true;
             auto fileInfo = model->fileInterface();
-            QString AbsoluteFilePath = FilesContext::checkAndCorrectForBackslash(destPath) + fileInfo.fileName();
+            QString AbsoluteFilePath = FCU::checkAndCorrectForBackslash(destPath) + fileInfo.fileName();
             if(fileInfo.isDir())
             {
                 noErrors = moveFileItems(model->children(),QStringList() << AbsoluteFilePath,err);
@@ -97,7 +97,7 @@ bool FileWorker::copyFileItems(const DefaultFileModelList fileObjects, const QSt
         {
             bool noErrors = true;
             auto fileInfo = model->fileInterface();
-            QString AbsoluteFilePath = FilesContext::checkAndCorrectForBackslash(destPath) + fileInfo.fileName();
+            QString AbsoluteFilePath = FCU::checkAndCorrectForBackslash(destPath) + fileInfo.fileName();
             if(fileInfo.isDir())
             {
                 noErrors = copyFileItems(model->children(),QStringList() << AbsoluteFilePath);
@@ -245,7 +245,7 @@ void FileWorker::processFileInformationEntity(const IModelDelegate<FileInformati
 
         QString denotation;
         item.path = path;
-        double directorySize = FilesContext::convertFromBytes(folderSize(path),denotation);
+        double directorySize = FCU::convertFromBytes(folderSize(path),denotation);
         item.dirSize = QString::number(directorySize) + " " + denotation;
         item.numberOfDirectories = folderCount(path);
         item.numberOfFiles = fileCountFromPath(path);
@@ -268,7 +268,7 @@ void FileWorker::reProcessFileInformationEntity(const QStringList &paths)
         QString denotation;
         DirectoryItem item;
         item.path = p;
-        double directorySize = FilesContext::convertFromBytes(folderSize(p),denotation);
+        double directorySize = FCU::convertFromBytes(folderSize(p),denotation);
         item.dirSize = QString::number(directorySize) + " " + denotation;
         item.numberOfDirectories = folderCount(p);
         item.numberOfFiles = fileCountFromPath(p);

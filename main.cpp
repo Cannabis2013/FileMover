@@ -47,6 +47,8 @@ using namespace std;
 
         processArguments(arguments,argVals);
 
+        auto fileListService = (new FileListService())->setModelBuilderService(new FileModelBuilder());
+
         auto mainApplicaton = (new ApplicationDomain())->
                 setFileOperationsService(new FileWorker())->
                 setRuleManagerService(new rulesManager(argVals.appName,argVals.orgName,new RuleBuilder()))->
@@ -55,7 +57,7 @@ using namespace std;
                 setFileInformationManagerService(new FileInformationManager(argVals.appName,argVals.orgName))->
                 setEntityQueueManagerService(new EntityQueueManager())->
                 setFileWatcherService(new FileSystemWatcher())->
-                setFileModelBuilderService((new FileListService())->setModelBuilderService(new FileModelBuilder()))->
+                setFileModelBuilderService(fileListService)->
                 setRuleDefinitionsService(new RuleDefinitions())->
                 setFilteringContext(new FilteringContext(),new FileListService())->
                 configureServices()->

@@ -35,9 +35,9 @@ private:
     void reProcessFileInformationEntity(const QStringList &paths);
 
     // Fileoperation from QFileinfoList..
-    bool removeFileItems(const DefaultFileModelList& filePaths, QStringList * const err = nullptr);
-    bool copyFileItems(const DefaultFileModelList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
-    bool moveFileItems(const DefaultFileModelList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
+    bool removeFileItems(const DefaultIFileModelList& filePaths, QStringList * const err = nullptr);
+    bool copyFileItems(const DefaultIFileModelList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
+    bool moveFileItems(const DefaultIFileModelList fileObjects, const QStringList destinations, QStringList * const err = nullptr);
 
     /* Methods to count files and number of contents in folders
      *  - Please note they all relies on QObject functionalities

@@ -11,7 +11,7 @@ FileWorker::FileWorker()
 #endif
 }
 
-bool FileWorker::removeFileItems(const DefaultFileModelList& filePaths, QStringList *const err)
+bool FileWorker::removeFileItems(const DefaultIFileModelList& filePaths, QStringList *const err)
 {
     if(filePaths.isEmpty())
         return true;
@@ -40,7 +40,7 @@ bool FileWorker::removeFileItems(const DefaultFileModelList& filePaths, QStringL
     return true;
 }
 
-bool FileWorker::moveFileItems(const DefaultFileModelList fileObjects, const QStringList destinations, QStringList * const err)
+bool FileWorker::moveFileItems(const DefaultIFileModelList fileObjects, const QStringList destinations, QStringList * const err)
 {
 
     // TODO: Implement some error handling when something goes wrong
@@ -76,13 +76,13 @@ bool FileWorker::moveFileItems(const DefaultFileModelList fileObjects, const QSt
             else if(!fileInfo.exists())
                 continue;
             if(noErrors)
-                removeFileItems(DefaultFileModelList() << fileModelBuilderService->buildModel(new QString(model->filepath())) ,err);
+                removeFileItems(DefaultIFileModelList() << fileModelBuilderService->buildModel(new QString(model->filepath())) ,err);
         }
     }
     return result;
 }
 
-bool FileWorker::copyFileItems(const DefaultFileModelList fileObjects, const QStringList destinations, QStringList * const err)
+bool FileWorker::copyFileItems(const DefaultIFileModelList fileObjects, const QStringList destinations, QStringList * const err)
 {
     // TODO: Implement some error handling when something goes wrong
     Q_UNUSED(err);

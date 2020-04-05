@@ -1,7 +1,7 @@
 #ifndef MAINAPPLICATION_H
 #define MAINAPPLICATION_H
 
-//#define TEST_MODE
+#define TEST_MODE
 
 #include "abstractapplicationservice.h"
 #include "settingsdelegate.h"

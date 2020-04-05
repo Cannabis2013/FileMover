@@ -10,7 +10,7 @@
 
 #define THROW_MSG_INHERIT "Template argument not direct base of Model"
 
-typedef QList<const IFileModel<>*> DefaultFileModelList;
+typedef QList<const IFileModel<>*> DefaultIFileModelList;
 
 using namespace std;
 
@@ -37,7 +37,7 @@ struct DirectoryEntity : public EntityModel
 struct FileRuleEntity : public EntityModel
 {
     QStringList directoryPaths;
-    DefaultFileModelList allFiles;
+    DefaultIFileModelList allFiles;
     int fileActionRule = 0x01;
     QStringList fileDestinations = QStringList();
 };
@@ -118,7 +118,7 @@ public:
     }
     template<class T>
     static EntityModelDelegate<T>* buildFileActionEntity(const QStringList &dirPaths,
-                                                     const DefaultFileModelList &allFiles,
+                                                     const DefaultIFileModelList &allFiles,
                                                      const int &fileActionRule,
                                                      const QStringList &destinations)
     {

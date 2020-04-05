@@ -30,9 +30,9 @@ public:
         return result;
     }
 
-    DefaultFileModelList buildFileModels(const int &filter = FilesContext::All, const QStringList &paths = QStringList()) override
+    DefaultIFileModelList buildFileModels(const int &filter = 0xC1, const QStringList &paths = QStringList()) override
     {
-        DefaultFileModelList resultingList;
+        DefaultIFileModelList resultingList;
 
         auto filepaths = (paths == QStringList()) ? _filepaths : paths;
 
@@ -57,12 +57,12 @@ public:
             return resultingList;
     }
 
-    DefaultFileModelList filterFileModelsThatMatch(const DefaultFileModelList &fileModelDelegates,
+    DefaultIFileModelList filterFileModelsThatMatch(const DefaultIFileModelList &fileModelDelegates,
                                                    QString &str,
                                                    bool dontMatch = false,
                                                    bool suffix = false) override
     {
-        DefaultFileModelList result;
+        DefaultIFileModelList result;
         for (auto model : fileModelDelegates) {
             auto fileInfo = model->fileInterface();
             if(fileInfo.isFile())
@@ -87,12 +87,12 @@ public:
         return result;
     }
 
-    DefaultFileModelList filterFileModelsThatContain(const DefaultFileModelList &fileModelDelegates,
+    DefaultIFileModelList filterFileModelsThatContain(const DefaultIFileModelList &fileModelDelegates,
                                                      QString &str,
                                                      bool dontContain = false,
                                                      bool suffix = false) override
     {
-        DefaultFileModelList result;
+        DefaultIFileModelList result;
         for (auto model : fileModelDelegates) {
             auto fileInfo = model->fileInterface();
             if(fileInfo.isFile())
@@ -117,11 +117,11 @@ public:
         return result;
     }
 
-    DefaultFileModelList filterFileModelsAccordingToSize(const DefaultFileModelList &fileModelDelegates,
+    DefaultIFileModelList filterFileModelsAccordingToSize(const DefaultIFileModelList &fileModelDelegates,
                                                          const int &size,
                                                          const int &mode = FilesContext::LesserThan) override
     {
-        DefaultFileModelList result;
+        DefaultIFileModelList result;
         for (auto model : fileModelDelegates) {
             auto fileInfo = model->fileInterface();
             if(fileInfo.isFile())
@@ -133,9 +133,9 @@ public:
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
                 else if(mode == FilesContext::Equal && subject == size)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
-                else if(mode == FilesContext::greaterOrEqualThan && subject >= size)
+                else if(mode == FilesContext::GreaterOrEqualThan && subject >= size)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
-                else if(mode == FilesContext::greaterThan && subject > size)
+                else if(mode == FilesContext::GreaterThan && subject > size)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
             }
             else
@@ -146,14 +146,14 @@ public:
         return result;
     }
 
-    DefaultFileModelList filterFileModelsAccordingToDate(const DefaultFileModelList &fileModelDelegates,
+    DefaultIFileModelList filterFileModelsAccordingToDate(const DefaultIFileModelList &fileModelDelegates,
                                                   const int &day,
                                                   const int &month,
                                                   const int &year,
                                                   const int &mode = FilesContext::YoungerThan,
                                                   const int &dateMode = FilesContext::DateCreated) override
     {
-        DefaultFileModelList result;
+        DefaultIFileModelList result;
         auto compare = QDateTime(QDate(year,month,day));
         for (auto model : fileModelDelegates) {
             auto fileInfo = model->fileInterface();
@@ -164,11 +164,7 @@ public:
 
                 if(mode == FilesContext::YoungerThan && subject < compare)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
-                else if(mode == FilesContext::YoungerOrExactThan && subject <= compare)
-                    result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
                 else if(mode == FilesContext::Exact && subject == compare)
-                    result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
-                else if(mode == FilesContext::OlderOrExtactThan && subject >= compare)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
                 else if(mode == FilesContext::OlderThan && subject > compare)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
@@ -201,7 +197,7 @@ public:
 
 private:
 
-    const QStringList modelsToStringList(const DefaultFileModelList &models)
+    const QStringList modelsToStringList(const DefaultIFileModelList &models)
     {
         QStringList result;
         for (auto model : models) {
@@ -214,9 +210,9 @@ private:
         return result;
     }
 
-    DefaultFileModelList modelsFromFolder(const QString &path)
+    DefaultIFileModelList modelsFromFolder(const QString &path)
     {
-        DefaultFileModelList result;
+        DefaultIFileModelList result;
         QDirIterator iterator(path);
         while (iterator.hasNext()) {
             QFileInfo file = iterator.next();

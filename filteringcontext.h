@@ -8,12 +8,12 @@
 #include "entitymodel.h"
 
 typedef IFileListService<IModelBuilder<IFileModel<>,QString>> IDefaultListService;
-typedef IFiltereringContext<IDefaultRule,FileRuleDelegate,IDefaultListService> IDefaultFilteringContext;
+typedef IFiltereringContext<IDefaultRule,DefaultDelegateModel,IDefaultListService> IDefaultFilteringContext;
 
 class FilteringContext :
         public IDefaultFilteringContext{
 public:
-    QList<FileRuleDelegate*> process(const QList<const IDefaultRule*> objects)
+    QList<DefaultDelegateModel*> process(const QList<const IDefaultRule*> objects)
     {
         auto compareStrings = [](const QStringList &strings, const QString &subject, const bool &match = true)->bool
         {
@@ -26,7 +26,7 @@ public:
 
             return false;
         };
-        QList<FileRuleDelegate*> resultingList;
+        QList<DefaultDelegateModel*> resultingList;
         auto filteredList = listService()->buildFileModels(RulesContext::All);
 
         for (auto object : objects) {

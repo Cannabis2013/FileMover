@@ -5,6 +5,7 @@
 #include "entitymodel.h"
 #include "imutableobject.h"
 #include "ibroadcastingobject.h"
+#include "isettingsmodel.h"
 
 class AbstractFileSystemWatcher :
         public QObject,
@@ -17,8 +18,10 @@ public:
     virtual void addPaths(const QStringList &paths) = 0;
     virtual void removePath(const QString &path) = 0;
 
+
+
 signals:
-    void folderChanged(EntityModelDelegate<EntityModel> *eModel);
+    void folderChanged(IModelDelegate<EntityModel> *model);
 
     void sendSystemTrayMessage(const QString &title, const QString &msg);
     void sendStatusLineMessage(const QString &msg);

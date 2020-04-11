@@ -2,105 +2,42 @@
 #define SETTINGSDELEGATE_H
 
 #include <iostream>
-#include "isettingsdelegate.h"
+#include "isettingsmodel.h"
 #include <inheritexceptiondelegate.h>
 
 using namespace std;
 
-struct SettingsModel : public Model
-{
-    bool closeOnExit;
-    bool ruleTimerEnabled;
-    bool rulesEnabled;
-    int ruleCountInterval;
-
-    QRect mainGuiGeometry;
-};
-
-/*
- * Template argument must subclass Model; otherwise a custom template exception is thrown
- */
-
-class SettingsDelegate : public ISettingsDelegate
+class SettingsModel : public ISettingsModel
 {
 public:
-
-public:
-    // IModelDelegate interface
-    QUuid modelId()
+    bool isCloseOnExitEnabled() const
     {
-        return _model->id;
+        return _closeOnExit;
     }
-    const SettingsModel *model() const
+    bool isRuleTimerEnabled() const
     {
-        return _model;
+        return _ruleTimerEnabled;
     }
-    SettingsModel *modelValue() const
+    bool isRulesEnabled() const
     {
-        return new SettingsModel(*_model);
+        return _rulesEnabled;
     }
-    DefaultModelType type()
+    int ruleTimerInterval() const
     {
-        return non_tree;
+        return _ruleCountInterval;
     }
-
-    // ISettingsDelegate interface
-    bool closeOnExit() const
+    QRect geometry() const
     {
-        return _model->closeOnExit;
-    }
-    bool ruleTimerEnabled() const
-    {
-        return _model->ruleTimerEnabled;
-    }
-    bool rulesEnabled() const
-    {
-        return _model->rulesEnabled;
-    }
-    int ruleCountInterval() const
-    {
-        return _model->ruleCountInterval;
-    }
-    QRect mainGuiGeometry() const
-    {
-        return _model->mainGuiGeometry;
+        return _mainGuiGeometry;
     }
 
 private:
-    SettingsDelegate(SettingsModel model)
-    {
-        if(!is_base_of_v<Model,Q_TYPEOF(model)>)
-            throw new InheritExceptionDelegate<Model,Q_TYPEOF(model)>();
+    bool _closeOnExit;
+    bool _ruleTimerEnabled;
+    bool _rulesEnabled;
+    int _ruleCountInterval;
 
-        _model = new SettingsModel(model);
-    }
-
-    const SettingsModel *_model;
-
-    // TODO: Friend a builder
-    friend class SettingsDelegateBuilder;
-};
-
-class SettingsDelegateBuilder
-{
-public:
-    static const SettingsDelegate* buildSettingsDelegate(bool enableCloseOnExit, bool enableTimer, bool enableRules, int ruleCountInterval,QRect guiGeometry)
-    {
-        SettingsModel model;
-        model.closeOnExit = enableCloseOnExit;
-        model.ruleTimerEnabled = enableTimer;
-        model.rulesEnabled = enableRules;
-        model.ruleCountInterval = ruleCountInterval;
-        model.mainGuiGeometry = guiGeometry;
-        model.id = QUuid::createUuid();
-
-        return new const SettingsDelegate(model);
-    }
-
-    static const SettingsDelegate *buildDefaultDelegate()
-    {
-        return new const SettingsDelegate(SettingsModel());
-    }
+    QRect _mainGuiGeometry;
 };
 
 #endif // SETTINGSDELEGATE_H

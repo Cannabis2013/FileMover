@@ -6,15 +6,20 @@
 
 enum DefaultModelType{non_tree,Tree};
 
-struct Model
+template<typename TModelType>
+class IModel
 {
-    QUuid id;
+public:
+    virtual QUuid id() const = 0;
+    virtual TModelType type() const = 0;
+    virtual void setType(const TModelType &type) = 0;
 };
 
-struct TreeModel : public Model
+class ITreeModel : public IModel
 {
-    TreeModel *_parent = nullptr;
-    QList<TreeModel*>_children;
+public:
+    virtual ITreeModel* parent() const = 0;
+    virtual QList<ITreeModel*> children() const = 0;
 };
 
 template<class TModel, typename TModelType = DefaultModelType>
@@ -41,3 +46,5 @@ public:
 };
 
 #endif // MODELDELEGATES_H
+
+

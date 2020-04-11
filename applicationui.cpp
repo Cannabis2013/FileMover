@@ -463,17 +463,17 @@ void ApplicationUI::writeSettings()
     auto currentSettings = this->coreApplication->settingsState();
 
 
-    this->coreApplication->setSettings(currentSettings->closeOnExit(),
-                                       currentSettings->ruleTimerEnabled(),
-                                       currentSettings->rulesEnabled(),
+    this->coreApplication->setSettings(currentSettings->isCloseOnExitEnabled(),
+                                       currentSettings->isRuleTimerEnabled(),
+                                       currentSettings->isRulesEnabled(),
                                        this->geometry(),
-                                       currentSettings->ruleCountInterval());
+                                       currentSettings->ruleTimerInterval());
 }
 
 void ApplicationUI::readSettings()
 {
     auto settings = this->coreApplication->settingsState();
-    setGeometry(settings->mainGuiGeometry());
+    setGeometry(settings->geometry());
 }
 
 void ApplicationUI::showSystemMessage(const QString &title,const QString &msg)
@@ -521,7 +521,7 @@ QFont ApplicationUI::createFont(fontType ft, QString family, bool bold, bool ita
 void ApplicationUI::on_clearButt_clicked()
 {
     auto settings = coreApplication->settingsState();
-    if(settings->rulesEnabled())
+    if(settings->isRulesEnabled())
     {
         if(messageBox::customBox(this,
                                 "Advarsel","Sikker på du vil gøre dette?",

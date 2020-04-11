@@ -13,42 +13,161 @@
 typedef QList<const IFileModel<>*> DefaultFileModelList;
 
 using namespace std;
-
-struct EntityModel : public Model
-{
+namespace EntityModelContext {
     enum typeMode {nullEntity,fileInformationEntity,fileActionEntity,directoryCountEntity};
-    typeMode type = nullEntity;
+    class EntityModel;
+}
+
+typedef EntityModelContext::typeMode DefaultEntityType;
+
+class EntityModel : public IModel<DefaultEntityType>
+{
+public:
+    QUuid id() const override
+    {
+        return _id;
+    }
+    DefaultEntityType type() const override
+    {
+        return _type;
+    }
+
+    void setType(const DefaultEntityType &type) override
+    {
+        _type = type;
+    }
+
+private:
+    DefaultEntityType _type = DefaultEntityType::nullEntity;
+    QUuid _id;
 };
 
-typedef EntityModel::typeMode EntityType;
 
-struct ErrorEntity : public EntityModel
+class ErrorEntity : public EntityModel
 {
-    QString errorDescription = "No error";
+public:
+    QString errorDescription() const
+    {
+        return _errorDescription;
+    }
+
+    void setErrorDescription(const QString &msg)
+    {
+        _errorDescription = msg;
+    }
+private:
+    QString _errorDescription = "No error";
 };
 
 struct DirectoryEntity : public EntityModel
 {
-    long long directorySize;
-    QString directoryName;
-    QString directoryPath;
+public:
+    quint64 size() const
+    {
+        return _directorySize;
+    }
+
+    void setSize(const quint64 &size)
+    {
+        _directorySize = size;
+    }
+
+    QString name() const
+    {
+        return _directoryName;
+    }
+
+    void setName(const QString &name)
+    {
+        _directoryName = name;
+    }
+
+    QString path() const
+    {
+        return _directoryPath;
+    }
+
+    void setPath(const QString &path)
+    {
+        _directoryPath = path;
+    }
+
+private:
+    quint64 _directorySize;
+    QString _directoryName;
+    QString _directoryPath;
 };
 
-struct FileRuleEntity : public EntityModel
+template<typename TFileList = DefaultFileModelList>
+class FileRuleEntity : public EntityModel
 {
-    QStringList directoryPaths;
-    DefaultFileModelList allFiles;
-    int fileActionRule = 0x01;
-    QStringList fileDestinations = QStringList();
+public:
+    QStringList paths() const
+    {
+        return _directoryPaths;
+    }
+
+    void setPaths(const QStringList &paths)
+    {
+        _directoryPaths = paths;
+    }
+
+    TFileList files() const
+    {
+        return _allFiles;
+    }
+
+    void setFiles(const TFileList &files)
+    {
+        _allFiles = files;
+    }
+
+    int ruleAction() const
+    {
+        return _fileActionRule;
+    }
+
+    void setRuleAction(const int &action)
+    {
+        _fileActionRule = action;
+    }
+
+    QStringList destinations() const
+    {
+        return _fileDestinations;
+    }
+
+    void setDestinations(const QStringList &paths)
+    {
+        _fileDestinations = paths;
+    }
+
+private:
+    QStringList _directoryPaths;
+    TFileList _allFiles;
+    int _fileActionRule = 0x01;
+    QStringList _fileDestinations = QStringList();
 };
 
-struct FileInformationEntity : public EntityModel
+class FileInformationEntity : public EntityModel
 {
-    QStringList filePaths;
+public:
+    QStringList filePaths() const
+    {
+        return _filePaths;
+    }
+
+    void setFilePaths(const QStringList &paths)
+    {
+        _filePaths = paths;
+    }
+
+private:
+    QStringList _filePaths;
 };
 
-template<class ModelType>
-class EntityModelDelegate : public IModelDelegate<ModelType,EntityType>
+template<class ModelType = IModel<DefaultEntityType>>
+class EntityModelDelegate : public IModelDelegate<ModelType,DefaultEntityType>
 {
 public:
     ~EntityModelDelegate()
@@ -56,12 +175,12 @@ public:
         delete _model;
     }
 
-    QUuid modelId(){return _model->id;}
+    QUuid modelId(){return _model->id();}
 
-    const ModelType *model() const {return static_cast<const ModelType*>(_model);}
+    const ModelType *model() const {return _model;}
 
 
-    EntityType type() {return _model->type;}
+    DefaultEntityType type() {return _model->type();}
 
 private:
     EntityModelDelegate(const EntityModel *model)
@@ -77,100 +196,6 @@ private:
     friend class DelegateBuilder;
 };
 
-class DelegateBuilder
-{
-public:
-    template<class TModel = EntityModel>
-    static EntityModelDelegate<TModel>* buildDelegate(const EntityModel* entity)
-    {
-        if(!std::is_base_of_v<EntityModel,TModel>)
-            throw new InheritExceptionDelegate<EntityModel,TModel>();
-
-        return new EntityModelDelegate<TModel>(entity);
-    }
-
-    template<class TModel = ErrorEntity>
-    static EntityModelDelegate<TModel>* buildErrorEntity(const QString &err)
-    {
-        if(!std::is_base_of_v<EntityModel,TModel>)
-            throw new InheritExceptionDelegate<EntityModel,TModel>();
-
-        DelegateBuilder builder;
-        auto entity =
-                builder.buildEntity<ErrorEntity>(EntityModel::nullEntity);
-
-        entity->errorDescription = err;
-        return new EntityModelDelegate<TModel>(entity);
-    }
-    template<class T = FileInformationEntity>
-    static EntityModelDelegate<T>* buildFileInformationEntity(const QStringList &paths)
-    {
-        DelegateBuilder builder;
-        if(!std::is_base_of_v<EntityModel,T>)
-            throw THROW_MSG_INHERIT;
-
-        FileInformationEntity *entity =
-                builder.buildEntity<FileInformationEntity>(EntityModel::fileInformationEntity);
-
-        entity->filePaths = paths;
-
-        return new EntityModelDelegate<T>(entity);
-    }
-    template<class T>
-    static EntityModelDelegate<T>* buildFileActionEntity(const QStringList &dirPaths,
-                                                     const DefaultFileModelList &allFiles,
-                                                     const int &fileActionRule,
-                                                     const QStringList &destinations)
-    {
-        if(!std::is_base_of_v<EntityModel,T>)
-            throw THROW_MSG_INHERIT;
-
-        DelegateBuilder builder;
-        FileRuleEntity *entity =
-                builder.buildEntity<FileRuleEntity>(EntityModel::fileActionEntity);
-
-        entity->directoryPaths = dirPaths;
-        entity->allFiles = allFiles;
-        entity->fileActionRule = fileActionRule;
-        entity->fileDestinations = destinations;
-
-        return new EntityModelDelegate<T>(entity);
-    }
-
-    template<class T>
-    static EntityModelDelegate<T>* buildDirectoryCountEntity(const long long &size,
-                                                     const QString &name,
-                                                     const QString &path)
-    {
-        if(!std::is_base_of_v<EntityModel,T>)
-            throw THROW_MSG_INHERIT;
-
-        DelegateBuilder builder;
-        auto *entity =
-                builder.buildEntity<DirectoryEntity>(EntityModel::directoryCountEntity);
-
-        entity->directorySize = size;
-        entity->directoryName = name;
-        entity->directoryPath = path;
-
-        return new EntityModelDelegate<T>(entity);
-    }
-
-private:
-    template<class T>
-    T *buildEntity(EntityType type)
-    {
-        if(!std::is_base_of_v<EntityModel,T>)
-            throw "Class Not direct base of EntityModel";
-
-        EntityModel *entity = new T;
-        entity->type = type;
-        entity->id = QUuid::createUuid();
-
-        return static_cast<T*>(entity);
-    }
-};
-
-typedef IModelDelegate<EntityModel,EntityType> FileRuleDelegate;
+typedef IModelDelegate<EntityModel,DefaultEntityType> DefaultDelegateModel;
 
 #endif // ENTITYMODEL_H

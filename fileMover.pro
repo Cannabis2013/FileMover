@@ -93,6 +93,7 @@ HEADERS  += \
     defaultfilemodelscontext.h \
     defaultinjector.h \
     directoryitem.h \
+    entitydelegatebuilder.h \
     entitymodel.h \
     entityqueuemanager.h \
     exceptionhandler.h \
@@ -107,6 +108,7 @@ HEADERS  += \
     ibroadcastingobject.h \
     icon.h \
     idefaultrulescollection.h \
+    idelegatebuilder.h \
     ifilelistservice.h \
     ifilemodel.h \
     ifiltereringcontext.h \
@@ -118,7 +120,8 @@ HEADERS  += \
     iruleconfiguration.h \
     iruledefinitions.h \
     iruleinterfaces.h \
-    isettingsdelegate.h \
+    isettingsbuilder.h \
+    isettingsmodel.h \
     isettingswindow.h \
     ithreadmanagerinterface.h \
     messageBox.h \
@@ -127,6 +130,7 @@ HEADERS  += \
     ruleservicesinjector.h \
     rulesmanager.h \
     myscreendimensions.h \
+    settingsbuilder.h \
     settingsdelegate.h \
     settingsmanager.h \
     settingsmodel.h \

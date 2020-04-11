@@ -46,7 +46,7 @@ public:
 
     // Persistence interface
 
-    const ISettingsDelegate* settingsState() override;
+    const ISettingsModel* settingsState() override;
     void setSettings(const bool &closeOnExit,
                      const bool &ruleTimerEnabled,
                      const bool &rulesEnabled,

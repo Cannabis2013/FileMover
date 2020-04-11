@@ -135,10 +135,10 @@ private:
 
         auto postSettings = mApp->settingsState();
 
-        auto result = closeOnExitEnabled == postSettings->closeOnExit() &&
-                rulesEnabled == postSettings->rulesEnabled() &&
-                ruleTimerEnabled == postSettings->ruleTimerEnabled() &&
-                 ruleTimerInterval == postSettings->ruleCountInterval();
+        auto result = closeOnExitEnabled == postSettings->isCloseOnExitEnabled() &&
+                rulesEnabled == postSettings->isRulesEnabled() &&
+                ruleTimerEnabled == postSettings->isRuleTimerEnabled() &&
+                 ruleTimerInterval == postSettings->ruleTimerInterval();
 
         return result;
     }

@@ -172,7 +172,7 @@ void ApplicationDomain::clearRules() const
         rulesService->removeRuleAt(i);
 }
 
-const ISettingsDelegate *ApplicationDomain::settingsState()
+const ISettingsModel *ApplicationDomain::settingsState()
 {
     return settingsService->settingsState();
 }

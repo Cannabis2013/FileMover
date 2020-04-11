@@ -171,7 +171,7 @@ void SettingsWindow::on_saveButton_clicked()
     auto closeOnExit = closeOnBox->isChecked();
     auto rulesEnabled = enableRules->isChecked();
     auto ruleCountInterval = countTimerInterval->text().toInt();
-    auto geo = currentSettings->mainGuiGeometry();
+    auto geo = currentSettings->geometry();
     coreApplication->setSettings(closeOnExit,
                                  countTimerEnableBox->isChecked(),
                                  rulesEnabled,geo,
@@ -182,9 +182,9 @@ void SettingsWindow::on_saveButton_clicked()
 void SettingsWindow::initializeState()
 {
     auto settings = coreApplication->settingsState();
-    closeOnBox->setChecked(settings->closeOnExit());
-    enableRules->setChecked(settings->rulesEnabled());
-    countTimerInterval->setText(QString::number(settings->ruleCountInterval()));
+    closeOnBox->setChecked(settings->isCloseOnExitEnabled());
+    enableRules->setChecked(settings->isRulesEnabled());
+    countTimerInterval->setText(QString::number(settings->ruleTimerInterval()));
 }
 
 void SettingsWindow::on_countTimerActivateBox_2_toggled(bool checked)

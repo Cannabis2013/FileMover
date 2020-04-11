@@ -9,7 +9,7 @@
 #include "icon.h"
 #include <qdir.h>
 #include <qdiriterator.h>
-#include "isettingsdelegate.h"
+#include "isettingsmodel.h"
 #include "entitymodel.h"
 #include "imutableobject.h"
 #include <qdatastream.h>
@@ -39,8 +39,8 @@ public:
     void insertIcon(const AbstractIcon *ic) override {trayIconList << ic;}
     void insertIcons(const QList<const AbstractIcon*> &icons) override {trayIconList << icons;}
 
-    const ISettingsDelegate* settingsState() const override;
-    void setSettings(const ISettingsDelegate *s) override;
+    const ISettingsModel* settingsState() const override;
+    void setSettings(const ISettingsModel *s) override;
 
     // Path Related..
 
@@ -60,10 +60,10 @@ public:
     QStringList paths() const override {return watchFolders;}
     QList<QTreeWidgetItem *> pathItems() const override;
 
-    bool closeOnQuit() const override {return _settings->closeOnExit();}
-    bool isRulesEnabled() const override {return _settings->rulesEnabled();}
-    bool countTimerEnabled() const override {return _settings->ruleTimerEnabled();}
-    QString countTimerInterval() const override {return QString::number(_settings->ruleCountInterval());}
+    bool closeOnQuit() const override {return _settings->isCloseOnExitEnabled();}
+    bool isRulesEnabled() const override {return _settings->isRulesEnabled();}
+    bool countTimerEnabled() const override {return _settings->isRuleTimerEnabled();}
+    QString countTimerInterval() const override {return QString::number(_settings->ruleTimerInterval());}
 
     // Icons related..
     QList<const AbstractIcon*> allIcons() const override {return trayIconList;}
@@ -73,7 +73,7 @@ private:
     QStringList watchFolders;
     QString ressourceFolder = "Ressources";
     QString fileIconPath = "fileIcons";
-    const ISettingsDelegate* _settings;
+    const ISettingsModel* _settings;
     QTimer countTimer;
     QList<const AbstractIcon*> trayIconList;
     QList<const AbstractIcon*> fileIconList;

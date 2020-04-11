@@ -158,11 +158,11 @@ void settingsManager::writeSettings()
 
     pSettings->beginGroup("Basic settings");
     pSettings->clear();
-    pSettings->setValue("Close on exit", _settings->closeOnExit());
-    pSettings->setValue("Count timer interval", _settings->ruleCountInterval());
-    pSettings->setValue("Rules enabled", _settings->rulesEnabled());
-    pSettings->setValue("Timer enabled",_settings->ruleTimerEnabled());
-    pSettings->setValue("Main gui geometry",_settings->mainGuiGeometry());
+    pSettings->setValue("Close on exit", _settings->isCloseOnExitEnabled());
+    pSettings->setValue("Count timer interval", _settings->ruleTimerInterval());
+    pSettings->setValue("Rules enabled", _settings->isRulesEnabled());
+    pSettings->setValue("Timer enabled",_settings->isRuleTimerEnabled());
+    pSettings->setValue("Main gui geometry",_settings->geometry());
     pSettings->endGroup();
     pSettings->beginWriteArray("Watchfolders", watchFolders.count());
 
@@ -179,45 +179,45 @@ void settingsManager::writeSettings()
 void settingsManager::setCloseOnExit(bool enable)
 {
     _settings = SettingsDelegateBuilder::buildSettingsDelegate(enable,
-                                                            _settings->ruleTimerEnabled(),
-                                                            _settings->rulesEnabled(),
-                                                            _settings->ruleCountInterval(),
-                                                            _settings->mainGuiGeometry());
+                                                            _settings->isRuleTimerEnabled(),
+                                                            _settings->isRulesEnabled(),
+                                                            _settings->ruleTimerInterval(),
+                                                            _settings->geometry());
 }
 
 void settingsManager::setRulesEnabled(bool enable)
 {
-    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->closeOnExit(),
-                                                            _settings->ruleTimerEnabled(),
+    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->isCloseOnExitEnabled(),
+                                                            _settings->isRuleTimerEnabled(),
                                                             enable,
-                                                            _settings->ruleCountInterval(),
-                                                            _settings->mainGuiGeometry());
+                                                            _settings->ruleTimerInterval(),
+                                                            _settings->geometry());
 }
 
 void settingsManager::setTimerEnabled(bool enable)
 {
-    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->closeOnExit(),
+    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->isCloseOnExitEnabled(),
                                                             enable,
-                                                            _settings->rulesEnabled(),
-                                                            _settings->ruleCountInterval(),
-                                                            _settings->mainGuiGeometry());
+                                                            _settings->isRulesEnabled(),
+                                                            _settings->ruleTimerInterval(),
+                                                            _settings->geometry());
 }
 
 void settingsManager::setTimerInterval(int msec)
 {
-    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->closeOnExit(),
-                                                            _settings->ruleTimerEnabled(),
-                                                            _settings->rulesEnabled(),
+    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->isCloseOnExitEnabled(),
+                                                            _settings->isRuleTimerEnabled(),
+                                                            _settings->isRulesEnabled(),
                                                             msec,
-                                                            _settings->mainGuiGeometry());
+                                                            _settings->geometry());
 }
 
-const ISettingsDelegate *settingsManager::settingsState() const
+const ISettingsModel *settingsManager::settingsState() const
 {
     return _settings;
 }
 
-void settingsManager::setSettings(const ISettingsDelegate *s)
+void settingsManager::setSettings(const ISettingsModel *s)
 {
     _settings = s;
 }

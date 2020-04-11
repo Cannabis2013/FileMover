@@ -6,7 +6,7 @@
 
 #include "imutableobject.h"
 #include "abstracticon.h"
-#include "isettingsdelegate.h"
+#include "isettingsmodel.h"
 #include "entitymodel.h"
 #include "QTreeWidgetItem"
 
@@ -24,8 +24,8 @@ public:
     virtual void insertIcon(const AbstractIcon *ic) = 0;
     virtual void insertIcons(const QList<const AbstractIcon*> &icons) = 0;
 
-    virtual const ISettingsDelegate* settingsState() const = 0;
-    virtual void setSettings(const ISettingsDelegate *s) = 0;
+    virtual const ISettingsModel* settingsState() const = 0;
+    virtual void setSettings(const ISettingsModel *s) = 0;
 
     // Path Related..
 
@@ -55,7 +55,7 @@ public:
 
     // Virtual signals
 signals:
-    void processPath(IModelDelegate<EntityModel,EntityType> *delegate);
+    void processPath(IModelDelegate<EntityModel,DefaultEntityType> *delegate);
     void removeItem(QString path);
     void stateChanged();
 };

@@ -4,7 +4,7 @@
 #include <qstring.h>
 #include "icon.h"
 #include "abstractrulesmanager.h"
-#include "isettingsdelegate.h"
+#include "isettingsmodel.h"
 #include "imutableobject.h"
 #include "abstractsettingsmanager.h"
 #include "abstractqueueManager.h"
@@ -18,7 +18,7 @@
 
 typedef IFileListService<IModelBuilder<IFileModel<>,QString>> DefaulFileList;
 typedef IFiltereringContext<IDefaultRule,
-            FileRuleDelegate,DefaulFileList> IDefaultFilteringContext;
+            DefaultDelegateModel,DefaulFileList> IDefaultFilteringContext;
 
 class AbstractApplicationService :
         public QObject,
@@ -48,7 +48,7 @@ public:
 
     virtual QList<const AbstractIcon*> icons() = 0;
 
-    virtual const ISettingsDelegate* settingsState() = 0;
+    virtual const ISettingsModel* settingsState() = 0;
     virtual void setSettings(const bool &closeOnExit,
                              const bool &ruleTimerEnabled,
                              const bool &rulesEnabled,
@@ -100,7 +100,7 @@ signals:
 
     void sendFolderSize(const DirectoryEntity *fObject);
     void sendStatusMessage(const QString &filePath);
-    void sendEntity(IModelDelegate<EntityModel,EntityType> *delegate);
+    void sendEntity(IModelDelegate<EntityModel,DefaultEntityType> *delegate);
 
     void stateChanged();
 

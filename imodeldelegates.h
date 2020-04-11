@@ -15,7 +15,7 @@ public:
     virtual void setType(const TModelType &type) = 0;
 };
 
-class ITreeModel : public IModel
+class ITreeModel : public IModel<DefaultModelType>
 {
 public:
     virtual ITreeModel* parent() const = 0;

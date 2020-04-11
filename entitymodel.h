@@ -36,7 +36,6 @@ public:
     {
         _type = type;
     }
-
 private:
     DefaultEntityType _type = DefaultEntityType::nullEntity;
     QUuid _id;
@@ -136,7 +135,6 @@ public:
     {
         return _fileDestinations;
     }
-
     void setDestinations(const QStringList &paths)
     {
         _fileDestinations = paths;

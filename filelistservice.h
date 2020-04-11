@@ -30,7 +30,7 @@ public:
         return result;
     }
 
-    DefaultFileModelList buildFileModels(const int &filter = FilesContext::All, const QStringList &paths = QStringList()) override
+    DefaultFileModelList buildFileModels(const int &filter = 0xC1, const QStringList &paths = QStringList()) override
     {
         DefaultFileModelList resultingList;
 
@@ -133,9 +133,9 @@ public:
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
                 else if(mode == FilesContext::Equal && subject == size)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
-                else if(mode == FilesContext::greaterOrEqualThan && subject >= size)
+                else if(mode == FilesContext::GreaterOrEqualThan && subject >= size)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
-                else if(mode == FilesContext::greaterThan && subject > size)
+                else if(mode == FilesContext::GreaterThan && subject > size)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
             }
             else
@@ -164,11 +164,7 @@ public:
 
                 if(mode == FilesContext::YoungerThan && subject < compare)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
-                else if(mode == FilesContext::YoungerOrExactThan && subject <= compare)
-                    result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
                 else if(mode == FilesContext::Exact && subject == compare)
-                    result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
-                else if(mode == FilesContext::OlderOrExtactThan && subject >= compare)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));
                 else if(mode == FilesContext::OlderThan && subject > compare)
                     result <<  modelBuilderService()->buildModel(new QString(model->filepath()));

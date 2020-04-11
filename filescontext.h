@@ -5,10 +5,10 @@
 #include <math.h>
 
 namespace FilesContext {
-    enum sizeComparemode {LesserThan = 0, LesserOrEqualThan = 1, Equal = 2, greaterOrEqualThan = 3, greaterThan = 4};
-    enum dateCompareMode {YoungerThan = 0, YoungerOrExactThan = 1, Exact = 2, OlderOrExtactThan = 3, OlderThan = 4};
+    enum sizeComparemode {LesserThan = 0x044,LesserOrEqualThan = 0x045, Equal = 0x046,GreaterOrEqualThan = 0x047,GreaterThan = 0x048,};
+    enum dateCompareMode {OlderThan = 0x050, Exact = 0x051, YoungerThan = 0x052};
     enum fileDateMode {DateCreated = 0, DateEdited = 1};
-    enum FileType {Folder = 0x060, File = 0x061,All = 0x062, unresolved = 0x01};
+    enum FileType {Folder = 0x060, File = 0x061,All = 0xC1, unresolved = 0x01};
     enum IteratorMode {NonRecursive = 0x080, Recursive = 0x081};
 
     class FilesContextUtilities;

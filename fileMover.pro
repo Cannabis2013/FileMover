@@ -93,6 +93,7 @@ HEADERS  += \
     defaultfilemodelscontext.h \
     defaultinjector.h \
     directoryitem.h \
+    entitydelegate.h \
     entitydelegatebuilder.h \
     entitymodel.h \
     entityqueuemanager.h \

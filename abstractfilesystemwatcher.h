@@ -21,7 +21,7 @@ public:
 
 
 signals:
-    void folderChanged(IModelDelegate<EntityModel> *model);
+    void folderChanged(DefaultDelegate *delegate);
 
     void sendSystemTrayMessage(const QString &title, const QString &msg);
     void sendStatusLineMessage(const QString &msg);

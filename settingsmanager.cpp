@@ -1,12 +1,13 @@
 #include "settingsmanager.h"
 
-settingsManager::settingsManager(const QString &appName, const QString &orgName):
-    AbstractPersistence (appName,orgName)
+settingsManager::settingsManager(const QString &appName, const QString &orgName,
+                                 ISettingsBuilder<QRect> *builderService,
+                                 IDelegateBuilder<DefaultDelegate> *delegateBuilderService):
+    AbstractPersistence (appName,orgName),
+    settingsBuilder(builderService),
+    _delegateBuilderService(delegateBuilderService)
 {
     QList<const AbstractIcon*> trayIconList = scanForIcons(ressourceFolder);
-
-    // Allocate memmory and initialize later
-    _settings = SettingsDelegateBuilder::buildDefaultDelegate();
 
     QDir dir;
     if(!dir.exists(ressourceFolder))
@@ -37,20 +38,18 @@ settingsManager::~settingsManager()
 void settingsManager::insertPath(QString path)
 {
     watchFolders << path;
+    auto paths = QStringList() << path;
+    auto delegate = _delegateBuilderService->buildFileInformationDelegate(paths);
 
-    emit processPath(
-                DelegateBuilder::buildFileInformationEntity<EntityModel>(
-                    QStringList() << path));
+    emit processPath(delegate);
     emit stateChanged();
 }
 
 void settingsManager::insertPath(const QStringList& paths)
 {
     watchFolders << paths;
-
-    emit processPath(
-                DelegateBuilder::buildFileInformationEntity<EntityModel>(
-                    QStringList() << paths));
+    auto delegate = _delegateBuilderService->buildFileInformationDelegate(paths);
+    emit processPath(delegate);
     emit stateChanged();
 }
 
@@ -134,7 +133,7 @@ void settingsManager::readSettings()
 
     pSettings->endGroup();
 
-    _settings = SettingsDelegateBuilder::buildSettingsDelegate(closeOnExit,
+    _settings = settingsBuilder->buildSettings(closeOnExit,
                                                                ruleTimerEnabled,
                                                                rulesEnabled,
                                                                ruleCountInterval,

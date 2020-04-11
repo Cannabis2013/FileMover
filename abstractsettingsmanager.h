@@ -55,7 +55,7 @@ public:
 
     // Virtual signals
 signals:
-    void processPath(IModelDelegate<EntityModel,DefaultEntityType> *delegate);
+    void processPath(DefaultDelegate *delegate);
     void removeItem(QString path);
     void stateChanged();
 };

@@ -100,7 +100,7 @@ signals:
 
     void sendFolderSize(const DirectoryEntity *fObject);
     void sendStatusMessage(const QString &filePath);
-    void sendEntity(IModelDelegate<EntityModel,DefaultEntityType> *delegate);
+    void sendEntity(DefaultDelegate *delegate);
 
     void stateChanged();
 

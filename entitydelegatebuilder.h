@@ -11,6 +11,7 @@ public:
     DefaultDelegateModel *buildFileInformationDelegate(const QStringList &paths)
     {
         auto model = new FileInformationEntity;
+
     }
     DefaultDelegateModel *buildDirectoryCountDelegate(const QString &path, const QString &name, const long long &size)
     {

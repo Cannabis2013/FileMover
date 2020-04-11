@@ -11,13 +11,13 @@ public:
     virtual bool isQueueEmpty() const = 0;
 
 public slots:
-    virtual void addEntity(IModelDelegate<EntityModel,DefaultEntityType> *delegate) = 0;
+    virtual void addEntity(DefaultDelegate *delegate) = 0;
     virtual void sendNextEntity() = 0;
 
 signals:
     void wakeUpProcess();
     void processFinished();
-    void sendEntity(IModelDelegate<EntityModel,DefaultEntityType> *delegate);
+    void sendEntity(DefaultDelegate *delegate);
 };
 
 

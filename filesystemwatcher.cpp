@@ -16,7 +16,7 @@ void FileSystemWatcher::removePath(const QString &path)
 void FileSystemWatcher::changed(const QString &path)
 {
     emit folderChanged(
-                DelegateBuilder::buildFileInformationEntity<EntityModel>(
+                builderService->buildFileInformationDelegate(
                     QStringList() << path));
 
     QString msg = QString("A change in the following folder has occured: \n %1").arg(path);

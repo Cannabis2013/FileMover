@@ -126,7 +126,7 @@ void FileWorker::processDirectoryCountEntity(const IModelDelegate<DirectoryEntit
     emit sendFolderSizeEntity(entity);
 }
 
-void FileWorker::processEntity(IModelDelegate<EntityModel,DefaultEntityType> *delegate)
+void FileWorker::processEntity(DefaultDelegate *delegate)
 {
     isBusy = true;
     if(delegate->type() == EntityModel::nullEntity)

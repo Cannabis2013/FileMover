@@ -15,6 +15,8 @@
 #include <qdatastream.h>
 #include <settingsdelegate.h>
 #include "abstractsettingsmanager.h"
+#include "isettingsbuilder.h"
+#include "idelegatebuilder.h"
 
 
 class settingsManager : public AbstractSettingsManager,
@@ -22,7 +24,11 @@ class settingsManager : public AbstractSettingsManager,
 {
     Q_OBJECT
 public:
-    settingsManager(const QString &appName, const QString &orgName);
+    settingsManager(const QString &appName,
+                    const QString &orgName,
+                    ISettingsBuilder<QRect> *builderService,
+                    IDelegateBuilder<DefaultDelegate> *delegateBuilderService);
+
     ~settingsManager();
 
     // Persistence
@@ -73,13 +79,14 @@ private:
     QStringList watchFolders;
     QString ressourceFolder = "Ressources";
     QString fileIconPath = "fileIcons";
+    ISettingsBuilder<QRect> *const settingsBuilder;
     const ISettingsModel* _settings;
     QTimer countTimer;
     QList<const AbstractIcon*> trayIconList;
     QList<const AbstractIcon*> fileIconList;
     const AbstractIcon *currentTrayIcon;
     const AbstractIcon * fileIconStandard;
-
+    IDelegateBuilder<DefaultDelegate> *const _delegateBuilderService;
 };
 
 typedef settingsManager sM;

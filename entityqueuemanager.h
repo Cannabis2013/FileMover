@@ -28,7 +28,7 @@ public:
 
 public slots:
 
-    void addEntity(IModelDelegate<EntityModel,DefaultEntityType> *delegate) override
+    void addEntity(DefaultDelegate *delegate) override
     {
         entityQueue << delegate->model();
         emit wakeUpProcess();

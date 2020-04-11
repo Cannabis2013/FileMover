@@ -14,30 +14,28 @@ typedef QList<const IFileModel<>*> DefaultFileModelList;
 
 using namespace std;
 namespace EntityModelContext {
-    enum typeMode {nullEntity,fileInformationEntity,fileActionEntity,directoryCountEntity};
+    enum typeMode {nullEntity = 0x00,fileInformationEntity = 0x01,fileActionEntity = 0x02,directoryCountEntity = 0x04};
     class EntityModel;
 }
 
-typedef EntityModelContext::typeMode DefaultEntityType;
-
-class EntityModel : public IModel<DefaultEntityType>
+class EntityModel : public IModel<int>
 {
 public:
     QUuid id() const override
     {
         return _id;
     }
-    DefaultEntityType type() const override
+    int type() const override
     {
         return _type;
     }
 
-    void setType(const DefaultEntityType &type) override
+    void setType(const int &type) override
     {
         _type = type;
     }
 private:
-    DefaultEntityType _type = DefaultEntityType::nullEntity;
+    int _type = EntityModelContext::nullEntity;
     QUuid _id;
 };
 
@@ -163,37 +161,5 @@ public:
 private:
     QStringList _filePaths;
 };
-
-template<class ModelType = IModel<DefaultEntityType>>
-class EntityModelDelegate : public IModelDelegate<ModelType,DefaultEntityType>
-{
-public:
-    ~EntityModelDelegate()
-    {
-        delete _model;
-    }
-
-    QUuid modelId(){return _model->id();}
-
-    const ModelType *model() const {return _model;}
-
-
-    DefaultEntityType type() {return _model->type();}
-
-private:
-    EntityModelDelegate(const EntityModel *model)
-    {
-        if(!std::is_base_of_v<EntityModel,ModelType>)
-            throw new InheritExceptionDelegate<EntityModel,ModelType>();
-
-        _model = model;
-    }
-
-    const EntityModel *_model;
-
-    friend class DelegateBuilder;
-};
-
-typedef IModelDelegate<EntityModel,DefaultEntityType> DefaultDelegateModel;
 
 #endif // ENTITYMODEL_H

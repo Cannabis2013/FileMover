@@ -6,7 +6,7 @@
 
 enum DefaultModelType{non_tree,Tree};
 
-template<typename TModelType>
+template<typename TModelType = int>
 class IModel
 {
 public:
@@ -28,9 +28,9 @@ class IModelDelegate
 public:
     IModelDelegate() = default;
     virtual ~IModelDelegate() = default;
-    virtual QUuid modelId() = 0;
+    virtual QUuid modelId() const = 0;
     virtual const TModel* model() const= 0;
-    virtual TModelType type() = 0;
+    virtual TModelType type() const = 0;
 };
 template<class TModel, class TModelType = DefaultModelType>
 class ITreeModelDelegate : public IModelDelegate<TModel,TModelType>
@@ -44,6 +44,9 @@ public:
     virtual bool hasChildren() const = 0;
     virtual TModelType type() = 0;
 };
+
+typedef IModelDelegate<IModel<>,int> DefaultDelegate;
+typedef IModel<int> DefaultModel;
 
 #endif // MODELDELEGATES_H
 

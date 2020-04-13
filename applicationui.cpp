@@ -138,7 +138,7 @@ ApplicationUI::ApplicationUI(AbstractApplicationService *coreApplication,
 
     // Fileworker Related..
 
-    qRegisterMetaType<QList<DirectoryEntity>>("QList<DirectoryCountEntity>");
+    qRegisterMetaType<QList<DirectoryEntityModel>>("QList<DirectoryCountEntity>");
     qRegisterMetaType<EntityModelDelegate<EntityModel>*>("EntityModelDelegate<EntityModel>");
 
     /*
@@ -404,7 +404,7 @@ void ApplicationUI::clearCompleted(bool a)
     tray->showMessage("Removal",msg);
 }
 
-void ApplicationUI::folderContentRecieved(const DirectoryEntity *entity)
+void ApplicationUI::folderContentRecieved(const DirectoryEntityModel *entity)
 {
     QString sizeNotation;
     double scaledAndRoundedSize = FCU::convertFromBytes(entity->directorySize,sizeNotation,2);

@@ -2,7 +2,7 @@
 
 settingsManager::settingsManager(const QString &appName, const QString &orgName,
                                  ISettingsBuilder<QRect> *builderService,
-                                 IDelegateBuilder<DefaultDelegate> *delegateBuilderService):
+                                 IEntityModelBuilder<DefaultDelegate> *delegateBuilderService):
     AbstractPersistence (appName,orgName),
     settingsBuilder(builderService),
     _delegateBuilderService(delegateBuilderService)

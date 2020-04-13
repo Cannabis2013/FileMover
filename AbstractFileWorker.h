@@ -7,7 +7,6 @@
 #include "directoryitem.h"
 #include "ibroadcastingobject.h"
 
-#include "imodeldelegates.h"
 
 namespace FilesContext
 {
@@ -23,12 +22,12 @@ class AbstractFileWorker :
 public slots:
     // wake-up/Start entity file operations
     virtual void handleProcessRequest() = 0;
-    virtual void processEntity(IModelDelegate<EntityModel, DefaultEntityType> *delegate) = 0;
+    virtual void processEntity(DefaultModelInterface *model) = 0;
 
 signals:
     void fileCount(long antal);
-    void sendFolderSizeEntity(const DirectoryEntity *fObj);
-    void sendFolderSizeEntities(QList<DirectoryEntity> s);
+    void sendFolderSizeEntity(const DirectoryEntityModel *fObj);
+    void sendFolderSizeEntities(QList<DirectoryEntityModel> s);
 
     void clearFinished(bool a);
 

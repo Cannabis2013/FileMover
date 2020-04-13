@@ -93,9 +93,8 @@ HEADERS  += \
     defaultfilemodelscontext.h \
     defaultinjector.h \
     directoryitem.h \
-    entitydelegate.h \
-    entitydelegatebuilder.h \
     entitymodel.h \
+    entitymodelbuilder.h \
     entityqueuemanager.h \
     exceptionhandler.h \
     fileinformationmanager.h \
@@ -109,12 +108,12 @@ HEADERS  += \
     ibroadcastingobject.h \
     icon.h \
     idefaultrulescollection.h \
-    idelegatebuilder.h \
+    ientitymodelbuilder.h \
     ifilelistservice.h \
     ifilemodel.h \
     ifiltereringcontext.h \
+    imodel.h \
     imodelbuilder.h \
-    imodeldelegates.h \
     imutableobject.h \
     inheritexceptiondelegate.h \
     irulebuilder.h \

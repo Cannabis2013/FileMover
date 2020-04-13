@@ -2,7 +2,7 @@
 #define FILESYSTEMWATCHER_H
 
 #include "abstractfilesystemwatcher.h"
-#include "idelegatebuilder.h"
+#include "ientitymodelbuilder.h"
 #include "entitymodel.h"
 
 
@@ -27,7 +27,7 @@ private slots:
 private:
     QFileSystemWatcher *fileWatcher;
 
-    IDelegateBuilder<DefaultDelegate> *builderService;
+    IEntityModelBuilder<DefaultDelegate> *builderService;
 };
 
 #endif // FILESYSTEMWATCHER_H

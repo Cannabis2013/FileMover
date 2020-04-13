@@ -102,7 +102,7 @@ private slots:
 
     // Fileworker Related..
     void clearCompleted(bool a);
-    void folderContentRecieved(const DirectoryEntity *entity);
+    void folderContentRecieved(const DirectoryEntityModel *entity);
     void actionCountFolder(bool f);
 
     // watchFolderView Related..

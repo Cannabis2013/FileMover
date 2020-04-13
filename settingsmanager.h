@@ -16,7 +16,7 @@
 #include <settingsdelegate.h>
 #include "abstractsettingsmanager.h"
 #include "isettingsbuilder.h"
-#include "idelegatebuilder.h"
+#include "ientitymodelbuilder.h"
 
 
 class settingsManager : public AbstractSettingsManager,
@@ -27,7 +27,7 @@ public:
     settingsManager(const QString &appName,
                     const QString &orgName,
                     ISettingsBuilder<QRect> *builderService,
-                    IDelegateBuilder<DefaultDelegate> *delegateBuilderService);
+                    IEntityModelBuilder<DefaultDelegate> *delegateBuilderService);
 
     ~settingsManager();
 
@@ -86,7 +86,7 @@ private:
     QList<const AbstractIcon*> fileIconList;
     const AbstractIcon *currentTrayIcon;
     const AbstractIcon * fileIconStandard;
-    IDelegateBuilder<DefaultDelegate> *const _delegateBuilderService;
+    IEntityModelBuilder<DefaultDelegate> *const _delegateBuilderService;
 };
 
 typedef settingsManager sM;

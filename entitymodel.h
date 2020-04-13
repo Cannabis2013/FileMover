@@ -5,7 +5,7 @@
 #include <QFileInfoList>
 
 #include "inheritexceptiondelegate.h"
-#include "imodeldelegates.h"
+#include "imodel.h"
 #include "ifilemodel.h"
 
 #define THROW_MSG_INHERIT "Template argument not direct base of Model"
@@ -14,7 +14,11 @@ typedef QList<const IFileModel<>*> DefaultFileModelList;
 
 using namespace std;
 namespace EntityModelContext {
-    enum typeMode {nullEntity = 0x00,fileInformationEntity = 0x01,fileActionEntity = 0x02,directoryCountEntity = 0x04};
+    enum typeMode {NullEntity = 0x00,
+                   FileInformationEntity = 0x01,
+                   FileRuleEntity = 0x02,
+                   DirectoryEntity = 0x04,
+                   ErrorEntity = 0x08};
     class EntityModel;
 }
 
@@ -25,6 +29,12 @@ public:
     {
         return _id;
     }
+
+    void setId(const QUuid &id) override
+    {
+        _id = id;
+    }
+
     int type() const override
     {
         return _type;
@@ -35,12 +45,12 @@ public:
         _type = type;
     }
 private:
-    int _type = EntityModelContext::nullEntity;
+    int _type = EntityModelContext::NullEntity;
     QUuid _id;
 };
 
 
-class ErrorEntity : public EntityModel
+class ErrorEntityModel : public EntityModel
 {
 public:
     QString errorDescription() const
@@ -56,7 +66,7 @@ private:
     QString _errorDescription = "No error";
 };
 
-struct DirectoryEntity : public EntityModel
+struct DirectoryEntityModel : public EntityModel
 {
 public:
     quint64 size() const
@@ -96,7 +106,7 @@ private:
 };
 
 template<typename TFileList = DefaultFileModelList>
-class FileRuleEntity : public EntityModel
+class FileRuleEntityModel : public EntityModel
 {
 public:
     QStringList paths() const
@@ -145,7 +155,7 @@ private:
     QStringList _fileDestinations = QStringList();
 };
 
-class FileInformationEntity : public EntityModel
+class FileInformationEntityModel : public EntityModel
 {
 public:
     QStringList filePaths() const

@@ -24,14 +24,14 @@ public:
 
     // wake-up/Start entity file operations
     void handleProcessRequest() override;
-    void processEntity(IModelDelegate<EntityModel, DefaultEntityType> *delegate) override;
+    void processEntity(DefaultModelInterface *model) override;
 
 private:
     // File object entity operations
 
-    void processFileEntity(const IModelDelegate<FileRuleEntity, DefaultEntityType> *delegate);
-    void processFileInformationEntity(const IModelDelegate<FileInformationEntity, DefaultEntityType> *delegate);
-    void processDirectoryCountEntity(const IModelDelegate<DirectoryEntity,DefaultEntityType> *delegate);
+    void processFileEntity(const DefaultModelInterface *model);
+    void processFileInformationEntity(const DefaultModelInterface *model);
+    void processDirectoryCountEntity(const DefaultModelInterface *model);
     void reProcessFileInformationEntity(const QStringList &paths);
 
     // Fileoperation from QFileinfoList..

@@ -2,8 +2,6 @@
 #define ISETTINGSDELEGATE_H
 
 #include <qrect.h>
-#include "imodeldelegates.h"
-
 
 class ISettingsModel
 {

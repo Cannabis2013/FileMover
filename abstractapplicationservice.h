@@ -98,7 +98,7 @@ public slots:
 signals:
     // FileWorker
 
-    void sendFolderSize(const DirectoryEntity *fObject);
+    void sendFolderSize(const DirectoryEntityModel *fObject);
     void sendStatusMessage(const QString &filePath);
     void sendEntity(DefaultDelegate *delegate);
 

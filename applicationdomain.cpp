@@ -42,7 +42,7 @@ AbstractApplicationService *ApplicationDomain::configureServices()
     qRegisterMetaType<DirectoryItem>("DirectoryItem");
     qRegisterMetaType<QList<DirectoryItem>>("QList<DirectoryItem>");
     qRegisterMetaType<EntityModel>("EntityModel");
-    qRegisterMetaType<DirectoryEntity>("DirectoryCountEntity");
+    qRegisterMetaType<DirectoryEntityModel>("DirectoryCountEntity");
 
     /*
      *  Connnections

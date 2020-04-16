@@ -55,7 +55,7 @@ namespace RulesContext
                 + " " + "max: " + maxSize + " " + sizeUnitMax;
     }
 
-    static QString ruleSizeLimitsToString(const IDefaultRuleCondition *sRule)
+    static QString ruleSizeLimitsToString(const DefaultRuleCriteria *sRule)
     {
         QString minSize = QString::number(sRule->sizeInterval().first.first),
                 maxSize = QString::number(sRule->sizeInterval().second.first);
@@ -72,7 +72,7 @@ namespace RulesContext
         return "Start dato: " + startDate + " slut dato: " + endDate;
     }
 
-    static QString ruleDateLimitsToString(const IDefaultRuleCondition *sRule)
+    static QString ruleDateLimitsToString(const DefaultRuleCriteria *sRule)
     {
         QString startDate = sRule->dateIntervals().first.date().toString("dd.MM.yyyy"),
                 endDate = sRule->dateIntervals().second.date().toString("dd.MM.yyyy");
@@ -130,7 +130,7 @@ namespace RulesContext
             return mergeStringList(sRule->keywords());
     }
 
-    static QString ruleKeyWordToString(const IDefaultRuleCondition *sRule)
+    static QString ruleKeyWordToString(const DefaultRuleCriteria *sRule)
     {
 
         if(sRule->criteria() == RulesContext::FileSizeMode &&

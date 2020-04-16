@@ -177,11 +177,11 @@ public:
         return result;
     }
 
-    IModelBuilder<IFileModel<QFileInfo>,QString> *modelBuilderService() override
+    IModelBuilder<IFileModel<QFileInfo,QUuid>,QString> *modelBuilderService() override
     {
         return builderService;
     }
-    IFileListService<IModelBuilder<IFileModel<>,QString>>* setModelBuilderService(IModelBuilder<IFileModel<QFileInfo>,QString> *service) override
+    IFileListService<IModelBuilder<IFileModel<QFileInfo,QUuid>,QString>>* setModelBuilderService(IModelBuilder<IFileModel<QFileInfo,QUuid>,QString> *service) override
     {
         builderService = service;
     }
@@ -229,7 +229,7 @@ private:
         return result;
     }
 
-    IModelBuilder<IFileModel<QFileInfo>,QString> *builderService;
+    IModelBuilder<IFileModel<QFileInfo,QUuid>,QString> *builderService;
     QStringList _filepaths;
 };
 

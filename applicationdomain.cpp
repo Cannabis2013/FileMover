@@ -14,17 +14,17 @@ ApplicationDomain::~ApplicationDomain()
 void ApplicationDomain::clearFolders(QStringList paths)
 {
     auto models = fileListService->buildFileModels(FilesContext::All,paths);
-    auto delegates = DelegateBuilder::buildFileActionEntity<EntityModel>(paths,models,FilesContext::Delete,QStringList());
-    queueService->addEntity(delegates);
+    auto entity = _entityModelBuilder->buildFileRuleModel(paths,models,FilesContext::Delete,QStringList());
+    emit sendEntity(entity);
 }
 
 void ApplicationDomain::clearFoldersAccordingToRules(QStringList paths)
 {
     auto folders = watchFolders();
     fileListService->appendFileLists(folders);
-    auto list = filteringService->process(rulesService->rules());
-    for (auto delegate : list) {
-        emit sendEntity(delegate);
+    auto models = filteringService->process(rulesService->rules());
+    for (auto model : models) {
+        emit sendEntity(model);
     }
 }
 
@@ -79,9 +79,7 @@ AbstractApplicationService* ApplicationDomain::startServices()
     // Start threads
     threadingService->startAllThreads();
 
-    emit settingsService->processPath(
-                DelegateBuilder::buildFileInformationEntity<EntityModel>(
-                    QStringList() << watchFolders()));
+    // TODO: You have to process the watchfolders with respect to file informations
 
     return this;
 }
@@ -122,7 +120,7 @@ AbstractApplicationService *ApplicationDomain::setFileOperationsService(Abstract
     return this;
 }
 
-AbstractApplicationService *ApplicationDomain::setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<>, QString> > *service)
+AbstractApplicationService *ApplicationDomain::setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<QFileInfo,QUuid>, QString> > *service)
 {
     fileListService = service;
     return this;
@@ -137,6 +135,18 @@ AbstractApplicationService *ApplicationDomain::setFileWatcherService(AbstractFil
 AbstractApplicationService *ApplicationDomain::setRuleDefinitionsService(IRuleDefinitions *service)
 {
     _ruleDefinitionsService = service;
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setEntityModelBuilderService(IEntityModelBuilder<DefaultModelInterface, DefaultFileModelList> *service)
+{
+    _entityModelBuilder = service;
+    return this;
+}
+
+AbstractApplicationService *ApplicationDomain::setSettingsBuilderService(ISettingsBuilder<QRect> *service)
+{
+    _settingsBuilder = service;
     return this;
 }
 
@@ -172,7 +182,7 @@ void ApplicationDomain::clearRules() const
         rulesService->removeRuleAt(i);
 }
 
-const ISettingsModel *ApplicationDomain::settingsState()
+const ISettingsModel<QRect> *ApplicationDomain::settingsState()
 {
     return settingsService->settingsState();
 }
@@ -184,13 +194,9 @@ void ApplicationDomain::setSettings(const bool &closeOnExit,
                                     const int &countInterval)
 
 {
-    auto settingsDelegate = SettingsDelegateBuilder::buildSettingsDelegate(closeOnExit,
-                                                                   ruleTimerEnabled,
-                                                                   rulesEnabled,
-                                                                   countInterval,
-                                                                   geometry);
+    auto settingsModel = _settingsBuilder->buildSettings(closeOnExit,rulesEnabled,ruleTimerEnabled,countInterval,geometry);
 
-    settingsService->setSettings(settingsDelegate);
+    settingsService->setSettings(settingsModel);
 }
 
 void ApplicationDomain::calculateFolderSize(QString path)
@@ -200,8 +206,9 @@ void ApplicationDomain::calculateFolderSize(QString path)
     auto directoryPath = fInfo.absoluteFilePath();
     auto directoryName = fInfo.fileName();
 
+    auto entity = _entityModelBuilder->buildDirectoryCountModel(directoryPath,directoryName,0);
 
-    queueService->addEntity(DelegateBuilder::buildDirectoryCountEntity<EntityModel>(0,directoryName,directoryPath));
+    queueService->addEntity(entity);
 }
 
 void ApplicationDomain::removeWatchFolderAt(int index)
@@ -214,7 +221,7 @@ void ApplicationDomain::removeWatchFolder(QString path)
     settingsService->removePath(path);
 }
 
-AbstractApplicationService *ApplicationDomain::setFilteringContext(IDefaultFilteringContext *filterService, DefaulFileList *listService)
+AbstractApplicationService *ApplicationDomain::setFilteringContext(DefaultFilteringContextInterface *filterService, DefaulFileList *listService)
 {
     filteringService = filterService;
     filteringService->setListService(listService);

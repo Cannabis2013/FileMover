@@ -39,8 +39,8 @@ public:
     void setRulesDefinitionsService(IRuleDefinitions *service) override;
 
 signals:
-    void sendRule(const IRule<IDefaultRuleCondition>*R);
-    void replaceRule(const IRule<IDefaultRuleCondition>* rule, QString title);
+    void sendRule(const IRule<DefaultRuleCriteria>*R);
+    void replaceRule(const IRule<DefaultRuleCriteria>* rule, QString title);
 
 protected slots:
 
@@ -85,7 +85,7 @@ protected:
     QLineEdit *titleSelector,
         *keyWordSelector,
         *destinationPathSelector;
-    QList<const IDefaultRuleCondition*> _ruleConditions;
+    QList<const DefaultRuleCriteria*> _ruleConditions;
     QPushButton *addBut;
     QSpinBox *minSizeSelector,
         *maxSizeSelector,
@@ -97,7 +97,7 @@ protected:
     void resetSubForm();
     void resetAllForm();
 
-    void updateConditionView(const IDefaultRuleCondition *sR);
+    void updateConditionView(const DefaultRuleCriteria *sR);
 
 private:
     Ui::AbstractRuleDialog *ui;

@@ -22,7 +22,7 @@ class AbstractFileWorker :
 public slots:
     // wake-up/Start entity file operations
     virtual void handleProcessRequest() = 0;
-    virtual void processEntity(DefaultModelInterface *model) = 0;
+    virtual void processEntity(const DefaultModelInterface *model) = 0;
 
 signals:
     void fileCount(long antal);

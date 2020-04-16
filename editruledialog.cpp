@@ -1,6 +1,6 @@
 #include "editruledialog.h"
 
-EditRuleDialog::EditRuleDialog(const IRule<IDefaultRuleCondition> *editRule, QStringList watchFolders):
+EditRuleDialog::EditRuleDialog(const IRule<DefaultRuleCriteria> *editRule, QStringList watchFolders):
     AbstractRuleDialog(watchFolders)
 {
     originalRuleTitle = editRule->title();
@@ -82,7 +82,7 @@ void EditRuleDialog::on_removeSubRule_clicked()
 
 void EditRuleDialog::initializeInterface()
 {
-    actionBox->setCurrentText(ruleDefinitionsService()->fileActionEntityToString(tempRule->actionRuleEntity()));
+    actionBox->setCurrentText(ruleDefinitionsService()->fileActionEntityToString(tempRule->ruleAction()));
     titleSelector->setText(tempRule->title());
     applySelector->setCurrentText(tempRule->appliesToPath());
     pathSelector->setCurrentFilePath(RulesContext::mergeStringList(tempRule->destinationPaths()));

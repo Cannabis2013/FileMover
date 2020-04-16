@@ -7,7 +7,7 @@
 class EditRuleDialog : public AbstractRuleDialog
 {
 public:
-    EditRuleDialog(const IRule<IDefaultRuleCondition> *editRule, QStringList watchFolders);
+    EditRuleDialog(const IRule<DefaultRuleCriteria> *editRule, QStringList watchFolders);
 
 
 protected slots:
@@ -17,7 +17,7 @@ protected slots:
 
 private:
     void initializeInterface();
-    const IRule<IDefaultRuleCondition> *tempRule;
+    const IRule<DefaultRuleCriteria> *tempRule;
     QString originalRuleTitle;
 
 };

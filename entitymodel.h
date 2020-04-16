@@ -7,10 +7,13 @@
 #include "inheritexceptiondelegate.h"
 #include "imodel.h"
 #include "ifilemodel.h"
+#include "quuid.h"
+
+typedef IModel<int,QUuid> DefaultModelInterface;
 
 #define THROW_MSG_INHERIT "Template argument not direct base of Model"
 
-typedef QList<const IFileModel<>*> DefaultFileModelList;
+typedef QList<const IFileModel<QFileInfo,QUuid>*> DefaultFileModelList;
 
 using namespace std;
 namespace EntityModelContext {
@@ -20,9 +23,12 @@ namespace EntityModelContext {
                    DirectoryEntity = 0x04,
                    ErrorEntity = 0x08};
     class EntityModel;
+    class DirectoryEntityModel;
+    class FileRuleEntityModel;
+    class FileInformationEntityModel;
 }
 
-class EntityModel : public IModel<int>
+class EntityModel : public DefaultModelInterface
 {
 public:
     QUuid id() const override
@@ -66,7 +72,7 @@ private:
     QString _errorDescription = "No error";
 };
 
-struct DirectoryEntityModel : public EntityModel
+class DirectoryEntityModel : public EntityModel
 {
 public:
     quint64 size() const

@@ -3,14 +3,14 @@
 
 #include <qstringlist.h>
 
-template<class TDelegateInterface, typename TFileModelList = QStringList>
+template<class TEntityModelInterface, typename TFileModelList = QStringList>
 class IEntityModelBuilder
 {
 public:
-    virtual TDelegateInterface *buildFileInformationModel(const QStringList &paths) = 0;
-    virtual TDelegateInterface *buildDirectoryCountModel(const QString &path, const QString &name,const long long &size) = 0;
-    virtual TDelegateInterface *buildFileRuleModel(const QStringList &paths, const TFileModelList &files, int ruleAction, const QStringList &destinations) = 0;
-    virtual TDelegateInterface *buildErrorModel(const QString &errorMessage) = 0;
+    virtual TEntityModelInterface *buildFileInformationModel(const QStringList &paths) = 0;
+    virtual TEntityModelInterface *buildDirectoryCountModel(const QString &path, const QString &name,const long long &size) = 0;
+    virtual TEntityModelInterface *buildFileRuleModel(const QStringList &paths, const TFileModelList &files, int ruleAction, const QStringList &destinations) = 0;
+    virtual TEntityModelInterface *buildErrorModel(const QString &errorMessage) = 0;
 };
 
 #endif // IDELEGATEBUILDER_H

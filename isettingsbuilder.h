@@ -6,7 +6,7 @@ template<class TGeometry>
 class ISettingsBuilder
 {
 public:
-    virtual ISettingsModel *buildSettings(const bool &closeOnExit,
+    virtual ISettingsModel<TGeometry> *buildSettings(const bool &closeOnExit,
                                           const bool &enableRules,
                                           const bool &enableRuleTimer,
                                           const int &ruleTimerInterval,

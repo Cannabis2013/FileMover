@@ -21,7 +21,7 @@ public:
 
 
 signals:
-    void folderChanged(DefaultDelegate *delegate);
+    void folderChanged(DefaultModelInterface *model);
 
     void sendSystemTrayMessage(const QString &title, const QString &msg);
     void sendStatusLineMessage(const QString &msg);

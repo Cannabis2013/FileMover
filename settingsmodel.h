@@ -4,34 +4,58 @@
 #include <qrect.h>
 #include "isettingsmodel.h"
 
-class SettingsModel : public ISettingsModel
+class SettingsModel : public ISettingsModel<QRect>
 {
 public:
-    bool isCloseOnExitEnabled() const
+    bool isCloseOnExitEnabled() const  override
     {
         return _closeOnExit;
     }
-    bool isRuleTimerEnabled() const
+    bool isRuleTimerEnabled() const  override
     {
         return _ruleTimerEnabled;
     }
-    bool isRulesEnabled() const
+    bool isRulesEnabled() const  override
     {
         return _rulesEnabled;
     }
-    int ruleTimerInterval() const
+    int ruleTimerInterval() const  override
     {
-        return _ruleTimerInterval;
+        return _ruleCountInterval;
     }
-    QRect geometry() const
+    QRect geometry() const override
     {
-        return _geometry;
+        return _mainGuiGeometry;
+    }
+
+    void setCloseOnExitEnabled(const bool &enable) override
+    {
+        _closeOnExit = enable;
+    }
+    void setRuleTimerEnabled(const bool &enable) override
+    {
+        _ruleTimerEnabled = enable;
+    }
+    void setRulesEnabled(const bool &enable) override
+    {
+        _rulesEnabled = enable;
+    }
+    void setRuleTimerInterval(const int &interval) override
+    {
+        _ruleCountInterval = interval;
+    }
+    void setGeometry(const QRect &geometry) override
+    {
+        _mainGuiGeometry = geometry;
     }
 
 private:
-    bool _closeOnExit, _ruleTimerEnabled, _rulesEnabled;
-    int _ruleTimerInterval;
-    QRect _geometry;
+    bool _closeOnExit;
+    bool _ruleTimerEnabled;
+    bool _rulesEnabled;
+    int _ruleCountInterval;
+
+    QRect _mainGuiGeometry;
 };
 
 

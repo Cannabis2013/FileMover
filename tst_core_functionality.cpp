@@ -13,6 +13,8 @@
 #include "filelistservice.h"
 #include "ruledefinitions.h"
 #include "filteringcontext.h"
+#include "settingsbuilder.h"
+#include "entitymodelbuilder.h"
 
 #ifdef TEST_MODE
 #include <QtTest>
@@ -111,10 +113,12 @@ private:
         auto fileListService = (new FileListService())->setModelBuilderService(new FileModelBuilder());
         auto app = new ApplicationDomain();
 
+
+        auto settingsBuilder = new SettingsBuilder();
         app->setFileOperationsService(new FileWorker())->
                 setRuleManagerService(new rulesManager("TESTAPP","TESTORG",new RuleBuilder()))->
                 setThreadManagerService(new ThreadsManager())->
-                setSettingsManagerService(new settingsManager("TESTAPP","TESTORG"))->
+                setSettingsManagerService(new settingsManager("TESTAPP","TESTORG",settingsBuilder,))->
                 setFileInformationManagerService(new FileInformationManager("TESTAPP","TESTORG"))->
                 setEntityQueueManagerService(new EntityQueueManager())->
                 setFileWatcherService(new FileSystemWatcher())->
@@ -127,7 +131,7 @@ private:
         return app;
     }
 
-    const ISettingsModel *initializeApplicationPersistence(bool rulesEnabled,bool ruleTimerEnabled, bool closeOnExitEnabled, int ruleTimerInterval)
+    const ISettingsModel<QRect> *initializeApplicationPersistence(bool rulesEnabled,bool ruleTimerEnabled, bool closeOnExitEnabled, int ruleTimerInterval)
     {
         // Pre state variables
 
@@ -151,7 +155,7 @@ private:
                         QList<const IDefaultConditionConfigurator *> ruleConditionConfigs)
     {
         auto ruleBuilder = new RuleBuilder();
-        QList<const IDefaultRuleCondition*> criterias;
+        QList<const DefaultRuleCriteria*> criterias;
         for (auto config : ruleConditionConfigs) {
             criterias << ruleBuilder->buildCriteria(config);
         }
@@ -1130,7 +1134,7 @@ const Virtual_Objects *Core_functionality::initializePreState(const IDefaultRule
 
     mApp->addWatchFolder(TEST_WORKING_PATH);
 
-    QList<const IDefaultRuleCondition*> criterias;
+    QList<const DefaultRuleCriteria*> criterias;
 
     for (auto config : ruleConditionConfigs)
         criterias << ruleBuilder->buildCriteria(config);

@@ -19,17 +19,17 @@ public:
 
     // State alteration methods
     virtual void swapRule(int i, int j) = 0;
-    virtual void addRule(const IRule<IDefaultRuleCondition> *r) = 0;
-    virtual void addRules(const QList<const IRule<IDefaultRuleCondition>*> &r) = 0;
-    virtual void replaceRule(const IRule<IDefaultRuleCondition> *r, int index) = 0;
-    virtual void replaceRule(const IRule<IDefaultRuleCondition> *r, QString title) = 0;
+    virtual void addRule(const IRule<DefaultRuleCriteria> *r) = 0;
+    virtual void addRules(const QList<const IRule<DefaultRuleCriteria>*> &r) = 0;
+    virtual void replaceRule(const IRule<DefaultRuleCriteria> *r, int index) = 0;
+    virtual void replaceRule(const IRule<DefaultRuleCriteria> *r, QString title) = 0;
     virtual void removeRuleAt(const int &i) = 0;
     virtual void removeRule(const QString &title) = 0;
 
     // Get
-    virtual QList<const IDefaultRule*> rules() const = 0;
-    virtual const IDefaultRule *rule(int index) const  = 0;
-    virtual const IDefaultRule *rule(const QString &title) const = 0;
+    virtual QList<const DefaultRuleInterface*> rules() const = 0;
+    virtual const DefaultRuleInterface *rule(int index) const  = 0;
+    virtual const DefaultRuleInterface *rule(const QString &title) const = 0;
     virtual int rulesCount() const = 0;
 
     // Get generic models

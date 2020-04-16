@@ -20,7 +20,7 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
 
     applySelector->addItems(watchFolders);
 
-    qRegisterMetaType<IRule<IDefaultRuleCondition>*>("IRule<IDefaultRuleCondition>");
+    qRegisterMetaType<IRule<DefaultRuleCriteria>*>("IRule<IDefaultRuleCondition>");
 
     setResizeable(false);
 }
@@ -58,7 +58,7 @@ void AbstractRuleDialog::resetAllForm()
     subRuleView->clear();
 }
 
-void AbstractRuleDialog::updateConditionView(const IDefaultRuleCondition *sR)
+void AbstractRuleDialog::updateConditionView(const DefaultRuleCriteria *sR)
 {
     auto cond = sR->criteria();
     auto comp = sR->compareCriteria();

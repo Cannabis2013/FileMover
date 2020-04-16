@@ -28,9 +28,9 @@ public:
 
 public slots:
 
-    void addEntity(DefaultDelegate *delegate) override
+    void addEntity(const DefaultModelInterface *model) override
     {
-        entityQueue << delegate->model();
+        entityQueue << model;
         emit wakeUpProcess();
     }
 
@@ -38,16 +38,14 @@ public slots:
     {
         if(entityQueue.isEmpty())
         {
-            emit sendEntity(DelegateBuilder::buildErrorEntity<EntityModel>("Queue is empty"));
             return;
         }
-
-        auto delegate = DelegateBuilder::buildDelegate(entityQueue.takeFirst());
-        emit sendEntity(delegate);
+        auto model = entityQueue.first();
+        emit sendEntity(model);
     }
 
 private:
-    QList<const EntityModel*>entityQueue;
+    QList<const DefaultModelInterface*>entityQueue;
 
 };
 

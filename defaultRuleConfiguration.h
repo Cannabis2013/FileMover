@@ -4,7 +4,7 @@
 #include "iruleconfiguration.h"
 #include "idefaultrulescollection.h"
 
-class DefaultRuleConfiguration : public IRuleConfiguration<IDefaultRuleCondition>
+class DefaultRuleConfiguration : public IRuleConfiguration<DefaultRuleCriteria>
 {
 public:
     QString appliesTo() const
@@ -43,11 +43,11 @@ public:
         _type = type;
     }
 
-    QList<const IDefaultRuleCondition*> conditions() const
+    QList<const DefaultRuleCriteria*> conditions() const
     {
         return _conditions;
     }
-    void setConditions(const QList<const IDefaultRuleCondition *> &conditions)
+    void setConditions(const QList<const DefaultRuleCriteria *> &conditions)
     {
         _conditions = conditions;
     }
@@ -75,7 +75,7 @@ private:
     QStringList _destinations;
     int _action;
     int _type;
-    QList<const IDefaultRuleCondition*> _conditions;
+    QList<const DefaultRuleCriteria*> _conditions;
     bool _deepScanMode;
 };
 

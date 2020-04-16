@@ -5,13 +5,15 @@
 #include "ifilemodel.h"
 #include "defaultfilemodelscontext.h"
 
-class FileModelBuilder : public IModelBuilder<IFileModel<>,QString>
+
+class FileModelBuilder : public IModelBuilder<IFileModel<QFileInfo,QUuid>,QString>
 {
 public:
-    IFileModel<> *buildModel(const QString *modelArguments) override
+    IFileModel<QFileInfo,QUuid> *buildModel(const QString *modelArguments) override
     {
-        auto model = new DefaultFileModel();
+        auto model = new FileModel();
         model->setFilepath(*modelArguments);
+
 
         return model;
     }

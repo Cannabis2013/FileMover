@@ -24,8 +24,8 @@ public:
     virtual void insertIcon(const AbstractIcon *ic) = 0;
     virtual void insertIcons(const QList<const AbstractIcon*> &icons) = 0;
 
-    virtual const ISettingsModel* settingsState() const = 0;
-    virtual void setSettings(const ISettingsModel *s) = 0;
+    virtual const ISettingsModel<QRect>* settingsState() const = 0;
+    virtual void setSettings(const ISettingsModel<QRect> *s) = 0;
 
     // Path Related..
 
@@ -55,7 +55,7 @@ public:
 
     // Virtual signals
 signals:
-    void processPath(DefaultDelegate *delegate);
+    void processPath(DefaultModelInterface *model);
     void removeItem(QString path);
     void stateChanged();
 };

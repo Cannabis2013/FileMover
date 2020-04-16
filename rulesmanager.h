@@ -24,23 +24,23 @@ public:
 
     // State manipulation
     void swapRule(int i, int j) override;
-    void addRule(const IRule<IDefaultRuleCondition>* r) override;
-    void addRules(const QList<const IRule<IDefaultRuleCondition>*> &r) override;
-    void replaceRule(const IRule<IDefaultRuleCondition>* r, int index) override;
-    void replaceRule(const IRule<IDefaultRuleCondition>* r, QString title) override;
+    void addRule(const IRule<DefaultRuleCriteria>* r) override;
+    void addRules(const QList<const IRule<DefaultRuleCriteria>*> &r) override;
+    void replaceRule(const IRule<DefaultRuleCriteria>* r, int index) override;
+    void replaceRule(const IRule<DefaultRuleCriteria>* r, QString title) override;
     void removeRuleAt(const int &i) override {_rules.removeAt(i);}
     void removeRule(const QString &title) override;
     // Get
-    QList<const IDefaultRule *> rules() const override;
-    const IDefaultRule *rule(int index)  const override {return _rules.value(index);}
-    const IDefaultRule *rule(const QString &title) const override;
+    QList<const DefaultRuleInterface *> rules() const override;
+    const DefaultRuleInterface *rule(int index)  const override {return _rules.value(index);}
+    const DefaultRuleInterface *rule(const QString &title) const override;
     int rulesCount() const override {return _rules.count();}
 
     // Get generic models
     QList<QTreeWidgetItem*>ruleItems() const override;
 
 private:
-    QList<const IRule<IDefaultRuleCondition>*> _rules;
+    QList<const IRule<DefaultRuleCriteria>*> _rules;
 };
 
 #endif // RULECONTROLLER_H

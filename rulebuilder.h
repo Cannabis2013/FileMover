@@ -5,7 +5,7 @@
 #include "defaultRuleConfiguration.h"
 #include "rules.h"
 
-typedef IRuleConfiguration<IDefaultRuleCondition> IDefaultRuleConfigurator;
+typedef IRuleConfiguration<DefaultRuleCriteria> IDefaultRuleConfigurator;
 typedef IRuleConditionConfiguration<SizeLimit,SizeLimits,
                                     QDateTime> IDefaultConditionConfigurator;
 
@@ -13,14 +13,14 @@ class RuleBuilder :
         public IDefaultRuleBuilder
 {
 public:
-    const IRule<IDefaultRuleCondition> *buildRule(const IDefaultRuleConfigurator *configuration,
-                                                  const QList<const IDefaultRuleCondition*> &criterias) override
+    const IRule<DefaultRuleCriteria> *buildRule(const IDefaultRuleConfigurator *configuration,
+                                                  const QList<const DefaultRuleCriteria*> &criterias) override
     {
-        IRule<IDefaultRuleCondition> *r = new Rule;
+        IRule<DefaultRuleCriteria> *r = new Rule;
         r->setTitle(configuration->title());
         r->setAppliesToPath(configuration->appliesTo());
         r->setDestinationPaths(configuration->destinations());
-        r->setActionRuleEntity(configuration->action());
+        r->setRuleAction(configuration->action());
         r->setTypeFilter(configuration->type());
         r->setCriterias(configuration->conditions());
         r->setDeepScanMode(configuration->deepScanMode());
@@ -31,7 +31,7 @@ public:
         return r;
     }
 
-    const IDefaultRuleCondition *buildCriteria(const IDefaultConditionConfigurator* configurator) override
+    const DefaultRuleCriteria *buildCriteria(const IDefaultConditionConfigurator* configurator) override
     {
         auto condition = new RuleCondition();
         condition->setCriteria(configurator->criteria());

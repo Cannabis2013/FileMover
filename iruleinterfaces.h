@@ -4,10 +4,10 @@
 #include <qdatetime.h>
 
 template<typename TSize,typename TSizeIntervals,typename TDateObject>
-class IRuleCondition
+class IRuleCriteria
 {
 public:
-    virtual ~IRuleCondition() = default;
+    virtual ~IRuleCriteria() = default;
     virtual bool matchWholeWords() const = 0;
     virtual void setMatchWholeWords(bool matchWholeWords) = 0;
     virtual TSize sizeLimit() const = 0;
@@ -26,8 +26,8 @@ public:
     virtual void setCompareCriteria(const int &compareCriteria) = 0;
     virtual int criteria() const = 0;
     virtual void setCriteria(const int &criteria) = 0;
-    virtual bool operator==(const IRuleCondition<TSize,TSizeIntervals,TDateObject> &other) const = 0;
-    virtual bool operator!=(const IRuleCondition<TSize,TSizeIntervals,TDateObject> &other) const = 0;
+    virtual bool operator==(const IRuleCriteria<TSize,TSizeIntervals,TDateObject> &other) const = 0;
+    virtual bool operator!=(const IRuleCriteria<TSize,TSizeIntervals,TDateObject> &other) const = 0;
 };
 
 template<class TConditon>
@@ -37,8 +37,8 @@ public:
     virtual ~IRule() = default;
     virtual int typeFilter() const = 0;
     virtual void setTypeFilter(const int &typeFilter) = 0;
-    virtual int actionRuleEntity() const = 0;
-    virtual void setActionRuleEntity(const int &actionRuleEntity) = 0;
+    virtual int ruleAction() const = 0;
+    virtual void setRuleAction(const int &ruleAction) = 0;
     virtual QString title() const = 0;
     virtual void setTitle(const QString &title) = 0;
     virtual QStringList destinationPaths() const = 0;

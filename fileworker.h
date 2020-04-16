@@ -24,7 +24,7 @@ public:
 
     // wake-up/Start entity file operations
     void handleProcessRequest() override;
-    void processEntity(DefaultModelInterface *model) override;
+    void processEntity(const DefaultModelInterface *model) override;
 
 private:
     // File object entity operations
@@ -52,7 +52,7 @@ private:
 
     QString busyMessage;
     bool isBusy;
-    IModelBuilder<IFileModel<QFileInfo>,QString>* fileModelBuilderService;
+    IModelBuilder<IFileModel<QFileInfo,QUuid>,QString>* fileModelBuilderService;
 
 };
 

@@ -7,11 +7,11 @@
 #include "irulebuilder.h"
 #include "ruleservicesinjector.h"
 
-typedef IRuleCondition<SizeLimit,SizeLimits,QDateTime> IDefaultRuleCondition;
-typedef IRule<IDefaultRuleCondition> IDefaultRule;
+typedef IRuleCriteria<SizeLimit,SizeLimits,QDateTime> DefaultRuleCriteria;
+typedef IRule<DefaultRuleCriteria> DefaultRuleInterface;
 
-typedef IRuleConfiguration<IDefaultRuleCondition> IDefaultRuleConfigurator;
+typedef IRuleConfiguration<DefaultRuleCriteria> IDefaultRuleConfigurator;
 typedef IRuleConditionConfiguration<SizeLimit,SizeLimits,QDateTime> IDefaultConditionConfigurator;
-typedef IRuleBuilder<IRule<IDefaultRuleCondition>,IDefaultRuleCondition,IDefaultRuleConfigurator,IDefaultConditionConfigurator> IDefaultRuleBuilder;
+typedef IRuleBuilder<IRule<DefaultRuleCriteria>,DefaultRuleCriteria,IDefaultRuleConfigurator,IDefaultConditionConfigurator> IDefaultRuleBuilder;
 
 #endif // IDEFAULTRULESCOLLECTION_H

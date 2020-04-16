@@ -9,7 +9,10 @@
 namespace FilesContext
 {
     class IFileListService;
+
 }
+
+typedef QList<const IFileModel<QFileInfo,QUuid>*> DefaultFileModelList;
 
 template<class TModelBuilder>
 class IFileListService
@@ -34,7 +37,7 @@ public:
     virtual IFileListService<TModelBuilder> *setModelBuilderService(TModelBuilder *service) = 0;
 };
 
-typedef IFileListService<IModelBuilder<IFileModel<>,QString>> IDefaultFileListService;
+typedef IFileListService<IModelBuilder<IFileModel<QFileInfo,QUuid>,QString>> IDefaultFileListService;
 
 
 #endif // IFILELISTBUILDER_H

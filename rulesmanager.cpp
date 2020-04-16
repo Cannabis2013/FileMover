@@ -17,7 +17,7 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     QList<QTreeWidgetItem*>resultingList;
     for(auto r : _rules)
     {
-        QStringList headerData {r->title(),ruleDefinitionsService()->fileActionEntityToString(r->actionRuleEntity()),
+        QStringList headerData {r->title(),ruleDefinitionsService()->fileActionEntityToString(r->ruleAction()),
                     RulesContext::mergeStringList(r->destinationPaths())};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         QIcon itemIcon = QIcon(":/My Images/Ressources/rule_icon.png");
@@ -41,13 +41,13 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     return resultingList;
 }
 
-void rulesManager::addRule(const IRule<IDefaultRuleCondition> *r)
+void rulesManager::addRule(const IRule<DefaultRuleCriteria> *r)
 {
     _rules << r;
     emit stateChanged();
 }
 
-void rulesManager::addRules(const QList<const IRule<IDefaultRuleCondition> *> &r)
+void rulesManager::addRules(const QList<const IRule<DefaultRuleCriteria> *> &r)
 {
     _rules << r;
     emit stateChanged();
@@ -67,7 +67,7 @@ void rulesManager::removeRule(const QString &title)
     throw QString("Item not found.");
 }
 
-const IDefaultRule *rulesManager::rule(const QString &title) const
+const DefaultRuleInterface *rulesManager::rule(const QString &title) const
 {
     for(auto rule : _rules)
     {
@@ -80,7 +80,7 @@ const IDefaultRule *rulesManager::rule(const QString &title) const
 
 void rulesManager::readSettings()
 {
-    QList<const IRule<IDefaultRuleCondition>*>rules;
+    QList<const IRule<DefaultRuleCriteria>*>rules;
     QSettings *pSettings = persistenceSettings();
     int total = pSettings->beginReadArray("Rules");
     for (int i = 0; i < total; ++i)
@@ -101,7 +101,7 @@ void rulesManager::readSettings()
         rConfig->setType(type);
         rConfig->setDestinations(destinations);
 
-        QList<const IDefaultRuleCondition*> criteriaConfigurations;
+        QList<const DefaultRuleCriteria*> criteriaConfigurations;
 
         for (int j = 0; j < count; ++j)
         {
@@ -170,13 +170,13 @@ void rulesManager::writeSettings()
         pSettings->setArrayIndex(i);
         auto r = _rules.at(i);
         pSettings->setValue("Title",r->title());
-        pSettings->setValue("Action",r->actionRuleEntity());
+        pSettings->setValue("Action",r->ruleAction());
         pSettings->setValue("Scan type filter",r->typeFilter());
         pSettings->setValue("ApplyPath",r->appliesToPath());
         pSettings->setValue("Destination paths",
                    RulesContext::mergeStringList(r->destinationPaths()));
         pSettings->setValue("Scan Mode",r->deepScanMode());
-        QList<const IDefaultRuleCondition*>sRules = r->conditions();
+        QList<const DefaultRuleCriteria*>sRules = r->conditions();
         int total = sRules.count();
         pSettings->beginWriteArray("Subrules",total);
         for (int j = 0; j < total; ++j)
@@ -213,13 +213,13 @@ void rulesManager::writeSettings()
     pSettings->endArray();
 }
 
-void rulesManager::replaceRule(const IRule<IDefaultRuleCondition> *r, int index)
+void rulesManager::replaceRule(const IRule<DefaultRuleCriteria> *r, int index)
 {
     _rules.replace(index,r);
     emit stateChanged();
 }
 
-void rulesManager::replaceRule(const IRule<IDefaultRuleCondition> *r, QString title)
+void rulesManager::replaceRule(const IRule<DefaultRuleCriteria> *r, QString title)
 {
     for (int i = 0; i < _rules.count(); ++i) {
         auto currentRule = _rules.at(i);
@@ -233,7 +233,7 @@ void rulesManager::replaceRule(const IRule<IDefaultRuleCondition> *r, QString ti
     throw QString("Item not found");
 }
 
-QList<const IDefaultRule *> rulesManager::rules() const
+QList<const DefaultRuleInterface *> rulesManager::rules() const
 {
     return _rules;
 }

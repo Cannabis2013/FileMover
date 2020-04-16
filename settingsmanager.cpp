@@ -2,10 +2,10 @@
 
 settingsManager::settingsManager(const QString &appName, const QString &orgName,
                                  ISettingsBuilder<QRect> *builderService,
-                                 IEntityModelBuilder<DefaultDelegate> *delegateBuilderService):
+                                 IEntityModelBuilder<DefaultModelInterface> *modelBuilderService):
     AbstractPersistence (appName,orgName),
     settingsBuilder(builderService),
-    _delegateBuilderService(delegateBuilderService)
+    _modelBuilderService(modelBuilderService)
 {
     QList<const AbstractIcon*> trayIconList = scanForIcons(ressourceFolder);
 
@@ -39,7 +39,7 @@ void settingsManager::insertPath(QString path)
 {
     watchFolders << path;
     auto paths = QStringList() << path;
-    auto delegate = _delegateBuilderService->buildFileInformationDelegate(paths);
+    auto delegate = _modelBuilderService->buildFileInformationModel(paths);
 
     emit processPath(delegate);
     emit stateChanged();
@@ -48,7 +48,7 @@ void settingsManager::insertPath(QString path)
 void settingsManager::insertPath(const QStringList& paths)
 {
     watchFolders << paths;
-    auto delegate = _delegateBuilderService->buildFileInformationDelegate(paths);
+    auto delegate = _modelBuilderService->buildFileInformationModel(paths);
     emit processPath(delegate);
     emit stateChanged();
 }
@@ -134,10 +134,10 @@ void settingsManager::readSettings()
     pSettings->endGroup();
 
     _settings = settingsBuilder->buildSettings(closeOnExit,
-                                                               ruleTimerEnabled,
-                                                               rulesEnabled,
-                                                               ruleCountInterval,
-                                                               mainGuiGeometry);
+                                               ruleTimerEnabled,
+                                               rulesEnabled,
+                                               ruleCountInterval,
+                                               mainGuiGeometry);
 
     int count = pSettings->beginReadArray("Watchfolders");
     QStringList folders;
@@ -177,46 +177,46 @@ void settingsManager::writeSettings()
 
 void settingsManager::setCloseOnExit(bool enable)
 {
-    _settings = SettingsDelegateBuilder::buildSettingsDelegate(enable,
-                                                            _settings->isRuleTimerEnabled(),
-                                                            _settings->isRulesEnabled(),
-                                                            _settings->ruleTimerInterval(),
-                                                            _settings->geometry());
+    _settings = settingsBuilder->buildSettings(enable,
+                                               _settings->isRulesEnabled(),
+                                               _settings->isRuleTimerEnabled(),
+                                               _settings->ruleTimerInterval(),
+                                               _settings->geometry());
 }
 
 void settingsManager::setRulesEnabled(bool enable)
 {
-    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->isCloseOnExitEnabled(),
-                                                            _settings->isRuleTimerEnabled(),
-                                                            enable,
-                                                            _settings->ruleTimerInterval(),
-                                                            _settings->geometry());
+    _settings = settingsBuilder->buildSettings(_settings->isCloseOnExitEnabled(),
+                                               enable,
+                                               _settings->isRuleTimerEnabled(),
+                                               _settings->ruleTimerInterval(),
+                                               _settings->geometry());
 }
 
 void settingsManager::setTimerEnabled(bool enable)
 {
-    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->isCloseOnExitEnabled(),
-                                                            enable,
-                                                            _settings->isRulesEnabled(),
-                                                            _settings->ruleTimerInterval(),
-                                                            _settings->geometry());
+    _settings = settingsBuilder->buildSettings(_settings->isCloseOnExitEnabled(),
+                                               _settings->isRulesEnabled(),
+                                               enable,
+                                               _settings->ruleTimerInterval(),
+                                               _settings->geometry());
 }
 
 void settingsManager::setTimerInterval(int msec)
 {
-    _settings = SettingsDelegateBuilder::buildSettingsDelegate(_settings->isCloseOnExitEnabled(),
-                                                            _settings->isRuleTimerEnabled(),
-                                                            _settings->isRulesEnabled(),
-                                                            msec,
-                                                            _settings->geometry());
+    _settings = settingsBuilder->buildSettings(_settings->isCloseOnExitEnabled(),
+                                               _settings->isRulesEnabled(),
+                                               _settings->isRuleTimerEnabled(),
+                                               msec,
+                                               _settings->geometry());
 }
 
-const ISettingsModel *settingsManager::settingsState() const
+const ISettingsModel<QRect> *settingsManager::settingsState() const
 {
     return _settings;
 }
 
-void settingsManager::setSettings(const ISettingsModel *s)
+void settingsManager::setSettings(const ISettingsModel<QRect> *s)
 {
     _settings = s;
 }

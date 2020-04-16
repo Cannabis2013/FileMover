@@ -6,39 +6,32 @@
 #include "filelistservice.h"
 #include "rulescontext.h"
 #include "entitymodel.h"
+#include "ientitymodelbuilder.h"
 
-typedef IFileListService<IModelBuilder<IFileModel<>,QString>> IDefaultListService;
-typedef IFiltereringContext<IDefaultRule,DefaultDelegateModel,IDefaultListService> IDefaultFilteringContext;
+typedef IFileListService<IModelBuilder<IFileModel<QFileInfo,QUuid>,QString>> IDefaultListService;
+typedef IFiltereringContext<DefaultRuleInterface,IFileModel<QFileInfo,QUuid>,IDefaultListService> DefaultFilteringContextInterface;
+typedef IFileModel<QFileInfo,QUuid> DefaultFileModelInterface;
 
 class FilteringContext :
-        public IDefaultFilteringContext{
+        public DefaultFilteringContextInterface{
 public:
-    QList<DefaultDelegateModel*> process(const QList<const IDefaultRule*> objects)
+    FilteringContext(IEntityModelBuilder<DefaultModelInterface,DefaultFileModelList> *service)
     {
-        auto compareStrings = [](const QStringList &strings, const QString &subject, const bool &match = true)->bool
-        {
-            for (auto string : strings) {
-                if(match && string == subject)
-                    return true;
-                else if(!match && string.contains(subject))
-                    return true;
-            }
-
-            return false;
-        };
-        QList<DefaultDelegateModel*> resultingList;
+        _entityModelBuilderService = service;
+    }
+    QList<const DefaultFileModelInterface*> process(const QList<const DefaultRuleInterface*> rules)
+    {
+        QList<DefaultFileModelInterface*> resultingList;
         auto filteredList = listService()->buildFileModels(RulesContext::All);
 
-        for (auto object : objects) {
-            for (auto criteria : object->conditions()) {
-                filteredList = processFiles(criteria,filteredList,compareStrings);
+        for (auto rule : rules) {
+            QList<const DefaultFileModelInterface*> list;
+            for (auto criteria : rule->conditions()) {
+                list = processFiles(criteria,filteredList,rule);
             }
-            resultingList << DelegateBuilder::buildFileActionEntity<EntityModel>(listService()->fileLists(),
-                                                                                      filteredList,
-                                                                                      object->actionRuleEntity(),
-                                                                                      object->destinationPaths());
+
         }
-        return resultingList;
+        return filteredList;
     }
 
     void setListService(IDefaultListService *service)
@@ -51,14 +44,21 @@ public:
     }
 
 private:
-
-    QList<const IFileModel<>*> processFiles(const IDefaultRuleCondition *ruleCriteria,
-                                      const QList<const IFileModel<>*> &filteredList,
-                                      bool (*compareStrings)(const QStringList&,const QString&,const bool&))
+    QList<const DefaultFileModelInterface*> processFiles(const DefaultRuleCriteria *ruleCriteria,
+                                      const QList<const IFileModel<QFileInfo,QUuid>*> &filteredList,const DefaultRuleInterface *rule)
     {
-        QList<const IFileModel<>*> resultingList;
+        QList<const IFileModel<QFileInfo,QUuid>*> resultingList, newFilteredList;
         for (auto model : filteredList)
         {
+            // Check if current file is located within the domain of current rule
+            auto appliesToPath = rule->appliesToPath();
+            auto filepath = model->filepath();
+
+            if(appliesToPath != "All")
+            {
+                if(!filepath.contains(appliesToPath))
+                    continue;
+            }
 
             auto fileInfo = model->fileInterface();
             if(ruleCriteria->criteria() == RulesContext::FileBaseMode)
@@ -79,10 +79,10 @@ private:
                     if(compareStrings(keywords,subject,match))
                         resultingList << model;
                     else
-                        resultingList << processFiles(ruleCriteria,model->children(),compareStrings);
+                        resultingList << processFiles(ruleCriteria,model->children(),rule);
                 }
             }
-            if(ruleCriteria->criteria() == RulesContext::FileNameMode ||
+            else if(ruleCriteria->criteria() == RulesContext::FileNameMode ||
                     ruleCriteria->criteria() == RulesContext::FileExtensionMode)
             {
                 auto isSuffix = ruleCriteria->criteria() == RulesContext::FileNameMode ? false : true;
@@ -102,7 +102,7 @@ private:
                     if(compareStrings(keywords,subject,match))
                         resultingList << model;
                     else
-                        resultingList << processFiles(ruleCriteria,model->children(),compareStrings);
+                        resultingList << processFiles(ruleCriteria,model->children(),rule);
                 }
 
             }
@@ -184,7 +184,33 @@ private:
         return resultingList;
     }
 
+    bool compareStrings(const QStringList &strings, const QString &object, const bool &match = false)
+    {
+        for (auto string : strings) {
+            if(match && string == object)
+                return true;
+            else if(!match && string.contains(object))
+                return true;
+        }
+
+        return false;
+    }
+
+    const QList<const DefaultFileModelInterface*> subtractList(const QList<DefaultFileModelInterface*> &source, const QList<DefaultFileModelInterface*> &selectedList)
+    {
+        QList<const DefaultFileModelInterface*> resultingList;
+        for (auto sModel : source) {
+            for (auto model : selectedList) {
+                if(sModel->id() != model->id())
+                    resultingList << sModel;
+            }
+        }
+
+        return resultingList;
+    }
+
     IDefaultListService* _listService;
+    IEntityModelBuilder<DefaultModelInterface,DefaultFileModelList> *_entityModelBuilderService;
 
 };
 

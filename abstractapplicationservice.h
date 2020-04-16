@@ -15,10 +15,13 @@
 #include "iruledefinitions.h"
 #include "ifiltereringcontext.h"
 #include "ifilelistservice.h"
+#include "imodelbuilder.h"
+#include "isettingsmodel.h"
+#include "ientitymodelbuilder.h"
+#include "isettingsbuilder.h"
 
-typedef IFileListService<IModelBuilder<IFileModel<>,QString>> DefaulFileList;
-typedef IFiltereringContext<IDefaultRule,
-            DefaultDelegateModel,DefaulFileList> IDefaultFilteringContext;
+typedef IFileListService<IModelBuilder<IFileModel<QFileInfo,QUuid>,QString>> DefaulFileList;
+typedef IFiltereringContext<DefaultRuleInterface,IFileModel<QFileInfo,QUuid>,DefaulFileList> DefaultFilteringContextInterface;
 
 class AbstractApplicationService :
         public QObject,
@@ -36,8 +39,8 @@ public:
     virtual QList<QTreeWidgetItem*> watchFolderItems() = 0;
     virtual QList<QTreeWidgetItem*> detailedWatchFolderItems() = 0;
 
-    virtual const IRule<IDefaultRuleCondition>* ruleAt(int index) = 0;
-    virtual const IRule<IDefaultRuleCondition>* rule(const QString &title) = 0;
+    virtual const IRule<DefaultRuleCriteria>* ruleAt(int index) = 0;
+    virtual const IRule<DefaultRuleCriteria>* rule(const QString &title) = 0;
     virtual QList<QTreeWidgetItem*> ruleItemModels() = 0;
     virtual void swapRule(int i, int j) = 0;
     virtual void clearRules() const = 0;
@@ -48,7 +51,7 @@ public:
 
     virtual QList<const AbstractIcon*> icons() = 0;
 
-    virtual const ISettingsModel* settingsState() = 0;
+    virtual const ISettingsModel<QRect>* settingsState() = 0;
     virtual void setSettings(const bool &closeOnExit,
                              const bool &ruleTimerEnabled,
                              const bool &rulesEnabled,
@@ -65,20 +68,23 @@ public:
 
     // Add services
 
-    virtual AbstractApplicationService *setRuleManagerService(AbstractRulesManager* service) = 0;
-    virtual AbstractApplicationService * setSettingsManagerService(AbstractSettingsManager* service) = 0;
-    virtual AbstractApplicationService * setEntityQueueManagerService(AbstractQueueManager* service) = 0;
-    virtual AbstractApplicationService * setFileInformationManagerService(AbstractFileInformationManager* service) = 0;
-    virtual AbstractApplicationService * setThreadManagerService(IThreadManagerInterface* service) = 0;
+    virtual AbstractApplicationService* setRuleManagerService(AbstractRulesManager* service) = 0;
+    virtual AbstractApplicationService* setSettingsManagerService(AbstractSettingsManager* service) = 0;
+    virtual AbstractApplicationService* setEntityQueueManagerService(AbstractQueueManager* service) = 0;
+    virtual AbstractApplicationService* setFileInformationManagerService(AbstractFileInformationManager* service) = 0;
+    virtual AbstractApplicationService* setThreadManagerService(IThreadManagerInterface* service) = 0;
 
-    virtual AbstractApplicationService * setFileOperationsService(AbstractFileWorker* service) = 0;
-    virtual AbstractApplicationService * setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<>,QString>> *service) = 0;
-    virtual AbstractApplicationService * setFileWatcherService(AbstractFileSystemWatcher* service) = 0;
+    virtual AbstractApplicationService* setFileOperationsService(AbstractFileWorker* service) = 0;
+    virtual AbstractApplicationService* setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<QFileInfo,QUuid>,QString>> *service) = 0;
+    virtual AbstractApplicationService* setFileWatcherService(AbstractFileSystemWatcher* service) = 0;
+
+    virtual AbstractApplicationService* setEntityModelBuilderService(IEntityModelBuilder<DefaultModelInterface,DefaultFileModelList> *service) = 0;
+    virtual AbstractApplicationService* setSettingsBuilderService(ISettingsBuilder<QRect>* service) = 0;
 
     virtual IRuleDefinitions* RuleDefinitionsService() = 0;
     virtual AbstractApplicationService* setRuleDefinitionsService(IRuleDefinitions *service) = 0;
 
-    virtual AbstractApplicationService* setFilteringContext(IDefaultFilteringContext* filterService,DefaulFileList* listService) = 0;
+    virtual AbstractApplicationService* setFilteringContext(DefaultFilteringContextInterface* filterService,DefaulFileList* listService) = 0;
 
 public slots:
     virtual void clearFolders(QStringList paths) = 0;
@@ -90,8 +96,8 @@ public slots:
     virtual void removeWatchFolderAt(int index) = 0;
     virtual void removeWatchFolder(QString path) = 0;
 
-    virtual void insertRule(const IRule<IDefaultRuleCondition>* r) = 0;
-    virtual void replaceRule(const IRule<IDefaultRuleCondition>* newRule, QString title) = 0;
+    virtual void insertRule(const IRule<DefaultRuleCriteria>* r) = 0;
+    virtual void replaceRule(const IRule<DefaultRuleCriteria>* newRule, QString title) = 0;
     virtual void removeRuleAt(int index) = 0;
     virtual void removeRule(QString title) = 0;
 
@@ -100,7 +106,7 @@ signals:
 
     void sendFolderSize(const DirectoryEntityModel *fObject);
     void sendStatusMessage(const QString &filePath);
-    void sendEntity(DefaultDelegate *delegate);
+    void sendEntity(const DefaultModelInterface *model);
 
     void stateChanged();
 

@@ -4,8 +4,7 @@
 #define TEST_MODE
 
 #include "abstractapplicationservice.h"
-#include "settingsdelegate.h"
-#include "imodelbuilder.h"
+
 
 class ApplicationDomain : public AbstractApplicationService
 {
@@ -32,21 +31,21 @@ public:
      * Rules interface
      */
 
-    const IRule<IDefaultRuleCondition>* ruleAt(int index) override {return rulesService->rule(index);}
-    const IRule<IDefaultRuleCondition>* rule(const QString &title) override {return rulesService->rule(title);}
+    const IRule<DefaultRuleCriteria>* ruleAt(int index) override {return rulesService->rule(index);}
+    const IRule<DefaultRuleCriteria>* rule(const QString &title) override {return rulesService->rule(title);}
     QList<QTreeWidgetItem*> ruleItemModels() override {return rulesService->ruleItems();}
     void swapRule(int i, int j) override {rulesService->swapRule(i,j);}
     void clearRules() const override ;
 
-    void insertRule(const IRule<IDefaultRuleCondition>* r) override {rulesService->addRule(r);}
-    void replaceRule(const IRule<IDefaultRuleCondition>* newRule, QString title) override {rulesService->replaceRule(newRule,title);}
+    void insertRule(const IRule<DefaultRuleCriteria>* r) override {rulesService->addRule(r);}
+    void replaceRule(const IRule<DefaultRuleCriteria>* newRule, QString title) override {rulesService->replaceRule(newRule,title);}
     void removeRuleAt(int index) override {rulesService->removeRuleAt(index);}
     void removeRule(QString title) override {rulesService->removeRule(title);}
 
 
     // Persistence interface
 
-    const ISettingsModel* settingsState() override;
+    const ISettingsModel<QRect>* settingsState() override;
     void setSettings(const bool &closeOnExit,
                      const bool &ruleTimerEnabled,
                      const bool &rulesEnabled,
@@ -74,13 +73,16 @@ public:
     AbstractApplicationService* setThreadManagerService(IThreadManagerInterface *service) override;
 
     AbstractApplicationService* setFileOperationsService(AbstractFileWorker *service) override;
-    AbstractApplicationService* setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<>,QString>> *service) override;
+    AbstractApplicationService* setFileModelBuilderService(IFileListService<IModelBuilder<IFileModel<QFileInfo, QUuid>, QString> > *service) override;
     AbstractApplicationService* setFileWatcherService(AbstractFileSystemWatcher *service) override;
 
     IRuleDefinitions * RuleDefinitionsService() override {return _ruleDefinitionsService;}
     AbstractApplicationService* setRuleDefinitionsService(IRuleDefinitions *service) override;
 
-    AbstractApplicationService* setFilteringContext(IDefaultFilteringContext* filterService, DefaulFileList* listService) override;
+    AbstractApplicationService * setEntityModelBuilderService(IEntityModelBuilder<DefaultModelInterface,DefaultFileModelList> *service) override;
+    AbstractApplicationService * setSettingsBuilderService(ISettingsBuilder<QRect> *service) override;
+
+    AbstractApplicationService* setFilteringContext(DefaultFilteringContextInterface* filterService, DefaulFileList* listService) override;
 
     void addWatchFolder(QString path) override {settingsService->insertPath(path);}
     void removeWatchFolderAt(int index) override;
@@ -95,12 +97,16 @@ private:
     AbstractRulesManager *rulesService;
     AbstractQueueManager *queueService;
     AbstractFileInformationManager *informationService;
-    IFileListService<IModelBuilder<IFileModel<>,QString>> *fileListService;
+    IFileListService<IModelBuilder<IFileModel<QFileInfo,QUuid>,QString>> *fileListService;
 
     AbstractSettingsManager *settingsService;
     IThreadManagerInterface *threadingService;
     IRuleDefinitions *_ruleDefinitionsService;
-    IDefaultFilteringContext *filteringService;
+    DefaultFilteringContextInterface *filteringService;
+
+    // Builders services
+    IEntityModelBuilder<DefaultModelInterface,DefaultFileModelList>* _entityModelBuilder;
+    ISettingsBuilder<QRect>* _settingsBuilder;
 };
 
 #endif // MAINAPPLICATION_H

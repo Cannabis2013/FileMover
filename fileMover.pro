@@ -92,6 +92,7 @@ HEADERS  += \
     defaultRuleConfiguration.h \
     defaultfilemodelscontext.h \
     defaultinjector.h \
+    defaultsettingsarguments.h \
     directoryitem.h \
     entitymodel.h \
     entitymodelbuilder.h \
@@ -131,9 +132,9 @@ HEADERS  += \
     rulesmanager.h \
     myscreendimensions.h \
     settingsbuilder.h \
-    settingsdelegate.h \
     settingsmanager.h \
     settingsmodel.h \
+    settingsmodelbuilder.h \
     settingswindow.h \
     fileinformationview.h \
     addfolderwidget.h \

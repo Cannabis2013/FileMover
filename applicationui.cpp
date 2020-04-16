@@ -139,7 +139,6 @@ ApplicationUI::ApplicationUI(AbstractApplicationService *coreApplication,
     // Fileworker Related..
 
     qRegisterMetaType<QList<DirectoryEntityModel>>("QList<DirectoryCountEntity>");
-    qRegisterMetaType<EntityModelDelegate<EntityModel>*>("EntityModelDelegate<EntityModel>");
 
     /*
      * Setup connections
@@ -407,8 +406,8 @@ void ApplicationUI::clearCompleted(bool a)
 void ApplicationUI::folderContentRecieved(const DirectoryEntityModel *entity)
 {
     QString sizeNotation;
-    double scaledAndRoundedSize = FCU::convertFromBytes(entity->directorySize,sizeNotation,2);
-    QString folderName = entity->directoryPath,
+    double scaledAndRoundedSize = FCU::convertFromBytes(entity->size(),sizeNotation,2);
+    QString folderName = entity->path(),
             folderSize = QString::number(scaledAndRoundedSize),
             message = QString("Size of folder content is %1 %2").arg(folderSize).arg(sizeNotation);
     showSystemMessage(folderName,message);

@@ -10,7 +10,7 @@ class FileSystemWatcher :public AbstractFileSystemWatcher
 {
     Q_OBJECT
 public:
-    FileSystemWatcher();
+    FileSystemWatcher(IEntityModelBuilder<DefaultModelInterface> *entityModelService);
     void addPath(const QString &path) override
     {
         fileWatcher->addPath(path);
@@ -27,7 +27,7 @@ private slots:
 private:
     QFileSystemWatcher *fileWatcher;
 
-    IEntityModelBuilder<DefaultDelegate> *builderService;
+    IEntityModelBuilder<DefaultModelInterface> *_entityBuilderService;
 };
 
 #endif // FILESYSTEMWATCHER_H

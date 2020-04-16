@@ -13,7 +13,6 @@
 #include "entitymodel.h"
 #include "imutableobject.h"
 #include <qdatastream.h>
-#include <settingsdelegate.h>
 #include "abstractsettingsmanager.h"
 #include "isettingsbuilder.h"
 #include "ientitymodelbuilder.h"
@@ -27,7 +26,7 @@ public:
     settingsManager(const QString &appName,
                     const QString &orgName,
                     ISettingsBuilder<QRect> *builderService,
-                    IEntityModelBuilder<DefaultDelegate> *delegateBuilderService);
+                    IEntityModelBuilder<DefaultModelInterface> *modelBuilderService);
 
     ~settingsManager();
 
@@ -45,8 +44,8 @@ public:
     void insertIcon(const AbstractIcon *ic) override {trayIconList << ic;}
     void insertIcons(const QList<const AbstractIcon*> &icons) override {trayIconList << icons;}
 
-    const ISettingsModel* settingsState() const override;
-    void setSettings(const ISettingsModel *s) override;
+    const ISettingsModel<QRect>* settingsState() const override;
+    void setSettings(const ISettingsModel<QRect> *s) override;
 
     // Path Related..
 
@@ -80,13 +79,13 @@ private:
     QString ressourceFolder = "Ressources";
     QString fileIconPath = "fileIcons";
     ISettingsBuilder<QRect> *const settingsBuilder;
-    const ISettingsModel* _settings;
+    const ISettingsModel<QRect>* _settings;
     QTimer countTimer;
     QList<const AbstractIcon*> trayIconList;
     QList<const AbstractIcon*> fileIconList;
     const AbstractIcon *currentTrayIcon;
     const AbstractIcon * fileIconStandard;
-    IEntityModelBuilder<DefaultDelegate> *const _delegateBuilderService;
+    IEntityModelBuilder<DefaultModelInterface> *const _modelBuilderService;
 };
 
 typedef settingsManager sM;

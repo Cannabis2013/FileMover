@@ -5,7 +5,7 @@
 #include <QStringList>
 #include "rulescontext.h"
 
-class RuleCondition : public IDefaultRuleCondition
+class RuleCondition : public DefaultRuleCriteria
 {
 public:
     ~RuleCondition(){}
@@ -91,7 +91,7 @@ public:
         _sizeLimit = sizeLimit;
     }
 
-    bool operator==(const  IDefaultRuleCondition &other) const override
+    bool operator==(const  DefaultRuleCriteria &other) const override
     {
         if(copyMode() != other.copyMode())
             return false;
@@ -159,7 +159,7 @@ public:
         return true;
     }
 
-    bool operator !=(const IDefaultRuleCondition &other) const override
+    bool operator !=(const DefaultRuleCriteria &other) const override
     {
         return !this->operator==(other);
     }
@@ -181,7 +181,7 @@ private:
 typedef QPair<int,QString> SizeOperand;
 typedef QPair<QPair<int,QString>,QPair<int,QString>> SizeInterval;
 
-class Rule : public IRule<IDefaultRuleCondition>
+class Rule : public IRule<DefaultRuleCriteria>
 {
 public:
     ~Rule()
@@ -196,11 +196,11 @@ public:
         _typeFilter = typeFilter;
     }
 
-    int actionRuleEntity() const override
+    int ruleAction() const override
     {
         return _actionRuleEntity;
     }
-    void setActionRuleEntity(const int &actionRuleEntity) override
+    void setRuleAction(const int &actionRuleEntity) override
     {
         _actionRuleEntity = actionRuleEntity;
     }
@@ -241,18 +241,18 @@ public:
         _deepScanMode = deepScanMode;
     }
 
-    QList<const IDefaultRuleCondition*> conditions() const override
+    QList<const DefaultRuleCriteria*> conditions() const override
     {
         return _criterias;
     }
-    void setCriterias(const QList<const IDefaultRuleCondition*> &subRules) override
+    void setCriterias(const QList<const DefaultRuleCriteria*> &subRules) override
     {
         _criterias = subRules;
     }
 
-    bool operator==(const IDefaultRule &other) const override
+    bool operator==(const DefaultRuleInterface &other) const override
     {
-        auto isCriteriasCovariant = [](const QList<const IDefaultRuleCondition*> &one, const QList<const IDefaultRuleCondition*> &two)->bool
+        auto isCriteriasCovariant = [](const QList<const DefaultRuleCriteria*> &one, const QList<const DefaultRuleCriteria*> &two)->bool
         {
             if(one.count() != two.count())
                 return false;
@@ -272,7 +272,7 @@ public:
         if(typeFilter() != other.typeFilter())
             return false;
 
-        if(actionRuleEntity() != other.actionRuleEntity())
+        if(ruleAction() != other.ruleAction())
             return false;
 
         if(title() != other.title())
@@ -280,7 +280,7 @@ public:
 
         return isCriteriasCovariant(conditions(),other.conditions());
     }
-    bool operator!=(const IDefaultRule &other) const override
+    bool operator!=(const DefaultRuleInterface &other) const override
     {
         return !this->operator==(other);
     }
@@ -292,7 +292,7 @@ private:
     QStringList _destinationPaths;
     QString _appliesToPath = "Alle";
     bool _deepScanMode = false;
-    QList<const IDefaultRuleCondition*> _criterias;
+    QList<const DefaultRuleCriteria*> _criterias;
 };
 
 #endif // RULES_H

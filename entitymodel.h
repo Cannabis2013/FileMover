@@ -31,6 +31,8 @@ namespace EntityModelContext {
 class EntityModel : public DefaultModelInterface
 {
 public:
+
+    virtual ~EntityModel() = default;
     QUuid id() const override
     {
         return _id;

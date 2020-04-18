@@ -820,12 +820,12 @@ void ApplicationUI::on_WatchFolderView_doubleClicked(const QModelIndex &index)
         return;
     int row = index.row();
     QTreeWidgetItem *item = watchFolderView->topLevelItem(row);
-    QString p = item->text(0),
-            pX = ePath + modifyPath(p,("\\"));
-    if(!QFile::exists(p))
+    QString path = item->text(0),
+            fullPath = ePath + modifyPath(path,("\\"));
+    if(!QFile::exists(path))
         return;
 
     unique_ptr<QProcess>process(new QProcess);
-    process->start(pX);
+    process->start(fullPath);
     process->waitForFinished();
 }

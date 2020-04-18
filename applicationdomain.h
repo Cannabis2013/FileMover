@@ -8,8 +8,6 @@
 class ApplicationDomain : public AbstractApplicationService
 {
 public:
-    ApplicationDomain();
-
     ~ApplicationDomain();
 
     QString directoryInformationHtml(QString path) override {return informationService->createTextBrowserHtml(path);}

@@ -1,9 +1,5 @@
 #include "applicationdomain.h"
 
-ApplicationDomain::ApplicationDomain()
-{
-}
-
 ApplicationDomain::~ApplicationDomain()
 {
     delete settingsService;
@@ -81,7 +77,9 @@ AbstractApplicationService* ApplicationDomain::startServices()
 
     // TODO: You have to process the watchfolders with respect to file informations
 
+    auto model = _entityModelBuilder->buildFileInformationModel(watchFolders());
 
+    emit sendEntity(model);
 
     return this;
 }

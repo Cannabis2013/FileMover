@@ -16,6 +16,10 @@
 #include "settingswindowbuilder.h"
 #include "filteringcontext.h"
 #include "filelistservice.h"
+#include "filteringcontext.h"
+#include "filesystemwatcher.h"
+#include "settingsbuilder.h"
+#include "entitymodelbuilder.h"
 
 using namespace std;
 
@@ -49,20 +53,24 @@ using namespace std;
 
         auto fileListService = (new FileListService())->setModelBuilderService(new FileModelBuilder());
 
+        auto settingsBuilder = new SettingsBuilder();
+        auto entityBuilder = new EntityModelBuilder();
+
         auto mainApplicaton = (new ApplicationDomain())->
                 setFileOperationsService(new FileWorker())->
                 setRuleManagerService(new rulesManager(argVals.appName,argVals.orgName,new RuleBuilder()))->
                 setThreadManagerService(new ThreadsManager())->
-                setSettingsManagerService(new settingsManager(argVals.appName,argVals.orgName))->
+                setSettingsManagerService(new settingsManager(argVals.appName,argVals.orgName,settingsBuilder,entityBuilder))->
                 setFileInformationManagerService(new FileInformationManager(argVals.appName,argVals.orgName))->
                 setEntityQueueManagerService(new EntityQueueManager())->
-                setFileWatcherService(new FileSystemWatcher())->
+                setFileWatcherService(new FileSystemWatcher(entityBuilder))->
                 setFileModelBuilderService(fileListService)->
                 setRuleDefinitionsService(new RuleDefinitions())->
-                setFilteringContext(new FilteringContext(),new FileListService())->
+                setFilteringContext(new FilteringContext(entityBuilder),new FileListService())->
+                setSettingsBuilderService(settingsBuilder)->
+                setEntityModelBuilderService(entityBuilder)->
                 configureServices()->
                 startServices();
-
 
         auto w = new ApplicationUI(mainApplicaton,new RuleBuilder, new RuleDefinitions);
 

@@ -115,6 +115,7 @@ template<typename TFileList = DefaultFileModelList>
 class FileRuleEntityModel : public EntityModel
 {
 public:
+    /* These methods seems unnecessary at the moment. May revise it in a later session.
     QStringList paths() const
     {
         return _directoryPaths;
@@ -124,6 +125,7 @@ public:
     {
         _directoryPaths = paths;
     }
+    */
 
     TFileList files() const
     {

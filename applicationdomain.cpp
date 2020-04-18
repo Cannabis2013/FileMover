@@ -14,7 +14,7 @@ ApplicationDomain::~ApplicationDomain()
 void ApplicationDomain::clearFolders(QStringList paths)
 {
     auto models = fileListService->buildFileModels(FilesContext::All,paths);
-    auto entity = _entityModelBuilder->buildFileRuleModel(paths,models,FilesContext::Delete,QStringList());
+    auto entity = _entityModelBuilder->buildFileRuleModel(models,FilesContext::Delete,QStringList());
     emit sendEntity(entity);
 }
 
@@ -80,6 +80,8 @@ AbstractApplicationService* ApplicationDomain::startServices()
     threadingService->startAllThreads();
 
     // TODO: You have to process the watchfolders with respect to file informations
+
+
 
     return this;
 }

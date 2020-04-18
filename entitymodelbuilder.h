@@ -39,8 +39,7 @@ public:
 
         return model;
     }
-    DefaultModelInterface *buildFileRuleModel(const QStringList &paths,
-                                              const DefaultFileModelList &files,
+    DefaultModelInterface *buildFileRuleModel(const DefaultFileModelList &files,
                                               int ruleAction,
                                               const QStringList &destinations)
     {
@@ -52,7 +51,7 @@ public:
         auto type = EntityModelContext::FileRuleEntity;
         model->setType(type);
 
-        model->setPaths(paths);
+        //model->setPaths(paths);
         model->setFiles(files);
         model->setRuleAction(ruleAction);
         model->setDestinations(destinations);

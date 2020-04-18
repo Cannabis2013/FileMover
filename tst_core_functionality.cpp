@@ -113,18 +113,20 @@ private:
         auto fileListService = (new FileListService())->setModelBuilderService(new FileModelBuilder());
         auto app = new ApplicationDomain();
 
-
         auto settingsBuilder = new SettingsBuilder();
+        auto entityBuilder = new EntityModelBuilder();
+
         app->setFileOperationsService(new FileWorker())->
                 setRuleManagerService(new rulesManager("TESTAPP","TESTORG",new RuleBuilder()))->
                 setThreadManagerService(new ThreadsManager())->
-                setSettingsManagerService(new settingsManager("TESTAPP","TESTORG",settingsBuilder,))->
+                setSettingsManagerService(new settingsManager("TESTAPP","TESTORG",settingsBuilder,entityBuilder))->
                 setFileInformationManagerService(new FileInformationManager("TESTAPP","TESTORG"))->
                 setEntityQueueManagerService(new EntityQueueManager())->
-                setFileWatcherService(new FileSystemWatcher())->
+                setFileWatcherService(new FileSystemWatcher(entityBuilder))->
                 setFileModelBuilderService(new FileListService())->
                 setRuleDefinitionsService(new RuleDefinitions())->
-                setFilteringContext(new FilteringContext(),fileListService)->
+                setFilteringContext(new FilteringContext(entityBuilder),fileListService)->
+                setSettingsBuilderService(settingsBuilder)->
                 configureServices()->
                 startServices();
 

@@ -14,7 +14,14 @@ public:
                                           const int &ruleTimerInterval,
                                           const QRect &geometry) override
     {
+        auto model = new SettingsModel;
+        model->setCloseOnExitEnabled(closeOnExit);
+        model->setRulesEnabled(enableRules);
+        model->setRuleTimerEnabled(ruleTimerInterval);
+        model->setRuleTimerInterval(ruleTimerInterval);
+        model->setGeometry(geometry);
 
+        return model;
     }
 };
 

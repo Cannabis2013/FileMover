@@ -1,10 +1,9 @@
 #ifndef MAINAPPLICATION_H
 #define MAINAPPLICATION_H
 
-#define TEST_MODE
+//#define TEST_MODE
 
 #include "abstractapplicationservice.h"
-
 
 class ApplicationDomain : public AbstractApplicationService
 {
@@ -14,7 +13,6 @@ public:
     ~ApplicationDomain();
 
     QString directoryInformationHtml(QString path) override {return informationService->createTextBrowserHtml(path);}
-
 
     // Watchfolder and detailed folder interface
     void addWatchFolders(QStringList paths) override;

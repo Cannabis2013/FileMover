@@ -2,9 +2,9 @@
 
 settingsManager::settingsManager(const QString &appName, const QString &orgName,
                                  ISettingsBuilder<QRect> *builderService,
-                                 IEntityModelBuilder<DefaultModelInterface> *modelBuilderService):
+                                 IEntityModelBuilder<DefaultModelInterface, DefaultFileModelList> *modelBuilderService):
     AbstractPersistence (appName,orgName),
-    settingsBuilder(builderService),
+    _settingsBuilder(builderService),
     _modelBuilderService(modelBuilderService)
 {
     QList<const AbstractIcon*> trayIconList = scanForIcons(ressourceFolder);
@@ -133,7 +133,7 @@ void settingsManager::readSettings()
 
     pSettings->endGroup();
 
-    _settings = settingsBuilder->buildSettings(closeOnExit,
+    _settings = _settingsBuilder->buildSettings(closeOnExit,
                                                ruleTimerEnabled,
                                                rulesEnabled,
                                                ruleCountInterval,
@@ -177,7 +177,7 @@ void settingsManager::writeSettings()
 
 void settingsManager::setCloseOnExit(bool enable)
 {
-    _settings = settingsBuilder->buildSettings(enable,
+    _settings = _settingsBuilder->buildSettings(enable,
                                                _settings->isRulesEnabled(),
                                                _settings->isRuleTimerEnabled(),
                                                _settings->ruleTimerInterval(),
@@ -186,7 +186,7 @@ void settingsManager::setCloseOnExit(bool enable)
 
 void settingsManager::setRulesEnabled(bool enable)
 {
-    _settings = settingsBuilder->buildSettings(_settings->isCloseOnExitEnabled(),
+    _settings = _settingsBuilder->buildSettings(_settings->isCloseOnExitEnabled(),
                                                enable,
                                                _settings->isRuleTimerEnabled(),
                                                _settings->ruleTimerInterval(),
@@ -195,7 +195,7 @@ void settingsManager::setRulesEnabled(bool enable)
 
 void settingsManager::setTimerEnabled(bool enable)
 {
-    _settings = settingsBuilder->buildSettings(_settings->isCloseOnExitEnabled(),
+    _settings = _settingsBuilder->buildSettings(_settings->isCloseOnExitEnabled(),
                                                _settings->isRulesEnabled(),
                                                enable,
                                                _settings->ruleTimerInterval(),
@@ -204,7 +204,7 @@ void settingsManager::setTimerEnabled(bool enable)
 
 void settingsManager::setTimerInterval(int msec)
 {
-    _settings = settingsBuilder->buildSettings(_settings->isCloseOnExitEnabled(),
+    _settings = _settingsBuilder->buildSettings(_settings->isCloseOnExitEnabled(),
                                                _settings->isRulesEnabled(),
                                                _settings->isRuleTimerEnabled(),
                                                msec,

@@ -9,8 +9,7 @@
 #include "ientitymodelbuilder.h"
 
 typedef IFileListService<IModelBuilder<IFileModel<QFileInfo,QUuid>,QString>> IDefaultListService;
-typedef IFiltereringContext<DefaultRuleInterface,IFileModel<QFileInfo,QUuid>,IDefaultListService> DefaultFilteringContextInterface;
-typedef IFileModel<QFileInfo,QUuid> DefaultFileModelInterface;
+typedef IFiltereringContext<DefaultRuleInterface,DefaultModelInterface,IDefaultListService> DefaultFilteringContextInterface;
 
 class FilteringContext :
         public DefaultFilteringContextInterface{
@@ -19,19 +18,29 @@ public:
     {
         _entityModelBuilderService = service;
     }
-    QList<const DefaultFileModelInterface*> process(const QList<const DefaultRuleInterface*> rules)
-    {
-        QList<DefaultFileModelInterface*> resultingList;
-        auto filteredList = listService()->buildFileModels(RulesContext::All);
 
+    QList<const DefaultModelInterface*> process(const QList<const DefaultRuleInterface*> rules)
+    {
+        QList<const DefaultModelInterface*> resultingList;
+        auto filteredList = listService()->buildFileModels(RulesContext::All);
+        // Iterate through all rules
         for (auto rule : rules) {
-            QList<const DefaultFileModelInterface*> list;
+            // Declare list to hold filemodels which complies with the given rule criterias
+            DefaultFileModelList list;
             for (auto criteria : rule->conditions()) {
+                // Select filemodels which complies with the given rule criteria and initialize the list
                 list = processFiles(criteria,filteredList,rule);
             }
+            // Subtracting selected elemeents from the filtered list
+            filteredList = subtractList(filteredList,list);
 
+            // Instantiates an EntityFileModel object
+            auto model = _entityModelBuilderService->buildFileRuleModel(list,rule->ruleAction(),rule->destinationPaths());
+
+            // Adds the model to the resulting list to be returned
+            resultingList << model;
         }
-        return filteredList;
+        return resultingList;
     }
 
     void setListService(IDefaultListService *service)
@@ -44,7 +53,7 @@ public:
     }
 
 private:
-    QList<const DefaultFileModelInterface*> processFiles(const DefaultRuleCriteria *ruleCriteria,
+    DefaultFileModelList processFiles(const DefaultRuleCriteria *ruleCriteria,
                                       const QList<const IFileModel<QFileInfo,QUuid>*> &filteredList,const DefaultRuleInterface *rule)
     {
         QList<const IFileModel<QFileInfo,QUuid>*> resultingList, newFilteredList;
@@ -196,9 +205,9 @@ private:
         return false;
     }
 
-    const QList<const DefaultFileModelInterface*> subtractList(const QList<DefaultFileModelInterface*> &source, const QList<DefaultFileModelInterface*> &selectedList)
+    const DefaultFileModelList subtractList(const DefaultFileModelList &source, const DefaultFileModelList &selectedList)
     {
-        QList<const DefaultFileModelInterface*> resultingList;
+        DefaultFileModelList resultingList;
         for (auto sModel : source) {
             for (auto model : selectedList) {
                 if(sModel->id() != model->id())

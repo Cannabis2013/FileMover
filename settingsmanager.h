@@ -26,7 +26,7 @@ public:
     settingsManager(const QString &appName,
                     const QString &orgName,
                     ISettingsBuilder<QRect> *builderService,
-                    IEntityModelBuilder<DefaultModelInterface> *modelBuilderService);
+                    IEntityModelBuilder<DefaultModelInterface,DefaultFileModelList> *modelBuilderService);
 
     ~settingsManager();
 
@@ -78,14 +78,14 @@ private:
     QStringList watchFolders;
     QString ressourceFolder = "Ressources";
     QString fileIconPath = "fileIcons";
-    ISettingsBuilder<QRect> *const settingsBuilder;
+    ISettingsBuilder<QRect> *const _settingsBuilder;
     const ISettingsModel<QRect>* _settings;
     QTimer countTimer;
     QList<const AbstractIcon*> trayIconList;
     QList<const AbstractIcon*> fileIconList;
     const AbstractIcon *currentTrayIcon;
     const AbstractIcon * fileIconStandard;
-    IEntityModelBuilder<DefaultModelInterface> *const _modelBuilderService;
+    IEntityModelBuilder<DefaultModelInterface,DefaultFileModelList> *const _modelBuilderService;
 };
 
 typedef settingsManager sM;

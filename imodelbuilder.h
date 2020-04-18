@@ -1,8 +1,6 @@
 #ifndef IMODELBUILDER_H
 #define IMODELBUILDER_H
 
-
-
 template<class TModel, class TModelArguments>
 class IModelBuilder
 {

@@ -21,7 +21,7 @@
 #include "isettingsbuilder.h"
 
 typedef IFileListService<IModelBuilder<IFileModel<QFileInfo,QUuid>,QString>> DefaulFileList;
-typedef IFiltereringContext<DefaultRuleInterface,IFileModel<QFileInfo,QUuid>,DefaulFileList> DefaultFilteringContextInterface;
+typedef IFiltereringContext<DefaultRuleInterface,DefaultModelInterface,DefaulFileList> DefaultFilteringContextInterface;
 
 class AbstractApplicationService :
         public QObject,

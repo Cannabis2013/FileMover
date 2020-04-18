@@ -1,7 +1,7 @@
 #include "filesystemwatcher.h"
 
 
-FileSystemWatcher::FileSystemWatcher(IEntityModelBuilder<DefaultModelInterface> *entityModelService):
+FileSystemWatcher::FileSystemWatcher(IEntityModelBuilder<DefaultModelInterface, DefaultFileModelList> *entityModelService):
     fileWatcher(new QFileSystemWatcher())
 {
     _entityBuilderService = entityModelService;

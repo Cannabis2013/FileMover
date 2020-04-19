@@ -75,6 +75,7 @@ public:
 
 private:
     QList<const AbstractIcon *> scanForIcons(QString path);
+
     QStringList watchFolders;
     QString ressourceFolder = "Ressources";
     QString fileIconPath = "fileIcons";

@@ -194,7 +194,12 @@ void ApplicationDomain::setSettings(const bool &closeOnExit,
                                     const int &countInterval)
 
 {
-    auto settingsModel = _settingsBuilder->buildSettings(closeOnExit,rulesEnabled,ruleTimerEnabled,countInterval,geometry);
+    auto settingsModel = _settingsBuilder->buildSettings(closeOnExit,
+                                                         rulesEnabled,
+                                                         ruleTimerEnabled,
+                                                         countInterval,
+                                                         geometry);
+
 
     settingsService->setSettings(settingsModel);
 }

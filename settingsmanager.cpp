@@ -122,16 +122,17 @@ QList<const AbstractIcon*> settingsManager::scanForIcons(QString path)
 
 void settingsManager::readSettings()
 {
-    QSettings *pSettings = persistenceSettings();
-    pSettings->beginGroup("Basic settings");
+    QSettings *settings = persistenceSettings();
 
-    auto closeOnExit = pSettings->value("Close on exit",true).toBool();
-    auto ruleCountInterval = pSettings->value("Count timer interval", 2000).toInt();
-    auto rulesEnabled = pSettings->value("Rules enabled", false).toBool();
-    auto ruleTimerEnabled = pSettings->value("Timer enabled",false).toBool();
-    auto mainGuiGeometry = pSettings->value("Main gui geometry",QRect()).toRect();
+    settings->beginGroup("Basic settings");
 
-    pSettings->endGroup();
+    auto closeOnExit = settings->value("Close on exit",true).toBool();
+    auto ruleCountInterval = settings->value("Count timer interval", 2000).toInt();
+    auto rulesEnabled = settings->value("Rules enabled", false).toBool();
+    auto ruleTimerEnabled = settings->value("Timer enabled",false).toBool();
+    auto mainGuiGeometry = settings->value("Main gui geometry",QRect()).toRect();
+
+    settings->endGroup();
 
     _settings = _settingsBuilder->buildSettings(closeOnExit,
                                                ruleTimerEnabled,
@@ -139,16 +140,16 @@ void settingsManager::readSettings()
                                                ruleCountInterval,
                                                mainGuiGeometry);
 
-    int count = pSettings->beginReadArray("Watchfolders");
+    int count = settings->beginReadArray("Watchfolders");
     QStringList folders;
     for (int i = 0;i < count;i++)
     {
-        pSettings->setArrayIndex(i);
-        folders << pSettings->value(QString("Folder (%1)").arg(i)).toString();
+        settings->setArrayIndex(i);
+        folders << settings->value(QString("Folder (%1)").arg(i)).toString();
     }
 
     insertPath(folders);
-    pSettings->endArray();
+    settings->endArray();
 }
 
 void settingsManager::writeSettings()

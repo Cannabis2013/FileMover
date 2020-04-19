@@ -127,28 +127,28 @@ private:
                 setRuleDefinitionsService(new RuleDefinitions())->
                 setFilteringContext(new FilteringContext(entityBuilder),fileListService)->
                 setSettingsBuilderService(settingsBuilder)->
+                setEntityModelBuilderService(entityBuilder)->
                 configureServices()->
                 startServices();
 
         return app;
     }
 
-    const ISettingsModel<QRect> *initializeApplicationPersistence(bool rulesEnabled,bool ruleTimerEnabled, bool closeOnExitEnabled, int ruleTimerInterval)
+    const ISettingsModel<QRect> *initializeApplicationPersistence(bool rulesEnabled,
+                                                                  bool ruleTimerEnabled,
+                                                                  bool closeOnExitEnabled,
+                                                                  int ruleTimerInterval)
     {
-        // Pre state variables
-
-        mApp->setSettings(closeOnExitEnabled,ruleTimerEnabled,rulesEnabled,QRect(),ruleTimerInterval);
+        // Pre state
+        mApp->setSettings(closeOnExitEnabled,
+                          ruleTimerEnabled,
+                          rulesEnabled,
+                          QRect(),
+                          ruleTimerInterval);
         delete mApp;
 
         mApp = initApplicationState();
-
         auto postSettings = mApp->settingsState();
-
-        auto result = closeOnExitEnabled == postSettings->isCloseOnExitEnabled() &&
-                rulesEnabled == postSettings->isRulesEnabled() &&
-                ruleTimerEnabled == postSettings->isRuleTimerEnabled() &&
-                 ruleTimerInterval == postSettings->ruleTimerInterval();
-
 
         return postSettings;
     }
@@ -211,18 +211,25 @@ void Core_functionality::testApplicationPersistenceSuccess1()
     int preRuleTimerInterval = 15;
 
     // Initialize application state
-    auto applicationSettingsState = initializeApplicationPersistence(preRulesEnabled,preRuleTimerEnabled,preCloseOnExit,preRuleTimerInterval);
+    auto applicationSettingsState = initializeApplicationPersistence(preRulesEnabled,
+                                                                     preRuleTimerEnabled,
+                                                                     preCloseOnExit,
+                                                                     preRuleTimerInterval);
 
-    bool expectedCloseOnExit = true;
-    bool exprectedRulesEnabled = false;
-    bool expectedRuleTimerEnabled = true;
-    int expectedRuleTimerInterval = 15;
+    bool expectedCloseOnExit = preCloseOnExit;
+    bool expectedRulesEnabled = preRulesEnabled;
+    bool expectedRuleTimerEnabled = preRuleTimerEnabled;
+    int expectedRuleTimerInterval = preRuleTimerInterval;
 
+    bool postCloseOnExit = applicationSettingsState->isCloseOnExitEnabled();
+    bool postRulesEnabled = applicationSettingsState->isRulesEnabled();
+    bool postRuleTimerEnabled = applicationSettingsState->isRuleTimerEnabled();
+    int postRuleTimerInterval = applicationSettingsState->ruleTimerInterval();
 
-    auto result = expectedCloseOnExit == applicationSettingsState->isCloseOnExitEnabled() &&
-            exprectedRulesEnabled == applicationSettingsState->isRulesEnabled()&&
-            expectedRuleTimerEnabled == applicationSettingsState->isRuleTimerEnabled()&&
-             expectedRuleTimerInterval == applicationSettingsState->ruleTimerInterval();
+    auto result = expectedCloseOnExit == postCloseOnExit &&
+            expectedRulesEnabled == postRulesEnabled &&
+            expectedRuleTimerEnabled == postRuleTimerEnabled &&
+             expectedRuleTimerInterval == postRuleTimerInterval;
 
     QVERIFY(result);
 }
@@ -237,18 +244,27 @@ void Core_functionality::testApplicationPersistenceSuccess2()
     int preRuleTimerInterval = 0;
 
     // Initialize application state
-    auto applicationSettingsState = initializeApplicationPersistence(preRulesEnabled,preRuleTimerEnabled,preCloseOnExit,preRuleTimerInterval);
+    auto applicationSettingsState = initializeApplicationPersistence(preRulesEnabled,
+                                                                     preRuleTimerEnabled,
+                                                                     preCloseOnExit,
+                                                                     preRuleTimerInterval);
 
+    // Post state
+    bool postCloseOnExit = applicationSettingsState->isCloseOnExitEnabled();
+    bool postRulesEnabled = applicationSettingsState->isRulesEnabled();
+    bool postRuleTimerEnabled = applicationSettingsState->isRuleTimerEnabled();
+    int postRuleTimerInterval = applicationSettingsState->ruleTimerInterval();
+
+    // Expected state
     bool expectedCloseOnExit = true;
-    bool exprectedRulesEnabled = false;
+    bool expectedRulesEnabled = false;
     bool expectedRuleTimerEnabled = true;
     int expectedRuleTimerInterval = 0;
 
-
-    auto result = expectedCloseOnExit == applicationSettingsState->isCloseOnExitEnabled() &&
-            exprectedRulesEnabled == applicationSettingsState->isRulesEnabled() &&
-            expectedRuleTimerEnabled == applicationSettingsState->isRuleTimerEnabled() &&
-             expectedRuleTimerInterval == applicationSettingsState->ruleTimerInterval();
+    auto result = expectedCloseOnExit == postCloseOnExit &&
+            expectedRulesEnabled == postRulesEnabled &&
+            expectedRuleTimerEnabled == postRuleTimerEnabled &&
+             expectedRuleTimerInterval == postRuleTimerInterval;
 
     QVERIFY(result);
 }

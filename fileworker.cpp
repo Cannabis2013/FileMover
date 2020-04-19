@@ -286,14 +286,13 @@ void FileWorker::processFileEntity(const DefaultModelInterface *model)
         // TODO: You have to pass an error related stringlist in order to be able to display errors
         removeFileItems(entity->files());
 
-        processFileInformationEntity(model);
+        // FIXME: This operation is now allowed since 'model' is not of type FileInformationEntityModel.
+        //processFileInformationEntity(model);
     }
     else if(entity->ruleAction() == FilesContext::Move)
     {
         moveFileItems(entity->files(),entity->destinations());
-
-        processFileInformationEntity(model);
-
+        //processFileInformationEntity(model);
     }
     else if(entity->ruleAction() == FilesContext::Copy)
         copyFileItems(entity->files(),entity->destinations());

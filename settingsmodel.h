@@ -50,10 +50,10 @@ public:
     }
 
 private:
-    bool _closeOnExit;
-    bool _ruleTimerEnabled;
-    bool _rulesEnabled;
-    int _ruleCountInterval;
+    bool _closeOnExit = false;
+    bool _ruleTimerEnabled = false;
+    bool _rulesEnabled = false;
+    int _ruleCountInterval = false;
 
     QRect _mainGuiGeometry;
 };

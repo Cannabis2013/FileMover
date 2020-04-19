@@ -17,7 +17,7 @@ public:
         auto model = new SettingsModel;
         model->setCloseOnExitEnabled(closeOnExit);
         model->setRulesEnabled(enableRules);
-        model->setRuleTimerEnabled(ruleTimerInterval);
+        model->setRuleTimerEnabled(enableRuleTimer);
         model->setRuleTimerInterval(ruleTimerInterval);
         model->setGeometry(geometry);
 

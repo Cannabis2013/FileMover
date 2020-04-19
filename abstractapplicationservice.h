@@ -87,8 +87,8 @@ public:
     virtual AbstractApplicationService* setFilteringContext(DefaultFilteringContextInterface* filterService,DefaulFileList* listService) = 0;
 
 public slots:
-    virtual void clearFolders(QStringList paths) = 0;
-    virtual void clearFoldersAccordingToRules(QStringList paths) = 0;
+    virtual void clearFolders(const QStringList &paths) = 0;
+    virtual void clearFoldersAccordingToRules(const QStringList &paths = QStringList()) = 0;
 
     virtual void addWatchFolder(QString path) = 0;
     virtual void addWatchFolders(QStringList paths) = 0;

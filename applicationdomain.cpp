@@ -7,16 +7,17 @@ ApplicationDomain::~ApplicationDomain()
     delete rulesService;
 }
 
-void ApplicationDomain::clearFolders(QStringList paths)
+void ApplicationDomain::clearFolders(const QStringList &paths)
 {
-    auto models = fileListService->buildFileModels(FilesContext::All,paths);
+    auto models = fileListService->buildFileModels(paths);
     auto entity = _entityModelBuilder->buildFileRuleModel(models,FilesContext::Delete,QStringList());
     emit sendEntity(entity);
 }
 
-void ApplicationDomain::clearFoldersAccordingToRules(QStringList paths)
+void ApplicationDomain::clearFoldersAccordingToRules(const QStringList &paths)
 {
-    auto folders = watchFolders();
+
+    auto folders = (paths == QStringList()) ?  watchFolders() : paths;
     fileListService->appendFileLists(folders);
     auto models = filteringService->process(rulesService->rules());
     for (auto model : models) {

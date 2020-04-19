@@ -84,7 +84,7 @@ void AbstractRuleDialog::updateConditionView(const DefaultRuleCriteria *sR)
     }
     else
     {
-        condWidget->setKeyWords(RulesContext::ruleKeyWordToString(sR));
+        condWidget->setKeyWords(RulesContextUtilities::ruleKeyWordToString(sR));
         condWidget->setCompareView(sR->compareCriteria());
     }
 }
@@ -115,7 +115,6 @@ void AbstractRuleDialog::resizeNotify(QSize newSize)
     Q_UNUSED(newSize)
 }
 
-
 void AbstractRuleDialog::updateView()
 {
     subRuleView->clear();
@@ -132,26 +131,26 @@ void AbstractRuleDialog::updateView()
         if((condition == RulesContext::FileCreatedMode || condition == RulesContext::FileModifiedMode) &&
                 criteria->compareCriteria() != RulesContext::Interval)
         {
-            headerData << RulesContext::ruleKeyWordToString(criteria);
+            headerData << RulesContextUtilities::ruleKeyWordToString(criteria);
         }
         else if((condition == RulesContext::FileCreatedMode || condition == RulesContext::FileModifiedMode) &&
                 criteria->compareCriteria() == RulesContext::Interval)
         {
-            headerData << RulesContext::ruleDateLimitsToString(criteria);
+            headerData << RulesContextUtilities::ruleDateLimitsToString(criteria);
         }
         else if(condition == RulesContext::FileSizeMode &&
                 criteria->compareCriteria() != RulesContext::Interval)
         {
-           headerData << RulesContext::ruleKeyWordToString(criteria);
+           headerData << RulesContextUtilities::ruleKeyWordToString(criteria);
         }
         else if(condition == RulesContext::FileSizeMode &&
                 criteria->compareCriteria() == RulesContext::Interval)
         {
-            headerData << RulesContext::ruleSizeLimitsToString(criteria);
+            headerData << RulesContextUtilities::ruleSizeLimitsToString(criteria);
         }
         else
         {
-            headerData << RulesContext::mergeStringList(criteria->keywords());
+            headerData << RulesContextUtilities::mergeStringList(criteria->keywords());
         }
 
         new QTreeWidgetItem(subRuleView,headerData);

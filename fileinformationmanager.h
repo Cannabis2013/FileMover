@@ -47,7 +47,7 @@ public slots:
     void insertItem(const DirectoryItem &item) override;
     void insertItems(const QList<DirectoryItem> &dirItems) override;
 
-    void replaceItem(const DirectoryItem &item) override;
+    void replaceItem(const DirectoryItem &newItem) override;
 
     void removeItem(const QString &path) override;
 

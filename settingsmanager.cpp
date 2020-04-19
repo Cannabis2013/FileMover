@@ -135,8 +135,8 @@ void settingsManager::readSettings()
     settings->endGroup();
 
     _settings = _settingsBuilder->buildSettings(closeOnExit,
-                                               ruleTimerEnabled,
                                                rulesEnabled,
+                                                ruleTimerEnabled,
                                                ruleCountInterval,
                                                mainGuiGeometry);
 

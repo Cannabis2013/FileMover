@@ -22,7 +22,7 @@ public:
     QList<const DefaultModelInterface*> process(const QList<const DefaultRuleInterface*> rules)
     {
         QList<const DefaultModelInterface*> resultingList;
-        auto filteredList = listService()->buildFileModels(RulesContext::All);
+        auto filteredList = listService()->buildFileModels();
         // Iterate through all rules
         for (auto rule : rules) {
             // Declare list to hold filemodels which complies with the given rule criterias

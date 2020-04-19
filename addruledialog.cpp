@@ -36,7 +36,7 @@ void AddRuleDialog::on_addSubRule_clicked()
     auto cText = conditionBox->currentText();
     auto ruleCriteria = ruleDefinitionsService()->buildCriteriaFromString(cText);
     auto compareCriteria = condWidget->currentCompareMode();
-    auto keywords = RulesContext::splitString(condWidget->keyWordValues());
+    auto keywords = RulesContextUtilities::splitString(condWidget->keyWordValues());
     auto sizeLimit = condWidget->fixedSizeValues();
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
@@ -91,7 +91,7 @@ void AddRuleDialog::on_addButton_clicked()
     auto title = titleSelector->text();
     auto appliesTo = applySelector->currentText();
     auto action = ruleDefinitionsService()->fileActionEntityFromString(actionBox->currentText());
-    auto destinations = RulesContext::splitString(pathSelector->text());
+    auto destinations = RulesContextUtilities::splitString(pathSelector->text());
     auto typeFilter = ruleDefinitionsService()->fileTypeCriteriaFromString(fileTypeSelector->currentText());
 
     auto config = new DefaultRuleConfiguration();

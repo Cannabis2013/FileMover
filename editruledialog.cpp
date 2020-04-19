@@ -17,7 +17,7 @@ void EditRuleDialog::on_addButton_clicked()
     auto title = titleSelector->text();
     auto appliesTo = applySelector->currentText();
     auto action = ruleDefinitionsService()->fileActionEntityFromString(actionBox->currentText());
-    auto destinations = RulesContext::splitString(pathSelector->text());
+    auto destinations = RulesContextUtilities::splitString(pathSelector->text());
     auto typeFilter = ruleDefinitionsService()->fileTypeCriteriaFromString(fileTypeSelector->currentText());
 
     auto config = new DefaultRuleConfiguration();
@@ -40,7 +40,7 @@ void EditRuleDialog::on_addSubRule_clicked()
     auto currentCondition = conditionBox->currentText();
     auto criteria = ruleDefinitionsService()->buildCriteriaFromString(currentCondition);
     auto compareCriteria = condWidget->currentCompareMode();
-    auto keywords = RulesContext::splitString(condWidget->keyWordValues());;
+    auto keywords = RulesContextUtilities::splitString(condWidget->keyWordValues());;
     auto sizeLimit = condWidget->fixedSizeValues();;
     auto sizeLimits = condWidget->intervalSizeValues();
     auto date = condWidget->fixedConditionalDate();
@@ -85,7 +85,7 @@ void EditRuleDialog::initializeInterface()
     actionBox->setCurrentText(ruleDefinitionsService()->fileActionEntityToString(tempRule->ruleAction()));
     titleSelector->setText(tempRule->title());
     applySelector->setCurrentText(tempRule->appliesToPath());
-    pathSelector->setCurrentFilePath(RulesContext::mergeStringList(tempRule->destinationPaths()));
+    pathSelector->setCurrentFilePath(RulesContextUtilities::mergeStringList(tempRule->destinationPaths()));
     fileTypeSelector->addItems(ruleDefinitionsService()->allFileTypeEntitiesToStrings());
     fileTypeSelector->setCurrentText(ruleDefinitionsService()->fileTypeCriteriaToString(tempRule->typeFilter()));
     _ruleConditions = tempRule->conditions();

@@ -183,14 +183,14 @@ void FileInformationManager::insertItems(const QList<DirectoryItem> &dirItems)
     emit stateChanged();
 }
 
-void FileInformationManager::replaceItem(const DirectoryItem &item)
+void FileInformationManager::replaceItem(const DirectoryItem &newItem)
 {
     for (int i = 0;i < items.count();i++)
     {
         DirectoryItem item = items.at(i);
-        if(item.path == item.path)
+        if(item.path == newItem.path)
         {
-            items.replace(i,item);
+            items.replace(i,newItem);
             return;
         }
     }

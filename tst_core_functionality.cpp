@@ -22,8 +22,8 @@
 #define DELETE_STATUS "Some files/folders not deleted"
 
 #ifdef __WIN64__
-    #define TEST_WORKING_PATH QDir::homePath() + "/test_folder/"
-    #define TEST_SECONDARY_PATH QDir::homePath() + "/test_folder_copy"
+    #define TEST_WORKING_PATH_1 QDir::homePath() + "/test_folder/"
+    #define TEST_SECONDARY_PATH_1 QDir::homePath() + "/test_folder_copy"
 #elif __GNUC__
     #define TEST_WORKING_PATH QDir::homePath() + "/MyDocs/Programming/Test/FileMover_Test_Folder/"
     #define TEST_SECONDARY_PATH QDir::homePath() + "/MyDocs/Programming/Test/FileMover_New_Test_Folder/"
@@ -182,7 +182,7 @@ Core_functionality::Core_functionality()
 
     mApp = initApplicationState();
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+    mApp->addWatchFolder(TEST_WORKING_PATH_1);
 }
 
 Core_functionality::~Core_functionality(){}
@@ -300,7 +300,7 @@ void Core_functionality::insert_rule_filename_match_success_1()
    auto rConfig = new DefaultRuleConfiguration();
 
     rConfig->setTitle("Test1");
-    rConfig->setAppliesTo(TEST_WORKING_PATH);
+    rConfig->setAppliesTo(TEST_WORKING_PATH_1);
     rConfig->setAction(RulesContext::DeleteAction);
 
     auto cConfig = new DefaultCriteriaConfiguration();
@@ -321,7 +321,7 @@ void Core_functionality::insert_rule_filename_match_succes_2()
     auto rConfig = new DefaultRuleConfiguration();
 
     rConfig->setTitle("Test2");
-    rConfig->setAppliesTo(TEST_WORKING_PATH);
+    rConfig->setAppliesTo(TEST_WORKING_PATH_1);
     rConfig->setAction(RulesContext::DeleteAction);
 
     auto cConfig = new DefaultCriteriaConfiguration();
@@ -343,7 +343,7 @@ void Core_functionality::insert_rule_created_before_succes1()
     auto rConfig = new DefaultRuleConfiguration();
 
     rConfig->setTitle("Test3");
-    rConfig->setAppliesTo(TEST_WORKING_PATH);
+    rConfig->setAppliesTo(TEST_WORKING_PATH_1);
     rConfig->setAction(RulesContext::DeleteAction);
 
     auto cConfig = new DefaultCriteriaConfiguration();
@@ -365,7 +365,7 @@ void Core_functionality::insert_rule_datecreated_after_succes1()
     auto rConfig = new DefaultRuleConfiguration();
 
     rConfig->setTitle("Test4");
-    rConfig->setAppliesTo(TEST_WORKING_PATH);
+    rConfig->setAppliesTo(TEST_WORKING_PATH_1);
     rConfig->setAction(RulesContext::DeleteAction);
 
     auto cConfig = new DefaultCriteriaConfiguration();
@@ -387,7 +387,7 @@ void Core_functionality::insert_rule_sizeinterval_success_1()
     auto rConfig = new DefaultRuleConfiguration();
 
     rConfig->setTitle("Test5");
-    rConfig->setAppliesTo(TEST_WORKING_PATH);
+    rConfig->setAppliesTo(TEST_WORKING_PATH_1);
     rConfig->setAction(RulesContext::DeleteAction);
 
     auto cConfig = new DefaultCriteriaConfiguration();
@@ -425,7 +425,7 @@ void Core_functionality::operationFilenameMatchSuccess1()
     ruleConfig->setAction(RulesContext::DeleteAction);
     ruleConfig->setDeepScanMode(true);
     ruleConfig->setType(RulesContext::Action);
-    ruleConfig->setAppliesTo(TEST_WORKING_PATH);
+    ruleConfig->setAppliesTo(TEST_WORKING_PATH_1);
 
     auto criteriaConfig = new DefaultCriteriaConfiguration();
 
@@ -478,7 +478,7 @@ void Core_functionality::operationFilenameMatchSuccess1()
 
     Virtual_Objects actualList;
     try {
-        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH_1);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -494,7 +494,7 @@ void Core_functionality::operationFilenameMatchSuccess1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -520,7 +520,7 @@ void Core_functionality::operationFilenameContainSuccess1()
     ruleConfig->setAction(RulesContext::DeleteAction);
     ruleConfig->setDeepScanMode(true);
     ruleConfig->setType(RulesContext::Action);
-    ruleConfig->setAppliesTo(TEST_WORKING_PATH);
+    ruleConfig->setAppliesTo(TEST_WORKING_PATH_1);
 
     auto criteriaConfig = new DefaultCriteriaConfiguration();
 
@@ -563,7 +563,7 @@ void Core_functionality::operationFilenameContainSuccess1()
 
     Virtual_Objects actualList;
     try {
-        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH_1);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -577,7 +577,7 @@ void Core_functionality::operationFilenameContainSuccess1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -602,7 +602,7 @@ void Core_functionality::operation_extension_match_success_1()
     ruleConfig->setAction(RulesContext::DeleteAction);
     ruleConfig->setDeepScanMode(true);
     ruleConfig->setType(RulesContext::Action);
-    ruleConfig->setAppliesTo(TEST_WORKING_PATH);
+    ruleConfig->setAppliesTo(TEST_WORKING_PATH_1);
 
     auto criteriaConfig = new DefaultCriteriaConfiguration();
 
@@ -643,7 +643,7 @@ void Core_functionality::operation_extension_match_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH_1);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -658,7 +658,7 @@ void Core_functionality::operation_extension_match_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -720,7 +720,7 @@ void Core_functionality::operation_size_less_than_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH_1);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -734,7 +734,7 @@ void Core_functionality::operation_size_less_than_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -796,7 +796,7 @@ void Core_functionality::operation_size_equal_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH_1);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -810,7 +810,7 @@ void Core_functionality::operation_size_equal_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -873,7 +873,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH_1);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -887,7 +887,7 @@ void Core_functionality::operation_size_equal_or_lesser_than_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -949,7 +949,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH_1);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -963,7 +963,7 @@ void Core_functionality::operation_size_equal_or_greater_than_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -1031,7 +1031,7 @@ void Core_functionality::operation_size_greater_than_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH_1);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -1046,7 +1046,7 @@ void Core_functionality::operation_size_greater_than_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -1110,7 +1110,7 @@ void Core_functionality::operation_size_interval_success_1()
 
     Virtual_Objects actualList;
     try {
-        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH);
+        actualList = fileCreator->VirtualObjects(TEST_WORKING_PATH_1);
     }  catch (const char *msg) {
         cout << msg << endl;
     } catch (const std::domain_error *e)
@@ -1125,7 +1125,7 @@ void Core_functionality::operation_size_interval_success_1()
      */
     int cleaned_up = false;
     try {
-        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH);
+        cleaned_up = fileCreator->emptyTestFolder(TEST_WORKING_PATH_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         return;
@@ -1150,7 +1150,7 @@ const Virtual_Objects *Core_functionality::initializePreState(const IDefaultRule
 
     auto ruleBuilder = new RuleBuilder();
 
-    mApp->addWatchFolder(TEST_WORKING_PATH);
+    mApp->addWatchFolder(TEST_WORKING_PATH_1);
 
     QList<const DefaultRuleCriteria*> criterias;
 
@@ -1164,7 +1164,7 @@ const Virtual_Objects *Core_functionality::initializePreState(const IDefaultRule
     const Virtual_Objects *objects;
 
     try {
-        objects = fileCreator->createFiles(TEST_WORKING_PATH,test_file_set_1);
+        objects = fileCreator->createFiles(TEST_WORKING_PATH_1,test_file_set_1);
     } catch (const char *msg) {
         printf("%s\n",msg);
         throw "Creating files failed.";

@@ -45,6 +45,13 @@ namespace RulesContext
     enum FileType {Folder = 0x060, File = 0x061,Both = 0x062, Unresolved = 0x01};
     enum CopyMode{Move = 0x065,Copy = 0x066,NoMode = 0x01};
     enum IteratorMode {NonRecursive = 0x080, Recursive = 0x081};
+
+    class RulesContextUtilities;
+}
+
+class RulesContextUtilities
+{
+public:
     static QString ruleSizeLimitsToString(const IDefaultConditionConfigurator *sRule)
     {
         QString minSize = QString::number(sRule->sizeInterval().first.first),
@@ -115,16 +122,16 @@ namespace RulesContext
     {
 
         if(sRule->criteria() == RulesContext::FileSizeMode &&
-                sRule->compareCriteria() != Interval)
+                sRule->compareCriteria() != RulesContext::Interval)
             return QString::number(sRule->sizeLimit().first) + " " + sRule->sizeLimit().second;
-        else if(sRule->criteria() == FileSizeMode &&
-                sRule->compareCriteria() == Interval)
+        else if(sRule->criteria() == RulesContext::FileSizeMode &&
+                sRule->compareCriteria() == RulesContext::Interval)
             return ruleSizeLimitsToString(sRule);
-        else if((sRule->criteria() == FileCreatedMode || sRule->criteria() == FileModifiedMode) &&
-                sRule->compareCriteria() != Interval)
+        else if((sRule->criteria() == RulesContext::FileCreatedMode || sRule->criteria() == RulesContext::FileModifiedMode) &&
+                sRule->compareCriteria() != RulesContext::Interval)
             return sRule->date().toString("dd.MM.yyyy");
-        else if((sRule->criteria() == FileCreatedMode || sRule->criteria() == FileModifiedMode) &&
-                sRule->compareCriteria() == Interval)
+        else if((sRule->criteria() == RulesContext::FileCreatedMode || sRule->criteria() == RulesContext::FileModifiedMode) &&
+                sRule->compareCriteria() == RulesContext::Interval)
             return ruleDateLimitsToString(sRule);
         else
             return mergeStringList(sRule->keywords());
@@ -134,21 +141,21 @@ namespace RulesContext
     {
 
         if(sRule->criteria() == RulesContext::FileSizeMode &&
-                sRule->compareCriteria() != Interval)
+                sRule->compareCriteria() != RulesContext::Interval)
             return QString::number(sRule->sizeLimit().first) + " " + sRule->sizeLimit().second;
-        else if(sRule->criteria() == FileSizeMode &&
-                sRule->compareCriteria() == Interval)
+        else if(sRule->criteria() == RulesContext::FileSizeMode &&
+                sRule->compareCriteria() == RulesContext::Interval)
             return ruleSizeLimitsToString(sRule);
-        else if((sRule->criteria() == FileCreatedMode || sRule->criteria() == FileModifiedMode) &&
-                sRule->compareCriteria() != Interval)
+        else if((sRule->criteria() == RulesContext::FileCreatedMode || sRule->criteria() == RulesContext::FileModifiedMode) &&
+                sRule->compareCriteria() != RulesContext::Interval)
             return sRule->date().toString("dd.MM.yyyy");
-        else if((sRule->criteria() == FileCreatedMode || sRule->criteria() == FileModifiedMode) &&
-                sRule->compareCriteria() == Interval)
+        else if((sRule->criteria() == RulesContext::FileCreatedMode || sRule->criteria() == RulesContext::FileModifiedMode) &&
+                sRule->compareCriteria() == RulesContext::Interval)
             return ruleDateLimitsToString(sRule);
         else
             return mergeStringList(sRule->keywords());
     }
-}
+};
 
 
 

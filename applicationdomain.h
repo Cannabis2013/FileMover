@@ -56,8 +56,8 @@ public:
 
     void calculateFolderSize(QString path)  override;
 
-    void clearFolders(QStringList paths)  override;
-    void clearFoldersAccordingToRules(QStringList paths)  override;
+    void clearFolders(const QStringList &paths)  override;
+    void clearFoldersAccordingToRules(const QStringList &paths = QStringList())  override;
 
     AbstractApplicationService* configureServices()  override;
     AbstractApplicationService* startServices() override;

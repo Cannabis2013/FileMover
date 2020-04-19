@@ -18,7 +18,7 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     for(auto r : _rules)
     {
         QStringList headerData {r->title(),ruleDefinitionsService()->fileActionEntityToString(r->ruleAction()),
-                    RulesContext::mergeStringList(r->destinationPaths())};
+                    RulesContextUtilities::mergeStringList(r->destinationPaths())};
         QTreeWidgetItem *pItem = new QTreeWidgetItem(headerData);
         QIcon itemIcon = QIcon(":/My Images/Ressources/rule_icon.png");
         pItem->setIcon(0,itemIcon);
@@ -27,7 +27,7 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
             QStringList hData;
             hData << ruleDefinitionsService()->buildStringFromCriteria(condition->criteria()) <<
                      ruleDefinitionsService()->buildStringFromCompareCriteria(condition->compareCriteria()) <<
-                     RulesContext::ruleKeyWordToString(condition);
+                     RulesContextUtilities::ruleKeyWordToString(condition);
 
             QTreeWidgetItem *cItem = new QTreeWidgetItem(hData);
             cItem->setIcon(0,QIcon(":/My Images/Ressources/sub_rule_icon.png"));
@@ -90,7 +90,7 @@ void rulesManager::readSettings()
         auto action = static_cast<RulesContext::RuleAction>(pSettings->value("Action","").toInt());
         auto appliesTo = pSettings->value("ApplyPath","Alle").toString();
         auto type = static_cast<RulesContext::FileType>(pSettings->value("Scan type filter","").toInt());
-        auto destinations = RulesContext::splitString(pSettings->value("Destination paths","").toString());
+        auto destinations = RulesContextUtilities::splitString(pSettings->value("Destination paths","").toString());
         int count = pSettings->beginReadArray("Subrules");
 
         auto *rConfig = new DefaultRuleConfiguration;
@@ -112,7 +112,7 @@ void rulesManager::readSettings()
             auto compareCriteria = static_cast<RulesContext::RuleCompareCriteria>(pSettings->value("Comparemode",0).toInt());
 
             auto matchWholeWords = pSettings->value("Matchwholewords",false).toBool();
-            auto keyWords = RulesContext::splitString(pSettings->value("Keywords","").toString());
+            auto keyWords = RulesContextUtilities::splitString(pSettings->value("Keywords","").toString());
 
             auto sLimit = pSettings->value("Sizelimit",0).toInt();
             auto sizeUnit = pSettings->value("Sizelimitunit","kb").toString();
@@ -174,7 +174,7 @@ void rulesManager::writeSettings()
         pSettings->setValue("Scan type filter",r->typeFilter());
         pSettings->setValue("ApplyPath",r->appliesToPath());
         pSettings->setValue("Destination paths",
-                   RulesContext::mergeStringList(r->destinationPaths()));
+                   RulesContextUtilities::mergeStringList(r->destinationPaths()));
         pSettings->setValue("Scan Mode",r->deepScanMode());
         QList<const DefaultRuleCriteria*>sRules = r->conditions();
         int total = sRules.count();
@@ -189,7 +189,7 @@ void rulesManager::writeSettings()
             pSettings->setValue("Comparemode",condition->compareCriteria());
 
             pSettings->setValue("Matchwholewords",condition->matchWholeWords());
-            pSettings->setValue("Keywords",RulesContext::mergeStringList(condition->keywords()));
+            pSettings->setValue("Keywords",RulesContextUtilities::mergeStringList(condition->keywords()));
 
             pSettings->setValue("Sizelimit",condition->sizeLimit().first);
             pSettings->setValue("Sizelimitunit",condition->sizeLimit().second);

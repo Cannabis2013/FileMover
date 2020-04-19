@@ -21,7 +21,6 @@ AddRuleDialog::AddRuleDialog(QStringList watchFolders,IRuleDefinitions *service)
     conditionBox->currentTextChanged(ruleDefinitionsService()->buildDefaultStringValue());
     fileTypeSelector->addItems(ruleDefinitionsService()->allFileTypeEntitiesToStrings());
 }
-z
 
 void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {

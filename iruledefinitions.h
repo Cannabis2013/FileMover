@@ -8,6 +8,7 @@ class IRuleDefinitions
 public:
 
     virtual const QStringList intervalConditionalList() = 0;
+    virtual QString defaultAppliesToAll() = 0;
 
     virtual const QStringList buildStringListFromEntity(const int &property) = 0;
     virtual const QStringList fileCompareModesToStringList(const int &condition) = 0;

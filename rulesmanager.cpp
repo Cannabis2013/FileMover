@@ -80,7 +80,7 @@ const DefaultRuleInterface *rulesManager::rule(const QString &title) const
 
 void rulesManager::readSettings()
 {
-    QList<const IRule<DefaultRuleCriteria>*>rules;
+    QList<const DefaultRuleInterface*>rules;
     QSettings *pSettings = persistenceSettings();
     int total = pSettings->beginReadArray("Rules");
     for (int i = 0; i < total; ++i)

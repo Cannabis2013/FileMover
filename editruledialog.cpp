@@ -9,7 +9,8 @@ EditRuleDialog::EditRuleDialog(const IRule<DefaultRuleCriteria> *editRule, QStri
     addBut->setText(tr("Færdig"));
 
     initializeInterface(); // Update interface according to selected rule state
-    updateView();
+
+    updateView(); // Update QListWidget with subrules
 }
 
 void EditRuleDialog::on_addButton_clicked()

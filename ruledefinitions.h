@@ -4,6 +4,7 @@
 #include <qtranslator.h>
 
 #include "iruledefinitions.h"
+#include "rulescontext.h"
 
 /*
  * Mappings:
@@ -76,8 +77,13 @@ public:
     // Enumerated variables..
     QString nonIntervalString = "Enkel grænse", intervalString = "Interval grænse";
     QStringList intervalMode {"Enkel grænse","Interval grænse"};
-
+    QString appliesToAll = "All";
     // List variables..
+
+    QString defaultAppliesToAll() override
+    {
+        return appliesToAll;
+    }
 
     const QStringList intervalConditionalList() override
     {

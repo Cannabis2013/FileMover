@@ -12,15 +12,16 @@ AddRuleDialog::AddRuleDialog(QStringList watchFolders,IRuleDefinitions *service)
     actionBox->addItems(actionList);
     conditionBox->addItems(conditionList);
 
-    applySelector->addItem( "Alle");
+    auto appliesToAllKeyword = ruleDefinitionsService()->defaultAppliesToAll();
+    applySelector->addItem(appliesToAllKeyword);
     applySelector->addItems(watchFolders);
-    applySelector->setCurrentText("Alle");
+    applySelector->setCurrentText(appliesToAllKeyword);
 
     conditionBox->setCurrentText(ruleDefinitionsService()->buildDefaultStringValue());
     conditionBox->currentTextChanged(ruleDefinitionsService()->buildDefaultStringValue());
     fileTypeSelector->addItems(ruleDefinitionsService()->allFileTypeEntitiesToStrings());
 }
-
+z
 
 void AddRuleDialog::on_treeWidget_doubleClicked(const QModelIndex &index)
 {

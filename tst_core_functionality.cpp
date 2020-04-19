@@ -177,6 +177,7 @@ private:
     AbstractApplicationService *mApp;
     const Virtual_Objects *initializePreState(const IDefaultRuleConfigurator *ruleConfig, QList<const IDefaultConditionConfigurator *> ruleConditionConfigs, TestFileCreator *fileCreator);
 };
+
 Core_functionality::Core_functionality()
 {
 
@@ -1174,7 +1175,7 @@ const Virtual_Objects *Core_functionality::initializePreState(const IDefaultRule
 }
 
 
-    QTEST_MAIN(Core_functionality)
-
+QTEST_MAIN(Core_functionality)
 #include "tst_core_functionality.moc"
+
 #endif

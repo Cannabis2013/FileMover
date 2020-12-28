@@ -164,6 +164,24 @@ public:
         return !this->operator==(other);
     }
 
+    // IModel interface
+    QUuid id() const override
+    {
+        return _id;
+    }
+    void setId(const QUuid &id) override
+    {
+        _id = id;
+    }
+    int type() const override
+    {
+        return _modelType;
+    }
+    void setType(const int &type) override
+    {
+        _modelType = type;
+    }
+
 private:
     int _copyMode = 0x01;
     int _compareCriteria = 0x01;
@@ -174,14 +192,14 @@ private:
     QPair<QDateTime,QDateTime> _dateIntervals;
     bool _matchWholeWords = false;
     QStringList _keyWords;
-
-    // IRuleCondition interface
+    QUuid _id;
+    int _modelType;
 };
 
 typedef QPair<int,QString> SizeOperand;
 typedef QPair<QPair<int,QString>,QPair<int,QString>> SizeInterval;
 
-class Rule : public IRule<DefaultRuleCriteria>
+class Rule : public DefaultRuleInterface
 {
 public:
     ~Rule()
@@ -285,6 +303,25 @@ public:
         return !this->operator==(other);
     }
 
+    // IModel interface
+
+    QUuid id() const override
+    {
+        return _id;
+    }
+    void setId(const QUuid &id) override
+    {
+        _id = id;
+    }
+    int type() const override
+    {
+        return _modelType;
+    }
+    void setType(const int &type) override
+    {
+        _modelType = type;
+    }
+
 private:
     int _typeFilter = RulesContext::File;
     int _actionRuleEntity;
@@ -293,6 +330,8 @@ private:
     QString _appliesToPath = "Alle";
     bool _deepScanMode = false;
     QList<const DefaultRuleCriteria*> _criterias;
+    QUuid _id;
+    int _modelType;
 };
 
 #endif // RULES_H

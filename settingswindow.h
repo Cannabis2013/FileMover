@@ -114,7 +114,7 @@ private:
     QPoint mOffset;
     QStringList ruleParentHeaderData,ruleChildrenHeaderData;
     QTreeWidget *rulesView;
-    QList<const IRule<DefaultRuleCriteria>*>rules;
+    QList<const DefaultRuleInterface*>rules;
     QWidget *mView;
     AbstractApplicationService *coreApplication;
 };

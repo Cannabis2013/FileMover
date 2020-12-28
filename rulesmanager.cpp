@@ -41,13 +41,13 @@ QList<QTreeWidgetItem *> rulesManager::ruleItems() const
     return resultingList;
 }
 
-void rulesManager::addRule(const IRule<DefaultRuleCriteria> *r)
+void rulesManager::addRule(const DefaultRuleInterface *r)
 {
     _rules << r;
     emit stateChanged();
 }
 
-void rulesManager::addRules(const QList<const IRule<DefaultRuleCriteria> *> &r)
+void rulesManager::addRules(const QList<const DefaultRuleInterface *> &r)
 {
     _rules << r;
     emit stateChanged();
@@ -213,13 +213,13 @@ void rulesManager::writeSettings()
     pSettings->endArray();
 }
 
-void rulesManager::replaceRule(const IRule<DefaultRuleCriteria> *r, int index)
+void rulesManager::replaceRule(const DefaultRuleInterface *r, int index)
 {
     _rules.replace(index,r);
     emit stateChanged();
 }
 
-void rulesManager::replaceRule(const IRule<DefaultRuleCriteria> *r, QString title)
+void rulesManager::replaceRule(const DefaultRuleInterface *r, QString title)
 {
     for (int i = 0; i < _rules.count(); ++i) {
         auto currentRule = _rules.at(i);

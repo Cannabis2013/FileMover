@@ -20,7 +20,7 @@ AbstractRuleDialog::AbstractRuleDialog(QStringList watchFolders) :
 
     applySelector->addItems(watchFolders);
 
-    qRegisterMetaType<IRule<DefaultRuleCriteria>*>("IRule<IDefaultRuleCondition>");
+    qRegisterMetaType<DefaultRuleInterface*>("IRule<IDefaultRuleCondition>");
 
     setResizeable(false);
 }

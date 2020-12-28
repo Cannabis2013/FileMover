@@ -107,72 +107,18 @@ private slots:
 
     void operation_move_filename_match_success_1();
 
+
+
 private:
-    AbstractApplicationService *initApplicationState()
-    {
-        auto fileListService = (new FileListService())->setModelBuilderService(new FileModelBuilder());
-        auto app = new ApplicationDomain();
-
-        auto settingsBuilder = new SettingsBuilder();
-        auto entityBuilder = new EntityModelBuilder();
-
-        app->setFileOperationsService(new FileWorker())->
-                setRuleManagerService(new rulesManager("TESTAPP","TESTORG",new RuleBuilder()))->
-                setThreadManagerService(new ThreadsManager())->
-                setSettingsManagerService(new settingsManager("TESTAPP","TESTORG",settingsBuilder,entityBuilder))->
-                setFileInformationManagerService(new FileInformationManager("TESTAPP","TESTORG"))->
-                setEntityQueueManagerService(new EntityQueueManager())->
-                setFileWatcherService(new FileSystemWatcher(entityBuilder))->
-                setFileModelBuilderService(new FileListService())->
-                setRuleDefinitionsService(new RuleDefinitions())->
-                setFilteringContext(new FilteringContext(entityBuilder),fileListService)->
-                setSettingsBuilderService(settingsBuilder)->
-                setEntityModelBuilderService(entityBuilder)->
-                configureServices()->
-                startServices();
-
-        return app;
-    }
+    AbstractApplicationService *initApplicationState();
 
     const ISettingsModel<QRect> *initializeApplicationPersistence(bool rulesEnabled,
                                                                   bool ruleTimerEnabled,
                                                                   bool closeOnExitEnabled,
-                                                                  int ruleTimerInterval)
-    {
-        // Pre state
-        mApp->setSettings(closeOnExitEnabled,
-                          ruleTimerEnabled,
-                          rulesEnabled,
-                          QRect(),
-                          ruleTimerInterval);
-        delete mApp;
-
-        mApp = initApplicationState();
-        auto postSettings = mApp->settingsState();
-
-        return postSettings;
-    }
+                                                                  int ruleTimerInterval);
 
     bool testInsertRule(IDefaultRuleConfigurator *ruleConfig,
-                        QList<const IDefaultConditionConfigurator *> ruleConditionConfigs)
-    {
-        auto ruleBuilder = new RuleBuilder();
-        QList<const DefaultRuleCriteria*> criterias;
-        for (auto config : ruleConditionConfigs) {
-            criterias << ruleBuilder->buildCriteria(config);
-        }
-
-        auto preRule = ruleBuilder->buildRule(ruleConfig, criterias);
-
-        // Insert rule into application domain
-        mApp->insertRule(preRule);
-
-        // Retrieve rule from application domain
-
-        auto postRule = mApp->rule(ruleConfig->title());
-
-        return preRule == postRule;
-    }
+                        QList<const IDefaultConditionConfigurator *> ruleConditionConfigs);
 
     AbstractApplicationService *mApp;
     const Virtual_Objects *initializePreState(const IDefaultRuleConfigurator *ruleConfig, QList<const IDefaultConditionConfigurator *> ruleConditionConfigs, TestFileCreator *fileCreator);
@@ -1140,7 +1086,81 @@ void Core_functionality::operation_size_interval_success_1()
 
 void Core_functionality::operation_move_filename_match_success_1()
 {
+    /*
+     * INITIAL STATE:
+     *  - Create dummy files in folder 'test_folder'
+     */
 
+    auto fileCreator = new  TestFileCreator();
+
+    auto ruleConfig = new DefaultRuleConfiguration();
+    ruleConfig->setAction(RulesContext::DeleteAction);
+    ruleConfig->setDeepScanMode(true);
+    ruleConfig->setType(RulesContext::Action);
+
+
+}
+
+AbstractApplicationService *Core_functionality::initApplicationState()
+{
+    auto fileListService = (new FileListService())->setModelBuilderService(new FileModelBuilder());
+    auto app = new ApplicationDomain();
+
+    auto settingsBuilder = new SettingsBuilder();
+    auto entityBuilder = new EntityModelBuilder();
+
+    app->setFileOperationsService(new FileWorker())->
+            setRuleManagerService(new rulesManager("TESTAPP","TESTORG",new RuleBuilder()))->
+            setThreadManagerService(new ThreadsManager())->
+            setSettingsManagerService(new settingsManager("TESTAPP","TESTORG",settingsBuilder,entityBuilder))->
+            setFileInformationManagerService(new FileInformationManager("TESTAPP","TESTORG"))->
+            setEntityQueueManagerService(new EntityQueueManager())->
+            setFileWatcherService(new FileSystemWatcher(entityBuilder))->
+            setFileModelBuilderService(new FileListService())->
+            setRuleDefinitionsService(new RuleDefinitions())->
+            setFilteringContext(new FilteringContext(entityBuilder),fileListService)->
+            setSettingsBuilderService(settingsBuilder)->
+            setEntityModelBuilderService(entityBuilder)->
+            configureServices()->
+            startServices();
+
+    return app;
+}
+
+const ISettingsModel<QRect> *Core_functionality::initializeApplicationPersistence(bool rulesEnabled, bool ruleTimerEnabled, bool closeOnExitEnabled, int ruleTimerInterval)
+{
+    // Pre state
+    mApp->setSettings(closeOnExitEnabled,
+                      ruleTimerEnabled,
+                      rulesEnabled,
+                      QRect(),
+                      ruleTimerInterval);
+    delete mApp;
+
+    mApp = initApplicationState();
+    auto postSettings = mApp->settingsState();
+
+    return postSettings;
+}
+
+bool Core_functionality::testInsertRule(IDefaultRuleConfigurator *ruleConfig, QList<const IDefaultConditionConfigurator *> ruleConditionConfigs)
+{
+    auto ruleBuilder = new RuleBuilder();
+    QList<const DefaultRuleCriteria*> criterias;
+    for (auto config : ruleConditionConfigs) {
+        criterias << ruleBuilder->buildCriteria(config);
+    }
+
+    auto preRule = ruleBuilder->buildRule(ruleConfig, criterias);
+
+    // Insert rule into application domain
+    mApp->insertRule(preRule);
+
+    // Retrieve rule from application domain
+
+    auto postRule = mApp->rule(ruleConfig->title());
+
+    return preRule == postRule;
 }
 
 const Virtual_Objects *Core_functionality::initializePreState(const IDefaultRuleConfigurator *ruleConfig,

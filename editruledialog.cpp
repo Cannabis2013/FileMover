@@ -1,6 +1,6 @@
 #include "editruledialog.h"
 
-EditRuleDialog::EditRuleDialog(const IRule<DefaultRuleCriteria> *editRule, QStringList watchFolders):
+EditRuleDialog::EditRuleDialog(const DefaultRuleInterface *editRule, QStringList watchFolders):
     AbstractRuleDialog(watchFolders)
 {
     originalRuleTitle = editRule->title();

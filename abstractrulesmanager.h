@@ -19,10 +19,10 @@ public:
 
     // State alteration methods
     virtual void swapRule(int i, int j) = 0;
-    virtual void addRule(const IRule<DefaultRuleCriteria> *r) = 0;
-    virtual void addRules(const QList<const IRule<DefaultRuleCriteria>*> &r) = 0;
-    virtual void replaceRule(const IRule<DefaultRuleCriteria> *r, int index) = 0;
-    virtual void replaceRule(const IRule<DefaultRuleCriteria> *r, QString title) = 0;
+    virtual void addRule(const DefaultRuleInterface *r) = 0;
+    virtual void addRules(const QList<const DefaultRuleInterface*> &r) = 0;
+    virtual void replaceRule(const DefaultRuleInterface *r, int index) = 0;
+    virtual void replaceRule(const DefaultRuleInterface *r, QString title) = 0;
     virtual void removeRuleAt(const int &i) = 0;
     virtual void removeRule(const QString &title) = 0;
 

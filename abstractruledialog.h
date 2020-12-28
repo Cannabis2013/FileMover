@@ -39,8 +39,8 @@ public:
     void setRulesDefinitionsService(IRuleDefinitions *service) override;
 
 signals:
-    void sendRule(const IRule<DefaultRuleCriteria>*R);
-    void replaceRule(const IRule<DefaultRuleCriteria>* rule, QString title);
+    void sendRule(const DefaultRuleInterface*R);
+    void replaceRule(const DefaultRuleInterface* rule, QString title);
 
 protected slots:
 

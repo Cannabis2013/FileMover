@@ -27,14 +27,14 @@ public:
      * Rules interface
      */
 
-    const IRule<DefaultRuleCriteria>* ruleAt(int index) override {return rulesService->rule(index);}
-    const IRule<DefaultRuleCriteria>* rule(const QString &title) override {return rulesService->rule(title);}
+    const DefaultRuleInterface* ruleAt(int index) override {return rulesService->rule(index);}
+    const DefaultRuleInterface* rule(const QString &title) override {return rulesService->rule(title);}
     QList<QTreeWidgetItem*> ruleItemModels() override {return rulesService->ruleItems();}
     void swapRule(int i, int j) override {rulesService->swapRule(i,j);}
     void clearRules() const override ;
 
-    void insertRule(const IRule<DefaultRuleCriteria>* r) override {rulesService->addRule(r);}
-    void replaceRule(const IRule<DefaultRuleCriteria>* newRule, QString title) override {rulesService->replaceRule(newRule,title);}
+    void insertRule(const DefaultRuleInterface* r) override {rulesService->addRule(r);}
+    void replaceRule(const DefaultRuleInterface* newRule, QString title) override {rulesService->replaceRule(newRule,title);}
     void removeRuleAt(int index) override {rulesService->removeRuleAt(index);}
     void removeRule(QString title) override {rulesService->removeRule(title);}
 

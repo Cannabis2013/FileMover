@@ -117,7 +117,7 @@ public:
             for ( QPair<QString,RulesContext::RuleAction> actionMapping : actionMappings())
                 resultingList << actionMapping.first;
         }
-        if(property == RulesContext::Condition || property == RulesContext::All)
+        if(property == RulesContext::Criteria || property == RulesContext::All)
         {
             for ( QPair<QString,RulesContext::RuleCriteria> pair : criteriaMappings())
                 resultingList << pair.first;

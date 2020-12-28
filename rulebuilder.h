@@ -13,10 +13,10 @@ class RuleBuilder :
         public IDefaultRuleBuilder
 {
 public:
-    const IRule<DefaultRuleCriteria> *buildRule(const IDefaultRuleConfigurator *configuration,
+    const DefaultRuleInterface *buildRule(const IDefaultRuleConfigurator *configuration,
                                                   const QList<const DefaultRuleCriteria*> &criterias) override
     {
-        IRule<DefaultRuleCriteria> *r = new Rule;
+        DefaultRuleInterface *r = new Rule;
         r->setTitle(configuration->title());
         r->setAppliesToPath(configuration->appliesTo());
         r->setDestinationPaths(configuration->destinations());
@@ -24,7 +24,8 @@ public:
         r->setTypeFilter(configuration->type());
         r->setCriterias(configuration->conditions());
         r->setDeepScanMode(configuration->deepScanMode());
-
+        r->setType(RulesContext::Rule);
+        r->setId(QUuid::createUuid());
 
         r->setCriterias(criterias);
 
@@ -33,17 +34,20 @@ public:
 
     const DefaultRuleCriteria *buildCriteria(const IDefaultConditionConfigurator* configurator) override
     {
-        auto condition = new RuleCondition();
-        condition->setCriteria(configurator->criteria());
-        condition->setCompareCriteria(configurator->compareCriteria());
-        condition->setKeyWords(configurator->keywords());
-        condition->setSizeLimit(configurator->sizeLimit());
-        condition->setDate(configurator->date());
-        condition->setSizeInterval(configurator->sizeInterval());
-        condition->setDateIntervals(configurator->dates());
-        condition->setMatchWholeWords(configurator->matchWholeWords());
+        auto criteria = new RuleCondition();
 
-        return condition;
+        criteria->setCriteria(configurator->criteria());
+        criteria->setCompareCriteria(configurator->compareCriteria());
+        criteria->setKeyWords(configurator->keywords());
+        criteria->setSizeLimit(configurator->sizeLimit());
+        criteria->setDate(configurator->date());
+        criteria->setSizeInterval(configurator->sizeInterval());
+        criteria->setDateIntervals(configurator->dates());
+        criteria->setMatchWholeWords(configurator->matchWholeWords());
+        criteria->setType(RulesContext::Criteria);
+        criteria->setId(QUuid::createUuid());
+
+        return criteria;
     }
 };
 

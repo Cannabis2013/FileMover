@@ -39,8 +39,8 @@ public:
     virtual QList<QTreeWidgetItem*> watchFolderItems() = 0;
     virtual QList<QTreeWidgetItem*> detailedWatchFolderItems() = 0;
 
-    virtual const IRule<DefaultRuleCriteria>* ruleAt(int index) = 0;
-    virtual const IRule<DefaultRuleCriteria>* rule(const QString &title) = 0;
+    virtual const DefaultRuleInterface* ruleAt(int index) = 0;
+    virtual const DefaultRuleInterface* rule(const QString &title) = 0;
     virtual QList<QTreeWidgetItem*> ruleItemModels() = 0;
     virtual void swapRule(int i, int j) = 0;
     virtual void clearRules() const = 0;
@@ -96,8 +96,8 @@ public slots:
     virtual void removeWatchFolderAt(int index) = 0;
     virtual void removeWatchFolder(QString path) = 0;
 
-    virtual void insertRule(const IRule<DefaultRuleCriteria>* r) = 0;
-    virtual void replaceRule(const IRule<DefaultRuleCriteria>* newRule, QString title) = 0;
+    virtual void insertRule(const DefaultRuleInterface* r) = 0;
+    virtual void replaceRule(const DefaultRuleInterface* newRule, QString title) = 0;
     virtual void removeRuleAt(int index) = 0;
     virtual void removeRule(QString title) = 0;
 

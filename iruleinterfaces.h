@@ -2,9 +2,22 @@
 #define IRULEINTERFACES_H
 
 #include <qdatetime.h>
+#include "imodel.h"
 
-template<typename TSize,typename TSizeIntervals,typename TDateObject>
-class IRuleCriteria
+namespace RulesContext
+{
+    enum RuleTypes {Rule = 0x090,Criteria = 0x092, NonRule = 0x094};
+    class IRuleCriteria;
+    class IRule;
+}
+
+
+template<typename TSize,
+         typename TSizeIntervals,
+         typename TDateObject,
+         typename TType,
+         class TUniqueIdentifier>
+class IRuleCriteria : public IModel<TType,TUniqueIdentifier>
 {
 public:
     virtual ~IRuleCriteria() = default;
@@ -26,12 +39,12 @@ public:
     virtual void setCompareCriteria(const int &compareCriteria) = 0;
     virtual int criteria() const = 0;
     virtual void setCriteria(const int &criteria) = 0;
-    virtual bool operator==(const IRuleCriteria<TSize,TSizeIntervals,TDateObject> &other) const = 0;
-    virtual bool operator!=(const IRuleCriteria<TSize,TSizeIntervals,TDateObject> &other) const = 0;
+    virtual bool operator==(const IRuleCriteria<TSize,TSizeIntervals,TDateObject,TType,TUniqueIdentifier> &other) const = 0;
+    virtual bool operator!=(const IRuleCriteria<TSize,TSizeIntervals,TDateObject,TType,TUniqueIdentifier> &other) const = 0;
 };
 
-template<class TConditon>
-class IRule
+template<class TConditon, typename TType, class TUniqueIdentifier>
+class IRule : public IModel<TType,TUniqueIdentifier>
 {
 public:
     virtual ~IRule() = default;
@@ -49,8 +62,8 @@ public:
     virtual void setDeepScanMode(bool deepScanMode) = 0;
     virtual QList<const TConditon*> conditions() const = 0;
     virtual void setCriterias(const QList<const TConditon*> &subRules) = 0;
-    virtual bool operator==(const IRule<TConditon> &other) const = 0;
-    virtual bool operator!=(const IRule<TConditon> &other) const = 0;
+    virtual bool operator==(const IRule<TConditon,TType,TUniqueIdentifier> &other) const = 0;
+    virtual bool operator!=(const IRule<TConditon,TType,TUniqueIdentifier> &other) const = 0;
 };
 
 typedef QPair<quint64,QString> SizeLimit;

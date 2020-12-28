@@ -24,10 +24,10 @@ public:
 
     // State manipulation
     void swapRule(int i, int j) override;
-    void addRule(const IRule<DefaultRuleCriteria>* r) override;
-    void addRules(const QList<const IRule<DefaultRuleCriteria>*> &r) override;
-    void replaceRule(const IRule<DefaultRuleCriteria>* r, int index) override;
-    void replaceRule(const IRule<DefaultRuleCriteria>* r, QString title) override;
+    void addRule(const DefaultRuleInterface* r) override;
+    void addRules(const QList<const DefaultRuleInterface*> &r) override;
+    void replaceRule(const DefaultRuleInterface* r, int index) override;
+    void replaceRule(const DefaultRuleInterface* r, QString title) override;
     void removeRuleAt(const int &i) override {_rules.removeAt(i);}
     void removeRule(const QString &title) override;
     // Get
@@ -40,7 +40,7 @@ public:
     QList<QTreeWidgetItem*>ruleItems() const override;
 
 private:
-    QList<const IRule<DefaultRuleCriteria>*> _rules;
+    QList<const DefaultRuleInterface*> _rules;
 };
 
 #endif // RULECONTROLLER_H

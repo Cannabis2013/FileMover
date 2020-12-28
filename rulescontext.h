@@ -7,7 +7,7 @@
 namespace RulesContext
 {
     enum RuleType {Action = 0x020,
-                   Condition = 0x021,
+                   Criteria = 0x021,
                    CompareCriteria = 0x022,
                    All = 0x023};
 

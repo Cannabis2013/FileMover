@@ -6,7 +6,7 @@ AddRuleDialog::AddRuleDialog(QStringList watchFolders,IRuleDefinitions *service)
     setRulesDefinitionsService(service);
 
     QStringList actionList = ruleDefinitionsService()->buildStringListFromEntity(RulesContext::Action),
-            conditionList = ruleDefinitionsService()->buildStringListFromEntity(RulesContext::Condition),
+            conditionList = ruleDefinitionsService()->buildStringListFromEntity(RulesContext::Criteria),
             unitList = ruleDefinitionsService()->sizeUnits();
 
     actionBox->addItems(actionList);
